@@ -166,11 +166,20 @@ FCM_SERVER_KEY = "AAAApuuyOe4:APA91bFVU7guIWu7NXlMjndp7s3MjY2u3z9SQRLhrHDljcBfdY
 # db_from_env = dj_database_url.config(conn_max_age=600)
 # DATABASES['default'].update(db_from_env)
 
+# Before development
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME':  '/db/db.sqlite3',
+#         # 'NAME': os.path.join(BASE_DIR, 'data', 'db.sqlite3'),
+#     }
+# }
+
+# After development
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME':  '/db/db.sqlite3',
-        # 'NAME': os.path.join(BASE_DIR, 'data', 'db.sqlite3'),
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
