@@ -1,0 +1,138 @@
+{%extends 'chamas/base.html'%}
+{% load humanize %}
+{%load static%}
+
+
+{%block head%}
+<title>Expenses</title>
+<link rel="stylesheet" href="{%static 'chamas/expenses.css'%}">
+
+{%endblock%}
+
+
+{%block body%}
+<div class="row justify-content-center mt-3 text-capitalize">
+    <div class="body-div admin">
+        <h5 class="mx-auto">Create Expense</h5>
+        <div class="div-header">            
+            <h6><i class='bx bx-sort bx-rotate-90'></i>Define Expense</h6>
+        </div>
+        <div class="alert-box">
+
+        </div>
+         <form action="" id="create-expense" onsubmit="submitExpenseForm(); return false;" style="width: 100%;">
+            {%csrf_token%}
+            <div class="input-sect">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="name" name="name" class="form-control" id="name">
+                </div>
+                <div class="mb-3">
+                    <label for="amount" class="form-label">Amount</label>
+                    <input type="number" name="amount" class="form-control" id="amount">
+                </div>
+            </div>
+            <div class="mb-3 desc-area">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+            </div>
+            <button class="btn btn-primary border-0" type="submit" style="width: 100%;">Create Expense</button>
+        </form>     
+    </div>
+
+    <div class="body-div admin member">
+        <h5 class="mx-auto">All Expenses</h5>
+        <div class="div-header">
+            <h6>All Expenses Expense</h6>
+        </div>
+        {%for expense in expenses%}
+        <div class="expense-single">
+            <div class="expense-cube">
+                <p class="expense-title">
+                    Expense Name
+                </p>
+                <button class="expense-value">{{expense.name}}</button>
+            </div>
+
+            <div class="expense-cube">
+                <p class="expense-title">
+                    Expense Amount
+                </p>
+                <button class="expense-value">ksh {{expense.amount | intcomma}}</button>
+            </div>
+            <div class="expense-cube">
+                <p class="expense-title">
+                    description
+                </p>
+                <button class="expense-value">{{expense.description}}</button>
+            </div>
+        </div>
+        {%endfor%}
+
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    function submitExpenseForm() {
+        var name = $('#name').val();
+        var amount = $('#amount').val();
+        var description = $('#description').val();
+        var chama_id = localStorage.getItem('groupId');
+        var csrfToken = $('[name=csrfmiddlewaretoken]').val();
+
+        var formData = {
+            name: name,
+            amount: amount,
+            description: description
+        };
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRFToken': csrfToken
+            }
+        });
+
+        $.ajax({
+            type: 'POST',
+            url: '/chamas-bookeeping/create-expense/' + chama_id + '/',
+            data: JSON.stringify(formData),
+            contentType: 'application/json',
+            success: function(response) {
+                $('.alert-box').html('<div class="alert alert-success">' + response.message + '</div>');
+
+                $.ajax({
+                    type: 'GET',
+                    url: '/chamas-bookeeping/get-expense/' + response.expense.id + '/',
+                    success: function(newExpense) {
+                        $('.body-div:eq(1)').append(`
+                            <div class="expense-single">
+                                <div class="expense-cube">
+                                    <p class="expense-title">Expense Name</p>
+                                    <button class="expense-value">${newExpense.name}</button>
+                                </div>
+
+                                <div class="expense-cube">
+                                    <p class="expense-title">Expense Amount</p>
+                                    <button class="expense-value">ksh ${newExpense.amount}</button>
+                                </div>
+                                <div class="expense-cube">
+                                    <p class="expense-title">Description</p>
+                                    <button class="expense-value">${newExpense.description}</button>
+                                </div>
+                            </div>
+                        `);
+                    },
+                    error: function(error) {
+                        console.log('Error fetching new expense:', error);
+                    }
+                });
+            },
+            error: function(error) {
+                $('.alert-box').html('<div class="alert alert-danger">' + error.responseJSON.message + '</div>');
+            }
+        });
+    }
+</script>
+
+
+{%endblock%}

@@ -1,0 +1,1151 @@
+{%extends 'chamas/base.html'%} {%load static%} {% load humanize %} {%block head%}
+<title>Finances</title>
+<link rel="stylesheet" href="{%static 'chamas/finances.css'%}" />
+
+{%endblock%} {%block body%}
+<div class="mt-2">
+    <div class="row justify-content-center">
+        <!-- Create Saving -->
+        <div class="body-div admin m-1">
+            <div class="header-sect">
+                <div class="header-icon">
+                    <i class='bx bx-sort bx-rotate-90' style="font-size: 24px"></i>
+                </div>
+                <div class="header-text">
+                    <p>Create Savings</p>
+                </div>
+            </div>
+            <div id="create-saving-alert-hub"></div>
+            <form action="" id="create-saving-form" style="width: 100%;">
+
+                <div class="input-sect mt-4">
+                    <div class="input-group mb-3" style=" width: 100%; padding: 0.375rem 0.75rem; background-color: var(--bs-body-bg);
+                                        background-clip: padding-box;
+                                        border: var(--bs-border-width) solid var(--bs-border-color);
+                                        border-radius: var(--bs-border-radius);
+                                        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;">
+                        <select id="owner" class="border-0 bg-white" name="owner" required>
+                            <option value="" disabled selected>Owner</option>
+                            <option value="group">Group</option>
+                            {%for member in members%}
+                            <option value="{{member.id}}" class="text-capitalize">{{member.name}}</option>
+                            {%endfor%}
+                        </select>
+                    </div>
+
+                    <div class="input-group mb-3" style=" width: 100%; padding: 0.375rem 0.75rem; background-color: var(--bs-body-bg);
+                    background-clip: padding-box;
+                    border: var(--bs-border-width) solid var(--bs-border-color);
+                    border-radius: var(--bs-border-radius);
+                    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;">
+                        <select id="type" name="saving-type" class="border-0 bg-white text-capitalize" required>
+                            <option value="" disabled selected>Type</option>
+                            {%for type in saving_types%}
+                            <option value="{{type.id}}">{{type.name}}</option>
+                            {%endfor%}
+                        </select>
+                    </div>
+                </div>
+                <div class="input-sect">
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">Amount</label>
+                        <input type="number" name="amount" class="form-control" id="amount" required>
+                    </div>
+                </div>
+                <button class="btn btn-primary border-0" type="submit" style="width: 100%;">Create Saving</button>
+            </form>
+        </div>
+
+        <!-- Create Investment -->
+        <div class="body-div admin m-1">
+            <div class="header-sect">
+                <div class="header-icon">
+                    <i class='bx bx-sort bx-rotate-90' style="font-size: 24px"></i>
+                </div>
+                <div class="header-text">
+                    <p>Create Investment</p>
+                </div>
+            </div>
+            <div class="create-investment-alerts-hub"></div>
+            <form action="" style="width: 100%;" id="create-investment-form">
+
+                <div class="input-sect">
+                    <div class="mb-3">
+                        <label for="Name" class="form-label">Name</label>
+                        <input type="text" name="name" class="form-control" id="name" placeholder="Investment Name" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Date</label>
+                        <input type="date" name="date" class="form-control" id="date" required>
+                    </div>
+                </div>
+
+                <div class="input-sect">
+                    <div class="mb-3">
+                        <label for="Amount" class="form-label">Amount</label>
+                        <input type="number" name="amount" class="form-control" id="amount" required>
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn btn-primary border-0" style="width: 100%;">Create Investment</button>
+            </form>
+        </div>
+
+        <!-- Create Income -->
+        <div class="body-div admin  m-1">
+            <div class="header-sect">
+                <div class="header-icon">
+                    <i class='bx bx-sort bx-rotate-90' style="font-size: 24px"></i>
+                </div>
+                <div class="header-text">
+                    <p>Create Income</p>
+                </div>
+            </div>
+            <div class="create-income-alerts-hub"></div>
+            <form action="" id="create-income-form" style="width: 100%;">
+                <div class="input-sect">
+                    <div class="mb-3">
+                        <label for="Name" class="form-label">Income Name</label>
+                        <input type="text" name="name" class="form-control" id="name" placeholder="Income Name" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Date</label>
+                        <input type="date" name="date" class="form-control" id="date" required>
+                    </div>
+                </div>
+
+                <div class="input-sect">
+                    <div class="input-group mb-3" style=" width: 100%; padding: 0.375rem 0.75rem; background-color: var(--bs-body-bg);
+                    background-clip: padding-box;
+                    border: var(--bs-border-width) solid var(--bs-border-color);
+                    border-radius: var(--bs-border-radius);
+                    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;">
+                        <select id="investment-scheme" class="border-0 bg-white" name="investment-scheme" required>
+                            <option value="" disabled selected>Select Investment</option>
+                            {%for investment in investments%}
+                            {%if investment.name != 'others'%}
+                            <option value="{{investment.id}}" class="text-capitalize">{{investment.name}}</option>
+                            {%endif%}
+                            {%endfor%}
+                            <option value="others">others</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-sect">
+                    <div class="input-group mb-3" style=" width: 100%; padding: 0.375rem 0.75rem; background-color: var(--bs-body-bg);
+                        background-clip: padding-box;
+                        border: var(--bs-border-width) solid var(--bs-border-color);
+                        border-radius: var(--bs-border-radius);
+                        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;">
+                        <select id="owner" class="border-0 bg-white" name="owner">
+                            <option value="" disabled selected>Owner</option>
+                            <option selected value="group">Group</option>
+                            {%for member in members%}
+                            <option value="{{member.id}}" class="text-capitalize">{{member.name}}</option>
+
+                            {%endfor%}
+
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-sect">
+                    <div class="mb-3">
+                        <label for="Amount" class="form-label">Amount</label>
+                        <input type="number" name="amount" class="form-control" id="amount" required>
+                    </div>
+
+                </div>
+
+                <button class="btn btn-primary border-0" type="submit" style="width: 100%;">Create Income</button>
+            </form>
+
+
+
+
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <!-- Individual Savings My -->
+    <div class="body-div member m-1">
+        <div class="header-sect">
+            <div class="header-icon">
+                <i class="fa-regular fa-flag"></i>
+            </div>
+            <div class="header-text">
+                <p>My savings</p>
+            </div>
+        </div>
+        <div class="input-sect">
+            <div class="mb-3">
+                <label for="start" class="form-label">Start Date</label>
+                <input type="date" class="form-control" id="my_savings_start" placeholder="Start Date">
+            </div>
+
+            <div class="mb-3">
+                <label for="end" class="form-label">End Date</label>
+                <input type="date" class="form-control" id="my_savings_end">
+            </div>
+        </div>
+        <div id='my-savings-cont' class="w-100">
+            {%for saving in my_savings%}
+                <div class="saving-single">
+                    <div class="saving-details">
+                        <div class="saving-details-row">
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">Owner</h6>
+                                <div class="amount-section">
+                                    <p class="amount">
+                                        {{saving.owner.name}}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">Date</h6>
+                                <div class="amount-section">
+                                    <p class="amount">
+                                        {{saving.date | date:"d/m/Y" }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">Type</h6>
+                                <div class="amount-section">
+                                    <p class="amount">
+                                        {{saving.saving_type.name}}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">Amount</h6>
+                                <div class="amount-section">
+                                    <p class="amount">
+                                        ksh {{saving.amount | intcomma}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {%empty%}
+            <div class="saving-single text-center mx-auto">
+                <div class="saving-details">
+                    <h7 class="align-self-center">No savings!</h7>
+                </div>
+            </div>
+            {%endfor%}
+        </div>
+
+    </div>
+
+    <!-- Individual Savings -->
+    <div class="body-div admin m-1">
+        <div class="header-sect">
+            <div class="header-icon">
+                <i class='bx bx-sort bx-rotate-90' style="font-size: 24px"></i>
+            </div>
+            <div class="header-text">
+                <p>Individual savings</p>
+            </div>
+        </div>
+        <div class="input-sect filter-section">
+            <div class="mb-3">
+                <label for="start" class="form-label">Start Date</label>
+                <input type="date" class="form-control" id="individual_savings_start">
+            </div>
+
+            <div class="mb-3">
+                <label for="end" class="form-label">End Date</label>
+                <input type="date" class="form-control" id="individual_savings_end">
+            </div>
+        </div>
+        <div id='individual-savings-cont' class="w-100">
+            {%for saving in individual_savings%}
+                <div class="saving-single">
+                    <div class="saving-details">
+                        <div class="saving-details-row">
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">Owner</h6>
+                                <div class="amount-section">
+                                    <p class="amount">
+                                        {{saving.owner.name}}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">Date</h6>
+                                <div class="amount-section">
+                                    <p class="amount">
+                                        {{saving.date | date:"d/m/Y"}}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">Type</h6>
+                                <div class="amount-section">
+                                    <p class="amount">
+                                        {{saving.saving_type.name}}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">Amount</h6>
+                                <div class="amount-section">
+                                    <p class="amount">
+                                        ksh {{saving.amount | intcomma}}
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                {%empty%}
+                <div class="saving-single text-center mx-auto">
+                    <div class="saving-details">
+                        <h7 class="align-self-center">No savings!</h7>
+                    </div>
+                </div>
+            {%endfor%}
+        </div>
+    </div>
+
+    <!-- Group Investment -->
+    <div class="body-div admin member  m-1">
+        <div class="header-sect">
+            <div class="header-icon">
+                <i class='bx bx-sort bx-rotate-90' style="font-size: 24px"></i>
+            </div>
+            <div class="header-text">
+                <p>Group Investments</p>
+            </div>
+        </div>
+        <div class="input-sect">
+            <div class="mb-3">
+                <label for="start" class="form-label">Start Date</label>
+                <input type="date" class="form-control" id="group-investments-start" />
+            </div>
+
+            <div class="mb-3">
+                <label for="end" class="form-label">End Date</label>
+                <input type="date" class="form-control" id="group-investments-end" />
+            </div>
+        </div>
+        <div id='group-investments-cont' class="w-100">
+            {%for investment in group_investments%}
+                <div class="saving-single">
+                    <div class="saving-details">
+                        <div class="saving-details-row">
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">name</h6>
+                                <div class="amount-section">
+                                    <p class="amount">{{investment.name}}</p>
+                                </div>
+                            </div>
+
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">Date</h6>
+                                <div class="amount-section">
+                                    <p class="amount">
+                                        {{investment.date | date:"d/m/Y"}}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">amount</h6>
+                                <div class="amount-section">
+                                    <p class="amount">
+                                        {{investment.amount |intcomma}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {%empty%}
+            <div class="saving-single text-center mx-auto">
+                <div class="saving-details">
+                    <h7 class="align-self-center">No Investments!</h7>
+                </div>
+            </div>
+            {%endfor%}
+        </div>
+        <div class="summary-section">
+            <div class="summary-section-inner">
+                <h6>Total investments</h6>
+                <h5>ksh {{group_investments_tot |intcomma}}</h5>
+            </div>
+        </div>
+    </div>
+
+    <!-- Group Savings -->
+    <div class="body-div m-1 admin member m-1">
+        <div class="header-sect">
+            <div class="header-icon">
+                <i class='bx bx-sort bx-rotate-90' style="font-size: 24px"></i>
+            </div>
+            <div class="header-text">
+                <p>Group savings</p>
+            </div>
+        </div>
+        <div class="input-sect">
+            <div class="mb-3">
+                <label for="start" class="form-label">Start Date</label>
+                <input type="date" class="form-control" id="group-savings-start" />
+            </div>
+
+            <div class="mb-3">
+                <label for="end" class="form-label">End Date</label>
+                <input type="date" class="form-control" id="group-savings-end" />
+            </div>
+        </div>
+        <div id='group-savings-cont' class="w-100">
+            {%for saving in group_savings%}
+                <div class="saving-single">
+                    <div class="saving-details">
+                        <div class="saving-details-row">
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">Owner</h6>
+                                <div class="amount-section">
+                                    <p class="amount"> group</p>
+                                </div>
+                            </div>
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">Date</h6>
+                                <div class="amount-section">
+                                    <p class="amount">
+                                        {{saving.date | date:"d/m/Y"}}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">type</h6>
+                                <div class="amount-section">
+                                    <p class="amount">
+                                        {{saving.saving_type.name}}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">Amount</h6>
+                                <div class="amount-section">
+                                    <p class="amount">
+                                        ksh {{saving.amount | intcomma}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {%empty%}
+            <div class="saving-single text-center mx-auto">
+                <div class="saving-details">
+                    <h7 class="align-self-center">No savings!</h7>
+                </div>
+            </div>
+            {%endfor%}
+        </div>
+        <div class="summary-section">
+            <div class="summary-section-inner">
+                <h6>Total saving</h6>
+                <h5>ksh {{group_savings_tot | intcomma }}</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <!-- Individual Investment Income -->
+    <div class="body-div admin m-1">
+        <div class="header-sect">
+            <div class="header-icon">
+                <i class="fa-regular fa-flag"></i>
+            </div>
+            <div class="header-text">
+                <p>Individual Investment Income</p>
+            </div>
+        </div>
+
+        {%for income in individual_investment_income%}
+        <div class="saving-single">
+            <div class="saving-details">
+                <div class="saving-details-row">
+                    <div class="saving-cube">
+                        <h6 class="fw-semibold">Owner</h6>
+                        <div class="amount-section">
+                            <p class="amount">
+                                {{income.owner.name}}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="saving-cube">
+                        <h6 class="fw-semibold">Name</h6>
+                        <div class="amount-section">
+                            <p class="amount">
+                                {{income.name}}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="saving-cube">
+                        <h6 class="fw-semibold">Investment</h6>
+                        <div class="amount-section">
+                            <p class="amount">
+                                {{income.investment.name}}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="saving-cube">
+                        <h6 class="fw-semibold">Date</h6>
+                        <div class="amount-section">
+                            <p class="amount">
+                                {{income.date | date:"d/m/Y"}}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="saving-cube">
+                        <h6 class="fw-semibold">amount</h6>
+                        <div class="amount-section">
+                            <p class="amount">
+                                {{income.amount | intcomma}}
+                            </p>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+        {%empty%}
+        <div class="saving-single text-center mx-auto">
+            <div class="saving-details">
+                <h7 class="align-self-center">No Investments!</h7>
+            </div>
+        </div>
+        {%endfor%}
+    </div>
+
+    <!-- Group Investment Income -->
+    <div class="body-div admin member m-1">
+        <div class="header-sect">
+            <div class="header-icon">
+                <i class='bx bx-sort bx-rotate-90' style="font-size: 24px"></i>
+            </div>
+            <div class="header-text">
+                <p>Group Investment Income</p>
+            </div>
+        </div>
+        {%for income in group_investment_incomes%}
+        <div class="saving-single">
+            <div class="saving-details">
+                <div class="saving-details-row">
+                    <div class="saving-cube">
+                        <h6 class="fw-semibold">name</h6>
+                        <div class="amount-section">
+                            <p class="amount"> {{income.name}}</p>
+                        </div>
+                    </div>
+
+                    <div class="saving-cube">
+                        <h6 class="fw-semibold">Invenstment</h6>
+                        <div class="amount-section">
+                            <p class="amount"> {{income.investment.name}}</p>
+                        </div>
+                    </div>
+
+                    <div class="saving-cube">
+                        <h6 class="fw-semibold">Date</h6>
+                        <div class="amount-section">
+                            <p class="amount">
+                                {{income.date | date:"d/m/Y"}}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="saving-cube">
+                        <h6 class="fw-semibold">amount</h6>
+                        <div class="amount-section">
+                            <p class="amount">
+                                {{income.amount | intcomma}}
+                            </p>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+        {%empty%}
+        <div class="saving-single text-center mx-auto">
+            <div class="saving-details">
+                <h7 class="align-self-center">No Investment Income!</h7>
+            </div>
+        </div>
+        {%endfor%}
+
+        <div class="summary-section">
+            <div class="summary-section-inner">
+                <h6>Total income</h6>
+                <h5>ksh {{group_investment_incomes_tot | intcomma}}</h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="body-div member m-1">
+        <div class="header-sect">
+            <div class="header-icon">
+                <i class="fa-regular fa-flag"></i>
+            </div>
+            <div class="header-text">
+                <p>My Investment Income</p>
+            </div>
+        </div>
+
+        {%for income in my_investment_income%}
+        <div class="saving-single">
+            <div class="saving-details">
+                <div class="saving-details-row">
+                    <div class="saving-cube">
+                        <h6 class="fw-semibold">Owner</h6>
+                        <div class="amount-section">
+                            <p class="amount">
+                                {{income.owner.name}}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="saving-cube">
+                        <h6 class="fw-semibold">Investment</h6>
+                        <div class="amount-section">
+                            <p class="amount">
+                                {{income.investment.name}}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="saving-cube">
+                        <h6 class="fw-semibold">Date</h6>
+                        <div class="amount-section">
+                            <p class="amount">
+                                {{income.date | date:"d/m/Y"}}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="saving-cube">
+                        <h6 class="fw-semibold">amount</h6>
+                        <div class="amount-section">
+                            <p class="amount">
+                                {{income.amount | intcomma}}
+                            </p>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+        {%empty%}
+        <div class="saving-single text-center mx-auto">
+            <div class="saving-details">
+                <h7 class="align-self-center">No Investment Income!</h7>
+            </div>
+        </div>
+        {%endfor%}
+    </div>
+
+</div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Select the form
+        const form = document.getElementById("create-saving-form");
+
+        // Add a submit event listener to the form
+        form.addEventListener("submit", function (event) {
+            // Prevent the default form submission
+            event.preventDefault();
+
+            // Gather form data
+            const formData = new FormData(form);
+
+            // Convert form data to JSON
+            const jsonData = {};
+            formData.forEach((value, key) => {
+                jsonData[key] = value;
+            });
+
+            // Fetch the CSRF token from the cookie
+            const csrftoken = getCookie("csrftoken");
+
+            // Send AJAX request to the backend
+            fetch(`/chamas-bookeeping/create-saving/${localStorage.getItem('groupId')}/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrftoken
+                },
+                body: JSON.stringify(jsonData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Process the response and display Bootstrap alerts
+                    const alertHub = document.getElementById("create-saving-alert-hub");
+
+                    if (data.status === "success") {
+                        // Display success alert
+                        alertHub.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
+
+                    } else {
+                        // Display error alert
+                        alertHub.innerHTML = `<div class="alert alert-danger">${data.message}</div>`;
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
+        });
+
+        // Function to get the value of a cookie by name
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("create-investment-form");
+
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(form);
+
+            // Convert form data to JSON
+            const jsonData = {};
+            formData.forEach((value, key) => {
+                jsonData[key] = value;
+            });
+
+            // Fetch the CSRF token from the cookie
+            const csrftoken = getCookie("csrftoken");
+
+            // Send AJAX request to the backend
+            fetch(`/chamas-bookeeping/create-investment/${localStorage.getItem('groupId')}/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrftoken
+                },
+                body: JSON.stringify(jsonData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Process the response and display Bootstrap alerts
+                    const alertHub = document.querySelector(".create-investment-alerts-hub");
+
+                    if (data.status === "success") {
+                        // Display success alert
+                        alertHub.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
+                    } else {
+                        // Display error alert
+                        alertHub.innerHTML = `<div class="alert alert-danger">${data.message}</div>`;
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
+        });
+
+        // Function to get the value of a cookie by name
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Select the form
+        const form = document.getElementById("create-income-form");
+
+        // Add a submit event listener to the form
+        form.addEventListener("submit", function (event) {
+            // Prevent the default form submission
+            event.preventDefault();
+
+            // Gather form data
+            const formData = new FormData(form);
+
+            // Convert form data to JSON
+            const jsonData = {};
+            formData.forEach((value, key) => {
+                jsonData[key] = value;
+            });
+
+            // Fetch the CSRF token from the cookie
+            const csrftoken = getCookie("csrftoken");
+
+            // Send AJAX request to the backend
+            fetch(`/chamas-bookeeping/create-income/${localStorage.getItem('groupId')}/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrftoken
+                },
+                body: JSON.stringify(jsonData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Process the response and display Bootstrap alerts
+                    const alertHub = document.querySelector(".create-income-alerts-hub");
+
+                    if (data.status === "success") {
+                        // Display success alert
+                        alertHub.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
+                    } else {
+                        // Display error alert
+                        alertHub.innerHTML = `<div class="alert alert-danger">${data.message}</div>`;
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
+        });
+
+        // Function to get the value of a cookie by name
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+    });
+</script>
+
+<script>
+    var savings = [
+        {% for saving in my_savings %}
+            {
+                'owner': '{{ saving.owner.name }}',
+                'date': new Date('{{ saving.date|date:"c" }}'),
+                'type': '{{ saving.saving_type.name }}',
+                'amount': '{{ saving.amount }}',
+            },
+        {% endfor %}
+    ];
+    
+    document.getElementById('my_savings_start').addEventListener('change', filterSavings);
+    document.getElementById('my_savings_end').addEventListener('change', filterSavings);
+    
+    function filterSavings() {
+        var startInput = document.getElementById('my_savings_start').value;
+        var endInput = document.getElementById('my_savings_end').value;
+    
+        // Check if both start and end dates are selected
+        if (startInput && endInput) {
+            var start = new Date(startInput);
+            var end = new Date(endInput);
+    
+            // Check if the parsed dates are valid
+            if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+                var filteredSavings = savings.filter(function(saving) {
+                    return saving.date >= start && saving.date <= end;
+                });
+    
+                var savingsContainer = document.getElementById('my-savings-cont');
+                savingsContainer.innerHTML = '';
+    
+                filteredSavings.forEach(function(saving) {
+                    var savingElement = document.createElement('div');
+                    savingElement.className = 'saving-single';
+                    savingElement.innerHTML = `
+                        <div class="saving-details">
+                            <div class="saving-details-row">
+                                <div class="saving-cube">
+                                    <h6>Owner</h6>
+                                    <div class="amount-section">
+                                        <p class="amount">
+                                            ${saving.owner}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="saving-cube">
+                                    <h6>Date</h6>
+                                    <div class="amount-section">
+                                        <p class="amount">
+                                            ${saving.date.getDate()}/${saving.date.getMonth()+1}/${saving.date.getFullYear()}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="saving-cube">
+                                    <h6>Type</h6>
+                                    <div class="amount-section">
+                                        <p class="amount">
+                                            ${saving.type}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="saving-cube">
+                                    <h6>Amount</h6>
+                                    <div class="amount-section">
+                                        <p class="amount">
+                                            ksh ${saving.amount}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    savingsContainer.appendChild(savingElement);
+                });
+            } else {
+                console.log("Invalid date format");
+            }
+        }
+    }
+</script>
+
+<script>
+    var savings = [
+        {% for saving in individual_savings %}
+            {
+                'owner': '{{ saving.owner.name }}',
+                'date': new Date('{{ saving.date|date:"c" }}'),
+                'type': '{{ saving.saving_type.name }}',
+                'amount': '{{ saving.amount }}',
+            },
+        {% endfor %}
+    ];
+    
+    document.getElementById('individual_savings_start').addEventListener('change', filterSavings);
+    document.getElementById('individual_savings_end').addEventListener('change', filterSavings);
+    
+    function filterSavings() {
+        var startInput = document.getElementById('individual_savings_start').value;
+        var endInput = document.getElementById('individual_savings_end').value;
+    
+        // Check if both start and end dates are selected
+        if (startInput && endInput) {
+            var start = new Date(startInput);
+            var end = new Date(endInput);
+    
+            // Check if the parsed dates are valid
+            if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+                var filteredSavings = savings.filter(function(saving) {
+                    return saving.date >= start && saving.date <= end;
+                });
+    
+                var savingsContainer = document.getElementById('individual-savings-cont');
+                savingsContainer.innerHTML = '';
+    
+                filteredSavings.forEach(function(saving) {
+                    var savingElement = document.createElement('div');
+                    savingElement.className = 'saving-single';
+                    savingElement.innerHTML = `
+                        <div class="saving-details">
+                            <div class="saving-details-row">
+                                <div class="saving-cube">
+                                    <h6>Owner</h6>
+                                    <div class="amount-section">
+                                        <p class="amount">
+                                            ${saving.owner}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="saving-cube">
+                                    <h6>Date</h6>
+                                    <div class="amount-section">
+                                        <p class="amount">
+                                            ${saving.date.getDate()}/${saving.date.getMonth()+1}/${saving.date.getFullYear()}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="saving-cube">
+                                    <h6>Type</h6>
+                                    <div class="amount-section">
+                                        <p class="amount">
+                                            ${saving.type}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="saving-cube">
+                                    <h6>Amount</h6>
+                                    <div class="amount-section">
+                                        <p class="amount">
+                                            ksh ${saving.amount}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    savingsContainer.appendChild(savingElement);
+                });
+            } else {
+                console.log("Invalid date format");
+            }
+        }
+    }
+</script>
+
+<script>
+    // Retrieve the group investments data from the template and convert it into an array of objects
+    var groupInvestments = [
+        {% for investment in group_investments %}
+        {
+            'name': '{{ investment.name }}',
+            'date': new Date('{{ investment.date | date:"c" }}'), // Format date in ISO 8601 format
+            'amount': '{{ investment.amount }}',
+        },
+        {% endfor %}
+    ];
+
+    // Add event listeners to the start and end date input fields
+    document.getElementById('group-investments-start').addEventListener('change', filterInvestments);
+    document.getElementById('group-investments-end').addEventListener('change', filterInvestments);
+
+    // Function to filter group investments based on the selected date range
+    function filterInvestments() {
+        var startInput = document.getElementById('group-investments-start').value;
+        var endInput = document.getElementById('group-investments-end').value;
+
+        // Check if both start and end dates are selected
+        if (startInput && endInput) {
+            var start = new Date(startInput);
+            var end = new Date(endInput);
+
+            // Check if the parsed dates are valid
+            if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+                var filteredInvestments = groupInvestments.filter(function(investment) {
+                    return investment.date >= start && investment.date <= end;
+                });
+
+                // Clear the container before adding filtered investments
+                var investmentsContainer = document.getElementById('group-investments-cont');
+                investmentsContainer.innerHTML = '';
+
+                // Add filtered investments to the container
+                filteredInvestments.forEach(function(investment) {
+                    var investmentElement = document.createElement('div');
+                    investmentElement.className = 'saving-single';
+                    investmentElement.innerHTML = `
+                        <div class="saving-details">
+                            <div class="saving-details-row">
+                                <div class="saving-cube">
+                                    <h6>Name</h6>
+                                    <div class="amount-section">
+                                        <p class="amount">${investment.name}</p>
+                                    </div>
+                                </div>
+                                <div class="saving-cube">
+                                    <h6>Date</h6>
+                                    <div class="amount-section">
+                                        <p class="amount">${investment.date.getDate()}/${investment.date.getMonth()+1}/${investment.date.getFullYear()}</p>
+                                    </div>
+                                </div>
+                                <div class="saving-cube">
+                                    <h6>Amount</h6>
+                                    <div class="amount-section">
+                                        <p class="amount">ksh ${investment.amount}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    investmentsContainer.appendChild(investmentElement);
+                });
+            } else {
+                console.log("Invalid date format");
+            }
+        }
+    }
+</script>
+
+<script>
+    // Retrieve the group savings data from the template and convert it into an array of objects
+    var groupSavings = [
+        {% for saving in group_savings %}
+        {
+            'date': new Date('{{ saving.date | date:"c" }}'), // Format date in ISO 8601 format
+            'type': '{{ saving.saving_type.name }}',
+            'amount': '{{ saving.amount }}',
+        },
+        {% endfor %}
+    ];
+
+    // Add event listeners to the start and end date input fields
+    document.getElementById('group-savings-start').addEventListener('change', filterSavings);
+    document.getElementById('group-savings-end').addEventListener('change', filterSavings);
+
+    // Function to filter group savings based on the selected date range
+    function filterSavings() {
+        var startInput = document.getElementById('group-savings-start').value;
+        var endInput = document.getElementById('group-savings-end').value;
+
+        // Check if both start and end dates are selected
+        if (startInput && endInput) {
+            var start = new Date(startInput);
+            var end = new Date(endInput);
+
+            // Check if the parsed dates are valid
+            if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+                var filteredSavings = groupSavings.filter(function(saving) {
+                    return saving.date >= start && saving.date <= end;
+                });
+
+                // Clear the container before adding filtered savings
+                var savingsContainer = document.getElementById('group-savings-cont');
+                savingsContainer.innerHTML = '';
+
+                // Add filtered savings to the container
+                filteredSavings.forEach(function(saving) {
+                    var savingElement = document.createElement('div');
+                    savingElement.className = 'saving-single';
+                    savingElement.innerHTML = `
+                        <div class="saving-details">
+                            <div class="saving-details-row">
+                                <div class="saving-cube">
+                                    <h6>Date</h6>
+                                    <div class="amount-section">
+                                        <p class="amount">${saving.date.getDate()}/${saving.date.getMonth()+1}/${saving.date.getFullYear()}</p>
+                                    </div>
+                                </div>
+                                <div class="saving-cube">
+                                    <h6>Type</h6>
+                                    <div class="amount-section">
+                                        <p class="amount">${saving.type}</p>
+                                    </div>
+                                </div>
+                                <div class="saving-cube">
+                                    <h6>Amount</h6>
+                                    <div class="amount-section">
+                                        <p class="amount">ksh ${saving.amount}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    savingsContainer.appendChild(savingElement);
+                });
+            } else {
+                console.log("Invalid date format");
+            }
+        }
+    }
+</script>
+
+
+
+
+
+
+{%endblock%}

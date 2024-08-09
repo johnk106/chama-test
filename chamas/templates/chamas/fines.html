@@ -1,0 +1,681 @@
+{%extends 'chamas/base.html'%} {%load static%} {% load humanize %} {%block head%}
+<title>Fines</title>
+<link rel="stylesheet" href="{%static 'chamas/fines.css'%}" />
+
+{%endblock%} {%block body%}
+<div class="row justify-content-center mt-2 text-capitalize mt-2">
+  <div class="col-sm-12 m-2 body-div admin">
+    <h6 class="w-auto mx-auto">Create Fine</h6>
+    <div class="div-header">
+      <h6 class="w-auto">Define Fine</h6>
+    </div>
+    <div class="alert-hub"></div>
+    <form action="" id="create-fine-type" style="width: 100%;">
+      <div class="input-sect">
+        <div class="mb-3">
+          <label for="name" class="form-label">Name</label>
+          <input type="name" name="name" class="form-control" id="name" required />
+        </div>
+        <div class="mb-3">
+          <label for="amount" class="form-label">amount</label>
+          <input type="number" name="amount" class="form-control" id="amount" required />
+        </div>
+      </div>
+      <div class="mb-3 desc-area">
+        <label for="description" class="form-label">Description</label>
+        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+      </div>
+      <button class="btn btn-primary border-0" style="width: 100%">Create</button>
+    </form>
+  </div>
+
+
+  <div class="col-sm-12 m-2 body-div admin">
+    <h6 class="w-auto mx-auto">Impose Fine</h6>
+    <div class="div-header">
+      <h6 class="w-auto mx-auto">Impose Fine</h6>
+    </div>
+    <div class="impose-alerts-hub"></div>
+
+    {% for loan in loans %}
+    <div class="member-header">
+      <div class="member-header-inner">
+        <div class="leading">
+          <div class="leading-inner">
+            {%if loan.member.profile%}
+            <div class="fine-profile"
+              style="background-image: url({{loan.member.profile.url}});background-position: center;"></div>
+            {%else%}
+            <div class="fine-profile"></div>
+            {%endif%}
+            <p class="member-name">{{ loan.member.name }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="loan-single" style="display: none;">
+      <div class="loan-row">
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">Loan amount</p>
+          <button class="cube-amount">ksh {{ loan.amount | intcomma }}</button>
+        </div>
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">Loan balance</p>
+          <button class="cube-amount">ksh {{ loan.balance | intcomma }}</button>
+        </div>
+      </div>
+      <form action="" style="width: 100%" class="impose-fine-form">
+        <input type="hidden" class="loan-id" value="{{ loan.id }}" />
+        <div class="input-sect">
+          <div class="mb-3">
+            <label for="fine-type" class="cube-title fw-semibold">Fine type</label>
+            <select name="fine-type" class="fine-type">
+              {% for type in fine_types %}
+              <option value="{{ type.id }}">{{ type.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </form>
+      <button class="impose-fine-button">Impose</button>
+    </div>
+    {% endfor %}
+
+    <div class="div-header">
+    </div>
+  </div>
+
+
+
+</div>
+<div class="row justify-content-around text-capitalize">
+  <div class="m-2 body-div admin">
+    <h6 class="w-auto mx-auto">Pay fine</h6>
+    <div class="div-header">
+      <h6 class="w-auto">Loan Fines</h6>
+    </div>
+    <div class="pay-fine-alerts-hub"></div>
+
+    {%for fine in fines%}
+    <div class="member-header">
+      <div class="member-header-inner">
+        <div class="leading">
+          <div class="leading-inner">
+            {%if fine.member.profile%}
+
+            <div class="fine-profile"
+              style="background-image: url({{fine.member.profile.url}});background-position: center;"></div>
+
+            {%else%}
+
+            <div class="fine-profile"></div>
+
+            {%endif%}
+
+            <p class="member-name">{{fine.member.name}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="loan-single">
+      <div class="loan-row">
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">Loan amount</p>
+          <button class="cube-amount">ksh {{fine.loan_amount | intcomma}}</button>
+        </div>
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">Loan balance</p>
+          <button class="cube-amount">ksh {{fine.loan_balance | intcomma}}</button>
+        </div>
+      </div>
+      <div class="loan-row">
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">fine amount</p>
+          <button class="cube-amount">ksh {{fine.fine_amount | intcomma}}</button>
+        </div>
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">fine balance</p>
+          <button class="cube-amount">ksh {{fine.fine_balance | intcomma}}</button>
+        </div>
+      </div>
+
+      <form action="" style="width: 100%" id="update-fine">
+        <input type="hidden" id="fine-id" value="{{fine.id}}" />
+
+        <div class="input-sect">
+          <div class="mb-3">
+            <label for="amount" class="form-label">Fine amount</label>
+            <input type="number" name="fine-amount" class="form-control" id="amount" />
+          </div>
+        </div>
+      </form>
+      <button class="impose-fine-button update-fine-button">Update fine</button>
+    </div>
+    {% empty %}
+    <div class="div-header mx-auto">
+      <h7>No active loan fines</h7>
+    </div>
+    {%endfor%}
+    <div class="div-header">
+      <h6 class="w-auto mx-auto">Contribution fines</h6>
+    </div>
+
+    {%for fine in contribution_fines%}
+    <div class="member-header">
+      <div class="member-header-inner">
+        <div class="leading">
+          <div class="leading-inner">
+            {%if fine.member.profile%}
+
+            <div class="fine-profile"
+              style="background-image: url({{fine.member.profile.url}});background-position: center;"></div>
+
+            {%else%}
+
+            <div class="fine-profile"></div>
+
+            {%endif%}
+
+            <p class="member-name">{{fine.member.name}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="loan-single">
+      <div class="loan-row">
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">Contribution Name</p>
+          <button class="cube-amount">{{fine.contribution.name}}</button>
+        </div>
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">Contribution amount</p>
+          <button class="cube-amount">ksh {{fine.contribution.amount | intcomma}}</button>
+        </div>
+      </div>
+      <div class="loan-row">
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">contribution balance</p>
+          <button class="cube-amount">ksh {{fine.contribution_balance | intcomma}}</button>
+        </div>
+      </div>
+      <div class="loan-row">
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">fine amount</p>
+          <button class="cube-amount">ksh {{fine.fine_amount | intcomma}}</button>
+        </div>
+
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">fine balance</p>
+          <button class="cube-amount">ksh {{fine.fine_balance | intcomma}}</button>
+        </div>
+      </div>
+
+      <form action="" style="width: 100%" id="update-fine">
+        <input type="hidden" id="fine-id" value="{{fine.id}}" />
+
+        <div class="input-sect">
+          <div class="mb-3">
+            <label for="amount" class="form-label">Fine amount</label>
+            <input type="number" name="fine-amount" class="form-control" id="amount" />
+          </div>
+        </div>
+      </form>
+      <button class="impose-fine-button update-fine-button">Update fine</button>
+    </div>
+    {% empty %}
+    <div class="div-header mx-auto">
+      <h7>No active contribution fines</h7>
+    </div>
+    {%endfor%}
+  </div>
+  <div class="m-2 body-div body-div member">
+    <h6 class="w-auto mx-auto">Active group fines</h6>
+    <div class="div-header">
+      <h6 class="w-auto mx-auto">Active Fines</h6>
+    </div>
+    <div class="impose-alerts-hub"></div>
+
+
+    {%for fine in fines%}
+    <div class="member-header">
+      <div class="member-header-inner">
+        <div class="leading">
+          <div class="leading-inner">
+
+            {%if fine.member.profile%}
+            <div class="fine-profile"></div>
+
+            {%else%}
+
+            <div class="fine-profile"></div>
+
+            {%endif%}
+
+            <p class="member-name">{{fine.member.name}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="loan-single">
+      <div class="loan-row">
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">Type</p>
+          <button class="cube-amount">{{fine.fine_type.name}}</button>
+        </div>
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">fine amount</p>
+          <button class="cube-amount">ksh {{fine.fine_amount | intcomma}}</button>
+        </div>
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">paid amount</p>
+          <button class="cube-amount">ksh {{fine.paid_fine_amount | intcomma}}</button>
+        </div>
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">fine balance</p>
+          <button class="cube-amount">ksh {{fine.fine_balance | intcomma}}</button>
+        </div>
+      </div>
+      <div class="loan-row">
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">status</p>
+          <button class="cube-amount">{{fine.status}}</button>
+        </div>
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">date created</p>
+          <button class="cube-amount">{{fine.created | date:"d/m/Y"}}</button>
+        </div>
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">last updated</p>
+          <button class="cube-amount">{{fine.last_updated | date:"d/m/Y"}}</button>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="div-header mx-auto">
+      <h7>No active group fines</h7>
+    </div>
+    {%endfor%}
+
+    <div class="div-header">
+      <h6 class="w-auto mx-auto">Active Contribution Fines</h6>
+    </div>
+
+
+    {%for fine in contribution_fines%}
+    <div class="member-header">
+      <div class="member-header-inner">
+        <div class="leading">
+          <div class="leading-inner">
+
+            {%if fine.member.profile%}
+            <div class="fine-profile"></div>
+
+            {%else%}
+
+            <div class="fine-profile"></div>
+
+            {%endif%}
+
+            <p class="member-name">{{fine.member.name}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="loan-single">
+      <div class="loan-row">
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">Type</p>
+          <button class="cube-amount">{{fine.fine_type.name}}</button>
+        </div>
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">fine amount</p>
+          <button class="cube-amount">ksh {{fine.fine_amount | intcomma}}</button>
+        </div>
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">paid amount</p>
+          <button class="cube-amount">ksh {{fine.paid_fine_amount | intcomma}}</button>
+        </div>
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">fine balance</p>
+          <button class="cube-amount">ksh {{fine.fine_balance | intcomma}}</button>
+        </div>
+      </div>
+      <div class="loan-row">
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">status</p>
+          <button class="cube-amount">{{fine.status}}</button>
+        </div>
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">date created</p>
+          <button class="cube-amount">{{fine.created | date:"d/m/Y"}}</button>
+        </div>
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">last updated</p>
+          <button class="cube-amount">{{fine.last_updated| date:"d/m/Y"}}</button>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="div-header mx-auto">
+      <h7>No active contribution fines</h7>
+    </div>
+    {%endfor%}
+
+
+  </div>
+  <div class="m-2 body-div body-div member">
+    <h6 class="w-auto mx-auto">My Active fines</h6>
+    <div class="div-header">
+      <h6 class="w-auto mx-auto">My Active Loan Fines</h6>
+    </div>
+    <div class="impose-alerts-hub"></div>
+    {%for fine in my_loan_fines%}
+    <div class="loan-single">
+      <div class="loan-row">
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">Type</p>
+          <button class="cube-amount">{{fine.fine_type.name}}</button>
+        </div>
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">fine amount</p>
+          <button class="cube-amount">ksh {{fine.fine_amount | intcomma}}</button>
+        </div>
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">paid amount</p>
+          <button class="cube-amount">ksh {{fine.paid_fine_amount | intcomma}}</button>
+        </div>
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">fine balance</p>
+          <button class="cube-amount">ksh {{fine.fine_balance | intcomma}}</button>
+        </div>
+      </div>
+      <div class="loan-row">
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">status</p>
+          <button class="cube-amount">{{fine.status}}</button>
+        </div>
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">date created</p>
+          <button class="cube-amount">{{fine.created | date:"d/m/Y"}}</button>
+        </div>
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">last updated</p>
+          <button class="cube-amount">{{fine.last_updated | date:"d/m/Y"}}</button>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="div-header mx-auto">
+      <h7>No active loan fines</h7>
+    </div>
+    <br>
+    {%endfor%}
+
+    <div class="div-header">
+      <h6 class="w-auto mx-auto">My Active Contribution Fines</h6>
+    </div>
+    <div class="impose-alerts-hub"></div>
+    {%for fine in my_contribution_fines%}
+    <div class="loan-single">
+      <div class="loan-row">
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">Type</p>
+          <button class="cube-amount">{{fine.fine_type.name}}</button>
+        </div>
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">fine amount</p>
+          <button class="cube-amount">ksh {{fine.fine_amount | intcomma}}</button>
+        </div>
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">paid amount</p>
+          <button class="cube-amount">ksh {{fine.paid_fine_amount | intcomma}}</button>
+        </div>
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">fine balance</p>
+          <button class="cube-amount">ksh {{fine.fine_balance | intcomma}}</button>
+        </div>
+      </div>
+      <div class="loan-row">
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">status</p>
+          <button class="cube-amount">{{fine.status}}</button>
+        </div>
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">date created</p>
+          <button class="cube-amount">{{fine.created | date:"d/m/Y"}}</button>
+        </div>
+        <div class="loan-row-cube">
+          <p class="cube-title fw-semibold">last updated</p>
+          <button class="cube-amount">{{fine.last_updated | date:"d/m/Y"}}</button>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="div-header mx-auto">
+      <h7>No active contribution fines</h7>
+    </div>
+    <br>
+    {%endfor%}
+
+
+  </div>
+
+  
+  <br>
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var createFineForm = document.getElementById("create-fine-type");
+
+    createFineForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      // Extract form values
+      var name = document.getElementById("name").value;
+      var amount = document.getElementById("amount").value;
+      var description = document.getElementById("description").value;
+
+      // Get chama_id from local storage
+      var chamaId = localStorage.getItem("groupId");
+
+      // Construct the URL
+      var url = `/chamas-bookeeping/create-fine-type/${chamaId}/`;
+
+      // Prepare the data to send
+      var data = {
+        name: name,
+        amount: amount,
+        description: description,
+      };
+
+      // Send data to the server
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCookie("csrftoken"), // Use the correct cookie name
+        },
+        body: JSON.stringify(data),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          handleFineTypeResponse(data);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    });
+
+
+  });
+
+  function handleFineTypeResponse(data) {
+    var alertHub = document.querySelector(".alert-hub");
+
+    if (data.status === "success") {
+      alertHub.innerHTML = `<div class="alert alert-success" role="alert">${data.message}</div>`;
+      // You can update the UI or perform any other actions here
+    } else {
+      alertHub.innerHTML = `<div class="alert alert-danger" role="alert">${data.message}</div>`;
+    }
+  }
+
+  function handleFineContributionResponse(data) {
+    var alerthub = document.querySelector(".fine-contribution-hub")
+    if (data.status === "success"){
+      alerthub.innerHTML = `<div class="alert alert-success" role="alert">${data.message}</div>`;
+    } else {
+      alerthub.innerHTML = `<div class="alert alert-danger" role="alert">${data.message}</div>`;
+    }
+  }
+
+  function getCookie(name) {
+    var value = "; " + document.cookie;
+    var parts = value.split("; " + name + "=");
+    if (parts.length == 2) return parts.pop().split(";").shift();
+  }
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var imposeFineButtons = document.querySelectorAll('.impose-fine-button');
+
+    imposeFineButtons.forEach(function (button) {
+      button.addEventListener('click', function () {
+        var loanId = this.closest('.loan-single').querySelector('.loan-id').value;
+        var fineType = this.closest('.loan-single').querySelector('.fine-type').value;
+
+        // Construct the URL
+        var url = `/chamas-bookeeping/impose-fine/`;
+
+        // Prepare the data to send
+        var data = {
+          loan_id: loanId,
+          fine_type: fineType
+        };
+
+        // Send data to the server
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')  // Use the correct cookie name
+          },
+          body: JSON.stringify(data)
+        })
+          .then(response => response.json())
+          .then(data => {
+            handleImposeFineResponse(data);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      });
+    });
+  });
+
+  function handleImposeFineResponse(data) {
+    var alertHub = document.querySelector('.impose-alerts-hub');
+
+    if (data.status === 'success') {
+      alertHub.innerHTML = `<div class="alert alert-success" role="alert">${data.message}</div>`;
+      // You can update the UI or perform any other actions here
+    } else {
+      alertHub.innerHTML = `<div class="alert alert-danger" role="alert">${data.message}</div>`;
+    }
+  }
+
+  function getCookie(name) {
+    var value = "; " + document.cookie;
+    var parts = value.split("; " + name + "=");
+    if (parts.length == 2) return parts.pop().split(";").shift();
+  }
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var updateFineButtons = document.querySelectorAll('.update-fine-button');
+
+    updateFineButtons.forEach(function (button) {
+      button.addEventListener('click', function () {
+        var fineId = this.closest('.loan-single').querySelector('#fine-id').value;
+        var fineAmount = this.closest('.loan-single').querySelector('#amount').value;
+
+        // Construct the URL
+        var url = `/chamas-bookeeping/update-fine/`;
+
+        // Prepare the data to send
+        var data = {
+          fine_id: fineId,
+          'fine-amount': fineAmount
+        };
+
+        // Send data to the server
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')  // Use the correct cookie name
+          },
+          body: JSON.stringify(data)
+        })
+          .then(response => response.json())
+          .then(data => {
+            handleUpdateFineResponse(data);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      });
+    });
+  });
+
+  function handleUpdateFineResponse(data) {
+    var alertHub = document.querySelector('.pay-fine-alerts-hub');
+
+    if (data.status === 'success') {
+      alertHub.innerHTML = `<div class="alert alert-success" role="alert">${data.message}</div>`;
+      // You can update the UI or perform any other actions here
+    } else {
+      alertHub.innerHTML = `<div class="alert alert-danger" role="alert">${data.message}</div>`;
+    }
+  }
+
+  function getCookie(name) {
+    var value = "; " + document.cookie;
+    var parts = value.split("; " + name + "=");
+    if (parts.length == 2) return parts.pop().split(";").shift();
+  }
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const memberHeaders = document.querySelectorAll(".member-header");
+
+    memberHeaders.forEach(function (memberHeader) {
+      const loanSingle = memberHeader.nextElementSibling;
+
+      // Initially hide the loan details
+      loanSingle.style.display = "none";
+
+      // Add click event listener to each member header
+      memberHeader.addEventListener("click", function () {
+        // Toggle the display of the corresponding loan details
+        if (loanSingle.style.display === "none") {
+          loanSingle.style.display = "block";
+        } else {
+          loanSingle.style.display = "none";
+        }
+      });
+
+      // Add event listener to impose fine button
+      const imposeFineButton = loanSingle.querySelector(".impose-fine-button");
+      const imposeFineForm = loanSingle.querySelector(".impose-fine-form");
+      imposeFineButton.addEventListener("click", function () {
+        // Submit the form when the impose fine button is clicked
+        imposeFineForm.submit();
+      });
+    });
+  });
+
+</script>
+
+{%endblock%}

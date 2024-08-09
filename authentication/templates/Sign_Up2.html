@@ -1,0 +1,88 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    Home
+{% endblock %}
+{% block content %}
+
+    <body>
+        <div class="header-head">
+            <div class="container">
+                <h1><a href="{% url 'index' %}">ChamaBORA</a></h1>
+            </div>
+        </div>
+
+        <div class="login">
+            <div class="containers">
+                <div class="content">
+                    <form  class="login-form" method="post" action="{% url 'Sign_Up2' %}">
+                        {% csrf_token %}
+                        <p class="title">
+                            ChamaBORA
+                        </p>
+                        <br>
+                        <p class ="log">Tell us more about yourself</p>
+                        <hr/>
+
+                        <div class="form-input" >
+                            <span class="label">Sex: (Optional</span>
+                            <select name="Sex"  class="input" style="height: 35px;border: 1px solid #000;margin: 8px 0;background-color: #fff; border-radius: 10px;">
+                                <option name="Sex" >Select</option>
+                                {% for gender in Genders %}
+                                    <option name="Sex" value="{{ gender.name }}">{{ gender.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-input" >
+                            <span class="label" >Email</span>
+                            <input class="input" type="text" name="email" placeholder="Enter Your Email">
+                        </div>
+
+                        <div class="form-input" >
+                            <span class="label" >Payment Method:</span>
+                            <select name="payment_gateway" class="input" style="height: 35px;border: 1px solid #000;margin: 8px 0;background-color: #fff; border-radius: 10px;">
+                                 <option>Select</option>
+                                {% for paymentmethod in Payment_Methods %}
+                                    <option name="payment_gateway" value="{{ paymentmethod.name }}">{{ paymentmethod.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-input" >
+                            <span class="label" >How did you find about ChamaBORA?</span>
+                            <select name="how_find_us" class="input" style="height: 35px;border: 1px solid #000;margin: 8px 0;background-color: #fff; border-radius: 10px;">
+                                 <option>Select</option>
+                                {% for find in How_did_you_finds %}
+                                    <option name="how_find_us" value="{{ find.name }}">{{ find.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="container-button" >
+                           <button  name ="button" class="button" style="background-color: #565578" > Sign Up </button>
+                        </div>
+
+                        </form>
+
+
+{#                                <a href="{% url 'Sign_up' %}"> <button class="button" style="background-color: #565578" > Back </button></a>#}
+
+
+
+                        <div class="last-buttons">
+                            <span class="one">This information help in optimizing your account for a ChamaBora experience.  </span>
+                        </div>
+
+
+                </div>
+            </div>
+        </div>
+    </body>
+
+
+
+
+
+{% endblock %}

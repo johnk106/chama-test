@@ -1,0 +1,669 @@
+{% extends 'goal_base.html' %}
+
+{% load static %}
+{% block title %}
+    Goad Details
+{% endblock %}
+{% block content %}
+
+
+
+
+
+    <div class="wrapper">
+        <div class="modal fade" id="disable_group_popup" tabindex="-1" aria-labelledby="disable_group_popup"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-body">
+                        <div class="popup_box" id="delete_form_popup">
+                            <h4 class="popup_heading mb-3">
+                                Sorry! This goal is currently disabled for withdrawals.
+                            </h4>
+
+
+                            <button class="btn popup_btn mt-4" data-bs-dismiss="modal">
+                                Close
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="modal fade" id="add_funds" tabindex="-1" aria-labelledby="exampleModal8Label" aria-hidden="true">
+            <div class="modal-dialog">
+
+
+                <div class="modal-content">
+
+
+                    <div class="modal-body">
+                        <div class="popup_box" id="add_amount_to_goal">
+                            <h4 class="popup_heading">
+                                How much do you want to <br>save?
+                            </h4>
+
+                            <form id="add_amount_form" method="post" class="mt-25">
+
+                                <label for="add_money">
+                                    Add Money
+                                </label>
+                                <input type="number" name="add_money" id="add_money" placeholder="Enter Amount"
+                                       class="mt-1" required>
+
+                                <p class="mt-4">This amount will be added to your {{ goal_info.name }}</p>
+                                <button type="submit" class="btn popup_btn">
+                                    Save
+                                </button>
+                            </form>
+                        </div>
+                        <div class="popupTwo" id="add_amount_to_goal_second" style="display: none;">
+
+                            <div class="popup_box">
+                                <h4 class="popup_heading">
+                                    Success!
+
+                                </h4>
+
+
+                                <div class="text-center mt-3 mb-3">
+                                    <img src="{% static 'images/success.png' %}" alt="">
+                                </div>
+                                <h4 class="popup_heading">
+
+                                    You successfully deposited amount to {{ goal_info.name }}.
+                                </h4>
+
+
+                                <button class="btn popup_btn"
+                                        data-bs-dismiss="modal">
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                        <div class="popupTwo" id="add_amount_to_goal_third" style="display: none;">
+
+                            <div class="popup_box">
+                                <h4 class="popup_heading">
+                                    Sorry!
+
+                                </h4>
+
+
+
+                                <h4 class="popup_heading" style="color: red">
+
+                                    Sorry, you have insufficient balance to invest here..
+                                </h4>
+
+
+                                <button class="btn popup_btn"
+                                        data-bs-dismiss="modal">
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="modal fade" id="withdrawal_request" tabindex="-1" aria-labelledby="withdrawal_request"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-body">
+                        <div class="popup_box" id="withdrawal_request_firstinner">
+                            <h4 class="popup_heading">
+                                How much do you want to <br>withdraw?
+                            </h4>
+
+                            <form class="mt-25" method="post" id="withdrawal_request_form">
+
+                                <label for="add_money">
+                                    Withdraw Money
+                                </label>
+                                <input type="text" value="Kshs.{{ Fv_after_tax|floatformat:2 }}"
+                                       name="withdraw_money" id="withdraw_money" class="mt-1" readonly>
+
+
+                                {% if goal_info.goal_balance|add:goal_info.goal_profit > 0 %}
+
+                                    <p class="mt-4">This amount will be deducted from your {{ goal_info.name }} goal balance.</p>
+                                    <button type="submit" class="btn popup_btn">
+                                        Withdraw Now!
+                                    </button>
+                                {% else %}
+                                    <br>
+                                    <br>
+                                    <p class="btn btn-warning btn-xs">
+                                        No funds are available
+                                    </p>
+                                {% endif %}
+                            </form>
+                        </div>
+                        <div class="popupTwo" id="withdrawal_success_popup" style="display: none;">
+
+                            <div class="popup_box">
+                                <h4 class="popup_heading">
+                                    Success!
+
+                                </h4>
+
+
+                                <div class="text-center mt-3 mb-3">
+                                    <img src="{% static 'images/success.png' %}" alt="">
+                                </div>
+                                <h4 class="popup_heading">
+
+                                    Your payment withdrawal request has been received.
+                                </h4>
+                                <p> We are processing the transaction, and you will receive a confirmation once it is successfully completed.</p>
+
+                                <button class="btn popup_btn"
+                                        data-bs-dismiss="modal">
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="modal fade" id="withdrawal_request_denied" tabindex="-1" aria-labelledby="withdrawal_request_denied"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-body">
+                        <div class="popup_box" id="delete_form_popup">
+                            <h4 class="popup_heading mb-3">
+                                Sorry! You Can't request for withdraw because of following reasons
+                            </h4>
+                            <ul class="popup_heading mb-3">
+                                <li>1. Goal target is not achieve yet</li>
+
+                            </ul>
+
+
+                            <button class="btn popup_btn mt-4" data-bs-dismiss="modal">
+                                Close
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+        <div class="modal fade" id="delete_button" tabindex="-1" aria-labelledby="delete_button"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-body">
+                        <div class="popup_box" id="delete_form_popup">
+                            <h4 class="popup_heading mb-3">
+                                What do you want to do with your Goal of {{ goal_info.name }}?
+                            </h4>
+                            <button class="btn popup_btn mt-4 white_btn" data-bs-toggle="modal"
+                                    data-bs-target="#edit_goal" id="editGoalButton">Edit
+                            </button>
+
+                            <a href="{% url 'personal_goal_statement' goal_info.id %}" download
+                               class="btn popup_btn mt-4 white_btn">
+                                Get Goal Statement
+                            </a>
+
+
+                            <form id="delete_form" method="post">
+
+                                <button type="submit" class="btn popup_btn mt-4 white_btn">
+                                    Delete Goal
+                                </button>
+
+
+                            </form>
+
+
+                            <button class="btn popup_btn mt-4" data-bs-dismiss="modal">
+                                Close
+                            </button>
+                        </div>
+                        <br>
+                        <div class="popupTwo" id="delete_success" style="display: none;">
+
+                            <div class="popup_box">
+                                <h4 class="popup_heading">
+                                    Success!
+
+                                </h4>
+
+
+                                <div class="text-center mt-3 mb-3">
+                                    <img src="{% static 'images/success.png' %}" alt="">
+                                </div>
+                                <h4 class="popup_heading">
+
+                                    Selected goal removed.
+                                </h4>
+
+
+                                <button class="btn popup_btn"
+                                        data-bs-dismiss="modal">
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="modal fade" id="delete_request_denied" tabindex="-1" aria-labelledby="delete_request_denied"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-body">
+                        <div class="popup_box" id="delete_form_popup">
+
+                            <a href="{% url 'personal_goal_statement' goal_info.id %}" download
+                               class="btn popup_btn mt-4 white_btn">
+                                Get Goal Statement
+                            </a>
+
+                            <button class="btn popup_btn mt-4 white_btn" data-bs-toggle="modal"
+                                    data-bs-target="#edit_goal" id="editGoalButton">Edit
+                            </button>
+
+
+
+                            <button class="btn popup_btn mt-4" data-bs-dismiss="modal">
+                                Close
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+     <div class="modal fade" id="edit_goal" tabindex="-1" aria-labelledby="edit_goal" aria-hidden="true">
+            <div class="modal-dialog" style="width: 600px; height: 250px;">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="popup_box" id="edit_goal_popup">
+                            <form id="edit_goal_form" method="post" action="{% url 'edit_goal' %}" class="mt-25">
+
+                                {% csrf_token %}
+                                <label for="add_money">Goal Title</label>
+
+                                <input type="hidden" name="goal_id" value="{{ goal_info.id }}">
+                                <input type="text" name="goal_title" id="goal_title" value="{{ goal_info.name }}"
+                                       class="mt-1" required>
+                                <br>
+                                <br>
+                                <button type="submit" class="btn popup_btn">Update</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <main role="main" class="main-content p-0">
+
+            <div class=" weknz_header">
+                <div class="container">
+                    <nav class="page_nav mob_nav">
+                        <div class="brand">
+                            <a href="#">
+                                <img src="{% static 'images/Chama-Bora_clrd.png' %}" alt="">
+                            </a>
+                        </div>
+                        <ul class="nav-list">
+
+                            <li class="">
+
+                                <a href="{% url 'my_goals' %}" class="btn">
+
+                                    <img src="{% static 'images/left_arrow.png' %}" alt="">
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            <div class="offcanvas-body full_page">
+                <section class="banner car_banner">
+                    <div class="container">
+                        <div class="wekenza_content">
+                            <h2 class="wekenz_h mb-2">
+                                {{ goal_info.name }}
+                            </h2>
+                            <p class="sub_heading mb-2">
+                                {{ goal_info.calculate_month_difference }} Days Left
+                            </p>
+                            <h4 class="wekenza_price mb-2 text_shadows">
+                                Kshs.
+
+
+                                {{ goal_info.goal_balance|add:goal_info.goal_profit }}
+                            </h4>
+                            <p class="sub_heading mt-0">
+                                Total Amount
+                            </p>
+                            <div>
+                                <div class="bar_content mt-4">
+                                    <p class="mb-0">
+                                        Saving
+                                    </p>
+                                    <p class="mb-0">{{ goal_info.percentage }}%</p>
+                                    <p class="mb-0">Goals</p>
+                                </div>
+                                <div class="goal_progress">
+                                    <div class="inner" style="width: {{ goal_info.percentage }}%;">
+                                    </div>
+                                </div>
+
+                                <div class="bar_content mt-1">
+                                    <p>
+                                        Kshs. {{ goal_info.goal_balance|floatformat:2 }}
+                                    </p>
+                                    <p>Kshs. {{ goal_info.goal_amount|floatformat:2 }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+                <section class="creat_goals mb-5 pb-5">
+                    <div class="container">
+                        <div class="d-flex flex-row align-items-center justify-content-between mt-3">
+                            <div class="d-flex flex-row align-items-center flex-column cursot-pointer"
+                                 data-bs-toggle="modal" {% if goal_info.is_active == 'Yes' %}
+                                 data-bs-target="#add_funds"
+                            {% else %} data-bs-target="#disable_group_popup" {% endif %}>
+                                <div class="person_round d-flex align-items-center justify-content-center">
+                                    <img src="{% static 'images/wallet-money_.png' %}" alt="">
+                                </div>
+                                <h4 class="pesno_plus_h">Add Funds</h4>
+                            </div>
+                            {% if goal_info.goal_balance|add:goal_info.goal_profit >= goal_info.goal_amount or goal_info.saving_type == 'regular' and goal_info.is_active == 'Yes' %}
+
+                                <div class="d-flex flex-row align-items-center flex-column cursot-pointer"
+                                     data-bs-toggle="modal" data-bs-target="#withdrawal_request">
+                                    <div class="person_round d-flex align-items-center justify-content-center">
+                                        <img src="{% static 'images/money-send_.png' %}" alt="">
+                                    </div>
+                                    <h4 class="pesno_plus_h">Withdraw</h4>
+                                </div>
+
+
+                            {% elif goal_info.is_active == 'No' %}
+                                <div class="d-flex flex-row align-items-center flex-column cursot-pointer"
+                                     data-bs-toggle="modal" data-bs-target="#disable_group_popup">
+                                    <div class="person_round d-flex align-items-center justify-content-center">
+                                        <img src="{% static 'images/money-send_.png' %}" alt="">
+                                    </div>
+                                    <h4 class="pesno_plus_h">Withdraw</h4>
+                                </div>
+                            {% else %}
+                                <div class="d-flex flex-row align-items-center flex-column cursot-pointer"
+                                     data-bs-toggle="modal" data-bs-target="#withdrawal_request_denied">
+                                    <div class="person_round d-flex align-items-center justify-content-center">
+                                        <img src="{% static 'images/money-send_.png' %}" alt="">
+                                    </div>
+                                    <h4 class="pesno_plus_h">Withdraw</h4>
+                                </div>
+
+                            {% endif %}
+                            {% if goal_info.goal_balance|add:goal_info.goal_profit > 1 %}
+                                <div class="d-flex flex-row align-items-center flex-column cursot-pointer"
+                                     data-bs-toggle="modal"
+                                     data-bs-target="#delete_request_denied">
+                                    <div class="person_round d-flex align-items-center justify-content-center cursot-pointer">
+                                        <img src="{% static 'images/more_.png' %}" alt="">
+                                    </div>
+                                    <h4 class="pesno_plus_h">More</h4>
+                                </div>
+
+                            {% else %}
+                                <div class="d-flex flex-row align-items-center flex-column cursot-pointer"
+                                     class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#delete_button">
+                                    <div class="person_round d-flex align-items-center justify-content-center cursot-pointer">
+                                        <img src="{% static 'images/more_.png' %}" alt="">
+                                    </div>
+                                    <h4 class="pesno_plus_h">More</h4>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <b>{% include '_messages.html' %}</b>
+                        <div
+                                class="pt-3 astimate border-top border-bottom d-flex align-items-center justify-content-between">
+                            <div class="astimate_content text-center">
+                                <h5>
+                                    {{goal_info.reminder_frequency|capfirst }} Target
+                                </h5>
+                                <h4>
+                                    Kshs. <b>{{ goal_info.amount_to_save_per_notification|floatformat:2 }}</b>
+                                </h4>
+                            </div>
+                            <div class="astimate_content text-center">
+                                <h5>
+                                    Intrest Rate
+                                </h5>
+                                <h4>
+                                    {{interest_rate }}%
+
+                                </h4>
+
+                            </div>
+
+                            <div class="astimate_content text-center">
+                                <h5>
+                                    Earned Intrest
+                                </h5>
+                                <h4>+ Kshs. <b>{{goal_info.goal_profit}}</b></h4>
+
+                            </div>
+                        </div>
+                        <div class="records">
+
+                            {% for item in all_deposits %}
+                                <div class="record_row d-flex align-items-center justify-content-between border-bottom pb-3 pt-3">
+                                    <p class="mb-0">
+                                        + Kshs. {{ item.amount|floatformat:2 }}
+                                    </p>
+
+
+                                    <p>
+
+                                    </p>
+
+                                    <p>
+                                        + Kshs. {{ item.calculate_future_value }}
+                                    </p>
+                                </div>
+                            {% endfor %}
+
+
+                            <a href="{% url 'my_goals' %}" class="btn saving_btn "
+                            >
+                                All Goals
+                            </a>
+
+                        </div>
+                    </div>
+                </section>
+
+              <footer class="mbl_footer">
+                <div class="container">
+                    <div class="footer_row d-flex flex-row justify-content-between align-items-center">
+                        <a href="{% url 'my_goals' %}" class="footer_button btn">
+                            <img class="homer_white" src="{% static 'images/home_white.png' %}" alt="">
+
+                            <p>Home</p>
+                        </a>
+                        <a href="#" class="footer_button btn active">
+                            <img src="{% static 'images/filter_active.png' %}" alt="">
+                            <p>Features</p>
+                        </a>
+                        <a href="{% url 'wallet_index' %}" class="footer_button btn">
+                            <img src="{% static 'images/wallet_alt_fill.png' %}" alt="">
+                            <p>Account</p>
+                        </a>
+                        <a href="{% url 'Setting' %}" class="footer_button btn">
+                            <img src="{% static 'images/setting.png' %}" alt="">
+                            <p>Settings</p>
+                        </a>
+                    </div>
+                </div>
+            </footer>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
+    <script>
+        $('#withdrawal_request_form').on('submit', function (e) {
+            e.preventDefault();
+            console.log('line no 265 called from ajax fun');
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'withdraw_money_personal_goal' %}",
+                data: {
+                    goal_id: {{goal_info.id}},
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    dataType: "json",
+                },
+                success: function (response) {
+                    if (response.success === '1') {
+                        console.log("Inside success response:", response.success)
+
+                        // Hide the firstInnerHowmuch popup
+                        $('#withdrawal_request_firstinner').hide();
+
+                        // Show the secondInnerHowmuch popup
+                        $('#withdrawal_success_popup').show();
+
+                        setTimeout(function () {
+                            url = window.location.pathname;
+                            window.location.href = url;
+                        }, 4000); // 40 seconds in milliseconds
+                    } else {
+                        window.location.href = 'https://chamaspace.com/goals/add_account'
+                    }
+                }
+            });
+        });
+        $('#delete_form').on('submit', function (e) {
+            e.preventDefault();
+            console.log('line no 265 called from ajax fun');
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'delete_goal' %}",
+                data: {
+                    goal_id: {{goal_info.id}},
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    dataType: "json",
+                },
+                success: function (response) {
+                    if (response.success === '1') {
+                        console.log("Inside success response:", response.success)
+
+                        // Hide the firstInnerHowmuch popup
+                        $('#delete_form_popup').hide();
+
+                        // Show the secondInnerHowmuch popup
+                        $('#delete_success').show();
+
+                        setTimeout(function () {
+                            url = window.location.pathname;
+                            window.location.href = 'https://chamaspace.com/goals/';
+                        }, 4000); // 40 seconds in milliseconds
+                    } else {
+                        url = window.location.pathname;
+                        window.location.href = url
+                    }
+                }
+            });
+        });
+
+
+        $('#add_amount_form').on('submit', function (e) {
+            e.preventDefault();
+
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'add_funds_to_goal' goal_info.id %}",
+                data: {
+
+                    add_money: $('#add_money').val(),
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    dataType: "json",
+                },
+                success: function (response) {
+                    if (response.success === '1') {
+                        console.log("Inside success response:", response.success)
+
+                        // Hide the firstInnerHowmuch popup
+                        $('#add_amount_to_goal').hide();
+
+                        // Show the secondInnerHowmuch popup
+                        $('#add_amount_to_goal_second').show();
+
+                        setTimeout(function () {
+                            url = window.location.pathname;
+                            window.location.href = url;
+                        }, 4000); // 40 seconds in milliseconds
+                    } else {
+
+                        // Hide the firstInnerHowmuch popup
+                        $('#add_amount_to_goal').hide();
+
+                        // Show the secondInnerHowmuch popup
+                        $('#add_amount_to_goal_third').show();
+
+                        setTimeout(function () {
+                            url = "https://chamaspace.com/load_money/load_money";
+                            window.location.href = url;
+                        }, 4000); // 40 seconds in milliseconds
+                    }
+                }
+            });
+        });
+    </script>
+
+
+
+{% endblock %}

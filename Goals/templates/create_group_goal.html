@@ -1,0 +1,170 @@
+{% extends 'goal_base.html' %}
+
+{% load static %}
+{% block title %}
+    Create Group Goals
+{% endblock %}
+{% block content %}
+
+
+
+    <div class="wrapper">
+
+
+        <main role="main" class="main-content p-0">
+            <div class="page_header pt-3">
+                <div class="container">
+                    <nav class="page_nav mob_nav show_on_mobile">
+                        <div class="brand">
+                            <a href="#">
+                                <img src="{% static 'images/Chama-Bora_clrd.png' %}" alt="">
+                            </a>
+                        </div>
+                        <ul class="nav-list">
+                            <li class="">
+                                <img src="{% static 'images/Notifications.png' %}" alt="">
+                            </li>
+                            <li class="">
+
+                                <button class="btn navbar-toggler text-muted collapseSidebar" type="button">
+
+                                    <img src="{% static 'images/menu.png' %}" alt="">
+                                </button>
+                            </li>
+                        </ul>
+                    </nav>
+                    <div class="company_box d-flex flex-row justify-content-start align-items-center pt-0 mt-0">
+                        <div class="company_image">
+                            <img src="{% static 'images/Company.png' %}" alt="">
+                        </div>
+                        <div class="company_content">
+                            <h6>
+                                Good Morning <br>
+                                <b>Solomon!</b>
+                            </h6>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+
+            <section class="banner wekenz-banner">
+                <div class="container">
+                    <div class="wekenza_content">
+                        <h2 class="wekenz_h">
+                            Create a New <br>Group Goal
+                        </h2>
+                        <p class="sub_heading">
+                            Groups can have a maximum of 15<br> members and minimum of 2 members.</p>
+
+                        <p class="sub_heading mt-3">You can assign a maximum of 3 member<br> to become admins
+                        </p>
+
+                    </div>
+
+                </div>
+            </section>
+            <section class="creat_goals">
+                <div class="container">
+
+                    <div class="savings_row">
+
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            <div>
+                                <label for="goal_name" class="Goals_heading fw_400 mt-3 mb-1 pb-0 ">
+                                    Group Goal Name:
+                                </label>
+                                <input type="text" name="goal_name" id="goal_name" placeholder="Name your Goal"
+                                       required>
+                            </div>
+                            <div>
+                                <label for="goal_name" class="Goals_heading fw_400 mt-3 mb-1 pb-0 ">
+                                    Group Goal Mission:
+                                </label>
+                                <textarea type="text" name="goal_mission" id="goal_name"
+                                          placeholder="Name your Goal" required></textarea>
+                            </div>
+                            <div>
+                                <label for="neme_your_goals" class="Goals_heading fw_400 mt-3 mb-1 pb-0 ">
+                                    Select goal type
+                                </label>
+
+
+                                <select name="saving_type_input" class="text-start">
+                                    <option value="Select"> Select goal saving type</option>
+                                    <option value="regular" selected> Regular Saving (6% intrest per anum)</option>
+                                    <option value="fixed"> Fixed Saving (10 % intrest per anum)</option>
+
+                                </select>
+                            </div>
+                            <div>
+                                <label for="target-amount" class="Goals_heading fw_400 mt-3 mb-1 pb-0 ">
+                                    Target Amount
+                                </label>
+                                <input type="number" name="target_amount" id="target-amount" placeholder="Target Amount"
+                                       required>
+                            </div>
+                            <div>
+                                <label for="start_date" class="Goals_heading fw_400 mt-3 mb-1 pb-0 ">
+                                    Start Date
+                                </label>
+                                <input type="date" name="start_date" id="start_date" placeholder="Start Date" required>
+                            </div>
+                            <div>
+                                <label for="end_date" class="Goals_heading fw_400 mt-3 mb-1 pb-0 ">
+                                    End Date
+                                </label>
+                                <input type="date" name="end_date" id="end_date" placeholder="Start Date" required>
+                            </div>
+                            <br>
+                            <div>
+                                <button type="submit" class="btn saving_btn ">
+                                    Set Goal
+                                </button>
+                            </div>
+
+                        </form>
+
+
+                    </div>
+                </div>
+            </section>
+            <footer class="mbl_footer">
+                <div class="container">
+                    <div class="footer_row d-flex flex-row justify-content-between align-items-center">
+                        <button class="footer_button btn">
+                            <img class="homer_white" src="images/home_white.png" alt="">
+
+                            <p>Home</p>
+                        </button>
+                        <button class="footer_button btn active">
+                            <img src="images/filter_active.png" alt="">
+                            <p>Features</p>
+                        </button>
+                        <button class="footer_button btn">
+                            <img src="images/wallet_alt_fill.png" alt="">
+                            <p>Account</p>
+                        </button>
+                        <button class="footer_button btn">
+                            <img src="images/setting.png" alt="">
+                            <p>Settings</p>
+                        </button>
+                    </div>
+                </div>
+            </footer>
+
+
+        </main>
+
+
+    </div>
+
+
+{% endblock %}
+
+
+
+

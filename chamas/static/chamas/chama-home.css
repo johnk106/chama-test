@@ -1,0 +1,150 @@
+.left-sect {
+    padding: 10px;
+    margin: 5px;
+    border-radius: 16px;
+    border: 1px solid var(--light, rgba(0, 0, 0, 0.20));
+    background: var(--light-surface-primary, #FFF);
+
+    /* MD - Drop Shadow */
+    box-shadow: 0px 10px 20px 0px rgba(148, 163, 184, 0.20);
+
+}
+
+.intro-text {
+    color: var(--Primary-500, #2291A5);
+
+    /* Public Sans/Text lg/Regular */
+    font-family: sans-serif;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    /* 155.556% */
+}
+
+.right-sect {
+    padding: 10px;
+    margin: 5px 0;
+    align-items: center;
+    border-radius: 16px;
+    border: 1px solid var(--light, rgba(0, 0, 0, 0.20));
+    background: var(--light-surface-primary, #FFF);
+
+    /* MD - Drop Shadow */
+    box-shadow: 0px 10px 20px 0px rgba(148, 163, 184, 0.20);
+}
+
+.header-text {
+    color: var(--Primary-500, #2291A5);
+    text-align: center;
+
+    /* Public Sans/Text md/Medium */
+    font-family: sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+    /* 150% */
+    align-self: stretch;
+}
+
+.tab-link {
+    border-radius: 12px;
+    background: var(--Primary-500, #2291A5);
+    display: flex;
+    padding: 16px;
+    justify-content: space-between;
+    align-items: center;
+    align-self: stretch;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.tab-link-text {
+    color: var(--White, #FFF);
+    text-align: center;
+    cursor: pointer;
+    font-family: sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;
+   
+}
+
+
+.tab-view-header-text {
+    color: var(--Primary-500, #2291A5);
+    text-align: center;
+
+   
+    font-family: sans-serif;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 600;
+    margin: 0;
+}
+.tab-view {
+    padding: 16px;
+    border-radius: 16px;
+    border: 1px solid var(--light, rgba(0, 0, 0, 0.20));
+    background: var(--light-surface-primary, #FFF);
+    /* MD - Drop Shadow */
+    box-shadow: 0px 10px 20px 0px rgba(148, 163, 184, 0.20);
+    display: flex; /* Add this line to use flexbox */
+    flex-direction: column; /* Align children vertically */
+    align-items: flex-start; /* Align children to the start of the container */
+}
+
+
+
+.sub-header-text {
+    opacity: 0.4;
+    color: var(--Black, #000);
+    text-align: center;
+
+    font-family: sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    margin: 0;
+}
+
+p {
+    margin: 0;
+    padding: 0;
+}
+
+.tab-view-item {
+    border-radius: 12px;
+    border: 1px solid var(--light, rgba(0, 0, 0, 0.20));
+    background: var(--White, #FFF);
+    height: 108px;
+    padding: 24px 12px;
+    margin: 10px;
+}
+
+.tab-icon {
+    width: 24px;
+height: 24px;
+flex-shrink: 0;
+}
+
+.tab-text {
+    color: var(--Primary-500, #2291A5);
+
+/* Public Sans/Text sm/Regular */
+font-family: sans-serif;
+font-size: 14px;
+font-style: normal;
+font-weight: 400;
+line-height: 20px; /* 142.857% */
+flex: 1 0 0;
+}
+
+.tab-view-ban {
+    display: flex; /* Use flexbox for the .tab-view-ban */
+    width: 100%; /* Make .tab-view-ban take the full width */
+}
+.tab-view-item-ban {
+    width: 100%;
+}

@@ -1,0 +1,183 @@
+.body-div {
+    border-radius: 12px;
+    border: 0.5px solid var(--light, rgba(0, 0, 0, 0.20));
+    background: #FFF;
+    margin: 5px;
+    /* MD - Drop Shadow */
+    box-shadow: 0px 10px 20px 0px rgba(148, 163, 184, 0.20);
+    display: flex;
+    padding: 16px 12px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    flex: 1 0 0;
+    align-self: stretch;
+}
+
+h5 {
+    color: var(--light-type-high, #070A13);
+
+    /* Public Sans/Display xs/Medium */
+    font-family: sans-serif;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 32px;
+}
+
+.div-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+
+
+.div-header h6 {
+    color: var(--Primary-500, #2291A5);
+    text-align: left;
+
+    /* Public Sans/Text sm/Medium */
+    font-family: sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;
+    /* 142.857% */
+}
+
+.input-sect {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    align-self: stretch;
+}
+
+.mb-3 {
+    border-radius: 8px;
+    /* border: 0.5px solid var(--light, rgba(0, 0, 0, 0.20)); */
+    background: var(--White, #FFF);
+    display: flex;
+    padding: 5px;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1 0 0;
+}
+
+.mb-3 label {
+    color: var(--Primary-500, #2291A5);
+    text-align: center;
+
+    /* Public Sans/Text xs/Medium */
+    font-family: sans-serif;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 18px;
+    /* 150% */
+}
+
+.mb-3 input {
+    opacity: 0.6;
+    color: #000;
+    text-align: flex-start;
+
+    /* Public Sans/Text xs/Regular */
+    font-family: sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 18px;
+}
+
+.mb-3 select {
+    width: 100%;
+    border: 1px solid var(--color-default);
+
+    /* Add any other styles you need for the select element */
+}
+
+.desc-area {
+    width: 100%;
+    align-self: stretch;
+}
+
+.btn-primary {
+    border-radius: 8px;
+    background: var(--Primary-500, #2291A5);
+    display: flex;
+    padding: 12px 16px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+    color: var(--White, #FFF);
+    text-align: center;
+
+    /* Public Sans/Text sm/Semibold */
+    font-family: sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;
+    /* 142.857% */
+}
+
+.btn-primary:hover {
+    background: var(--Primary-500, #2291A5);
+
+
+}
+
+.expense-single {
+    border-radius: 8px;
+    border: 0.5px solid var(--light, rgba(0, 0, 0, 0.20));
+    background: var(--light-surface-tertiary, #F1F5F9);
+    display: flex;
+    padding: 12px;
+    align-items: flex-start;
+    gap: 12px;
+    align-self: stretch;
+}
+
+
+.expense-cube {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 4px;
+    flex: 1 0 0;
+}
+
+.expense-title {
+    color: var(--Primary-900, #030F11);
+    font-family: sans-serif;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+    /* 180% */
+}
+
+.expense-value {
+    display: flex;
+    padding: 10px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 12px;
+    align-self: stretch;
+    border-radius: 10px;
+    border: 0.5px solid var(--light, rgba(0, 0, 0, 0.20));
+    background: var(--light-surface-secondary, #F8FAFC);
+    color: #000;
+    font-family: sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 18px;
+    /* 180% */
+    opacity: 0.4;
+}

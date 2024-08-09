@@ -1,0 +1,925 @@
+{% extends 'goal_base.html' %}
+
+{% load static %}
+{% block title %}
+    Goal Details
+{% endblock %}
+{% block content %}
+    <div class="wrapper">
+        <div class="modal fade" id="add_funds" tabindex="-1" aria-labelledby="exampleModal8Label" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-body">
+                        <div class="popup_box" id="firstInnerHowmuch">
+                            <h4 class="popup_heading">
+                                How much do you want to <br>save?
+                            </h4>
+
+                            <form id="add_amount_form" method="post" class="mt-25">
+                                {% csrf_token %}
+                                <label for="add_money">
+                                    Add Money
+                                </label>
+                                <input type="number" name="add_money" id="add_money" placeholder="Enter Amount"
+                                       class="mt-1" required>
+
+                                <p class="mt-4">This money will be added to your Goal</p>
+                                <button type="submit" class="btn popup_btn">
+                                    Save
+                                </button>
+                            </form>
+                        </div>
+                        <div class="popupTwo" id="secondInnerHowmuch" style="display: none;">
+
+                            <div class="popup_box">
+                                <h4 class="popup_heading">
+                                    Success!
+
+                                </h4>
+
+
+                                <div class="text-center mt-3 mb-3">
+                                    <img src="{% static 'images/success.png' %}" alt="">
+                                </div>
+                                <h4 class="popup_heading">
+
+                                    You have successfully deposited funds to your  {{ goal_info.goal_name }} goal.
+                                </h4>
+
+
+                                <button class="btn popup_btn"
+                                        data-bs-dismiss="modal">
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                        <div class="popupTwo" id="thirdnnerHowmuch" style="display: none;">
+
+                            <div class="popup_box">
+                                <h4 class="popup_heading">
+                                    Sorry!
+
+                                </h4>
+
+
+
+                                <h4 class="popup_heading" style="color: red">
+
+                                    Insufficient funds in your wallet. Please load balance first.
+                                </h4>
+
+
+                                <button class="btn popup_btn"
+                                        data-bs-dismiss="modal">
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="modal fade" id="exampleModalMemb" tabindex="-1" aria-labelledby="exampleModalMembLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-body">
+                        <div class="popup_box" id="firstInnerInvato">
+                            <h4 class="popup_heading">
+                                Add a phone number for the recipient to join the "{{ goal_info.goal_name }}" savings
+                                plan.
+                            </h4>
+
+                            <p class="mt-4">
+                                The member will receive an invitation to join this saving plan.
+                                The individual can accept or reject.
+                                Make sure that the individual is aware that you have invited them to this group saving
+                                goal.
+                            </p>
+
+                            <form method="post" id="send_invitation_form" class="mt-25">
+
+                                <input type="number" id="receipt_nic" placeholder="05678978979" class="mt-1 bg-pre"
+                                       required>
+
+
+                                <button type="submit" class="btn popup_btn mt-4 invite_color">
+                                    Invite
+                                </button>
+                            </form>
+
+                            <br>
+
+                            <input class="form-control" type="hidden"
+                                   id="myInput" value="{{ goal_info.shareable_link }}">
+                            <button onclick="copyToClipboard()" class="btn saving_btn">
+                                Share with your firends
+                            </button>
+                        </div>
+                        <div class="popup_box popupTwo" id="secondInnerInvato" style="display: none">
+                            <h4 class="popup_heading">
+                                Success!
+
+                            </h4>
+
+
+                            <div class="text-center mt-3 mb-3">
+                                <img src="{% static 'images/success.png' %}" alt="">
+                            </div>
+                            <p>Invitation Sent to</p>
+
+                            <button class="btn popup_btn" data-bs-dismiss="modal">
+                                Close
+                            </button>
+                        </div>
+                        <div class="popup_box popupTwo" id="error_div" style="display: none">
+                            <h4 class="popup_heading">
+                                Error!
+
+                            </h4>
+
+                            <p>Apologies, we couldn't send the invitation. Please double-check if the entered phone
+                                number is correct.</p>
+
+
+                            <button class="btn popup_btn" data-bs-dismiss="modal">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="modal fade" id="all_members_contribution" tabindex="-1" aria-labelledby="exampleModalMembLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-body">
+                        <div class="popup_box" id="firstInnerInvato">
+                            <h4 class="popup_heading">
+                                All active members contribution
+                            </h4>
+
+                            {% for item in user_total_contributions %}
+                                <div class="grp-box">
+                                    <div class="d-flex align-items-center justify-content-start">
+                                        <div class="image_wraper me-3">
+
+
+                                            <img src="{{ item.user__profile__picture.url }}" alt="">
+
+                                        </div>
+                                        <div class="grp-bx-content">
+                                            <h6 class="grp-mem_heading text-center">
+                                                {{ item.user__first_name }} &nbsp; {{ item.user__last_name }}
+                                            </h6>
+                                            <p class="grp_inner_text">
+                                                {{ item.user__profile__phone }}
+                                            </p>
+                                            <p class="grp_inner_text">
+                                                {% if item.group_goal.creator.username == request.user.username %}
+                                                    Admin
+                                                {% else %}
+                                                    Group Member
+                                                {% endif %}
+                                            </p>
+
+                                        </div>
+                                    </div>
+                                    <div class="astimate_content text-center">
+                                        <h5>
+                                            Total Contributions
+                                        </h5>
+                                        <h4>
+                                            Kshs. {{ item.total_amount |floatformat:2 }}
+                                        </h4>
+
+
+                                    </div>
+
+                                </div>
+                            {% endfor %}
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModalchzone" tabindex="-1" aria-labelledby="exampleModalchzoneLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-body">
+                        <div class="popup_box" id="remove_popup">
+                            <h4 class="popup_heading mb-3">
+                                What do you want to do with your Group Goal {{ goal_info.goal_name }}?
+                            </h4>
+
+
+                            <a href="{% url 'goal_statement' goal_info.id %}" download
+                               class="btn popup_btn mt-4 white_btn">
+                                Get Goal Statement
+                            </a>
+                            {% if goal_info.creator == request.user %}
+                               <button class="btn popup_btn mt-4 white_btn" data-bs-toggle="modal"
+                                    data-bs-target="#edit_goal" id="editGoalButton">Edit
+                            </button>
+                            {% endif %}
+
+
+
+                            {% if goal_info.creator == request.user %}
+                            {% else %}
+                                <form method="post" action="{% url 'exit_group_goal' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="goal_group_id" value="{{ goal_info.id }}">
+                                    <button type="submit" class="btn popup_btn mt-4 white_btn">
+                                        Exit Goal
+                                    </button>
+                                </form>
+                            {% endif %}
+
+                            {% if goal_info.creator == request.user and goal_info.achieved_amount == 0 %}
+
+                                  <form id="delete_form" method="post">
+
+                                <button type="submit" class="btn popup_btn mt-4 white_btn">
+                                    Delete Goal
+                                </button>
+
+
+                            </form>
+
+
+                            {% endif %}
+                            <button class="btn popup_btn mt-4" data-bs-dismiss="modal">
+                                Close
+                            </button>
+                        </div>
+
+                      <div class="popupTwo" id="delete_success" style="display: none;">
+
+                            <div class="popup_box">
+                                <h4 class="popup_heading">
+                                    Success!
+
+                                </h4>
+
+
+                                <div class="text-center mt-3 mb-3">
+                                    <img src="{% static 'images/success.png' %}" alt="">
+                                </div>
+                                <h4 class="popup_heading">
+
+                                    Selected goal removed.
+                                </h4>
+
+
+                                <button class="btn popup_btn"
+                                        data-bs-dismiss="modal">
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="modal fade" id="withdrawal_request" tabindex="-1" aria-labelledby="withdrawal_request"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-body">
+                        <div class="popup_box" id="withdrawal_request_firstinner">
+                            <h4 class="popup_heading">
+                                How much do you want to <br>withdraw?
+                            </h4>
+
+                            <form class="mt-25" method="post" id="withdrawal_request_form">
+
+                                <label for="add_money">
+                                    Withdraw Money
+                                </label>
+                                <input type="text" value="Kshs.{{ Fv_after_tax|floatformat:2 }}"
+                                       name="withdraw_money" id="withdraw_money" class="mt-1" readonly>
+
+                                {% if goal_info.saving_type == 'fixed' and goal_info.achieved_amount > goal_info.target_amount %}
+                                    {% if Fv_after_tax > 0 %}
+
+
+
+                                        <p class="mt-4">This amount will be deducted from the {{ goal_info.goal_name }}.</p>
+                                        <p class="mt-4" style="color: red"> Please note that the group goal will be disabled after the withdrawal request.</p>
+
+
+
+                                        <button type="submit" class="btn popup_btn">
+                                            Withdraw Now!
+                                        </button>
+                                    {% else %}
+                                        <br>
+                                        <br>
+                                        <p class="btn btn-danger" style="color: white">
+                                            Insufficient balance for withdrawal
+                                        </p>
+                                    {% endif %}
+
+                                {% elif goal_info.saving_type == 'regular' and Fv_after_tax > 0 %}
+                                    <p class="mt-4">This amount will be subtracted to your {{goal_info.goal_name }}.</p>
+                                    <p class="mt-4" style="color: red">After a withdrawal request is made, the group
+                                        goal will be disabled.</p>
+
+
+
+                                    <button type="submit" class="btn popup_btn">
+                                        Withdraw Now!
+                                    </button>
+
+                                {% elif goal_info.is_active == 'Yes' %}
+                                    <br>
+                                    <br>
+
+                                    <p class="btn btn-danger" style="color: white">
+                                        The goal type is Fixed, and the goal has not been achieved yet.
+                                    </p>
+                                {% else %}
+                                <br>
+                                    <br>
+
+                                    <p class="btn btn-info" style="color: white">
+                                        The goal is disabled.
+                                    </p>
+
+
+
+                                {% endif %}
+                            </form>
+                        </div>
+                        <div class="popupTwo" id="withdrawal_success_popup" style="display: none;">
+
+                            <div class="popup_box">
+                                <h4 class="popup_heading">
+                                    Success!
+
+                                </h4>
+
+
+                                <div class="text-center mt-3 mb-3">
+                                    <img src="{% static 'images/success.png' %}" alt="">
+                                </div>
+                                <h4 class="popup_heading">
+
+                                    Your payment withdraw request received.
+                                </h4>
+                                <p> Your payment withdraw request received, We are processing the transaction, and you will receive a confirmation once it is successfully completed.</p>
+
+                                <button class="btn popup_btn"
+                                        data-bs-dismiss="modal">
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="modal fade" id="withdrawal_request_denied" tabindex="-1" aria-labelledby="withdrawal_request_denied"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-body">
+                        <div class="popup_box" id="delete_form_popup">
+                            <h4 class="popup_heading mb-3">
+                                Sorry! Only admin of this group can initiate withdrawal request.
+                            </h4>
+
+
+                            <button class="btn popup_btn mt-4" data-bs-dismiss="modal">
+                                Close
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="modal fade" id="disable_group_popup" tabindex="-1" aria-labelledby="disable_group_popup"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-body">
+                        <div class="popup_box" id="delete_form_popup">
+                            <h4 class="popup_heading mb-3">
+                                Sorry! Withdrawals for this goal are disabled as the goal has already been completed.
+                            </h4>
+
+
+                            <button class="btn popup_btn mt-4" data-bs-dismiss="modal">
+                                Close
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+         <div class="modal fade" id="edit_goal" tabindex="-1" aria-labelledby="edit_goal" aria-hidden="true">
+            <div class="modal-dialog" style="width: 600px; height: 450px;">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="popup_box" id="edit_goal_popup">
+                            <form id="edit_goal_form" method="post" action="{% url 'edit_group_goal' %}" class="mt-25">
+
+                                {% csrf_token %}
+                                <label for="add_money">Goal Title</label>
+
+                                <input type="hidden" name="goal_id" value="{{ goal_info.id }}">
+                                <input type="text" name="goal_title" id="goal_title" value="{{ goal_info.goal_name }}"
+                                       class="mt-1" required>
+                                <br>
+                                <br>
+                                <button type="submit" class="btn popup_btn">Update</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <main role="main" class="main-content p-0">
+            <div class=" weknz_header">
+                <div class="container">
+                    <nav class="page_nav mob_nav">
+                        <div class="brand">
+                            <a href="#">
+                                <img src="{% static 'images/Chama-Bora_clrd.png' %}" alt="">
+                            </a>
+                        </div>
+                        <ul class="nav-list">
+
+                            <li class="">
+
+                                <a href="{% url 'my_goals' %}" class="btn">
+
+                                    <img src="{% static 'images/left_arrow.png' %}" alt="">
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            <div class="offcanvas-body full_page">
+                <section class="banner car_banner house_banner">
+                    <div class="container">
+                        <div class="wekenza_content">
+                            <h2 class="wekenz_h mb-2">
+                                {{ goal_info.goal_name }}
+                            </h2>
+                            <p class="sub_heading mb-2">
+                                {{ goal_info.calculate_month_difference }} Days left
+                            </p>
+                            <h4 class="wekenza_price mb-2 text_shadows">
+                                <b>Kshs. {{ goal_info.achieved_amount|floatformat:2 }}</b>
+                            </h4>
+                            <p class="sub_heading mt-0">
+                                Total Amount
+                            </p>
+                            <div>
+                                <div class="bar_content mt-4">
+                                    <p class="mb-0">
+                                        Saving
+                                    </p>
+                                    <p class="mb-0">{{ goal_info.percentage }}%</p>
+                                    <p class="mb-0">Goals</p>
+                                </div>
+                                <div class="goal_progress">
+                                    <div class="inner" style="width: {{ goal_info.percentage }}%;">
+                                    </div>
+                                </div>
+
+                                <div class="bar_content mt-1">
+                                    <p>
+                                        Kshs. {{ goal_info.achieved_amount|floatformat:2 }}
+                                    </p>
+                                    <p>
+                                        Kshs. {{ goal_info.target_amount|floatformat:2 }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+                <section class="creat_goals mb-5 pb-5">
+                    <div class="container">
+                        <div class="d-flex flex-row align-items-center justify-content-between mt-3">
+                            <div class="d-flex flex-row align-items-center flex-column cursot-pointer"
+                                 data-bs-toggle="modal" {% if goal_info.is_active == 'Yes' %}
+                                 data-bs-target="#add_funds"
+                            {% else %} data-bs-target="#disable_group_popup" {% endif %}
+                            >
+                                <div class="person_round d-flex align-items-center justify-content-center">
+                                    <img src="{% static 'images/wallet-money_.png' %}" alt="">
+                                </div>
+                                <h4 class="pesno_plus_h">Add Funds</h4>
+                            </div>
+
+
+                            <div class="d-flex flex-row align-items-center flex-column cursot-pointer"
+                                 data-bs-toggle="modal"
+                                    {% if goal_info.creator == request.user %}
+                                 data-bs-target="#withdrawal_request"
+                                    {% elif goal_info.is_active == 'No' %}
+                                 data-bs-target="#disable_group_popup"  {% else %}
+                                 data-bs-target="#withdrawal_request_denied" {% endif %}>
+                                <div class="person_round d-flex align-items-center justify-content-center">
+                                    <img src="{% static 'images/money-send_.png' %}" alt="">
+                                </div>
+                                <h4 class="pesno_plus_h">Withdraw</h4>
+                            </div>
+                            <div class="d-flex flex-row align-items-center flex-column cursot-pointer"
+                                 class="btn btn-primary" data-bs-toggle="modal"
+                                    {% if goal_info.is_active == 'Yes' %} data-bs-target="#exampleModalMemb"
+                                    {% else %} data-bs-target="#disable_group_popup" {% endif %}>
+                                <div class="person_round d-flex align-items-center justify-content-center cursot-pointer">
+                                    <img src="{% static 'images/grp_mrmbors.png' %}" alt="">
+                                </div>
+                                <h4 class="pesno_plus_h">Add Member</h4>
+                            </div>
+                            <div class="d-flex flex-row align-items-center flex-column cursot-pointer"
+                                 class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalchzone">
+                                <div class="person_round d-flex align-items-center justify-content-center cursot-pointer">
+                                    <img src="{% static 'images/more_.png' %}" alt="">
+                                </div>
+                                <h4 class="pesno_plus_h">More</h4>
+                            </div>
+                        </div>
+
+                        <div class="pt-3 astimate border-top border-bottom d-flex align-items-center justify-content-between">
+                            <div class="astimate_content text-center">
+                                <h5>
+                                    Target
+                                </h5>
+                                <h4><b>+Kshs. {{ goal_info.target_amount|floatformat:2 }}</b></h4>
+
+                            </div>
+
+
+                            <div class="astimate_content text-center">
+                                <h4>
+                                    Intrest Rate
+                                </h4>
+                                <h4>
+                                    <b>{{interest_value}}%</b>
+                                </h4>
+
+
+                            </div>
+                            <div class="astimate_content text-center">
+                                <h5>
+                                    Earned Intrest
+                                </h5>
+                                <h4>
+                                    Kshs. <b>{{ goal_info.profit|floatformat:2 }}</b>
+                                </h4>
+                            </div>
+                        </div>
+                        <!--grp membors -->
+                        <div class="grp_membors mt-3 ">
+                            <h4 class="grp-mem_heading mb-2">
+                                Group Members
+                            </h4>
+                            {% for item in user_total_contributions %}
+                                <div class="grp-box">
+                                    <div class="d-flex align-items-center justify-content-start">
+                                        <div class="image_wraper me-3">
+                                            <img src="https://chamaspace.com/media/{{ item.user__profile__picture }}"
+                                                 class="avatar-img rounded-circle" alt="">
+
+                                        </div>
+                                        <div class="grp-bx-content">
+                                            <h6 class="grp-mem_heading text-center">
+                                                {{ item.user__first_name }} &nbsp; {{ item.user__last_name }}
+                                            </h6>
+                                            <p class="grp_inner_text">
+                                                {{ item.user__profile__phone }}
+                                            </p>
+                                            <p class="grp_inner_text">
+                                                {% if item.user__username == goal_info.creator.username %}
+                                                    Admin
+                                                {% else %}
+                                                    Group Member
+                                                {% endif %}
+                                            </p>
+
+                                        </div>
+                                    </div>
+                                    <div class="astimate_content text-center">
+                                        <h5>
+                                            Contributions
+                                        </h5>
+                                        <h4>
+                                            Kshs. {{ item.total_amount |floatformat:2 }}
+                                        </h4>
+
+
+                                    </div>
+
+                                </div>
+                            {% endfor %}
+
+                        </div>
+                        <div class="activites">
+                            <h3 class="Goals_heading fw_600 pt-3">
+                                Activites
+                            </h3>
+
+                            {% for item in group_activites %}
+                                <div class="border-bottom mb-3 pb-3">
+                                    <p class="Goals_heading fw_400 pt-3 mb-0">
+                                        {{ item.content }}
+                                    </p>
+                                    <div class="ans-ddr d-flex justify-content-between align-items-center">
+                                        <p class="Goals_heading fw_400 mb-0 text_invite">
+
+                                        </p>
+                                        <p class="Goals_heading fw_400 mb-0 text_invite">
+                                            {{ item.created_at }}
+                                        </p>
+
+
+                                    </div>
+                                </div>
+                            {% endfor %}
+
+                        </div>
+
+
+                    </div>
+                </section>
+                <footer class="mbl_footer">
+                <div class="container">
+                    <div class="footer_row d-flex flex-row justify-content-between align-items-center">
+                        <a href="{% url 'my_goals' %}" class="footer_button btn">
+                            <img class="homer_white" src="{% static 'images/home_white.png' %}" alt="">
+
+                            <p>Home</p>
+                        </a>
+                        <a href="#" class="footer_button btn active">
+                            <img src="{% static 'images/filter_active.png' %}" alt="">
+                            <p>Features</p>
+                        </a>
+                        <a href="{% url 'wallet_index' %}" class="footer_button btn">
+                            <img src="{% static 'images/wallet_alt_fill.png' %}" alt="">
+                            <p>Account</p>
+                        </a>
+                        <a href="{% url 'Setting' %}" class="footer_button btn">
+                            <img src="{% static 'images/setting.png' %}" alt="">
+                            <p>Settings</p>
+                        </a>
+                    </div>
+                </div>
+            </footer>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
+
+    <script>
+
+
+        function copyToClipboard() {
+            const copyText = document.getElementById("myInput").value;
+
+            // Create a temporary textarea element
+            const tempTextarea = document.createElement("textarea");
+            tempTextarea.value = copyText;
+            tempTextarea.setAttribute("readonly", "");
+            tempTextarea.style.position = "absolute";
+            tempTextarea.style.left = "-9999px"; // Move off-screen
+
+            document.body.appendChild(tempTextarea);
+
+            // Select the text inside the textarea
+            tempTextarea.select();
+            tempTextarea.setSelectionRange(0, 99999); // For mobile devices
+
+            try {
+                // Use the Clipboard API to copy the selected text to the clipboard
+                navigator.clipboard.writeText(copyText).then(function () {
+                    alert("Link copied: " + copyText);
+                }).catch(function (err) {
+                    console.error("Failed to copy text: ", err);
+                });
+            } catch (err) {
+                console.error("Clipboard API not supported: ", err);
+            } finally {
+                // Remove the temporary textarea
+                document.body.removeChild(tempTextarea);
+            }
+        }
+
+
+    </script>
+
+
+
+    <script>
+        $('#add_amount_form').on('submit', function (e) {
+            e.preventDefault();
+
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'add_funds_to_group_goal' %}",
+                data: {
+                    goal_id: {{goal_info.id}},
+                    amount: $('#add_money').val(),
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    dataType: "json",
+                },
+                success: function (response) {
+                    if (response.success === '1') {
+                        console.log("Inside success response:", response.success)
+
+                        // Hide the firstInnerHowmuch popup
+                        $('#firstInnerHowmuch').hide();
+
+                        // Show the secondInnerHowmuch popup
+                        $('#secondInnerHowmuch').show();
+
+                        setTimeout(function () {
+                            url = window.location.pathname;
+                            window.location.href = url;
+                        }, 4000); // 40 seconds in milliseconds
+                    } else {
+
+                            // Hide the firstInnerHowmuch popup
+                        $('#firstInnerHowmuch').hide();
+
+
+                        $('#thirdnnerHowmuch').show();
+
+                        setTimeout(function () {
+                            url = "https://chamaspace.com/load_money/load_money";
+                            window.location.href = url;
+                        }, 4000);
+
+                    }
+                }
+            });
+        });
+        $('#send_invitation_form').on('submit', function (e) {
+            e.preventDefault();
+
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'send_invitations' %}",
+                data: {
+                    goal_id: {{goal_info.id}},
+                    nic: $('#receipt_nic').val(),
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    dataType: "json",
+                },
+                success: function (response) {
+                    if (response.success === '1') {
+                        console.log("Inside success response:", response.success)
+
+                        // Hide the firstInnerHowmuch popup
+                        $('#firstInnerInvato').hide();
+
+                        // Show the secondInnerHowmuch popup
+                        $('#secondInnerInvato').show();
+
+                        setTimeout(function () {
+                            url = window.location.pathname;
+                            window.location.href = url;
+                        }, 4000); // 40 seconds in milliseconds
+                    } else {
+                        $('#firstInnerInvato').hide();
+                        $('#error_div').show();
+                        setTimeout(function () {
+                            url = window.location.pathname;
+                            window.location.href = url;
+                        }, 4000);
+                    }
+                }
+            });
+        });
+
+    </script>
+
+
+
+
+
+    <script>
+        $('#withdrawal_request_form').on('submit', function (e) {
+            e.preventDefault();
+            console.log('line no 265 called from ajax fun');
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'withdraw_money_group_goal' %}",
+                data: {
+                    goal_id: {{goal_info.id}},
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    dataType: "json",
+                },
+                success: function (response) {
+                    if (response.success === '1') {
+                        console.log("Inside success response:", response.success)
+
+                        // Hide the firstInnerHowmuch popup
+                        $('#withdrawal_request_firstinner').hide();
+
+                        // Show the secondInnerHowmuch popup
+                        $('#withdrawal_success_popup').show();
+
+                        setTimeout(function () {
+                            url = window.location.pathname;
+                            window.location.href = url;
+                        }, 4000); // 40 seconds in milliseconds
+                    } else {
+                        window.location.href = 'https://chamaspace.com/goals/add_account'
+                    }
+                }
+            });
+        });
+
+
+        $('#delete_form').on('submit', function (e) {
+            e.preventDefault();
+            console.log('line no 265 called from ajax fun');
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'delete_group_goal' %}",
+                data: {
+                    goal_id: {{goal_info.id}},
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    dataType: "json",
+                },
+                success: function (response) {
+                    if (response.success === '1') {
+                        console.log("Inside success response:", response.success)
+
+                        // Hide the firstInnerHowmuch popup
+                        $('#remove_popup').hide();
+
+                        // Show the secondInnerHowmuch popup
+                        $('#delete_success').show();
+
+                        setTimeout(function () {
+                            url = window.location.pathname;
+                            window.location.href = 'https://chamaspace.com/goals/';
+                        }, 4000); // 40 seconds in milliseconds
+                    } else {
+                        url = window.location.pathname;
+                        window.location.href = url
+                    }
+                }
+            });
+        });
+
+    </script>
+
+
+
+{% endblock %}

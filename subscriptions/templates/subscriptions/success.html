@@ -1,0 +1,18 @@
+{% extends 'subscriptions/base_pricing.html' %}
+
+{% block title %}Success{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+    <div class="px-6 py-8">
+        <div class="text-green-600 text-6xl text-center mb-6">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h2 class="text-2xl font-semibold text-gray-800 text-center mb-4">Payment Successful!</h2>
+        <p class="text-center">Thank you for the subscription. You can now access and enjoy premium chama management features.</p>
+        <div class="mt-6 text-center">
+            <a href="{% url 'chamas:chama-dashboard' chama_id %}" class="text-green-600 hover:underline">Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

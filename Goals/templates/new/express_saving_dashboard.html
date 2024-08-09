@@ -1,0 +1,424 @@
+{% extends 'goal_base.html' %}
+
+{% load static %}
+{% block title %}
+    Goad Details
+{% endblock %}
+{% block content %}
+    <div class="wrapper">
+
+
+        <main role="main" class="main-content p-0">
+            <div class="modal fade" id="exampleModal8" tabindex="-1" aria-labelledby="exampleModal8Label"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+
+                        <div class="modal-body">
+                            <div class="popup_box" id="firstInnerHowmuch">
+                                <h4 class="popup_heading">
+                                    How much do you want to <br>save?
+                                </h4>
+
+                                <form id="add_amount_form" method="post" class="mt-25">
+                                    {% csrf_token %}
+                                    <label for="add_money">
+                                        Add Money
+                                    </label>
+                                    <input type="number" name="add_money" id="add_money" placeholder="Enter Amount"
+                                           class="mt-1" required>
+
+                                    <p class="mt-4">This money will be added to your express savings</p>
+                                    <button type="submit" class="btn popup_btn">
+                                        Save
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="popupTwo" id="secondInnerHowmuch" style="display: none;">
+
+                                <div class="popup_box">
+                                    <h4 class="popup_heading">
+                                        Success!
+
+                                    </h4>
+
+
+                                    <div class="text-center mt-3 mb-3">
+                                        <img src="{% static 'images/success.png' %}" alt="">
+                                    </div>
+                                    <h4 class="popup_heading">
+
+                                        You have successfully deposited funds into your Express Savings.
+                                    </h4>
+
+
+                                    <button class="btn popup_btn"
+                                            data-bs-dismiss="modal">
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="popupTwo" id="deposit_deniedInnerHowmuch" style="display: none;">
+
+                                <div class="popup_box">
+                                    <h4 class="popup_heading">
+                                        Sorry!
+
+                                    </h4>
+
+
+
+                                    <h4 class="popup_heading">
+
+                                        You have not sufficient funds available in wallet. Please load balance first.
+                                    </h4>
+
+
+                                    <button class="btn popup_btn"
+                                            data-bs-dismiss="modal">
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal fade" id="withdrawal_request" tabindex="-1" aria-labelledby="withdrawal_request"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <div class="modal-body">
+                            <div class="popup_box" id="firstInnerHowmuch_withdraw">
+                                <h4 class="popup_heading">
+                                    How much do you want to <br>withdraw?
+                                </h4>
+
+                                <form class="mt-25" method="post" id="withdrawal_request_form">
+
+                                    <label for="add_money">
+                                        Withdraw Money
+                                    </label>
+                                    <input type="text" value="Kshs.{{ Fv_after_tax|floatformat:2 }}"
+                                           name="withdraw_money" id="withdraw_money" class="mt-1" readonly>
+
+                                    <p class="mt-4">This amount will be deducted from your Express Savings wallet.</p>
+                                    <button type="submit" class="btn popup_btn">
+                                        Withdraw Now!
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="popupTwo" id="secondInnerHowmuch_withdraw" style="display: none;">
+
+                                <div class="popup_box">
+                                    <h4 class="popup_heading">
+                                        Success!
+
+                                    </h4>
+
+
+                                    <div class="text-center mt-3 mb-3">
+                                        <img src="{% static 'images/success.png' %}" alt="">
+                                    </div>
+                                    <h4 class="popup_heading">
+
+                                        Your payment withdrawal request has been received.
+                                    </h4>
+                                    <p> We are processing the transaction, and you will receive a confirmation once it is successfully completed.</p>
+
+                                    <button class="btn popup_btn"
+                                            data-bs-dismiss="modal">
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="modal fade" id="exampleModalOne" tabindex="-1" aria-labelledby="exampleModalOne"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <div class="modal-body">
+                            <div class="popup_box" id="delete_form_popup">
+
+
+                                <a href="{% url 'express_statement' request.user.username %}" download
+                                   class="btn popup_btn mt-4 white_btn">
+                                    Get Statement
+                                </a>
+
+
+                                <button class="btn popup_btn mt-4" data-bs-dismiss="modal">
+                                    Close
+                                </button>
+                            </div>
+                            <br>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class=" weknz_header">
+                <div class="container">
+                    <nav class="page_nav mob_nav">
+                        <div class="brand">
+                            <a href="#">
+                                <img src="{% static 'images/Chama-Bora_clrd.png' %}" alt="">
+                            </a>
+                        </div>
+                        <ul class="nav-list">
+
+                            <li class="">
+
+                                <a href="{% url 'my_goals' %}" class="btn">
+
+                                    <img src="{% static 'images/left_arrow.png' %}" alt="">
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+
+          <div class="offcanvas-body full_page">
+                <section class="banner car_banner">
+                    <div class="container">
+                    <div class="wekenza_content">
+                             <h2 class="wekenz_h mb-2">
+                            MY EXPRESS SAVING
+                        </h2>
+                        <h4 class="wekenza_price mb-2 text_shadows">
+                            + Kshs. {{ my_wallet.goal_balance|floatformat:"2" }}
+
+
+                        </h4>
+
+
+
+                    </div>
+
+                </div>
+            </section>
+            <section class="creat_goals mb-5 pb-5">
+                <div class="container">
+                    <div class="d-flex flex-row align-items-center justify-content-between mt-3">
+                        <div class="d-flex flex-row align-items-center flex-column cursot-pointer"
+                             data-bs-toggle="modal" data-bs-target="#exampleModal8">
+                            <div class="person_round d-flex align-items-center justify-content-center">
+                                <img src="{% static 'images/wallet-money_.png' %}" alt="">
+                            </div>
+                            <h4 class="pesno_plus_h">Add Funds</h4>
+                        </div>
+                        <div class="d-flex flex-row align-items-center flex-column cursot-pointer"
+                             data-bs-toggle="modal" data-bs-target="#withdrawal_request">
+                            <div class="person_round d-flex align-items-center justify-content-center">
+                                <img src="{% static 'images/money-send_.png' %}" alt="">
+                            </div>
+                            <h4 class="pesno_plus_h">Withdraw</h4>
+                        </div>
+
+                        <div class="d-flex flex-row align-items-center flex-column cursot-pointer"
+                             data-bs-toggle="modal" data-bs-target="#exampleModalOne">
+                            <div class="person_round d-flex align-items-center justify-content-center cursot-pointer">
+                                <img src="{% static 'images/more_.png' %}" alt="">
+                            </div>
+                            <h4 class="pesno_plus_h">More</h4>
+                        </div>
+                    </div>
+                    <b>{% include '_messages.html' %}</b>
+
+
+
+
+
+
+
+
+
+                      <div
+                                class="pt-3 astimate border-top border-bottom d-flex align-items-center justify-content-between">
+                            <div class="astimate_content text-center">
+                                <h4>
+                                    Date
+                                </h4>
+
+                            </div>
+                            <div class="astimate_content text-center">
+
+                                <h4>
+                                    Amount
+
+                                </h4>
+
+                            </div>
+
+                            <div class="astimate_content text-center">
+                                <h5>
+                                    Earned Interest
+                                </h5>
+                                <h4><b>@ {{intrest_value}}</b></h4>
+
+                            </div>
+                        </div>
+                        <div class="records">
+
+                             {% for item in all_express_savings %}
+                                <div class="record_row d-flex align-items-center justify-content-between border-bottom pb-3 pt-3">
+                                    <p >
+                                       {{ item.created_at|date:"Y-m-d" }}
+                                    </p>
+
+
+                                    <p>
+                                        Kshs. {{ item.amount|floatformat:2 }}
+
+
+                                    </p>
+
+                                    <p>
+                                        Kshs. {{ item.calculate_future_value_express_saving|floatformat:2 }}
+                                    </p>
+                                </div>
+                            {% endfor %}
+
+
+                            <a href="{% url 'my_goals' %}" class="btn saving_btn "
+                            >
+                                All Goals
+                            </a>
+
+                        </div>
+
+                </div>
+            </section>
+            <footer class="mbl_footer">
+                <div class="container">
+                    <div class="footer_row d-flex flex-row justify-content-between align-items-center">
+                        <a href="{% url 'my_goals' %}" class="footer_button btn">
+                            <img class="homer_white" src="{% static 'images/home_white.png' %}" alt="">
+
+                            <p>Home</p>
+                        </a>
+                        <a href="#" class="footer_button btn active">
+                            <img src="{% static 'images/filter_active.png' %}" alt="">
+                            <p>Features</p>
+                        </a>
+                        <a href="{% url 'wallet_index' %}" class="footer_button btn">
+                            <img src="{% static 'images/wallet_alt_fill.png' %}" alt="">
+                            <p>Account</p>
+                        </a>
+                        <a href="{% url 'Setting' %}" class="footer_button btn">
+                            <img src="{% static 'images/setting.png' %}" alt="">
+                            <p>Settings</p>
+                        </a>
+                    </div>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
+    <script>
+        $('#withdrawal_request_form').on('submit', function (e) {
+            e.preventDefault();
+            console.log('line no 265 called from ajax fun');
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'withdraw_money_express_saving' %}",
+                data: {
+                    withdraw_money: $('#withdraw_money').val(),
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    dataType: "json",
+                },
+                success: function (response) {
+                    if (response.success === '1') {
+                        console.log("Inside success response:", response.success)
+
+                        // Hide the firstInnerHowmuch popup
+                        $('#firstInnerHowmuch_withdraw').hide();
+
+                        // Show the secondInnerHowmuch popup
+                        $('#secondInnerHowmuch_withdraw').show();
+
+                        setTimeout(function () {
+                            url = window.location.pathname;
+                            window.location.href = url;
+                        }, 4000); // 40 seconds in milliseconds
+                    } else {
+                        window.location.href = 'https://chamaspace.com/goals/add_account'
+                    }
+                }
+            });
+        });
+
+
+        $('#add_amount_form').on('submit', function (e) {
+            e.preventDefault();
+
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'express_saving' %}",
+                data: {
+
+                    amount: $('#add_money').val(),
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    dataType: "json",
+                },
+                success: function (response) {
+                    if (response.success === '1') {
+                        console.log("Inside success response:", response.success)
+
+
+                        $('#firstInnerHowmuch').hide();
+
+
+                        $('#secondInnerHowmuch').show();
+
+                        setTimeout(function () {
+                            url = window.location.pathname;
+                            window.location.href = url;
+                        }, 4000); // 40 seconds in milliseconds
+                    } else {
+                         // Hide the firstInnerHowmuch popup
+                        $('#firstInnerHowmuch').hide();
+
+
+                        $('#deposit_deniedInnerHowmuch').show();
+
+
+                         setTimeout(function () {
+                            url = 'https://chamaspace.com/load_money/load_money';
+                            window.location.href = url;
+                        }, 4000);
+                    }
+                }
+            });
+        });
+    </script>
+
+
+
+{% endblock %}

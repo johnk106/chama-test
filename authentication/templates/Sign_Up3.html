@@ -1,0 +1,106 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    Home
+{% endblock %}
+{% block content %}
+
+   <body>
+        <div class="header-head">
+            <div class="container">
+                <h1>ChamaBORA</h1>
+            </div>
+        </div>
+
+        <div class="login">
+            <div class="containers">
+                <div class="content">
+                    <form  class="login-form" action="{% url 'Sign_Up3' %}" method="post">
+                    {% csrf_token %}
+                        <p class="title">
+                            ChamaBORA
+                        </p>
+                        <br>
+                        <p class ="log">Optimize your ChamaBora Account</p>
+                        <hr/>
+
+                        <div class="form-input" >
+                            <span class="label">No. of members in a Chama</span>
+                            <select name="Numbers_of_chamas_members" class="input" style="height: 35px;border: 1px solid #000;margin: 8px 0;background-color: #fff; border-radius: 10px;">
+                                <option>Select</option>
+                                {% for chamamemebers in no_chamas_members %}
+                                    <option name="Numbers_of_chamas_members" value="{{ chamamemebers.Numbers_of_memebrs }}">{{ chamamemebers.Numbers_of_memebrs }}</option>
+                                {% endfor %}
+                            </select>
+                            <span class="focus-input"></span>
+                        </div>
+
+                        <div class="form-input" >
+                            <span class="label">Frequency of contribution:</span>
+                            <select name="frequency" class="input" style="height: 35px;border: 1px solid #000;margin: 8px 0;background-color: #fff; border-radius: 10px;">
+                                <option>Select</option>
+                                {% for frequency in frequency_of_contribution %}
+                                    <option name="frequency" value="{{ frequency.frequency_of_contribution }}">{{ frequency.frequency_of_contribution }}</option>
+                                {% endfor %}
+                            </select>
+                            <span class="focus-input"></span>
+                        </div>
+
+                        <div class="form-input" >
+                            <span class="label">Amount per contribution:</span>
+                            <select name="amount" class="input" style="height: 35px;border: 1px solid #000;margin: 8px 0;background-color: #fff; border-radius: 10px;">
+                              <option>Select</option>
+                                {% for amount in amount_per_contributions %}
+                                    <option name="amount" value="{{ amount.amount_per_contribution }}">{{ amount.amount_per_contribution }}</option>
+                                {% endfor %}
+                            </select>
+                            <span class="focus-input"></span>
+                        </div>
+
+                        <div class="form-input" >
+                            <span class="label">Number of cycles:</span>
+                            <select  name="cycle" class="input" style="height: 35px;border: 1px solid #000;margin: 8px 0;background-color: #fff; border-radius: 10px;">
+                            <option>Select</option>
+                                {% for cycle in no_of_cycles %}
+                                    <option name="cycle" value="{{ cycle.no_of_cycle }}">{{ cycle.no_of_cycle }}</option>
+                                {% endfor %}
+                            </select>
+                            <span class="focus-input"></span>
+                        </div>
+
+                        <div class="form-input" >
+                            <span class="label">Choose your Chama Members: (Optional)</span>
+                            <span class="label">Sex:</span>
+                            <select name="gender_group" class="input" style="height: 35px;border: 1px solid #000;margin: 8px 0;background-color: #fff; border-radius: 10px;">
+                                 <option>Select</option>
+                                {% for gender in Genders %}
+                                    <option name="gender_group" value="{{ gender.name }}">{{ gender.name }}</option>
+                                {% endfor %}
+                            </select>
+
+                            </select>
+                            <span class="focus-input"></span>
+                        </div>
+
+
+
+                            <div class="container-button">
+                                <button name="button" class="button" style="background-color: #565578"> Sign Up</button>
+                            </div>
+
+
+                        <div class="last-buttons">
+                            <span class="one">This information help optimize your account for a ChamaBora experience.  </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+
+
+
+
+
+{% endblock %}

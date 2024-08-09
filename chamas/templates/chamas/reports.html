@@ -1,0 +1,2216 @@
+{%extends 'chamas/base.html'%}
+{%load static%}
+{% load humanize %}
+{%load custom_filters %}
+
+
+{%block head%}
+<title>Reports</title>
+<link rel="stylesheet" href="{%static 'chamas/reports.css'%}" />
+{%endblock%} 
+
+{%block body%}
+<div class="container-fluid mt-2 text-capitalize">
+    <div class="row justify-content-center">
+
+      <!-- Cashflow Report -->
+      <div class="body-div admin member m-1">
+        <h6 class="body-div-title w-auto mx-auto">Cashflow Report</h6>
+        <div class="input-sect flex-wrap">
+          <div class="mb">
+            <label for="start" class="form-label">start</label>
+            <input type="date" class="form-control" id="cashflow-report-start" />
+          </div>
+
+          <div class="mb">
+            <label for="end" class="form-label">End</label>
+            <input type="date" class="form-control" id="cashflow-report-end" />
+          </div>
+
+        </div>
+
+        <div id="cashflow-report-items" style="width: 100%;">
+
+        </div>
+
+        <div class="summary-row flex-wrap align-items-start" id="cashflow-report-totals-cont">
+        </div>
+
+        <div class="summary-section" id="cashflow-report-net-cont">
+        </div>
+        <div  class="download-section">
+          <h5 id="download-chama-cashflow-report">Download full report</h5>
+        </div>
+      </div>
+
+      <!-- Member Cashflow Reports - All Members -->
+      <div class="body-div admin m-1">
+        <h6 class="body-div-title w-auto mx-auto">Member Cashflow report</h6>
+
+        <div class="input-sect">
+          <div class="input-group mb-2 p-2" style=" width: 100%; padding: 0.375rem 0.75rem; background-color: var(--bs-body-bg);
+                background-clip: padding-box;
+                border: var(--bs-border-width) solid var(--bs-border-color);
+                border-radius: var(--bs-border-radius);
+                transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+                color: #2291A5;">
+            <select style="width: 100%; color: #2291A5;" id="member-cashflow-owner" class="border-0 bg-white p-2">
+              <option value="" disabled selected>Select Member</option>
+              {%for member in members%}
+              <option value="{{member.id}}">{{member.name}}</option>
+              {%endfor%}
+            </select>
+          </div>
+        </div>
+
+        <div class="input-sect flex-wrap">
+          <div class="mb">
+            <label for="start" class="form-label">start</label>
+            <input type="date" class="form-control" id="member-cashflow-report-start" />
+          </div>
+
+          <div class="mb">
+            <label for="end" class="form-label">End</label>
+            <input type="date" class="form-control" id="member-cashflow-report-end" />
+          </div>
+        </div>
+
+        <div id="member-cashflow-items" style="width:100%;">
+
+        </div>
+
+
+        <div class="summary-row flex-wrap" id="member-cashflow-totals-cont">
+          <div class="summary-item-single">
+            <h6 class="summary-item-single-title">Total Contributions</h6>
+            <h6 class="summary-item-single-content">ksh {{total_contributions | intcomma}}</h6>
+          </div>
+
+          <div class="summary-item-single">
+            <h6 class="summary-item-single-title">Total Loan Disbursment</h6>
+            <h6 class="summary-item-single-content">ksh {{total_loan_disbursment | intcomma}}</h6>
+          </div>
+        </div>
+
+        <div class="summary-section" id='member-cashflow-net-cont'>
+         
+        </div>
+        <div class="download-section">
+          <h5 id="download-member-cashflow-report">Download full report</h5>
+        </div>
+      </div>
+
+       <!-- My Cashflow Reports - Individuals Cashflow Report -->
+       <div class="body-div member m-1">
+        <h6 class="body-div-title w-auto mx-auto">My Cashflow Report</h6>
+        <div class="input-sect flex-wrap">
+          <div class="mb">
+            <label for="start" class="form-label">Start</label>
+            <input type="date" class="form-control" id="my-reports-start" />
+          </div>
+
+          <div class="mb">
+            <label for="end" class="form-label">End</label>
+            <input type="date" class="form-control" id="my-reports-end" />
+          </div>
+        </div>
+
+        <div id="my-report-items" style="width: 100%;">
+
+        </div>
+
+        <div class="summary-row flex-wrap" id="my-cashflow-report-totals-cont">
+        </div>
+
+        <div class="summary-section" id='my-cashflow-report-net-cont'>
+         
+        </div>
+        <div class="download-section">
+          <h5 id="download-my-cashflow-report">Download full report</h5>
+        </div>
+      </div>
+
+      <!-- Loan Report -->
+      <div class="body-div admin member m-1">
+
+        <h6 class="body-div-title w-auto mx-auto">Loan report</h6>
+
+        {%for loan in loans%}
+          <div class="loan-single mb-2">
+            <button class="{{loan.status}} text-capitalize p-1 text-sm">{{loan.status}}</button>
+            <div class="loan-row d-flex">
+              <div class="single-cube">
+                <p class="cube-title">Name</p>
+                <button>{{loan.type.type_id}}</button>
+              </div>
+              <div class="single-cube">
+                <p class="cube-title">Name</p>
+                <button>{{loan.member.name}}</button>
+              </div>
+              <div class="single-cube">
+                <p class="cube-title">Type</p>
+                <button>{{loan.type.name}}</button>
+              </div>
+              <div class="single-cube">
+                <p class="cube-title">Amount</p>
+                <button>{{loan.amount | intcomma}}</button>
+              </div>
+            </div>
+          </div>
+        {%endfor%}
+
+        <div class="download-section">
+          <h5 id="download-full-loan-report">Download full report</h5>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="row justify-content-center">
+
+      <!-- Repayment Schedule -->
+      <div class="body-div admin member m-1">
+        <h6 class="body-div-title w-auto mx-auto">Repayment Schedule</h6>
+        <div class="input-sect">
+              <div class="input-group mb-2" style=" width: 100%; padding: 0.375rem 0.75rem; background-color: var(--bs-body-bg);
+                  background-clip: padding-box;
+                  border: var(--bs-border-width) solid var(--bs-border-color);
+                  border-radius: var(--bs-border-radius);
+                  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+                  color: #2291A5;">
+                  <select style="width: 100%; color: #2291A5;" id="repayment-owner" class="border-0 bg-white p-2">
+                    <option value="" disabled selected>Select Member</option>
+                      {%for member in members %}
+                      <option value="{{member.name}}">{{member.name}}</option>
+                      {%endfor%}
+                  </select>
+              </div>
+        </div>
+
+        <div id="repayment-schedule-items" class="w-100 justify-content-around"></div>
+        <div class="download-section">
+          <h5 id="download-repayment-schedule">Download full report</h5>
+        </div>
+
+      </div>
+
+      <!-- Group Investment Income -->
+      <div class="body-div admin member m-1">
+        <h6 class="body-div-title w-auto mx-auto">Group Investment Income</h6>
+        <div class="input-sect flex-wrap">
+          <div class="mb">
+            <label for="start" class="form-label">Start</label>
+            <input type="date" class="form-control" id="group-investment-incomes-start">
+          </div>
+
+          <div class="mb">
+            <label for="end" class="form-label">End</label>
+            <input type="date" class="form-control" id="group-investment-incomes-end" />
+          </div>
+        </div>
+
+        <div id="group-investment-incomes-items" style="width:100%">
+
+        </div>
+
+      
+        <div class="summary-section flex-wrap" id="group-investment-incomes-total">
+          
+        </div>
+        <div class="download-section">
+          <h5 id="download-group-investment-income">Download full report</h5>
+
+        </div>
+
+
+      </div>
+
+      <!-- Member Investment Income -->
+      <div class="body-div admin m-1">
+        <h6 class="body-div-title w-auto mx-auto">Member Investment income</h6>
+
+        <div class="input-sect">
+          <div class="input-group  mb-2" style=" width: 100%; padding: 0.375rem 0.75rem; background-color: var(--bs-body-bg);
+          background-clip: padding-box;
+          border: var(--bs-border-width) solid var(--bs-border-color);
+          border-radius: var(--bs-border-radius);
+          transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+          color: #2291A5;">
+          <select style="width: 100%; color: #2291A5;" id="investment-owner" class="border-0 bg-white p-2">
+            <option value="" disabled selected>Select Member</option>
+              {%for member in members%}
+              <option value="{{member.id}}">{{member.name}}</option>
+              {%endfor%}
+
+            </select>
+          </div>
+        </div>
+
+        <div class="input-sect flex-wrap">
+          <div class="mb">
+            <label for="start" class="form-label">start</label>
+            <input type="date" class="form-control" id="member-investment-incomes-start">
+          </div>
+
+          <div class="mb">
+            <label for="end" class="form-label">End</label>
+            <input type="date" class="form-control" id="member-investment-incomes-end">
+          </div>
+        </div>
+
+       <div id="member-investment-income-items" style="width:100%">
+
+       </div>
+
+        <div class="download-section">
+          <h5 id="download-member-investment-income">Download full report</h5>
+        </div>
+      </div>
+
+       <!-- My Investment Income -->
+       <div class="body-div member m-1">
+        <h6 class="body-div-title w-auto mx-auto">My Investment income</h6>
+        <div class="input-sect flex-wrap">
+          <div class="mb">
+            <label for="start" class="form-label">start</label>
+            <input type="date" class="form-control" id="my-incomes-start">
+          </div>
+
+          <div class="mb">
+            <label for="end" class="form-label">End</label>
+            <input type="date" class="form-control" id="my-incomes-end">
+          </div>
+        </div>
+        
+        <div id="my-income-items" style="width:100%;">
+
+        </div>
+
+        <div class="download-section">
+          <h5 id="download-member-investment-income">Download full report</h5>
+        </div>
+
+
+      </div>
+
+    </div>
+
+    <div class="row justify-content-center">
+      <!-- Saving Report - Individual Saving Report -->
+      <div class="body-div member admin m-1">
+        <h6 class="body-div-title w-auto mx-auto">Individual Saving Report</h6>
+        <div class="input-sect">
+          <div class="input-group  mb-2" style=" width: 100%; padding: 0.375rem 0.75rem; background-color: var(--bs-body-bg);
+          background-clip: padding-box;
+          border: var(--bs-border-width) solid var(--bs-border-color);
+          border-radius: var(--bs-border-radius);
+          transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+          color: #2291A5;">
+          <select style="width: 100%; color: #2291A5;" id="individual-savings-owner" class="border-0 bg-white p-2">
+            <option value="" disabled selected>Select Member</option>
+              {%for member in members%}
+              <option value="{{member.id}}">{{member.name}}</option>
+              {%endfor%}
+
+            </select>
+          </div>
+        </div>
+        <div class="input-sect flex-wrap">
+          <div class="mb">
+            <label for="start" class="form-label">start</label>
+            <input type="date" class="form-control" id="individual-savings-start" />
+          </div>
+
+          <div class="mb">
+            <label for="end" class="form-label">End</label>
+            <input type="date" class="form-control" id="individual-savings-end">
+          </div>
+        </div>
+      
+        <div id="individual-saving-items" style="width:100%">
+
+        </div>
+
+        <div class="download-section">
+          <h5 id="download-individual-saving-report">Download full report</h5>
+        </div>
+
+      </div>
+
+      <!-- Saving Report - Group Saving Report -->
+      <div class="body-div admin member m-1">
+        <h6 class="body-div-title w-auto mx-auto">Group saving report</h6>
+        <div class="input-sect flex-wrap">
+          <div class="mb">
+            <label for="start" class="form-label">start</label>
+            <input type="date" class="form-control" id="group-savings-start">
+          </div>
+
+          <div class="mb">
+            <label for="end" class="form-label">End</label>
+            <input type="date" class="form-control" id="group-savings-end">
+          </div>
+        </div>
+
+        <div id="group-saving-items" style="width:100%">
+
+        </div>
+        <div class="summary-section" id='group-savings-total'>
+        </div>
+        <div class="download-section">
+          <h5 id="download-group-saving-report">Download full report</h5>
+        </div>
+
+      </div>
+
+      <!-- Group Contributions -->
+      <div class="body-div member admin m-1">
+        <h6 class="body-div-title w-auto mx-auto">Group contributions</h6>
+
+        <div id="group-contribution-items" style="width: 100%;">
+
+        </div>
+
+
+        <div class="summary-section" id="group-contribution-total">
+        </div>
+        <div class="download-section">
+          <h5 id="download-group-contributions">Download full report</h5>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row justify-content-center">
+       <!-- My Contributions -->
+       <div class="body-div member  m-1">
+        <h6 class="body-div-title w-auto mx-auto">My Contributions</h6>
+        {%for contribution in my_contributions%}
+
+        <div class="income-single w-auto mb-2 flex-wrap">
+          <div class="income-single-blob">
+            <div class="income-single-inner">
+              <h5>Name</h5>
+              <p>{{contribution.contribution.name}}</p>
+            </div>
+          </div>
+
+          <div class="income-single-blob">
+            <div class="income-single-inner">
+              <h5>Amount</h5>
+              <p>ksh {{contribution.amount_paid | intcomma}}</p>
+            </div>
+          </div>
+          <div class="income-single-blob">
+            <div class="income-single-inner">
+              <h5>Balance</h5>
+              <p>ksh {{contribution.balance | intcomma}}</p>
+            </div>
+          </div>
+
+          <div class="income-single-blob">
+            <div class="income-single-inner">
+              <h5>Date</h5>
+              <p>{{contribution.date_created | date:"d/m/Y"}}</p>
+            </div>
+          </div>
+         
+        </div>
+        {%endfor%}
+
+
+        <br>
+        <div class="summary-section">
+          <div class="summary-section-inner">
+            <h6>Total contributions</h6>
+            <h5>ksh {{my_tot_contributions | intcomma}}</h5>
+          </div>
+        </div>
+        <div class="download-section">
+          <h5 id="download-group-contributions">Download full report</h5>
+        </div>
+      </div>
+
+      <!-- Member Contributions -->
+      <div class="body-div admin m-1">
+        <h6 class="body-div-title w-auto mx-auto">Member Contributions</h6>
+        <div class="input-sect flex-wrap">
+          <div class="mb">
+            <label for="start" class="form-label">start</label>
+            <input type="date" class="form-control" id="group-contributions-start" />
+          </div>
+
+          <div class="mb">
+            <label for="end" class="form-label">End</label>
+            <input type="date" class="form-control" id="group-contributions-end">
+          </div>
+        </div>
+        <div class="input-sect">
+          <div class="input-group  mb-2" style=" width: 100%; padding: 0.375rem 0.75rem; background-color: var(--bs-body-bg);
+          background-clip: padding-box;
+          border: var(--bs-border-width) solid var(--bs-border-color);
+          border-radius: var(--bs-border-radius);
+          transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+          color: #2291A5;">
+          <select style="width: 100%; color: #2291A5;" id="member-contribution-owner" class="border-0 bg-white p-2">
+            <option value="" disabled selected>Select Member</option>
+              {%for member in members%}
+              <option selected value="{{member.id}}">{{member.name}}</option>
+              {%endfor%}
+            </select>
+          </div>
+        </div>
+
+        <div id="member-contribution-items" style="width:100%;">
+
+        </div>
+
+        
+
+        <div class="summary-section" id="member-contribution-total">
+          
+        </div>
+        <div class="download-section">
+          <h5 id="download-member-contribution-report">Download full report</h5>
+        </div>
+
+      </div>
+
+      <!-- Fine Report Collected Fines -->
+      <div class="body-div member admin m-1">
+        <h6 class="body-div-title w-auto mx-auto">Collected Fines</h6>
+        <div class="input-sect flex-wrap">
+          <div class="mb">
+            <label for="start" class="form-label">start</label>
+            <input type="date" class="form-control" id="collected-fines-start">
+          </div>
+
+          <div class="mb">
+            <label for="end" class="form-label">End</label>
+            <input type="date" class="form-control" id="collected-fines-end">
+          </div>
+        </div>
+
+       <div id="collected-fine-items" style="width:100%;">
+
+       </div>
+
+        <div class="summary-section">
+          <div class="summary-section-inner">
+            <h6>Total fines</h6>
+            <h5>ksh {{total_fines_collected | intcomma}}</h5>
+          </div>
+        </div>
+        <div class="download-section">
+          <h5 id="download-collected-fines-report">Download full report</h5>
+        </div>
+
+
+
+      </div>
+
+      <!-- Fine Report Unpaid Fines -->
+      <div class="body-div admin member m-1">
+        <h6 class="body-div-title w-auto mx-auto">Unpaid Fines</h6>
+        <div class="input-sect flex-wrap">
+          <div class="mb">
+            <label for="start" class="form-label">start</label>
+            <input type="date" class="form-control" id="unpaid-fines-start">
+          </div>
+
+          <div class="mb">
+            <label for="end" class="form-label">End</label>
+            <input type="date" class="form-control" id="unpaid-fines-end">
+          </div>
+        </div>
+
+        <div id="unpaid-fine-items"  style="width: 100%;">
+
+        </div>
+
+        <div class="summary-section" id="unpaid-fines-total" style="background-color: #FFF7E9;border: none;">
+         
+        </div>
+        <div class="download-section">
+          <h5 id="download-uncollected-fines-report">Download full report</h5>
+        </div>
+      </div>
+      
+    </div>
+    
+    <div class="row justify-content-center">
+      <div class="body-div admin member m-1">
+        <h6 class="body-div-title w-auto mx-auto">Expenses</h6>
+        <div class="input-sect flex-wrap">
+          <div class="mb">
+            <label for="start" class="form-label">start</label>
+            <input type="date" class="form-control" id="expenses-start">
+          </div>
+
+          <div class="mb">
+            <label for="end" class="form-label">End</label>
+            <input type="date" class="form-control" id="expenses-end">
+          </div>
+        </div>
+
+        <div id="expense-items"  style="width: 100%;">
+
+        </div>
+
+        <div class="summary-section">
+          <div class="summary-section-inner">
+            <h6>Total Expenses</h6>
+            <h5>ksh {{expenses_tot | intcomma}}</h5>
+          </div>
+        </div>
+        <div class="download-section">
+          <h5 id="download-expense-report">Download full report</h5>
+        </div>
+      </div>
+
+     </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+      document.querySelector('#download-full-loan-report').addEventListener('click', function () {
+      var chama_id = localStorage.getItem('groupId');
+      fetch(`/chamas-bookeeping/download-full-loan-report/${chama_id}/`, {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': getCookie('csrftoken')  // Ensure CSRF token is included
+          }
+      })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Network response was not ok');
+          }
+          return response.blob();
+      })
+      .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = url;
+          a.download = 'full_loan_report.pdf';  // Change file name to PDF
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+      })
+      .catch(error => console.error('Error:', error));
+  });
+
+
+    document.querySelector('#download-repayment-schedule').addEventListener('click', function () {
+      var chama_id = localStorage.getItem('groupId');
+      fetch(`/chamas-bookeeping/download-loan-repayment-schedule/${chama_id}/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')  // Ensure CSRF token is included
+        }
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.blob();
+        })
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = url;
+          a.download = 'loan_repayment_schedule.pdf';
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    document.querySelector('#download-group-investment-income').addEventListener('click', function () {
+      var chama_id = localStorage.getItem('groupId');
+      fetch(`/chamas-bookeeping/download-group-investment-income/${chama_id}/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')  // Ensure CSRF token is included
+        }
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.blob();
+        })
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = url;
+          a.download = 'group_investment_income.pdf';
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+
+    document.querySelector('#download-member-investment-income').addEventListener('click', function () {
+      var chama_id = localStorage.getItem('groupId');
+      var selectedOwnerId = document.getElementById("investment-owner").value;
+
+      if (selectedOwnerId == '...') {
+        var link = `/chamas-bookeeping/download-member-investment-income/${chama_id}/`;
+      } else {
+        var link = `/chamas-bookeeping/download-member-investment-income/${chama_id}/?member-id=${selectedOwnerId}`;
+      }
+
+      fetch(link, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')  // Ensure CSRF token is included
+        }
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.blob();
+        })
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = url;
+          a.download = 'member_investment_income.pdf';
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+
+    document.querySelector('#download-individual-saving-report').addEventListener('click', function () {
+      var chama_id = localStorage.getItem('groupId');
+      var selectedOwnerId = document.getElementById("individual-savings-owner").value;
+
+      if (selectedOwnerId == '...') {
+        var link = `/chamas-bookeeping/download-individual-saving-report/${chama_id}/`;
+      } else {
+        var link = `/chamas-bookeeping/download-individual-saving-report/${chama_id}/?member-id=${selectedOwnerId}`;
+      }
+
+      fetch(link, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')
+        }
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.blob();
+        })
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = url;
+          a.download = 'individual_savings_report.pdf';
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+
+    document.querySelector('#download-group-saving-report').addEventListener('click', function () {
+      var chama_id = localStorage.getItem('groupId');
+      fetch(`/chamas-bookeeping/download-group-saving-report/${chama_id}/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')  // Ensure CSRF token is included
+        }
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.blob();
+        })
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = url;
+          a.download = 'group_savings_report.pdf';
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    document.querySelector('#download-group-contributions').addEventListener('click', function () {
+      var chama_id = localStorage.getItem('groupId');
+      fetch(`/chamas-bookeeping/download-group-contributions-report/${chama_id}/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')  // Ensure CSRF token is included
+        }
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.blob();
+        })
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = url;
+          a.download = 'group_contributions_report.pdf';
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+        })
+        .catch(error => console.error('Error:', error));
+    });
+    //-------------------------
+    document.querySelector('#download-expense-report').addEventListener('click', function () {
+      var chama_id = localStorage.getItem('groupId');
+      fetch(`/chamas-bookeeping/download-expense-report/${chama_id}/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')  // Ensure CSRF token is included
+        }
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.blob();
+        })
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = url;
+          a.download = 'expense_report.pdf';
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    //---------------------------
+
+    document.querySelector('#download-member-contribution-report').addEventListener('click', function () {
+      var chama_id = localStorage.getItem('groupId');
+      var member_id = document.getElementById('member-contribution-owner').value;
+
+
+      fetch(`/chamas-bookeeping/download-member-contributions-report/${chama_id}/${member_id}/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')  // Ensure CSRF token is included
+        }
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.blob();
+        })
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = url;
+          a.download = 'member_contribution_report.pdf';
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+
+
+    document.querySelector('#download-collected-fines-report').addEventListener('click', function () {
+      var chama_id = localStorage.getItem('groupId');
+      fetch(`/chamas-bookeeping/download-collected-fines-report/${chama_id}/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')  // Ensure CSRF token is included
+        }
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.blob();
+        })
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = url;
+          a.download = 'collected_fines_report.pdf';
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    document.querySelector('#download-uncollected-fines-report').addEventListener('click', function () {
+      var chama_id = localStorage.getItem('groupId');
+      fetch(`/chamas-bookeeping/download-uncollected-fines-report/${chama_id}/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')  // Ensure CSRF token is included
+        }
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.blob();
+        })
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = url;
+          a.download = 'uncollected_fines_report.pdf';
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    document.querySelector('#download-chama-cashflow-report').addEventListener('click', function () {
+      var chama_id = localStorage.getItem('groupId');
+      fetch(`/chamas-bookeeping/download-chama-cashflow-report/${chama_id}/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')  // Ensure CSRF token is included
+        }
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.blob();
+        })
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = url;
+          a.download = 'chama_cashflow_report.pdf';
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    document.querySelector('#download-member-cashflow-report').addEventListener('click', function () {
+      var chama_id = localStorage.getItem('groupId');
+      var member_id = document.getElementById('member-cashflow-owner').value;
+
+
+      fetch(`/chamas-bookeeping/download-member-cashflow-report/${chama_id}/${member_id}/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')  // Ensure CSRF token is included
+        }
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.blob();
+        })
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = url;
+          a.download = 'member_cashflow_report.pdf';
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    document.querySelector('#download-my-cashflow-report').addEventListener('click', function () {
+      var chama_id = localStorage.getItem('groupId');
+      fetch(`/chamas-bookeeping/download-my-cashflow-report/${chama_id}/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')  // Ensure CSRF token is included
+        }
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.blob();
+        })
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = url;
+          a.download = 'my_cashflow_report.pdf';
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+        })
+        .catch(error => console.error('Error:', error));
+    });
+  });
+
+  // Function to get CSRF token from cookies
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+</script>
+
+
+
+<script>
+  // Function to render the cash flow reports
+    function renderCashflowReports(reports) {
+      const reportContainer = document.getElementById('cashflow-report-items');
+      const cashflowReportTotals = document.getElementById('cashflow-report-totals-cont')
+      const cashflowReportNet = document.getElementById('cashflow-report-net-cont')
+
+      // Clear existing content
+      reportContainer.innerHTML = '';
+      cashflowReportTotals.innerHTML = '';
+      cashflowReportNet.innerHTML = '';
+      
+
+      // Create an object to store the total amount for each report type
+      const totals = {};
+
+      reports.forEach(report => {
+          // Create elements for each report
+          const reportDiv = document.createElement('div');
+          reportDiv.classList.add('item-single', 'mb-2', 'd-flex', 'flex-wrap');
+          reportDiv.style.width = '100%';
+
+          // Populate report data
+              reportDiv.innerHTML = `
+                  <div class="single-cube">
+                      <p class="cube-title">Member</p>
+                      <button>${report.member_id}</button>
+                  </div>
+                  <div class="single-cube">
+                      <p class="cube-title">Type</p>
+                      <button>${report.type}</button>
+                  </div>
+                  <div class="single-cube">
+                      <p class="cube-title">Amount</p>
+                      <button> Ksh ${report.amount.toLocaleString()}</button>
+                  </div>
+                  <div class="single-cube">
+                      <p class="cube-title">Created</p>
+                      <button>${report.object_date}</button>
+                  </div>
+              `;
+
+              // Append report to container
+                reportContainer.appendChild(reportDiv);
+
+                // Add the report amount to the total for its type
+                if (!totals[report.type]) {
+                    totals[report.type] = 0;
+                }
+                totals[report.type] += report.amount;
+
+      });
+
+      // Display the total amount for each report type
+      for (const type in totals) {
+          const totalDiv = document.createElement('div');
+          totalDiv.innerHTML = `
+          <div class="summary-item-single">
+            <h6 class="summary-item-single-title">Total ${type}</h6>
+            <h6 class="summary-item-single-content">Ksh ${totals[type].toLocaleString()}</h6>
+          </div>
+          `;
+          cashflowReportTotals.appendChild(totalDiv);
+      }
+
+      // Calculate and display net total
+      let netTotal = 0;
+      for (const type in totals) {
+          netTotal += totals[type];
+      }
+      const netTotalDiv = document.createElement('div');
+      netTotalDiv.innerHTML = `
+        <div class="summary-section-inner">
+            <h6>Net Cashflow</h6>
+            <h5>Ksh ${netTotal.toLocaleString()} </h5>
+          </div>
+        </div>
+      `;
+      cashflowReportNet.appendChild(netTotalDiv);    
+  }
+
+  // Fetch data from the context passed by Django view
+  const chamaCashflowReports = {{ chama_cashflow_reports | safe }};
+
+  // Initial rendering of reports
+  renderCashflowReports(chamaCashflowReports);
+
+  // Filter reports based on selected start and end dates
+  function filterReports() {
+      const startDate = document.getElementById('cashflow-report-start').value;
+      const endDate = document.getElementById('cashflow-report-end').value;
+
+      // Filter reports based on date range
+      const filteredReports = chamaCashflowReports.filter(report => {
+          const reportDate = new Date(report.object_date);
+          return reportDate >= new Date(startDate) && reportDate <= new Date(endDate);
+      });
+
+      // Render filtered reports
+      renderCashflowReports(filteredReports);
+  }
+
+  // Add event listeners to start and end date inputs
+  document.getElementById('cashflow-report-start').addEventListener('change', filterReports);
+  document.getElementById('cashflow-report-end').addEventListener('change', filterReports);
+</script>
+
+<script>
+  // Function to render the cash flow reports
+  function renderExpenseReports(expenses) {
+      const reportContainer = document.getElementById('expense-items');
+
+      // Clear existing content
+      reportContainer.innerHTML = '';
+
+      expenses.forEach(expense => {
+          // Create elements for each report
+          const reportDiv = document.createElement('div');
+          reportDiv.classList.add('item-single', 'mb-2', 'd-flex', 'flex-wrap');
+          reportDiv.style.width = '100%';
+
+          // Populate report data
+          reportDiv.innerHTML = `
+              <div class="single-cube">
+                  <p class="cube-title">Name</p>
+                  <button>${expense.name}}</button>
+              </div>
+              <div class="single-cube">
+                  <p class="cube-title">created by</p>
+                  <button>${expense.created_by_id}</button>
+              </div>
+              <div class="single-cube">
+                  <p class="cube-title">Amount</p>
+                  <button> Ksh ${expense.amount.toLocaleString()}</button>
+              </div>
+              <div class="single-cube">
+                  <p class="cube-title">Created</p>
+                  <button>${expense.created_on}</button>
+              </div>
+          `;
+
+          // Append report to container
+          reportContainer.appendChild(reportDiv);
+      });
+    }
+
+  // Fetch data from the context passed by Django view
+  const chamaExpenseReports = {{ chama_expense_reports | safe }};
+
+  // Initial rendering of reports
+  renderExpenseReports(chamaExpenseReports);
+
+  // Filter reports based on selected start and end dates
+  function filterExpenses() {
+      const startDate = document.getElementById('expenses-start').value;
+      const endDate = document.getElementById('expenses-end').value;
+
+      // Filter reports based on date range
+      const filteredExpenses = chamaExpenseReports.filter(expense => {
+          const reportDate = new Date(expense.created_on);
+          return reportDate >= new Date(startDate) && reportDate <= new Date(endDate);
+      });
+
+      // Render filtered reports
+      renderExpenseReports(filteredExpenses);
+  }
+
+  // Add event listeners to start and end date inputs
+  document.getElementById('expenses-start').addEventListener('change', filterExpenses);
+  document.getElementById('expenses-end').addEventListener('change', filterExpenses);
+</script>
+
+<script>
+    // Function to render the cash flow reports for members (forGroup = false)
+    function renderMemberCashflowReports(reports) {
+        const memberReportContainer = document.getElementById('member-cashflow-items');
+        const memberCashflowReportTotals = document.getElementById('member-cashflow-totals-cont');
+        const memberCashflowReportNet = document.getElementById('member-cashflow-net-cont');
+
+        // Clear existing content
+        memberReportContainer.innerHTML = '';
+        memberCashflowReportTotals.innerHTML = '';
+        memberCashflowReportNet.innerHTML = '';
+
+            // Create an object to store the total amount for each report type
+        const totals = {};
+
+        reports.forEach(report => {
+                // Create elements for each report
+                const reportDiv = document.createElement('div');
+                reportDiv.classList.add('item-single', 'mb-2', 'd-flex', 'flex-wrap');
+                reportDiv.style.width = '100%';
+
+                // Populate report data
+                reportDiv.innerHTML = `
+                    <div class="single-cube">
+                        <p class="cube-title">Member</p>
+                        <button>${report.member_id}</button>
+                    </div>
+                    <div class="single-cube">
+                        <p class="cube-title">Type</p>
+                        <button>${report.type}</button>
+                    </div>
+                    <div class="single-cube">
+                        <p class="cube-title">Amount</p>
+                        <button> Ksh ${report.amount.toLocaleString()}</button>
+                    </div>
+                    <div class="single-cube">
+                        <p class="cube-title">Created</p>
+                        <button>${report.object_date}</button>
+                    </div>
+                `;
+
+                // Append report to container
+                memberReportContainer.appendChild(reportDiv);
+              
+                // Add the report amount to the total for its type
+                if (!totals[report.type]) {
+                    totals[report.type] = 0;
+                      }
+                      totals[report.type] += report.amount;
+        });
+
+          // Display the total amount for each report type
+        for (const type in totals) {
+            const totalDiv = document.createElement('div');
+            totalDiv.innerHTML = `
+            <div class="summary-item-single">
+              <h6 class="summary-item-single-title">Total ${type}</h6>
+              <h6 class="summary-item-single-content">Ksh ${totals[type].toLocaleString()}</h6>
+            </div>
+            `;
+            memberCashflowReportTotals.appendChild(totalDiv);
+        }
+
+        // Calculate and display net total
+          let netTotal = 0;
+          for (const type in totals) {
+              netTotal += totals[type];
+          }
+          const netTotalDiv = document.createElement('div');
+          netTotalDiv.innerHTML = `
+            <div class="summary-section-inner">
+                <h6>Net Cashflow</h6>
+                <h5>Ksh ${netTotal.toLocaleString()} </h5>
+              </div>
+            </div>
+          `;
+          memberCashflowReportNet.appendChild(netTotalDiv);
+  }
+
+    // Fetch data from the context passed by Django view
+    const allChamaCashflowReports = {{ chama_cashflow_reports | safe }};
+
+    // Initial rendering of reports for members
+    renderMemberCashflowReports(allChamaCashflowReports);
+
+    // Function to filter and render reports based on selected member and date range
+    function filterAndRenderReports() {
+      const selectedMember = document.getElementById('member-cashflow-owner').selectedOptions[0].innerText;
+      const startDate = document.getElementById('member-cashflow-report-start').value;
+      const endDate = document.getElementById('member-cashflow-report-end').value;
+
+      // Filter reports based on date range and selected member
+      let filteredReports;
+      if (startDate && endDate) {
+          filteredReports = allChamaCashflowReports.filter(report => {
+              const reportDate = new Date(report.object_date);
+              return reportDate >= new Date(startDate) && reportDate <= new Date(endDate) && report.member_id === selectedMember;
+          });
+      } else {
+          // If start or end date is not selected, filter only based on the selected member
+          filteredReports = allChamaCashflowReports.filter(report => report.member_id === selectedMember);
+      }
+
+      // Render filtered reports
+      renderMemberCashflowReports(filteredReports);
+  }
+
+    // Add event listeners to start and end date inputs for members
+    document.getElementById('member-cashflow-report-start').addEventListener('change', filterAndRenderReports);
+    document.getElementById('member-cashflow-report-end').addEventListener('change', filterAndRenderReports);
+    document.getElementById('member-cashflow-owner').addEventListener('change', filterAndRenderReports); // Add event listener for member selection
+
+</script>
+
+<script>
+ 
+  function renderGroupinvestmentIncomes(incomes) {
+      const reportContainer = document.getElementById('group-investment-incomes-items');
+      const totalIncomeCont = document.getElementById('group-investment-incomes-total');
+
+      // Clear existing content
+      reportContainer.innerHTML = '';
+      totalIncomeCont.innerHTML = '';
+
+      // Initialize total income
+      let totalIncome = 0;
+
+      incomes.forEach(income => {
+          // Create elements for each report
+          const reportDiv = document.createElement('div');
+          reportDiv.classList.add('item-single', 'mb-2', 'd-flex', 'flex-wrap');
+          reportDiv.style.width = '100%';
+
+          // Populate report data
+          reportDiv.innerHTML = `
+          <div class="income-single mb-2" style='width:100%;'>
+            <div class="income-single-blob">
+              <div class="income-single-inner">
+                <h5>Name</h5>
+                <p>${income.name}</p>
+              </div>
+            </div>
+            <div class="income-single-blob">
+              <div class="income-single-inner">
+                <h5>date</h5>
+                <p>${income.user_date}</p>
+              </div>
+            </div>
+            <div class="income-single-blob">
+              <div class="income-single-inner">
+                <h5>amount</h5>
+                <p>ksh ${income.amount.toLocaleString()}</p>
+              </div>
+            </div>
+          </div>
+          `;
+
+          // Append report to container
+          reportContainer.appendChild(reportDiv);
+
+          totalIncome += income.amount; 
+
+          totalIncomeDiv = document.createElement('div');
+          totalIncomeDiv.innerHTML = `
+          <div class="summary-section-inner">
+            <h6>Total Amount</h6>
+            <h5>Ksh. ${totalIncome.toLocaleString()}</h5>
+          </div>
+          `;
+      });
+
+      totalIncomeCont.appendChild(totalIncomeDiv);
+  }
+
+  // Fetch data from the context passed by Django view
+  const groupInvestmentIncomes = {{ group_investment_incomes | safe }};
+
+  // Initial rendering of reports
+  renderGroupinvestmentIncomes(groupInvestmentIncomes);
+
+  // Filter reports based on selected start and end dates
+  function filterIncomes() {
+      const startDate = document.getElementById('group-investment-incomes-start').value;
+      const endDate = document.getElementById('group-investment-incomes-end').value;
+
+      // Filter reports based on date range
+      const filteredIncomes = groupInvestmentIncomes.filter(report => {
+          const reportDate = new Date(report.date);
+          return reportDate >= new Date(startDate) && reportDate <= new Date(endDate);
+      });
+
+      // Render filtered reports
+      renderGroupinvestmentIncomes(filteredIncomes);
+  }
+
+  // Add event listeners to start and end date inputs
+  document.getElementById('group-investment-incomes-start').addEventListener('change', filterIncomes);
+  document.getElementById('group-investment-incomes-end').addEventListener('change', filterIncomes);
+</script>
+
+
+<script>
+  function renderIndividualinvestmentIncomes(incomes) {
+      const reportContainer = document.getElementById('member-investment-income-items');
+
+      // Clear existing content
+      reportContainer.innerHTML = '';
+
+      incomes.forEach(income => {
+          // Create elements for each report
+          const reportDiv = document.createElement('div');
+          reportDiv.classList.add('item-single', 'mb-2', 'd-flex', 'flex-wrap');
+          reportDiv.style.width = '100%';
+
+          // Populate report data
+          reportDiv.innerHTML = `
+          <div class="income-single mb-2" style='width:100%;'>
+            <div class="income-single-blob">
+              <div class="income-single-inner">
+                <h5>Owner</h5>
+                <p>${income.owner_id}</p>
+              </div>
+
+            </div>
+            <div class="income-single-blob">
+              <div class="income-single-inner">
+                <h5>Name</h5>
+                <p>${income.name}</p>
+              </div>
+
+            </div>
+            <div class="income-single-blob">
+              <div class="income-single-inner">
+                <h5>Amount</h5>
+                <p>ksh ${income.amount.toLocaleString()}</p>
+              </div>
+            </div>
+
+          </div>
+          `;
+
+          // Append report to container
+          reportContainer.appendChild(reportDiv);
+      });
+  }
+
+  // Fetch data from the context passed by Django view
+  const individualInvestmentIncomes = {{ member_investment_income | safe }};
+
+  // Initial rendering of reports
+  renderIndividualinvestmentIncomes(individualInvestmentIncomes);
+
+  // Filter incomes based on selected start and end dates and owner
+  function filterIncomes() {
+      const startDate = document.getElementById('member-investment-incomes-start').value;
+      const endDate = document.getElementById('member-investment-incomes-end').value;
+      const owner = document.getElementById('investment-owner').selectedOptions[0].innerText;
+
+      // Filter incomes based on date range and owner
+      const filteredIncomes = individualInvestmentIncomes.filter(income => {
+          const incomeDate = new Date(income.date);
+          const startDateFilter = !startDate || incomeDate >= new Date(startDate);
+          const endDateFilter = !endDate || incomeDate <= new Date(endDate);
+          return startDateFilter && endDateFilter && income.owner_id === owner;
+      });
+
+      // Render filtered incomes
+      renderIndividualinvestmentIncomes(filteredIncomes);
+  }
+
+  // Add event listeners to start and end date inputs and owner selection
+  document.getElementById('member-investment-incomes-start').addEventListener('change', filterIncomes);
+  document.getElementById('member-investment-incomes-end').addEventListener('change', filterIncomes);
+  document.getElementById('investment-owner').addEventListener('change', filterIncomes);
+</script>
+
+
+<script>
+  function renderIndividualSavings(savings) {
+      const reportContainer = document.getElementById('individual-saving-items');
+
+      // Clear existing content
+      reportContainer.innerHTML = '';
+
+      savings.forEach(saving => {
+          // Create elements for each report
+          const reportDiv = document.createElement('div');
+          reportDiv.classList.add('item-single', 'mb-2', 'd-flex', 'flex-wrap');
+          reportDiv.style.width = '100%';
+
+          // Populate report data
+          reportDiv.innerHTML = `
+          
+            <div class="single-cube">
+              <p class="cube-title">Owner</p>
+              <button>${saving.owner_id}</button>
+            </div>
+            <div class="single-cube">
+              <p class="cube-title">Type</p>
+              <button>${saving.saving_type_id}</button>
+            </div>
+            <div class="single-cube">
+              <p class="cube-title">Date</p>
+              <button>${saving.date}</button>
+            </div>
+            <div class="single-cube">
+              <p class="cube-title">Amount</p>
+              <button>ksh ${saving.amount.toLocaleString()}</button>
+            </div>
+          
+          `;
+
+          // Append report to container
+          reportContainer.appendChild(reportDiv);
+      });
+  }
+
+  // Fetch data from the context passed by Django view
+  const individualSavings = {{ individual_saving_report | safe }};
+
+  // Initial rendering of reports
+  renderIndividualSavings(individualSavings);
+
+  // Filter savings based on selected start and end dates and owner
+  function filterMemberSavings() {
+      const startDate = document.getElementById('individual-savings-start').value;
+      const endDate = document.getElementById('individual-savings-end').value;
+      const owner = document.getElementById('individual-savings-owner').selectedOptions[0].innerText;
+
+      // Filter savings based on date range and owner
+      const filteredMemberSavings = individualSavings.filter(saving => {
+          const savingDate = new Date(saving.date);
+          const startDateFilter = !startDate || savingDate >= new Date(startDate);
+          const endDateFilter = !endDate || savingDate <= new Date(endDate);
+          const ownerFilter = saving.owner_id === owner;
+          return startDateFilter && endDateFilter && ownerFilter;
+      });
+
+      // Render filtered savings
+      renderIndividualSavings(filteredMemberSavings);
+  }
+
+  // Add event listeners to start and end date inputs and owner selection
+  document.getElementById('individual-savings-start').addEventListener('change', filterMemberSavings);
+  document.getElementById('individual-savings-end').addEventListener('change', filterMemberSavings);
+  document.getElementById('individual-savings-owner').addEventListener('change', filterMemberSavings);
+</script>
+
+
+<script>
+ 
+  function renderGroupSavings(savings) {
+      const reportContainer = document.getElementById('group-saving-items');
+      const groupSavingTotals = document.getElementById('group-savings-total');
+
+      // Clear existing content
+      reportContainer.innerHTML = '';
+
+      // Initialize total income
+      let totalIncome = 0;
+
+      savings.forEach(saving => {
+          // Create elements for each report
+          const reportDiv = document.createElement('div');
+          reportDiv.classList.add('item-single', 'mb-2', 'd-flex', 'flex-wrap');
+          reportDiv.style.width = '100%';
+
+          // Populate report data
+          reportDiv.innerHTML = `
+          
+            <div class="single-cube">
+              <p class="cube-title">type</p>
+              <button>${saving.saving_type_id}</button>
+            </div>
+            <div class="single-cube">
+              <p class="cube-title">date</p>
+              <button>${saving.date}</button>
+            </div>
+            <div class="single-cube">
+              <p class="cube-title">amount</p>
+              <button>Ksh ${saving.amount.toLocaleString()}</button>
+            </div>
+          
+          `;
+
+          // Append report to container
+          reportContainer.appendChild(reportDiv);
+
+          totalIncome += saving.amount; 
+
+          totalIncomeDiv = document.createElement('div');
+          totalIncomeDiv.innerHTML = `
+          <div class="summary-section-inner">
+            <h6>Total Amount</h6>
+            <h5>Ksh. ${totalIncome.toLocaleString()}</h5>
+          </div>
+          `;
+      });
+
+      groupSavingTotals.appendChild(totalIncomeDiv);
+  }
+
+  // Fetch data from the context passed by Django view
+  const groupSavings = {{ group_saving_report | safe }};
+
+  // Initial rendering of reports
+  renderGroupSavings(groupSavings);
+
+  // Filter reports based on selected start and end dates
+  function filterGroupSavings() {
+      const startDate = document.getElementById('group-savings-start').value;
+      const endDate = document.getElementById('group-savings-end').value;
+
+      // Filter reports based on date range
+      const filteredGroupSavings = groupSavings.filter(saving => {
+          const reportDate = new Date(saving.date);
+          return reportDate >= new Date(startDate) && reportDate <= new Date(endDate);
+      });
+
+      // Render filtered reports
+      renderGroupSavings(filteredGroupSavings);
+  }
+
+  // Add event listeners to start and end date inputs
+  document.getElementById('group-savings-start').addEventListener('change', filterGroupSavings);
+  document.getElementById('group-savings-end').addEventListener('change', filterGroupSavings);
+</script>
+<script>
+ 
+  function renderCollectedFines(fines) {
+      const reportContainer = document.getElementById('collected-fine-items');
+
+      // Clear existing content
+      reportContainer.innerHTML = '';
+
+     fines.forEach(fine => {
+          // Create elements for each report
+          const reportDiv = document.createElement('div');
+          reportDiv.classList.add('item-single', 'mb-2', 'd-flex', 'flex-wrap');
+          reportDiv.style.width = '100%';
+
+          // Populate report data
+          reportDiv.innerHTML = `
+          
+          <div class="single-cube">
+            <p class="cube-title">member</p>
+            <button>${fine.member}</button>
+          </div>
+          <div class="single-cube">
+            <p class="cube-title">type</p>
+            <button>${fine.type}</button>
+          </div>
+          <div class="single-cube">
+            <p class="cube-title">amount</p>
+            <button>ksh ${fine.fine_amount.toLocaleString()}</button>
+          </div>
+          <div class="single-cube">
+            <p class="cube-title">date</p>
+            <button>${fine.created}</button>
+          </div>
+          
+          `;
+
+          // Append report to container
+          reportContainer.appendChild(reportDiv);
+      });
+  }
+
+  // Fetch data from the context passed by Django view
+  const collectedFines = {{ collected_fines | safe }};
+
+  // Initial rendering of reports
+  renderCollectedFines(collectedFines);
+
+  // Filter reports based on selected start and end dates
+  function filterCollectedFines() {
+      const startDate = document.getElementById('collected-fines-start').value;
+      const endDate = document.getElementById('collected-fines-end').value;
+
+      // Filter reports based on date range
+      const filteredCollectedFines = collectedFines.filter(fine => {
+          const reportDate = new Date(fine.last_updated);
+          return reportDate >= new Date(startDate) && reportDate <= new Date(endDate);
+      });
+
+      // Render filtered reports
+      renderCollectedFines(filteredCollectedFines);
+  }
+
+  // Add event listeners to start and end date inputs
+  document.getElementById('collected-fines-start').addEventListener('change', filterCollectedFines);
+  document.getElementById('collected-fines-end').addEventListener('change', filterCollectedFines);
+</script>
+
+<script>
+ 
+  function renderUnpaidFines(fines) {
+      const reportContainer = document.getElementById('unpaid-fine-items');
+      const unpaidFinesTotals = document.getElementById('unpaid-fines-total');
+
+      // Clear existing content
+      reportContainer.innerHTML = '';
+      unpaidFinesTotals.innerHTML = '';
+
+      // Initialize total income
+      let totalFines = 0;
+
+     fines.forEach(fine => {
+          // Create elements for each report
+          const reportDiv = document.createElement('div');
+          reportDiv.classList.add('item-single', 'mb-2', 'd-flex', 'flex-wrap');
+          reportDiv.style.width = '100%';
+
+          // Populate report data
+          reportDiv.innerHTML = `
+          
+          <div class="single-cube">
+            <p class="cube-title">member</p>
+            <button>${fine.member}</button>
+          </div>
+          <div class="single-cube">
+            <p class="cube-title">type</p>
+            <button>${fine.type}</button>
+          </div>
+          <div class="single-cube">
+            <p class="cube-title">amount</p>
+            <button>ksh ${fine.fine_amount.toLocaleString()}</button>
+          </div>
+          <div class="single-cube">
+            <p class="cube-title">date</p>
+            <button>${fine.created}</button>
+          </div>
+          
+          `;
+
+          // Append report to container
+          reportContainer.appendChild(reportDiv);
+
+          totalFines += fine.fine_amount;
+      });
+
+      totalFinesDiv = document.createElement('div');
+      totalFinesDiv.innerHTML = `
+      <div class="summary-section-inner">
+        <h6 style="color: #FDC04E;">Total Unpaid Fines</h6>
+        <h5 style="color: #FDC04E;">Ksh ${totalFines.toLocaleString()}</h5>
+      </div>
+      `
+      unpaidFinesTotals.appendChild(totalFinesDiv);
+  }
+
+  // Fetch data from the context passed by Django view
+  const UnpaidFines = {{ unpaid_fines | safe }};
+
+  // Initial rendering of reports
+  renderUnpaidFines(UnpaidFines);
+
+  // Filter reports based on selected start and end dates
+  function filterUnpaidFines() {
+      const startDate = document.getElementById('unpaid-fines-start').value;
+      const endDate = document.getElementById('unpaid-fines-end').value;
+
+      // Filter reports based on date range
+      const filteredUnpaidFines = UnpaidFines.filter(fine => {
+          const reportDate = new Date(fine.last_updated);
+          return reportDate >= new Date(startDate) && reportDate <= new Date(endDate);
+      });
+
+      // Render filtered reports
+      renderUnpaidFines(filteredUnpaidFines);
+  }
+
+  // Add event listeners to start and end date inputs
+  document.getElementById('unpaid-fines-start').addEventListener('change', filterUnpaidFines);
+  document.getElementById('unpaid-fines-end').addEventListener('change', filterUnpaidFines);
+</script>
+
+<script>
+ 
+  function renderMyReports(reports) {
+      const reportContainer = document.getElementById('my-report-items');
+      const myCashflowReportTotals = document.getElementById('my-cashflow-report-totals-cont');
+      const myCashflowReportNet = document.getElementById('my-cashflow-report-net-cont');
+
+      // Clear existing content
+      reportContainer.innerHTML = '';
+      myCashflowReportTotals.innerHTML = '';
+
+      const totals = {};
+
+     reports.forEach(report => {
+          // Create elements for each report
+          const reportDiv = document.createElement('div');
+          reportDiv.classList.add('item-single', 'mb-2', 'd-flex', 'flex-wrap');
+          reportDiv.style.width = '100%';
+
+          // Populate report data
+          reportDiv.innerHTML = `
+          
+          <div class="single-cube">
+              <p class="cube-title">Member</p>
+              <button>${report.member_id}</button>    
+            </div>
+            <div class="single-cube">
+              <p class="cube-title">Type</p>
+              <button>${report.type}</button>
+            </div>
+            <div class="single-cube">
+              <p class="cube-title">Amount</p>
+              <button>ksh ${report.amount.toLocaleString()}</button>
+            </div>
+            <div class="single-cube">
+              <p class="cube-title">created</p>
+              <button>${report.object_date}</button>
+            </div>
+          
+          `;
+
+          // Append report to container
+          reportContainer.appendChild(reportDiv);
+
+          // Add the report amount to the total for its type
+          if (!totals[report.type]) {
+            totals[report.type] = 0;
+              }
+              totals[report.type] += report.amount;
+        });
+        
+                  // Display the total amount for each report type
+        for (const type in totals) {
+            const totalDiv = document.createElement('div');
+            totalDiv.innerHTML = `
+            <div class="summary-item-single">
+              <h6 class="summary-item-single-title">Total ${type}</h6>
+              <h6 class="summary-item-single-content">Ksh ${totals[type].toLocaleString()}</h6>
+            </div>
+            `;
+            myCashflowReportTotals.appendChild(totalDiv);
+        }
+
+        // Calculate and display net total
+        let netTotal = 0;
+        for (const type in totals) {
+            netTotal += totals[type];
+        }
+        const netTotalDiv = document.createElement('div');
+        netTotalDiv.innerHTML = `
+          <div class="summary-section-inner">
+              <h6>Net Cashflow</h6>
+              <h5>Ksh ${netTotal.toLocaleString()} </h5>
+            </div>
+          </div>
+        `;
+        myCashflowReportNet.appendChild(netTotalDiv);
+  }
+
+  // Fetch data from the context passed by Django view
+  const myReports = {{ my_reports | safe }};
+
+  // Initial rendering of reports
+  renderMyReports(myReports);
+
+  // Filter reports based on selected start and end dates
+  function filterMyReports() {
+      const startDate = document.getElementById('my-reports-start').value;
+      const endDate = document.getElementById('my-reports-end').value;
+
+      // Filter reports based on date range
+      const filteredMyReports = myReports.filter(report => {
+          const reportDate = new Date(report.date_created);
+          return reportDate >= new Date(startDate) && reportDate <= new Date(endDate);
+      });
+
+      // Render filtered reports
+      renderMyReports(filteredMyReports);
+  }
+
+  // Add event listeners to start and end date inputs
+  document.getElementById('my-reports-start').addEventListener('change', filterMyReports);
+  document.getElementById('my-reports-end').addEventListener('change', filterMyReports);
+</script>
+
+<script>
+ 
+  function renderMyInvestmentIncomes(incomes) {
+      const reportContainer = document.getElementById('my-income-items');
+
+      // Clear existing content
+      reportContainer.innerHTML = '';
+
+     incomes.forEach(income => {
+          // Create elements for each report
+          const reportDiv = document.createElement('div');
+          reportDiv.classList.add('item-single', 'mb-2', 'd-flex', 'flex-wrap');
+          reportDiv.style.width = '100%';
+
+          // Populate report data
+          reportDiv.innerHTML = `
+          
+          <div class="income-single-blob" style='width:100%;'>
+            <div class="income-single-inner">
+              <h5>Name</h5>
+              <p>${income.owner_id}</p>
+            </div>
+
+          </div>
+          <div class="income-single-blob">
+            <div class="income-single-inner">
+              <h5>Amount</h5>
+              <p>ksh ${income.amount.toLocaleString()}</p>
+            </div>
+
+          </div>
+          <div class="income-single-blob">
+            <div class="income-single-inner">
+              <h5>Date</h5>
+              <p>${income.user_date}</p>
+            </div>
+
+          </div>
+          
+          `;
+
+          // Append report to container
+          reportContainer.appendChild(reportDiv);
+      });
+  }
+
+  // Fetch data from the context passed by Django view
+  const myInvestmentIncomes = {{ my_investment_incomes | safe }};
+
+  // Initial rendering of reports
+  renderMyInvestmentIncomes(myInvestmentIncomes);
+
+  // Filter reports based on selected start and end dates
+  function filterMyInvesmentItems() {
+      const startDate = document.getElementById('my-incomes-start').value;
+      const endDate = document.getElementById('my-incomes-end').value;
+
+      // Filter reports based on date range
+      const filteredIncomes = myInvestmentIncomes.filter(income => {
+          const reportDate = new Date(income.date);
+          return reportDate >= new Date(startDate) && reportDate <= new Date(endDate);
+      });
+
+      // Render filtered reports
+      renderMyInvestmentIncomes(filteredIncomes);
+  }
+
+  // Add event listeners to start and end date inputs
+  document.getElementById('my-incomes-start').addEventListener('change', filterMyInvesmentItems);
+  document.getElementById('my-incomes-end').addEventListener('change', filterMyInvesmentItems);
+</script>
+
+<script>
+ 
+  function renderGroupContributions(contributions) {
+      const reportContainer = document.getElementById('group-contribution-items');
+      const totalIncomeCont = document.getElementById('group-contribution-total');
+
+      // Clear existing content
+      reportContainer.innerHTML = '';
+      totalIncomeCont.innerHTML = '';
+
+      // Initialize total income
+      let totalIncome = 0;
+
+     contributions.forEach(contribution => {
+          // Create elements for each report
+          const reportDiv = document.createElement('div');
+          reportDiv.classList.add('item-single', 'mb-2', 'd-flex', 'flex-wrap');
+          reportDiv.style.width = '100%';
+
+          // Populate report data
+          reportDiv.innerHTML = `
+          reportDiv.innerHTML = `
+          
+          reportDiv.innerHTML = `          
+          
+            <div class="income-single-blob">
+              <div class="income-single-inner">
+                <h5>Name</h5>
+                <p>${contribution.member_id}</p>
+              </div>
+
+            </div>
+            <div class="income-single-blob">
+              <div class="income-single-inner">
+                <h5>date</h5>
+                <p>${contribution.date_created}</p>
+              </div>
+
+            </div>
+            <div class="income-single-blob">
+              <div class="income-single-inner">
+                <h5>amount</h5>
+                <p>ksh ${contribution.amount_paid.toLocaleString()}</p>
+              </div>
+
+            </div>
+            <div class="income-single-blob">
+              <div class="income-single-inner">
+                <h5>Balance</h5>
+                <p>ksh ${contribution.balance.toLocaleString()}</p>
+              </div>
+
+            </div>
+          
+          `;
+
+          // Append report to container
+          reportContainer.appendChild(reportDiv);
+
+          totalIncome += contribution.amount_paid; 
+
+          totalIncomeDiv = document.createElement('div');
+          totalIncomeDiv.innerHTML = `
+          <div class="summary-section-inner">
+            <h6>Total Amount</h6>
+            <h5>Ksh. ${totalIncome.toLocaleString()}</h5>
+          </div>
+          `;
+      });
+
+      totalIncomeCont.appendChild(totalIncomeDiv);
+  }
+
+  // Fetch data from the context passed by Django view
+  const groupContributions = {{ group_contributions | safe }};
+
+  // Initial rendering of reports
+  renderGroupContributions(groupContributions);
+
+  // Filter reports based on selected start and end dates
+  function filterGroupContributions() {
+      const startDate = document.getElementById('group-contributions-start').value;
+      const endDate = document.getElementById('group-contributions-end').value;
+
+      // Filter reports based on date range
+      const filteredGroupContributions = groupContributions.filter(contribution => {
+          const reportDate = new Date(contribution.date_created);
+          return reportDate >= new Date(startDate) && reportDate <= new Date(endDate);
+      });
+
+      // Render filtered reports
+      renderGroupContributions(filteredGroupContributions);
+  }
+
+  // Add event listeners to start and end date inputs
+  document.getElementById('group-contributions-start').addEventListener('change', filterGroupContributions);
+  document.getElementById('group-contributions-end').addEventListener('change', filterGroupContributions);
+
+</script>
+
+<script>
+  function renderMemberContributions(contributions) {
+      const reportContainer = document.getElementById('member-contribution-items');
+      const memberTotalContributions = document.getElementById('member-contribution-total');
+      
+      // Clear existing content
+      reportContainer.innerHTML = '';
+      memberTotalContributions.innerHTML = '';
+
+      // Initialize total income
+      let totalContrib = 0;
+
+     contributions.forEach(contribution => {
+          // Create elements for each report
+          const reportDiv = document.createElement('div');
+          reportDiv.classList.add('item-single', 'mb-2', 'd-flex', 'flex-wrap');
+          reportDiv.style.width = '100%';
+
+          // Populate report data
+          reportDiv.innerHTML = `
+          
+          <div class="income-single-blob" style='width:100%;'>
+            <div class="income-single-inner">
+              <h5>Name</h5>
+              <p>${contribution.member_id}</p>
+            </div>
+
+          </div>
+          <div class="income-single-blob">
+            <div class="income-single-inner">
+              <h5>Date</h5>
+              <p>${contribution.date_created}</p>
+            </div>
+
+          </div>
+          <div class="income-single-blob">
+            <div class="income-single-inner">
+              <h5>Amount</h5>
+              <p>ksh ${contribution.amount_paid.toLocaleString()}</p>
+            </div>
+
+          </div>
+          <div class="income-single-blob">
+            <div class="income-single-inner">
+              <h5>Balance</h5>
+              <p>ksh ${contribution.balance.toLocaleString()}</p>
+            </div>
+
+          </div>
+          
+          `;
+
+          // Append report to container
+          reportContainer.appendChild(reportDiv);
+
+          totalContrib += contribution.amount_paid;
+
+      });
+
+      totalIncomeDiv = document.createElement('div');
+      totalIncomeDiv.innerHTML = `
+      <div class="summary-section-inner">
+        <h6>Total contributions</h6>
+        <h5> Kshs ${totalContrib.toLocaleString()}</h5>
+      </div>`
+
+      memberTotalContributions.appendChild(totalIncomeDiv);
+  }
+
+  // Fetch data from the context passed by Django view
+  const memberContributions = {{ group_contributions | safe }};
+
+  // Initial rendering of reports
+  renderMemberContributions(memberContributions);
+
+  // Filter reports based on selected start and end dates and member
+  function filterMemberContributions() {
+      const startDate = document.getElementById('group-contributions-start').value;
+      const endDate = document.getElementById('group-contributions-end').value;
+      const selectedMember = document.getElementById('member-contribution-owner').selectedOptions[0].innerText;
+
+      // Filter reports based on date range and selected member
+      const filteredMemberContributions = memberContributions.filter(contribution => {
+          const reportDate = new Date(contribution.date_created);
+          const startDateFilter = !startDate || reportDate >= new Date(startDate);
+          const endDateFilter = !endDate || reportDate <= new Date(endDate);
+          const memberFilter = contribution.member_id === selectedMember;
+          return startDateFilter && endDateFilter && memberFilter;
+      });
+
+      // Render filtered reports
+      renderMemberContributions(filteredMemberContributions);
+  }
+
+  // Add event listeners to start and end date inputs and member selection
+  document.getElementById('group-contributions-start').addEventListener('change', filterMemberContributions);
+  document.getElementById('group-contributions-end').addEventListener('change', filterMemberContributions);
+  document.getElementById('member-contribution-owner').addEventListener('change', filterMemberContributions);
+</script>
+
+<script>
+  function renderRepaymentSchedule(loans) {
+      const scheduleContainer = document.getElementById('repayment-schedule-items');
+
+      // Clear existing content
+      scheduleContainer.innerHTML = '';
+      
+      loans.forEach(loan => {
+          const scheduleItemDiv = document.createElement('div');
+          scheduleItemDiv.classList.add('schedule-item', 'mb-2');
+          scheduleItemDiv.style.width = '100%';
+
+          const scheduleRowDiv = document.createElement('div');
+          scheduleRowDiv.classList.add('schedule-row', 'd-flex', 'flex-wrap');
+          scheduleRowDiv.style.width = '100%';
+
+          scheduleRowDiv.innerHTML = `
+              <div class="single-cube">
+                  <p class="cube-title">Owner</p>
+                  <button>${loan.member_id}</button>
+              </div>
+              <div class="single-cube">
+                  <p class="cube-title">Loan</p>
+                  <button>${loan.type_id}</button>
+              </div>
+              <div class="single-cube">
+                <p class="cube-title">Repayment</p>
+                <button>${loan.schedule}</button>
+              </div>
+              <div class="single-cube">
+                  <p class="cube-title">Principal</p>
+                  <button>${loan.amount.toLocaleString()}</button>
+              </div>
+              <div class="single-cube">
+                <p class="cube-title">Due date</p>
+                <button>${loan.end_date}</button>
+            </div>
+              <div class="single-cube">
+                  <p class="cube-title">Total Due</p>
+                  <button>${loan.total_amount_to_be_paid.toLocaleString()}</button>
+              </div>
+              <div class="single-cube">
+                  <p class="cube-title">Interest</p>
+                  <button>${loan.intrest_rate}</button>
+              </div>
+          `;
+          scheduleItemDiv.appendChild(scheduleRowDiv);
+          scheduleContainer.appendChild(scheduleItemDiv);
+      });
+  }
+
+  // Fetch data from the context passed by Django view
+  const repaymentSchedule = {{ unpaid_loans | safe }};
+
+  // Initial rendering of the repayment schedule
+  renderRepaymentSchedule(repaymentSchedule);
+
+  // Filter repayment schedule based on selected owner
+  function filterRepaymentSchedule() {
+      const selectedOwner = document.getElementById('repayment-owner').value;
+
+      const filteredLoans = repaymentSchedule.filter(loan => {
+          const matchingOwner = selectedOwner === '' || loan.member_id === selectedOwner;
+          return matchingOwner;
+      });
+
+      renderRepaymentSchedule(filteredLoans);
+  }
+  document.getElementById('repayment-owner').addEventListener('change', filterRepaymentSchedule);
+</script>
+
+{%endblock%}

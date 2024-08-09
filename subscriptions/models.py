@@ -1,0 +1,53 @@
+from django.db import models
+from django.contrib.auth.models import User
+from django.utils import timezone
+from datetime import timedelta
+from chamas.models import Chama
+
+class PaymentDetail(models.Model):
+    amount = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    mpesa_receipt_number = models.CharField(max_length=100, null=True)
+    transaction_date = models.DateTimeField(null=True)
+    phone_number = models.CharField(max_length=20, null=True)
+    result_desc = models.CharField(max_length=255, null=True)
+    payment_status = models.CharField(max_length=20, choices=[
+        ('PENDING', 'Pending'),
+        ('SUCCESS', 'Success'),
+        ('FAILED', 'Failed'),
+    ], default='PENDING')
+    possible_duplicate = models.BooleanField(default=False) 
+
+
+class SubscriptionPlan(models.Model):
+    name = models.CharField(max_length=100, default="Standard Plan")
+    price = models.DecimalField(max_digits=6, decimal_places=2, default=2000.00)
+    trial_duration = models.DurationField(default=timedelta(days=14))
+    grace_period = models.DurationField(default=timedelta(days=2))
+
+    def __str__(self):
+        return self.name
+
+class ChamaSubscription(models.Model):
+    chama = models.ForeignKey(Chama, on_delete=models.CASCADE, default=None)
+    start_date = models.DateTimeField(auto_now_add=True)
+    end_date = models.DateTimeField()
+    plan = models.ForeignKey(SubscriptionPlan, on_delete=models.CASCADE, default=None)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True)
+    payment_details = models.ForeignKey(PaymentDetail, on_delete=models.CASCADE, null=True)
+    phone = models.CharField(max_length=25, blank=True, null=True)
+
+    def __str__(self):
+        return f'{self.chama.name} - {self.plan.name} - {self.user.username}'
+
+    def is_active(self):
+        now = timezone.now()
+        return now < self.end_date + self.plan.grace_period
+
+    def is_trial(self):
+        now = timezone.now()
+        return now < self.start_date + self.plan.trial_duration
+
+    def remaining_trial_days(self):
+        if self.is_trial():
+            return (self.start_date + self.plan.trial_duration - timezone.now()).days
+        return 0

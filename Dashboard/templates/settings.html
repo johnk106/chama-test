@@ -1,0 +1,345 @@
+{% extends 'goal_base.html' %}
+
+{% load static %}
+{% block title %}
+    Settings
+{% endblock %}
+{% block content %}
+
+    <body class="vertical  light  ">
+    <div class="wrapper">
+
+
+        <main role="main" class="main-content p-0">
+            <section class="wallet-banner">
+                <div class="container">
+                    <nav class="page_nav mob_nav show_on_mobile">
+                        <div class="brand">
+                            <a href="#">
+                                <img src="{% static 'images/Chama-Bora_clrd.png' %}" alt="">
+                            </a>
+                        </div>
+                        <ul class="nav-list">
+                            <li class="">
+                                <img src="{% static 'images/Notifications.png' %}" alt="">
+                            </li>
+                            <li class="">
+
+                                <button class="btn navbar-toggler text-muted collapseSidebar" type="button">
+
+                                    <img src="{% static 'images/menu.png' %}" alt="">
+                                </button>
+                            </li>
+                        </ul>
+                    </nav>
+                    <div class="c-o-b-e-dwrapper">
+                        <div class="wallet-content">
+                            <h4 class="h-heding">
+                                Settings
+                            </h4>
+                            <div class="text-center mt-4">
+                                {% if user_profile.picture %}
+                                    <img src="{{ user_profile.picture.url }}" alt="img"
+                                         class="avatar-img rounded-circle" style="height:130px;width:130px">
+                                {% else %}
+                                    <img src="{% static 'assets/avatars/face-1.png' %}" alt="img"
+                                         style="height:130px;width:130px"
+                                         class="avatar-img rounded-circle">
+                                {% endif %}
+                            </div>
+                            <br>
+                            <h5 class="name">{{ user_profile.owner.first_name }}
+                                &nbsp; {{ user_profile.owner.last_name }} </h5>
+                            <h5 class="name">{{ user_profile.phone }}</h5>
+                            <h6 class="name">{{ user_profile.owner.email }}</h6>
+                            <h6 class="status">
+                                Status: Active
+                            </h6>
+
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+
+            <section class="pt-3">
+                <div class="container">
+
+                    <div class="tabs_section">
+                        <nav>
+                            <div class="nav nav-tabs trans_section_tabs new-nack" id="nav-tab" role="tablist">
+                                <button class="nav-link set-c active" id="nav-home-tab" data-bs-toggle="tab"
+                                        data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home"
+                                        aria-selected="true">
+                                    PROFILE
+                                </button>
+                                <button class="nav-link set-c" id="nav-profile-tab" data-bs-toggle="tab"
+                                        data-bs-target="#nav-profile" type="button" role="tab"
+                                        aria-controls="nav-profile"
+                                        aria-selected="false">
+                                    SECURITY
+
+                                </button>
+                                <button class="nav-link set-c" id="nav-notifecation-tab" data-bs-toggle="tab"
+                                        data-bs-target="#nav-notifecation" type="button" role="tab"
+                                        aria-controls="nav-notifecation" aria-selected="false">
+                                    NOTIFICATIONS
+
+                                </button>
+
+                            </div>
+                        </nav>
+                        <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
+                                 aria-labelledby="nav-home-tab">
+                                <div class="tab_content">
+                                    <form method="post" action="{% url 'Setting' %}" enctype="multipart/form-data">
+
+                                        {% csrf_token %}
+                                        <label for="firstname">Change Picture</label>
+                                        <input type="file" name="upload">
+                                        <br>
+                                        <br>
+
+
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="firstname">Firstname</label>
+
+                                                <input type="text" name="firstname" class="form-control"
+                                                       placeholder="First Name">
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="lastname">Lastname</label>
+                                                <input type="text" name="lastname" class="form-control"
+                                                       placeholder="Last Name">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail4">Email</label>
+                                            <input type="email" class="form-control" id="inputEmail4" name="Email"
+                                                   placeholder="Email">
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="inputAddress5">Contact 1</label>
+                                                <input type="text" class="form-control" name="phone" id="inputAddress5"
+                                                       placeholder="Phone No">
+                                            </div>
+
+                                        </div>
+
+                                        {#                  <div class="form-row">#}
+                                        {#                    <div class="form-group col-md-6">#}
+                                        {#                      <label for="inputAddress5">Country</label>#}
+                                        {#                      <select id="inputState5" class="form-control">#}
+                                        {#                        <option selected="">Uganda</option>#}
+                                        {#                        <option selected="">Tanzania</option>#}
+                                        {#                        <option selected="">Rwanda</option>#}
+                                        {#                        <option selected="">Burundi</option>#}
+                                        {#                        <option selected="">Ethiopia</option>#}
+                                        {#                        <option selected="">South Sudan</option>#}
+                                        {#                        <option selected="">Kenya</option>#}
+                                        {#                      </select>#}
+                                        {#                    </div>#}
+                                        {#                    <div class="form-group col-md-6">#}
+                                        {#                      <label for="inputState5">County</label>#}
+                                        {#                      <select id="inputState5" class="form-control">#}
+                                        {#                        <option selected="">Baringo</option>#}
+                                        {#                        <option selected="">Bomet</option>#}
+                                        {#                        <option selected="">Bungoma</option>#}
+                                        {#                        <option selected="">Busia</option>#}
+                                        {#                        <option selected="">Elgeyo-Marakwet</option>#}
+                                        {#                        <option selected="">Garissa</option>#}
+                                        {#                        <option selected="">Homa Bay</option>                        #}
+                                        {#                        <option selected="">Isiolo</option>#}
+                                        {#                        <option selected="">Kajiado</option>#}
+                                        {#                        <option selected="">Kakamega</option>#}
+                                        {#                        <option selected="">Kilifi</option>#}
+                                        {#                        <option selected="">Kwale</option>#}
+                                        {#                        <option selected="">Kitui</option>#}
+                                        {#                        <option selected="">Kirinyaga</option>#}
+                                        {#                        <option selected="">Kiambu</option>#}
+                                        {#                        <option selected="">Kericho</option>#}
+                                        {#                        <option selected="">Kisumu</option>#}
+                                        {#                        <option selected="">Kisii</option>#}
+                                        {#                        <option selected="">Migori</option>#}
+                                        {#                        <option selected="">Murang'a</option>#}
+                                        {#                        <option selected="">Machakos</option>#}
+                                        {#                        <option selected="">Makueni</option>#}
+                                        {#                        <option selected="">Marsabit</option>#}
+                                        {#                        <option selected="">Mandera</option>#}
+                                        {#                        <option selected="">Mombasa</option>#}
+                                        {#                        <option selected="">Meru</option>#}
+                                        {#                        <option selected="">Nyamira</option>#}
+                                        {#                        <option selected="">Nyamira</option>#}
+                                        {#                        <option selected="">Nyamira</option>#}
+                                        {#                        <option selected="">Nyamira</option>#}
+                                        {#                        <option selected="">Nyamira</option>#}
+                                        {#                        <option selected="">Nyamira</option>#}
+                                        {#                        <option selected="">Nyamira</option>#}
+                                        {#                        <option selected="">Nyamira</option>#}
+                                        {#                        <option selected="">Nyamira</option>#}
+                                        {##}
+                                        {#                        <option selected="">Nyamira</option>#}
+                                        {#                        <option selected="">Nyamira</option>#}
+                                        {##}
+                                        {#                        <option selected="">Nyamira</option>#}
+                                        {#                        <option selected="">Nyamira</option>#}
+                                        {#                        <option selected="">Nyamira</option>#}
+                                        {##}
+                                        {#                        <option selected="">Nyamira</option>#}
+                                        {#                        <option selected="">Nyamira</option>#}
+                                        {##}
+                                        {#                      </select>#}
+                                        {#                    </div>                    #}
+                                        {#                  </div>#}
+                                        <div class="form-group">
+                                            <label for="inputEmail4">Physical Address</label>
+                                            <input type="text" class="form-control" name="address"
+                                                   placeholder="Address">
+                                        </div>
+
+
+                                        {#                  <h5 class="mb-0 mt-5">Next of Kin</h5>#}
+                                        {#                  <p>Let us know who is your next of kin incase of anything</p>#}
+
+                                        {#                  <div class="form-row">#}
+                                        {#                    <div class="form-group col-md-6">#}
+                                        {#                      <label for="firstname">Firstname</label>#}
+                                        {#                      <input type="text" id="firstname" class="form-control" placeholder="">#}
+                                        {#                    </div>#}
+                                        {#                    <div class="form-group col-md-6">#}
+                                        {#                      <label for="lastname">Lastname</label>#}
+                                        {#                      <input type="text" id="lastname" class="form-control" placeholder="">#}
+                                        {#                    </div>#}
+                                        {#                  </div>#}
+                                        {#                  <div class="form-row">#}
+                                        {#                    <div class="form-group col-md-6">#}
+                                        {#                      <label for="inputAddress5">Email</label>#}
+                                        {#                      <input type="text" class="form-control" id="inputAddress5" placeholder="">#}
+                                        {#                    </div>#}
+                                        {#                    <div class="form-group col-md-6">#}
+                                        {#                      <label for="inputAddress5">Phone Contacts</label>#}
+                                        {#                      <input type="text" class="form-control" id="inputAddress5" placeholder="">#}
+                                        {#                    </div>                    #}
+                                        {#                  </div>#}
+                                        {#                  <div class="form-group">#}
+                                        {#                    <label for="inputEmail4">Relationship</label>#}
+                                        {#                    <input type="email" class="form-control" id="address" placeholder="">#}
+                                        {#                  </div>#}
+
+                                        <button type="submit" class="btn btn-primary">Save Change</button>
+                                    </form>
+
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="nav-profile" role="tabpanel"
+                                 aria-labelledby="nav-profile-tab">
+                                <h5 class="tab_heading pt-3">
+                                    <form action="{% url 'setting_security' %}" method="post">
+                                        {% csrf_token %}
+                                        <div class="row mb-4">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="inputPassword5">New Password</label>
+                                                    <input type="password" class="form-control" id="fpassword"
+                                                           name="new_password" required onkeyup='check();'>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="inputPassword6">Confirm Password</label>
+                                                    <input type="password" class="form-control" id="spassword" required
+                                                           onkeyup='check();'>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p class="mb-2">Password requirements</p>
+                                                <p class="small text-muted mb-2"> To create a new password, you have to
+                                                    meet all of the following requirements: </p>
+                                                <ul class="small text-muted pl-4 mb-0">
+                                                    <li> Minimum 8 character</li>
+                                                    <li>At least one special character</li>
+                                                    <li>At least one Capital Alphabet character</li>
+                                                    <li>At least one number</li>
+
+                                                </ul>
+
+                                            </div>
+                                            <span id='message'></span>
+                                        </div>
+
+                                        {% if request.user.username == '33332222' %}
+
+
+                                            <button type="reset" class="btn btn-primary">Save Change</button>
+                                        {% else %}
+                                            <button type="submit" class="btn btn-primary">Save Change</button>
+                                        {% endif %}
+                                    </form>
+                                </h5>
+                            </div>
+                            <div class="tab-pane fade" id="nav-notifecation" role="tabpanel"
+                                 aria-labelledby="nav-notifecation-tab">
+                                <div class="row justify-content-center">
+                                    <div class="col-12 mb-4">
+                                        <br>
+                                        <p class="lead text-muted">Here is the list of your all notifications</p>
+
+                                        <div class="row">
+                                            {% for i in user_notifications %}
+                                                <div class="col-12 mb-4">
+                                                    <div class="alert alert-success" role="alert">
+                                                        <h4 class="alert-heading">{{ i.notification_title }}</h4>
+                                                        <p>{{ i.notification_body|safe }}.</p>
+                                                        <hr>
+                                                        <p class="mb-0">{{ i.created_at }}.</p>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+
+
+                                        </div>
+                                        <!-- end section -->
+
+                                    </div> <!-- .row -->
+                                </div> <!-- .container-fluid -->
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </section>
+        <footer class="mbl_footer">
+                <div class="container">
+                    <div class="footer_row d-flex flex-row justify-content-between align-items-center">
+                        <a href="{% url 'my_goals' %}" class="footer_button btn">
+                            <img class="homer_white" src="{% static 'images/home_white.png' %}" alt="">
+
+                            <p>Home</p>
+                        </a>
+                        <a href="#" class="footer_button btn active">
+                            <img src="{% static 'images/filter_active.png' %}" alt="">
+                            <p>Features</p>
+                        </a>
+                        <a href="{% url 'wallet_index' %}" class="footer_button btn">
+                            <img src="{% static 'images/wallet_alt_fill.png' %}" alt="">
+                            <p>Account</p>
+                        </a>
+                        <a href="{% url 'Setting' %}" class="footer_button btn">
+                            <img src="{% static 'images/setting.png' %}" alt="">
+                            <p>Settings</p>
+                        </a>
+                    </div>
+                </div>
+            </footer>
+
+
+            <!-- .container-fluid -->
+
+
+        </main>
+
+    </div>
+
+{% endblock %}

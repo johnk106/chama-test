@@ -1,0 +1,189 @@
+:root {
+    --color-default: #2191a5;
+    --color-second: #0067ac;
+    --color-white: #fff;
+    --color-body: #e4e9f7;
+    --color-light: #e0e0e0;
+}
+
+.create-contribution {
+    padding: 10px;
+    background-color: white;
+    border: none;
+    border-radius: 10px;
+    width: 100%;
+    height: auto;
+    margin-top: 10px;
+
+}
+
+.heading {
+    text-align: center;
+    color: black;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 32px;
+}
+
+.contribute-title {
+    font-weight: 500;
+    color: var(--color-default);
+    line-height: 20px;
+    font-size: 14px;
+
+}
+
+.input-box {
+    border-radius: 8px;
+    border: 1px solid rgb(182, 171, 171);
+    padding: 8px;
+    background-color: white;
+    margin: 2px;
+    width: 100%;
+}
+
+.input-box label {
+    font-weight: 400px;
+    size: 12px;
+    line-height: 18px;
+    color: var(--color-default);
+}
+
+.input-box input {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 18px;
+    color: #000000;
+    padding: 5px;
+    border: none;
+    width: 100%;
+    border-radius: 0;
+    background-color: white;
+    border: 1px solid white;
+    margin: 0;
+    height: auto;
+    width: 100%;
+
+}
+
+.create-button {
+    color: white;
+    background-color: var(--color-default);
+    border-radius: 8px;
+    padding: 12px 16px 12px 16px;
+    width: 100%;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+    border: none;
+    margin: 2px;
+
+}
+
+.contribution-list {
+    padding: 10px;
+    background-color: white;
+    border: none;
+    border-radius: 10px;
+    width: 100%;
+    height: auto;
+    margin-top: 10px;
+}
+
+.contribution-item {
+    width: 100%;
+    background-color: white;
+    border: 1px solid rgb(187, 179, 179);
+    border-radius: 10px;
+    padding: 10px;
+    margin: 2px;
+}
+
+.contribution-item p {
+    margin: 0;
+    padding: 0;
+}
+
+.contribution-item #contribution-name {
+    color: var(--color-default);
+    font-weight: 600;
+}
+
+.contribution-item .contribution-item-text {
+    color: rgb(168, 159, 159);
+    font-weight: 400;
+}
+
+.contributions-titles {
+    color: var(--color-default);
+    font-weight: 500;
+    line-height: 16px;
+}
+
+.contribution-details {
+    width: 100%;
+    border: none;
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 5px 0;
+
+
+
+}
+
+.sect-title {
+    color: var(--color-default);
+    font-weight: 500;
+
+}
+
+.member-list {
+    border-radius: 8px;
+    border: 0.25px solid var(--light, rgba(0, 0, 0, 0.20));
+    background: var(--light-surface-tertiary, #F1F5F9);
+    display: flex;
+    padding: 24px 12px;
+    align-items: flex-start;
+    gap: 12px;
+    align-self: stretch;
+    width: 100%;
+    flex-direction: column;
+}
+
+
+.profile-name {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.profile-div {
+    border-radius: 200px;
+    display: flex;
+    width: 32px;
+    height: 32px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.member-title {
+    color: var(--Primary-500, #2291A5);
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+}
+.member-single-header {
+    width: 100%;
+}
+
+.contribution-records {
+    background-color: white;
+    width: 100%;
+    padding: 10px;
+}

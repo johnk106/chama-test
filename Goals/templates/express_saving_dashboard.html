@@ -1,0 +1,155 @@
+{% extends 'goal_base.html' %}
+
+{% load static %}
+{% block title %}
+    Goad Details
+{% endblock %}
+{% block content %}
+    <div class="wrapper">
+
+
+        <main role="main" class="main-content p-0">
+            <header class=" weknz_header">
+                <div class="container">
+                    <nav class="page_nav mob_nav">
+                        <div class="brand">
+                            <a href="#">
+                                <img src="{% static 'images/Chama-Bora_clrd.png' %}" alt="">
+                            </a>
+                        </div>
+                        <ul class="nav-list">
+
+                            <li class="">
+
+                                <button class="btn" type="button" data-bs-toggle="offcanvas"
+                                        data-bs-target="#offcanvasRight"
+                                        aria-controls="offcanvasRight">
+
+                                    <img src="{% static 'images/left_arrow.png' %}" alt="">
+                                </button>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </header>
+
+
+                <div class="col-md-12">
+                    <section class="banner car_banner house_banner">
+                        <div class="container">
+                            <div class="wekenza_content">
+                                <h2 class="wekenz_h mb-2">
+                                    MY EXPRESS SAVING
+                                </h2>
+
+                                <h4 class="wekenza_price mb-2 text_shadows">
+                                   Total Deposit:  Kshs. {{ my_wallet.saving_balance|floatformat:2}}
+                                </h4> <br>
+                                <h4 class="wekenza_price mb-2 text_shadows">
+                                   Total Earned:  Kshs. {{ my_wallet.saving_profit|floatformat:2}}
+                                </h4>
+
+                            </div>
+
+                        </div>
+                    </section>
+                    <section class="creat_goals">
+                        <div class="container">
+                            <div class="d-flex flex-row align-items-center justify-content-between mt-3">
+                                <div class="d-flex flex-row align-items-center flex-column cursot-pointer"
+                                     data-bs-toggle="modal"
+                                     data-bs-target="#exampleModal9">
+                                      <a href="{% url 'express_saving' %}">
+                                    <div class="person_round d-flex align-items-center justify-content-center">
+                                        <img src="{% static 'images/wallet-money_.png' %}" alt="">
+                                    </div>
+
+                                    <h4 class="pesno_plus_h">Add Funds</h4>
+                                       </a>
+                                </div>
+                                <div class="d-flex flex-row align-items-center flex-column cursot-pointer"
+                                     data-bs-toggle="modal"
+                                     data-bs-target="#exampleModal8">
+                                    <div class="person_round d-flex align-items-center justify-content-center">
+                                        <img src="{% static 'images/money-send_.png' %}" alt="">
+                                    </div>
+                                    <h4 class="pesno_plus_h">Withdraw</h4>
+                                </div>
+                                <div class="d-flex flex-row align-items-center flex-column cursot-pointer"
+                                     class="btn btn-primary"
+                                     data-bs-toggle="modal" data-bs-target="#exampleModal7">
+                                    <div class="person_round d-flex align-items-center justify-content-center cursot-pointer">
+                                        <img src="{% static 'images/more_.png' %}" alt="">
+                                    </div>
+                                    <h4 class="pesno_plus_h">More</h4>
+                                </div>
+                            </div>
+                        <hr>
+                         <div class="d-flex flex-row align-items-left flex-column cursot-pointer btn btn-info"
+
+                                     >
+                        My Transactions
+                         </div>
+                     <br>
+                            {% for item in all_express_savings %}
+                            <div class="pt-3 astimate border-top border-bottom d-flex align-items-center justify-content-between">
+
+                                <div class="astimate_content text-center">
+                                    <h5>Deposit Date</h5>
+                                    <h4>
+                                        {{ item.created_at|date:"Y-m-d"}}
+                                    </h4>
+
+                                </div>
+                                <div class="astimate_content text-center">
+                                    <h5>Amount</h5>
+                                      <h4>
+                                        Kshs. {{ item.amount|floatformat:2}}
+                                    </h4>
+
+                                </div>
+                                <div class="astimate_content text-center">
+                                    <h5>Earned Interest till today</h5>
+                                      <h4>
+                                        Intrest Amount. {{ item.calculate_future_value_express_saving|floatformat:2}}
+                                    </h4>
+
+                                </div>
+
+
+                            </div>
+                            {% endfor %}
+
+                        </div>
+                    </section>
+                </div>
+
+
+            <footer class="mbl_footer">
+                <div class="container">
+                    <div class="footer_row d-flex flex-row justify-content-between align-items-center">
+                        <button class="footer_button btn">
+                            <img class="homer_white" src="{% static 'images/home_white.png' %}" alt="">
+
+                            <p>Home</p>
+                        </button>
+                        <button class="footer_button btn active">
+                            <img src="{% static 'images/filter_active.png' %}" alt="">
+                            <p>Features</p>
+                        </button>
+                        <button class="footer_button btn">
+                            <img src="{% static 'images/wallet_alt_fill.png' %}" alt="">
+                            <p>Account</p>
+                        </button>
+                        <button class="footer_button btn">
+                            <img src="{% static 'images/setting.png' %}" alt="">
+                            <p>Settings</p>
+                        </button>
+                    </div>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+
+{% endblock %}

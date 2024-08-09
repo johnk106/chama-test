@@ -1,0 +1,600 @@
+{%extends 'chamas/base.html'%} {%load static%} {% load humanize %} {%block head%}
+
+<title>Contributions</title>
+<link rel="stylesheet" href="{%static 'chamas/contribution.css'%}" />
+
+{%endblock%} {%block body%}
+
+<div class="text-capitalize">
+  <div class="row justify-content-center">
+    <div class="col-lg-6 col-md-12 col-sm-12 col-12 admin">
+      <div class="create-contribution" id="create-contribution">
+        <h2 class="heading">Create contribution</h2>
+        <p class="contribute-title">
+          <i class="fa-solid fa-arrows-left-right"></i> create Contributions
+        </p>
+        <div class="create-contribution-alert-hub"></div>
+        <form action="" id="create-contribution-form">
+          <div class="row" style="padding: 10px">
+            <div class="col-md-6 input-box">
+              <label for="name">Name</label>
+              <input type="text" name="name" id="name" />
+            </div>
+            <div class="col-md-5 input-box">
+              <label for="amount">Amount</label>
+              <input type="number" name="amount" id="amount" />
+            </div>
+          </div>
+          <div class="row" style="padding: 10px">
+            <div class="col-md-12 input-box">
+              <label for="start-date">Start date</label>
+              <input type="date" name="start-date" id="start-date" />
+            </div>
+            <div class="col-md-12 input-box">
+              <label for="end-date">end date</label>
+              <input type="date" name="end-date" id="end-date" />
+            </div>
+          </div>
+          <div class="row" style="padding: 10px">
+
+            <div class="col-md-12 input-box">
+              <label for="grace-period">Grace period</label>
+              <input type="number" name="grace-period" id="grace-period" />
+            </div>
+          </div>
+          <div class="textarea-input-box">
+            <textarea class="input-box" placeholder="please enter contribution description." name="description"
+              id="description" cols="30" rows="5"></textarea>
+          </div>
+          <button class="create-button" id="create-contribution-button" type="button">
+            Create Contribution
+          </button>
+        </form>
+      </div>
+    </div>
+    <div class="col-lg-6 col-md-12 col-sm-12 col-12 admin member">
+      <div class="contribution-list">
+        <h2 class="heading">Contribution list</h2>
+        <p class="contribute-title">
+          <i class="fa-solid fa-arrows-left-right"></i> Contribution list
+        </p>
+        <div class="row">
+          <div class="col-md-4">
+            <p class="contributions-titles">Contribution Name</p>
+          </div>
+
+          <div class="col-md-2">
+            <p class="contributions-titles">Amount</p>
+          </div>
+        </div>
+        {%for contribution in contributions%}
+        <div class="contribution-item">
+          <div class="row">
+            <div class="col-md-4">
+              <p id="contribution-name">{{contribution.name}}</p>
+            </div>
+
+            <div class="col-md-3">
+              <p class="contribution-item-text">ksh {{contribution.amount | intcomma }}</p>
+            </div>
+          </div>
+        </div>
+        {%endfor%}
+      </div>
+    </div>
+  </div>
+  <div class="row contribution-details">
+    <h4 class="sect-title">
+      Contribution details -
+      <span id="contribution-details-name"></span> contribution
+    </h4>
+    <div class="contribution-details-alert-hub">
+    </div>
+    <p style="display: none" id="contribution-id"></p>
+
+    <div class="col-md-5 member-list admin table-responsive">
+      <div class="cycle-name" style="width: 100%;">
+        <div class="cycle-name-alerts">
+
+        </div>
+        <div class="input-sect">
+          <div class="some-cont">
+            <label for="cycle-name" class="form-label fw-semibold">Cycle name</label>
+            <input type="text" name="cycle-name" class="form-control" id="cycle-name" placeholder="eg. Week One" required />
+          </div>
+        </div>
+      </div>
+      <table class="table table-hover" id="member-list">
+        <thead>
+          <tr>
+            <th scope="col"></th>
+            <th scope="col">Name</th>
+            <th scope="col">Contribution amount</th>
+            <th scope="col">amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {%for member in members%}
+          {%if member.active == True%}
+          <tr>
+            <th scope="row"></th>
+            <td>{{member.name}}</td>
+            <td>ksh <span class="contribution-details-amount"></span></td>
+            <td id="member-id" style="display: none">{{member.id}}</td>
+            <td>
+              <input type="number" id="amount" name="amount" class="w-100 h-100 p-2" />
+            </td>
+          </tr>
+          {%endif%}
+          {%endfor%}
+        </tbody>
+      </table>
+      <button class="btn btn-primary border-0" id="update-contributions"
+        style="width: 100%; background-color: #2291a5; color: white">
+        Update contributions
+      </button>
+    </div>
+    <br />
+    <br />
+
+    <div class="col-md-5 contributions-records admin member table-responsive" id="contribution-records"
+      style="margin: 5px; width: 100%">
+      <h4 class="sect-title">Contribution records</h4>
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">date</th>
+            <th scope="col">Member</th>
+            <th scope="col">Contribution name</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Balance</th>
+            <th scope="col" class="admin">Options</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+    <br />
+  </div>
+</div>
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Pay Contribution</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="pay-contribution-alerts"></div>
+        <div class="mb-3">
+          <label for="amount" class="form-label">Amount</label>
+          <input type="number" class="form-control" id="repayment-amount">
+        </div>
+        <input type="hidden" value="" id="contribution-record-id">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" style="background-color: #2291a5;"
+          id="pay-modal-button">Pay</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end pay modal -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="fineContribution" tabindex="-1" aria-labelledby="fineContributionLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="fineContributionLabel">Fine Contribution</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="fine-contribution-alerts"></div>
+        <select class="form-select" aria-label="Default select example" id="fine-type">
+          <label for="fine-type">Fine Type</label>
+          {%for type in fine_types%}
+          <option value="{{type.id}}">{{type.name}}</option>
+          {%endfor%}
+        </select>
+        <input type="hidden" value="" id="fine-contribution-record-id">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" style="background-color: #2291a5;"
+          id="fine-modal-button">fine</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end pay modal -->
+
+
+
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+  $(document).ready(function () {
+    function submitContributionForm() {
+      var formData = $("#create-contribution-form").serialize();
+
+      var chama_id = localStorage.getItem("groupId");
+
+      if (!chama_id) {
+        console.error("Invalid chama_id");
+        return;
+      }
+
+      // Get the CSRF token from the cookie
+      var csrfToken = getCookie("csrftoken");
+
+      // Check if the CSRF token is available
+      if (!csrfToken) {
+        console.error("CSRF token not found");
+        return;
+      }
+
+      // Include CSRF token in the headers
+      $.ajaxSetup({
+        headers: {
+          "X-CSRFToken": csrfToken,
+        },
+      });
+
+      // Submit the form data to the backend
+      $.ajax({
+        url: `/chamas-bookeeping/create-contribution/${chama_id}/`,
+        type: "POST",
+        data: formData,
+        success: function (response) {
+          if (response.status === "success") {
+            // Update the contribution list with the new contribution
+            var contribution = response.contribution;
+            var contributionItem = `
+              <div class="contribution-item">
+                <div class="row">
+                  <div class="col-md-4">
+                    <p id="contribution-name">${contribution.name}</p>
+                  </div>
+                  <div class="col-md-3">
+                    <p class="contribution-item-text">ksh ${contribution.amount}</p>
+                  </div>
+                </div>
+              </div>
+            `;
+
+            $(".contribution-list").append(contributionItem);
+
+            $("#create-contribution-form")[0].reset();
+
+            var successAlert = $('<div class="alert alert-success" role="alert">' + response.message + '</div>');
+            $(".create-contribution-alert-hub").append(successAlert);
+
+
+
+          } else {
+            $("#create-contribution-form")[0].reset();
+
+            var failAlert = $('<div class="alert alert-danger" role="alert">' + response.message + '</div>');
+            $(".create-contribution-alert-hub").append(failAlert);
+          }
+        },
+        error: function (xhr, status, error) {
+          alert("Failed to create contribution. Please try again.");
+        },
+      });
+    }
+
+    $("#create-contribution-button").unbind().on("click", function (event) {
+      event.preventDefault();
+      submitContributionForm();
+    })
+
+    // Function to get the value of a cookie by name
+    function getCookie(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie !== "") {
+        var cookies = document.cookie.split(";");
+        for (var i = 0; i < cookies.length; i++) {
+          var cookie = cookies[i].trim();
+
+          // Check if the cookie name matches the desired name
+          if (cookie.substring(0, name.length + 1) === name + "=") {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+  });
+</script>
+<script>
+  $(document).ready(function () {
+    // Function to handle click on a contribution item
+    function fetchAndRenderContributionDetails(contributionName) {
+      var chamaId = localStorage.getItem("groupId");
+
+      // Get the CSRF token from the cookie
+      var csrfToken = getCookie("csrftoken");
+
+      // Include CSRF token in the headers
+      $.ajaxSetup({
+        headers: {
+          "X-CSRFToken": csrfToken,
+        },
+      });
+
+      // Make AJAX request to retrieve contribution details
+      $.ajax({
+        url: `/chamas-bookeeping/retrieve-contribution/${chamaId}/`,
+        type: "POST",
+        data: JSON.stringify({ name: contributionName }),
+        contentType: "application/json",
+        success: function (response) {
+          if (response.status === "success") {
+            // Update contribution details div
+            $("#contribution-details-name").text(response.contribution.name);
+            $("#contribution-id").text(response.contribution.id);
+            $(".contribution-details-amount").text(response.contribution.amount);
+            // You can update other details as needed
+
+            // Update contribution records table
+            var recordsTableBody = $("#contribution-records tbody");
+            recordsTableBody.empty(); // Clear existing rows
+
+            // Group records by cluster
+            var clusters = {};
+            $.each(response.records.results, function (index, record) {
+              if (!clusters[record.cluster]) {
+                clusters[record.cluster] = [];
+              }
+              clusters[record.cluster].push(record);
+            });
+
+            // Render records by clusters
+            $.each(clusters, function (clusterName, records) {
+              // Add cluster subtopic
+              var clusterSubtopic = `
+                        <tr>
+                            <td colspan="5" class="cluster-subtopic" style="font-weight:bold;margin:5px;font-size:16px;">${clusterName}</td>
+                        </tr>`;
+              recordsTableBody.append(clusterSubtopic);
+
+              // Add records for the cluster
+              $.each(records, function (index, record) {
+                var selectedView = localStorage.getItem('selectedView');
+                 if(selectedView === 'admin'){
+                  var recordRow = `
+                            <tr data-record-id="${record.id}">
+                                <td>${new Date(record.date_created).toLocaleDateString()}</td>
+                                <td>${record.member}</td>
+                                <td>${record.contribution}</td>
+                                <td>ksh ${parseFloat(record.amount_paid).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                                <td>ksh ${parseFloat(record.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                                <td class="admin">
+                                    <button type="button" class="btn btn-primary btn-sm table-fine-button border-0" style="background-color:#2191a5;" data-bs-toggle="modal" data-bs-target="#fineContribution">fine</button>
+                                    <button type="button" class="btn btn-primary btn-sm table-pay-button border-0" style="background-color:#2191a5;" data-bs-toggle="modal" data-bs-target="#exampleModal">pay</button>
+                                </td>
+                            </tr>`;
+                } else{
+                  var recordRow = `
+                  <tr data-record-id="${record.id}">
+                      <td>${new Date(record.date_created).toLocaleDateString()}</td>
+                      <td>${record.member}</td>
+                      <td>${record.contribution}</td>
+                      <td>ksh ${parseFloat(record.amount_paid).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                      <td>ksh ${parseFloat(record.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                  </tr>`;
+
+                }
+                recordsTableBody.append(recordRow);
+              });
+            });
+          } else {
+            alert("Failed to retrieve contribution details. Please try again.");
+          }
+        },
+        error: function (xhr, status, error) {
+          alert("Failed to retrieve contribution details. Please try again.");
+        },
+      });
+    }
+
+
+    // Automatically fetch and render details for the first contribution item
+    var firstContributionItem = $(".contribution-item").first();
+    if (firstContributionItem.length > 0) {
+      var firstContributionName = firstContributionItem
+        .find("#contribution-name")
+        .text();
+      fetchAndRenderContributionDetails(firstContributionName);
+    }
+
+    // Function to handle click on a contribution item
+    $(".contribution-item").on("click", function () {
+      var contributionName = $(this).find("#contribution-name").text();
+      fetchAndRenderContributionDetails(contributionName);
+    });
+
+    // Function to handle click on the update contributions button
+    $("#update-contributions").on("click", function () {
+      var chamaId = localStorage.getItem("groupId");
+      var contributionId = $("#contribution-id").text();
+      var cluster = $('#cycle-name').val()
+
+      var isValid = true;
+
+      if (!cluster.trim()) {
+        var errorAlert = $('<div class="alert alert-danger" role="alert">Please enter a cycle name.</div>');
+        $(".cycle-name-alerts").html(errorAlert); // Display error message in the alerts hub
+        isValid = false;
+      }
+
+      if (!isValid) {
+        return;
+      }
+
+
+      // Loop through each table row and send contribution record request
+      $("#member-list tr").each(function (index) {
+        // Skip the first item (index 0)
+        if (index !== 0) {
+          var memberId = $(this).find("#member-id").text();
+          var amount = $(this).find('input[name="amount"]').val();
+          console.log(amount);
+
+          // Make AJAX request to create contribution record for each member
+          $.ajax({
+            url: `/chamas-bookeeping/create-contribution-record/${chamaId}/`,
+            type: "POST",
+            data: JSON.stringify({
+              contribution: contributionId,
+              member: memberId,
+              amount: amount,
+              cluster: cluster
+            }),
+            contentType: "application/json",
+            success: function (response) {
+              if (response.status === "success") {
+                // Display success message
+                var successAlert = $(`<div class="alert alert-success" role="alert"> ${response.message} </div>`);
+                $(".contribution-details-alert-hub").append(successAlert);
+
+                $(this).find('input[name="amount"]').val('');
+              } else {
+                // Display error message
+                var errorAlert = $(`<div class="alert alert-danger" role="alert"> ${response.message}</div>`);
+                $(".contribution-details-alert-hub").append(errorAlert);
+
+                $(this).find('input[name="amount"]').val('');
+              }
+            },
+            error: function (xhr, status, error) {
+              // Display error message for AJAX failure
+              var errorAlert = $('<div class="alert alert-danger" role="alert">Failed to create contribution record. Please try again.</div>');
+              $(".contribution-details-alert-hub").append(errorAlert);
+            },
+          });
+        }
+      });
+
+
+    });
+
+    // Function to get the value of a cookie by name
+    function getCookie(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie !== "") {
+        var cookies = document.cookie.split(";");
+        for (var i = 0; i < cookies.length; i++) {
+          var cookie = cookies[i].trim();
+
+          // Check if the cookie name matches the desired name
+          if (cookie.substring(0, name.length + 1) === name + "=") {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+  });
+</script>
+<script>
+  $(document).ready(function () {
+    // Function to handle click on the "pay" button in the table
+    $(document).on("click", ".table-pay-button", function () {
+      var recordId = $(this).closest("tr").data("record-id");
+      $("#contribution-record-id").val(recordId); // Set the record ID in the modal form input
+    });
+    // Function to handle click on the pay button in the modal
+    $("#pay-modal-button").on("click", function () {
+      var recordId = $("#contribution-record-id").val(); // Assuming you have an input with id "contribution-record-id" to store the record ID
+      var paymentAmount = $("#repayment-amount").val();
+
+      $.ajax({
+        url: `/chamas-bookeeping/pay-contribution/${recordId}/`,
+        type: "POST",
+        data: JSON.stringify({ amount: paymentAmount }),
+        contentType: "application/json",
+        success: function (response) {
+          if (response.status === "success") {
+            showAlert("alert-success", response.message);
+            // $("#exampleModal").modal("hide"); // Hide the modal after successful payment
+          } else {
+            showAlert("alert-danger", response.message);
+          }
+        },
+        error: function (xhr, status, error) {
+          showAlert("alert-danger", "Failed to process payment. Please try again.");
+        },
+      });
+    });
+
+    function showAlert(alertClass, message) {
+      var alertDiv = `<div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                            ${message}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>`;
+      $(".pay-contribution-alerts").html(alertDiv);
+    }
+  });
+
+</script>
+<script>
+  $(document).ready(function () {
+    // Function to handle click on the "pay" button in the table
+    $(document).on("click", ".table-fine-button", function () {
+      var recordId = $(this).closest("tr").data("record-id");
+      $("#fine-contribution-record-id").val(recordId); // Set the record ID in the modal form input
+    });
+    // Function to handle click on the pay button in the modal
+    $("#fine-modal-button").on("click", function () {
+      var recordId = $("#fine-contribution-record-id").val(); // Assuming you have an input with id "contribution-record-id" to store the record ID
+      var fine = $("#fine-type option:selected").val();
+
+      $.ajax({
+        url: `/chamas-bookeeping/fine-contribution/${recordId}/`,
+        type: "POST",
+        data: JSON.stringify({ 'fine': fine }),
+        contentType: "application/json",
+        success: function (response) {
+          if (response.status === "success") {
+            showAlert("alert-success", response.message);
+            //  $("#fineContribution").modal("hide"); // Hide the modal after successful payment
+          } else {
+            showAlert("alert-danger", response.message);
+          }
+        },
+        error: function (xhr, status, error) {
+          showAlert("alert-danger", "Failed to process payment. Please try again.");
+        },
+      });
+    });
+
+    function showAlert(alertClass, message) {
+      var alertDiv = `<div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                             ${message}
+                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                         </div>`;
+      $(".fine-contribution-alerts").html(alertDiv);
+    }
+  });
+
+</script>
+
+{%endblock%}

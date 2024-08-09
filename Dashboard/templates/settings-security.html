@@ -1,0 +1,139 @@
+
+{% extends 'goal_base.html' %}
+
+{% load static %}
+{% block title %}
+    Security Section
+{% endblock %}
+{% block content %}
+    <div class="wrapper">
+
+
+      <main role="main" class="main-content">
+        <div class="container-fluid">
+          <div class="row justify-content-center">
+            <div class="col-12 col-lg-10 col-xl-8">
+              <h2 class="h3 mb-4 page-title">Settings</h2>
+              <div class="my-4">
+                <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link " href="{% url 'Setting' %}" >Profile</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'setting_security' %}">Security</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#">Notifications</a>
+                  </li>
+                </ul>
+                <h5 class="mb-0 mt-5">Security Settings</h5>
+                <p>These settings are helps you keep your account secure.</p>
+
+<h5 style="text-decoration:#00a65a">{% include '_messages.html' %}</h5>
+
+                <form action="{% url 'setting_security' %}" method="post">
+                    {% csrf_token %}
+                  <div class="row mb-4">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="inputPassword5">New Password</label>
+                        <input type="password" class="form-control" id="fpassword" name="new_password" required onkeyup='check();'>
+                      </div>
+                      <div class="form-group">
+                        <label for="inputPassword6">Confirm Password</label>
+                        <input type="password" class="form-control" id="spassword" required onkeyup='check();'>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <p class="mb-2">Password requirements</p>
+                      <p class="small text-muted mb-2"> To create a new password, you have to meet all of the following requirements: </p>
+                      <ul class="small text-muted pl-4 mb-0">
+                        <li> Minimum 8 character </li>
+                        <li>At least one special character</li>
+                        <li>At least one Capital Alphabet character</li>
+                        <li>At least one number</li>
+
+                      </ul>
+
+                    </div>
+                      <span id='message'></span>
+                  </div>
+
+                    {% if request.user.username == '33332222' %}
+
+
+                  <button type="reset" class="btn btn-primary">Save Change</button>
+                    {% else %}
+                    <button type="submit" class="btn btn-primary">Save Change</button>
+                    {% endif %}
+                </form>
+              </div>
+            </div> 
+          </div>
+        </div>
+
+        
+        <div class="modal fade modal-notif modal-slide" tabindex="-1" role="dialog" aria-labelledby="defaultModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="defaultModalLabel">Notifications</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="list-group list-group-flush my-n3">
+                  <div class="list-group-item bg-transparent">
+                    <div class="row align-items-center">
+                      <div class="col">
+                        <small><strong>Your next contribution for Chama AA09gg is on Nov 27th </strong></small>
+                        <div class="my-0 text-muted small">Please pay load money before the date.</div>
+                        <small class="badge badge-pill badge-light text-muted">1m ago</small>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="list-group-item bg-transparent">
+                    <div class="row align-items-center">
+                      <div class="col">
+                        <small><strong>You qualify to join another chama</strong></small>
+                        <div class="my-0 text-muted small">You can be in more than two chamas at the same time</div>
+                        <small class="badge badge-pill badge-light text-muted">42m ago</small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="list-group-item bg-transparent">
+                    <div class="row align-items-center">
+                      <div class="col">
+                        <small><strong>Notifications have been sent</strong></small>
+                        <div class="my-0 text-muted small">Fusce dapibus, tellus ac cursus commodo</div>
+                        <small class="badge badge-pill badge-light text-muted">30m ago</small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="list-group-item bg-transparent">
+                    <div class="row align-items-center">
+                      <div class="col">
+                        <small><strong>Link was attached to menu</strong></small>
+                        <div class="my-0 text-muted small">New layout has been attached to the menu</div>
+                        <small class="badge badge-pill badge-light text-muted">1h ago</small>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">Clear All</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main> <!-- main -->
+    </div>
+
+
+{% endblock %}

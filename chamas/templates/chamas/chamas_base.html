@@ -1,0 +1,481 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <link
+    href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+    rel="stylesheet"
+  />
+    <link rel="stylesheet" href="{%static 'chamas/chamas-base.css'%}" />
+    
+
+    {%block head%} {%endblock%}
+    <title>Chamas</title>
+  </head>
+  <body class="container-fluid">
+    <div class="row" id="main-row">
+        {% comment %} /** Header Content Hidden on Large and Medium Screens **/ {% endcomment %}
+        <div class="section-header p-3 d-flex d-xs-block d-sm-block d-md-none d-flex">
+          <p class="title flex">Chamas</p>
+
+          <div class="actions flex ms-auto">
+            <div class="svg-sect pt-3 d-none d-md-block">
+                <i class='bx bxs-sun header-icon bx-sm'></i>
+                <i class='bx bxs-toggle-left header-icon bx-sm' ></i>
+                <i class='bx bxs-moon header-icon bx-sm' ></i>
+            </div>
+
+            <div class="dp-sect dropdown text-end">
+              <div class="avatar text-center">
+                {% if request.user.profile.picture %}
+                  <img src="{{ request.user.profile.picture.url }}" class="h-100 w-100" />
+                {% else %}
+                  <i class='bx bxs-user bx-md text-white pt-2' ></i>
+                {% endif %}
+              </div>
+              <p class="name pt-3">{{ request.user.first_name }} {{ request.user.last_name }} </p>
+              <i class='bx bx-chevron-down' data-bs-toggle="dropdown" aria-expanded="false"></i>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">My Profile</a></li>
+                <li><a class="dropdown-item" href="#">View as Member</a></li>
+                <li><a class="dropdown-item" href="#">My Groups</a></li>
+              </ul>
+            </div>
+            
+          </div>
+        </div>
+        {% comment %} Header Content Hidden on Large and Medium Screens End {% endcomment %}
+
+        <div class="col-lg-2 col-md-3 col-sm-12 col-12 side-nav p-4">
+            <div class="header-sect">
+            <p><i class="fa-solid fa-gauge"></i> Dashboard</p>
+            </div>
+
+            <div class="link-item">
+            <p>
+                <i class="fa-solid fa-group-arrows-rotate"></i> Merry-go-round chama
+            </p>
+            </div>
+
+            <div class="link-item">
+              <a href="" class="text-decoration-none">
+                <p id="bookeeping-link" class="bookeeping-window">
+                    <i class="fa-solid fa-clipboard"></i> Book keeping
+                </p>
+              </a>
+            </div>
+
+            <div class="link-item">
+            <p><i class="fa-solid fa-building-columns"></i> Table Banking</p>
+            </div>
+
+            <div class="link-item" id="back-link">
+              <a href="{% url 'goals_dashboard' %}" class="text-decoration-none"><p><i class="fa-solid fa-arrow-left"></i> Back</p></a>
+            </div>
+        </div>
+
+        <div class="col-lg-10 col-md-9 col-sm-12 col-12">
+             {% comment %} /** Header Content Shown on Large and Medium Screens **/ {% endcomment %}
+            <div class="d-none d-sm-none d-md-block d-lg-block">
+            <div class="section-header p-3 d-flex flex-wrap align-items-start justify-content-between">
+                <p class="title flex">Chamas</p>
+
+                <div class="actions flex">
+                    <div class="svg-sect pt-3">
+                        <i class='bx bxs-sun header-icon bx-sm'></i>
+                        <i class='bx bxs-toggle-left header-icon bx-sm' ></i>
+                        <i class='bx bxs-moon header-icon bx-sm' ></i>
+                    </div>
+
+                    <div class="dp-sect dropdown center">
+                    <div class="avatar">
+                      {% if request.user.profile.picture %}
+                        <img src="{{ request.user.profile.picture.url }}" class="h-100 w-100" />
+                      {% else %}
+                        <i class='bx bxs-user bx-md text-center text-white p-1' ></i>
+                      {% endif %}
+                    </div>
+                    <p class="name pt-3">{{ request.user.first_name }} {{ request.user.last_name }}</p>
+                    <i class='bx bx-chevron-down' data-bs-toggle="dropdown" aria-expanded="false"></i>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'Setting' %}">My Profile</a></li>
+                        <li><a class="dropdown-item" href="#">View as Member</a></li>
+                        <li><a class="dropdown-item" href="#">My Groups</a></li>
+                    </ul>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+            {%block body%} {%endblock%}
+        </div>
+    </div>
+    <!--Modals-->
+    <!--Add members to group modal-->
+    <div
+      class="modal fade"
+      id="exampleModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1
+              class="modal-title fs-5"
+              id="exampleModalLabel"
+              style="color: #2291a5"
+            >
+              Add Member to group
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form action="">
+              <div class="mobile-input">
+                <div class="mobile-input-label-section">
+                  <div class="mobile-input-label">Name</div>
+                  <input
+                    type="text"
+                    name="name"
+                    class="mobile-input-label-input"
+                    placeholder="Enter name"
+                    required
+                  />
+                </div>
+              </div>
+              <br />
+
+              <div class="mobile-input">
+                <div class="mobile-input-label-section">
+                  <div class="mobile-input-label">ID Number</div>
+                  <input
+                    type="text"
+                    name="id_number"
+                    class="mobile-input-label-input"
+                    placeholder="123456789"
+                    required
+                  />
+                </div>
+              </div>
+              <br />
+
+              <div class="mobile-input">
+                <div class="mobile-input-label-section">
+                  <div class="mobile-input-label">Email</div>
+                  <input
+                    type="email"
+                    name="email"
+                    class="mobile-input-label-input"
+                    placeholder="test@mail.com"
+                    required
+                  />
+                </div>
+              </div>
+              <br />
+
+              <div class="mobile-input">
+                <div class="mobile-input-label-section">
+                  <div class="mobile-input-label">Phone Number</div>
+                  <input
+                    type="text"
+                    name="phone"
+                    class="mobile-input-label-input"
+                    placeholder="07 xxx xxx xx"
+                    pattern="\\d*"
+                    maxlength="10"
+                    required
+                  />
+                </div>
+              </div>
+              <br />
+
+              <div class="input-group mb-3">
+                <label class="input-group-text" for="type">Role</label>
+                <select class="form-select" name="role" id="type">
+                  {%for role in roles%}
+                  <option value="{{role.name}}" class="text-capitalize">{{role.name}}</option>
+                  {%endfor%}
+                </select>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-primary"
+              style="background-color: #2291a5"
+            >
+              Add and add another
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--End Modal-->
+
+    <script
+      src="https://kit.fontawesome.com/d90233e428.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <!-- Your existing HTML code remains unchanged -->
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        let selectedMembers = [];
+
+        function addMemberToList(name, role, email, phone, id_number) {
+          selectedMembers.push({ name, role, email, phone, id_number });
+          updateSelectedMembersDisplay();
+        }
+
+        function updateSelectedMembersDisplay() {
+          const memberList = document.querySelector(".member-list");
+          memberList.innerHTML = "";
+
+          selectedMembers.forEach((member) => {
+            const memberDiv = document.createElement("div");
+            memberDiv.className = "member-single";
+            memberDiv.innerHTML = `
+                <div class="start">
+                    <div class="profile" style="background: url('https://png.pngtree.com/png-vector/20191101/ourmid/pngtree-cartoon-color-simple-male-avatar-png-image_1934459.jpg');"></div>
+                    <h5 class="member-name">${member.name}</h5>
+                </div>
+                <div class="role-indicator">
+                    <h5 class="role-title">${member.role}</h5>
+                </div>
+            `;
+            memberList.appendChild(memberDiv);
+          });
+        }
+
+        function displayMessage(type, message) {
+          const alertDiv = document.createElement("div");
+          alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+          alertDiv.role = "alert";
+          alertDiv.innerHTML = `${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+
+          const alertCluster = document.getElementById("alertCluster");
+          alertCluster.appendChild(alertDiv);
+        }
+
+        // Add event listener to "Add Members" button in the create chama form
+        document
+          .querySelector(".add-members-button")
+          .addEventListener("click", function () {
+            // Trigger the modal
+            $("#exampleModal").modal("show");
+          });
+
+        // Add event listener to "Add Member" button in the modal
+        document
+          .querySelector("#exampleModal .modal-footer .btn-primary")
+          .addEventListener("click", function () {
+            const name = document.querySelector(
+              "#exampleModal input[name='name']"
+            ).value;
+            const role = document.querySelector(
+              "#exampleModal select[name='role']"
+            ).value;
+            const email = document.querySelector(
+              "#exampleModal input[name = 'email']"
+            ).value;
+            let phone = document.querySelector(
+              "#exampleModal input[name='phone']"
+            ).value;
+            let id_number = document.querySelector(
+              "#exampleModal input[name='id_number']"
+            ).value;
+
+             // Validation
+            if (!name || !role || !email || !phone || !id_number) {
+                alert('All fields are required.');
+                return;
+            }
+
+            // Phone number validation
+            var regex = /^07\d{8}$/;
+            if (!regex.test(phone)) {
+                alert('Please enter a valid phone number.');
+                return;
+            }
+
+                    // Email validation
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Please enter a valid email address.');
+                return;
+            }
+
+            // strip the zero from the phone number and add kenyan country code
+            phone = `+254${phone.slice(1)}`;
+
+            addMemberToList(name, role, email, phone, id_number);
+
+            // Clear the form for the next member
+            document.querySelector("#exampleModal input[name='name']").value =
+              "";
+            document.querySelector("#exampleModal select[name='role']").value =
+              "";
+            document.querySelector("#exampleModal input[name='email']").value =
+              "";
+            document.querySelector("#exampleModal input[name='phone']").value =
+              "";
+            document.querySelector("#exampleModal input[name='id_number']").value =
+              "";
+          });
+
+        // Add event listener to "Create Chama" button
+        document
+          .querySelector(".add-button .create-chama-text")
+          .addEventListener("click", function () {
+            const name = document.querySelector(
+              ".new-chama-form input[name='name']"
+            ).value;
+            const date = document.querySelector(
+              ".new-chama-form input[name='date']"
+            ).value;
+            const typeSelect = document.querySelector(
+              ".new-chama-form select[name='type']"
+            );
+            const type = typeSelect.options[typeSelect.selectedIndex].value;
+
+            // Replace the following fetch request with your actual API endpoint and logic for creating a chama
+            fetch("/chamas-bookeeping/new-chama/", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}",
+              },
+              body: JSON.stringify({
+                name: name,
+                type: type,
+                date: date,
+              }),
+            })
+              .then((chamaResponse) => chamaResponse.json())
+              .then((chamaData) => {
+                if (chamaData.status === "success") {
+                  displayMessage("success", "Chama created successfully");
+                  console.log(chamaData.chama.id);
+                  addMembersToChama(chamaData.chama.id);
+
+                  /// one second delay before showing redirect message
+                  setTimeout(function () {
+                    console.log("redirecting...");
+                  }, 1000);
+
+                  displayMessage("warning", "Redirecting to your chamas...");
+
+                  // Delay redirection for 2 seconds
+                  setTimeout(function () {
+                    window.location.href = "/chamas-bookeeping/your-chamas/";
+                  }, 3000);
+                } else {
+                  displayMessage(
+                    "danger",
+                    `Failed to create chama: ${chamaData.message}`
+                  );
+                }
+              })
+              .catch((chamaError) => {
+                displayMessage(
+                  "danger",
+                  `An error occurred while creating a chama: ${chamaError}`
+                );
+              });
+          });
+
+        function addMembersToChama(chamaId) {
+          selectedMembers.forEach((member) => {
+            fetch(`/chamas-bookeeping/add-member/`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}",
+              },
+              body: JSON.stringify({
+                name: member.name,
+                role: member.role,
+                email: member.email,
+                phone: member.phone,
+                id_number: member.id_number,
+                group: chamaId,
+              }),
+            })
+              .then((memberResponse) => memberResponse.json())
+              .then((memberData) => {
+                if (memberData.status === "success") {
+                  displayMessage(
+                    "success",
+                    `Member ${memberData.member.name} added successfully`
+                  );
+                } else if (memberData.status === "failed") {
+                  displayMessage(
+                    "danger",
+                    `Failed to add member: ${memberData.message}`
+                  );
+                } else {
+                  displayMessage(
+                    "danger",
+                    `Failed to add member: ${memberData.message}`
+                  );
+                }
+              })
+              .catch((memberError) => {
+                displayMessage(
+                  "danger",
+                  `An error occurred while adding a member: ${memberError}`
+                );
+              });
+          });
+        }
+      });
+    </script>
+
+    <script>
+      $(document).ready(function() {
+       
+        function handleBookeepingClick(){
+            window.location.href = `/chamas-bookeeping/your-chamas/`;
+        }
+            
+        $('.bookeeping-window').on('click',function(event){
+          event.preventDefault();
+          handleBookeepingClick();
+        })    
+       
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,243 @@
+{%extends 'chamas/base.html'%}
+{%load static%}
+
+{%block head%}
+<title>Notifications</title>
+<link rel="stylesheet" href="{%static 'chamas/notifications.css'%}">
+{%endblock%}
+
+
+{%block body%}
+<div class="container-fluid justify-content-center">
+    <div class="container row justify-content-center mt-2">
+        <div class="body-div admin">
+            <h5 class="w-auto mx-auto">Create Notification type</h5>
+            <div class="div-header">
+                <h6>Enter name</h6>
+            </div>
+            <div class="create-type-alert-box">
+    
+            </div>
+            <form action="" id="create-notification-type" onsubmit="" style="width: 100%;">
+                {%csrf_token%}
+                <div class="input-sect">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="name" name="name" class="form-control" id="name">
+                    </div>
+                </div>
+                <div class="mb-3 desc-area">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                </div>
+                <button class="btn btn-primary border-0" type="button" onclick="submitType()" style="width: 100%;">Create Type</button>
+            </form>
+        </div>
+    
+        <div class="body-div admin">
+            <h5 class="w-auto mx-auto">Send notification</h5>
+            <div class="div-header">
+                <h6>Send Notification</h6>
+            </div>
+            <div class="send-notification-alert-box">
+    
+            </div>
+            <form action="" id="send-notification" onsubmit="" style="width: 100%;">
+                {%csrf_token%}
+    
+                <div class="input-group mb-3" style="width: 100%;">
+                    <label for="member">Member</label>
+                    <select id="member" name="member">
+                        <option selected value="group">Group</option>
+                        {%for member in members%}
+                        <option value="{{member.id}}">{{member.name}}</option>
+                        {%endfor%}
+                    </select>
+                </div>
+                <div class="input-group mb-3" style="width: 100%;">
+                    <label for="type">Type</label>
+                    <select id="type" name="type">
+                        {%for type in types%}
+                        <option value="{{type.id}}">{{type.name}}</option>
+                        {%endfor%}
+                    </select>
+                </div>
+                <div class="mb-3 desc-area">
+                    <label for="message" class="form-label">Message</label>
+                    <textarea class="form-control" id="message" name="message" rows="5"></textarea>
+                </div>
+                <button class="btn btn-primary border-0" type="button" onclick="sendNotification()" style="width: 100%;">Send</button>
+            </form>
+        </div>
+    </div>
+    <br>
+    <div class="container row justify-content-center">
+        <div class="body-div admin member">
+            <h5 class="w-auto mx-auto">Group Notifications</h5>
+            <div class="div-header">
+                <h6>Group Notifications</h6>
+            </div>
+            {%for notif in chama_notifs%}
+                <div class="expense-single d-flex flex-wrap">
+                    <div class="expense-cube">
+                        <p class="expense-title">
+                            Type
+                        </p>
+                        <button class="expense-value">{{notif.type.name}}</button>
+                    </div>
+        
+                    <div class="expense-cube">
+                        <p class="expense-title">
+                            Member
+                        </p>
+                        <button class="expense-value">group</button>
+                    </div>
+                    
+                    <div class="expense-cube">
+                        <p class="expense-title">
+                            Date
+                        </p>
+                        <button class="expense-value">{{notif.date | date:"d/m/Y"}}</button>
+                    </div>
+                    <br>
+                </div>
+            {% empty %}
+                <p class="mx-auto fw-semibold">No notifications</p>
+            {%endfor%}
+    
+        </div>
+    </div>
+    <br>
+    <div class="container row justify-content-center">
+        <div class="body-div admin member">
+            <h5 class="w-auto mx-auto">My Notifications</h5>
+            <div class="div-header">
+                <h6>My Notifications</h6>
+            </div>
+            {%for notif in my_notifs%}
+            <div class="expense-single d-flex flex-wrap">
+                <div class="expense-cube">
+                    <p class="expense-title">
+                        Type
+                    </p>
+                    <button class="expense-value">{{notif.type.name}}</button>
+                </div>
+                <div class="expense-cube">
+                    <p class="expense-title">
+                        Date
+                    </p>
+                    <button class="expense-value">{{notif.date | date:"d/m/Y"}}</button>
+                </div>
+                <br>
+                <p class="expense-title">
+                    Message
+                </p>
+                <button class="expense-value">{{notif.message}}</button>
+            </div>
+            {% empty %}
+                <p class="mx-auto fw-semibold">No notifications</p>
+            {%endfor%}
+    
+        </div>
+        <br>
+    </div>
+
+</div>
+
+<script>
+   function submitType() {
+    // Get form data
+    var formData = {
+        name: document.getElementById('name').value,
+        description: document.getElementById('description').value
+    };
+
+    // Get chama_id from localStorage
+    var chamaId = localStorage.getItem('groupId');
+
+    // Get CSRF token from the Django template
+    var csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+
+    // Perform AJAX request
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', `/chamas-bookeeping/new-notification-type/${chamaId}/`, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('X-CSRFToken', csrfToken);  // Add CSRF token to headers
+
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+
+            // Display success or error messages in the alert box
+            var alertBox = document.querySelector('.create-type-alert-box');
+            alertBox.innerHTML = `<div class="alert alert-${response.status === 'success' ? 'success' : 'danger'}" role="alert">${response.message}</div>`;
+
+            // Clear form fields
+            document.getElementById('name').value = '';
+            document.getElementById('description').value = '';
+        } else {
+            // Handle error
+            console.error('Error:', xhr.statusText);
+        }
+    };
+
+    xhr.onerror = function () {
+        // Handle network error
+        console.error('Network error');
+    };
+
+    // Send form data as JSON
+    xhr.send(JSON.stringify(formData));
+}
+
+</script>
+<script>
+    function sendNotification() {
+    // Get form data
+    var formData = {
+        member: document.getElementById('member').value,
+        message: document.getElementById('message').value,
+        type: document.getElementById('type').value
+    };
+
+    // Get chama_id from localStorage
+    var chamaId = localStorage.getItem('groupId');
+
+    // Get CSRF token from the Django template
+    var csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+
+    // Perform AJAX request
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', `/chamas-bookeeping/new-notification/${chamaId}/`, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('X-CSRFToken', csrfToken);
+
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+
+            // Display success or error messages in the alert box
+            var alertBox = document.querySelector('.send-notification-alert-box');
+            alertBox.innerHTML = `<div class="alert alert-${response.status === 'success' ? 'success' : 'danger'}" role="alert">${response.message}</div>`;
+
+            // Clear form fields
+            document.getElementById('member').value = '';
+            document.getElementById('message').value = '';
+            document.getElementById('type').value = '';
+        } else {
+            // Handle error
+            console.error('Error:', xhr.statusText);
+        }
+    };
+
+    xhr.onerror = function () {
+        // Handle network error
+        console.error('Network error');
+    };
+
+    // Send form data as JSON
+    xhr.send(JSON.stringify(formData));
+}
+
+</script>
+{%endblock%}

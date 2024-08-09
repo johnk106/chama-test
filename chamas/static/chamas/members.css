@@ -1,0 +1,443 @@
+:root {
+    --color-default: #2191a5;
+    --color-second: #0067ac;
+    --color-white: #fff;
+    --color-body: #e4e9f7;
+    --color-light: #e0e0e0;
+}
+
+.secs {
+    background-color: white;
+    padding: 10px;
+    box-shadow: 0px 10px 20px 0px rgba(148, 163, 184, 0.20);
+    border-radius: 10px;
+    margin-right: 5px;
+
+
+}
+
+h4 {
+    text-align: center;
+}
+
+.dp {
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.member-card {
+    padding: 3px;
+    border: 1px solid rgb(191, 191, 191);
+    border-radius: 10px;
+    margin: 5px;
+
+}
+
+
+.member-card p .contribution-amount {
+    color: green;
+}
+
+/* Additional styles for the email section */
+.member-card .d-flex {
+    align-items: center;
+}
+
+.member-card i {
+    font-size: 20px;
+    /* Adjust the size as needed */
+    color: #3498db;
+    /* Use your preferred color */
+}
+
+.member-card p {
+    color: #555;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+.member-card p .contribution-amount {
+    color: var(--color-default);
+}
+
+#member ,.member-bulb {
+    padding: 5px;
+    border-radius: 4px;
+    border: 0.5px;
+    font-size: 10px;
+    margin: 2px;
+    color: #0084FF;
+    background: linear-gradient(0deg, #E6F3FF, #E6F3FF),
+    linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
+}
+
+.admin-bulb,#admin {
+    padding: 5px;
+    border-radius: 4px;
+    border: 0.5px;
+    background: linear-gradient(0deg, #D9FBE7, #D9FBE7),
+    linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
+    color: #14C15A;
+    font-size: 10px;
+    margin: 2px;
+}
+
+#treasurer, .treasurer-bulb {
+    padding: 5px;
+    border-radius: 4px;
+    border: 0.5px;
+    font-size: 10px;
+    margin: 2px;
+    background: linear-gradient(0deg, #FFF9E6, #FFF9E6),
+    linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
+    color: #FFBF03;
+
+
+}
+
+#chairman ,.chairman-bulb {
+    padding: 5px;
+    border-radius: 4px;
+    border: 0.5px;
+    font-size: 10px;
+    margin: 2px;
+    background: linear-gradient(0deg, #f4e6ff, #f5e6ff),
+    linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
+    color: #a703ff;
+}
+
+.profile-image-parent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+}
+
+.circular-image {
+    width: 200px;
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    margin-bottom: 5px;
+}
+
+.profile-image-parent h6 {
+    color: var(--color-default);
+    letter-spacing: 1px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.profile-image-parent p {
+    font-family: Arial, Helvetica, sans-serif;
+    color: grey;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+}
+
+.name-section {
+    width: 100%;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 10px;
+    border: 1px solid grey;
+
+}
+
+.name-section h6 {
+    color: var(--color-default);
+    letter-spacing: 1px;
+    font-weight: bold;
+    margin-bottom: 5px;
+
+}
+
+.name-section p {
+    font-family: Arial, Helvetica, sans-serif;
+    color: grey;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+
+}
+
+.contact-section {
+    width: 100%;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 10px;
+    border: 1px solid grey;
+
+}
+
+.contact-section h6 {
+    color: var(--color-default);
+    letter-spacing: 1px;
+    font-weight: bold;
+    margin-bottom: 5px;
+
+}
+
+.contact-section p {
+    font-family: Arial, Helvetica, sans-serif;
+    color: grey;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+
+}
+
+.role-section {
+    width: 100%;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 10px;
+    border: 1px solid grey;
+
+}
+
+.role-section h6 {
+    color: var(--color-default);
+    letter-spacing: 1px;
+    font-weight: bold;
+    margin-bottom: 5px;
+
+}
+
+.role-section p {
+    font-family: Arial, Helvetica, sans-serif;
+    color: grey;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+
+}
+
+.contribution-section {
+    width: 100%;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 10px;
+    border: 1px solid grey;
+
+}
+
+.contribution-section-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.contribution-section .contribution-section-header h6 {
+    color: var(--color-default);
+    letter-spacing: 1px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.contribution-section .contribution-section-header i {
+    color: var(--color-default);
+    font-size: 16px;
+}
+
+.member-contributions {
+    display: none;
+    width: 100%;
+}
+
+.member-contributions .contribution-item {
+    background-color: #F1F5F9;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    margin-bottom: 4px;
+}
+
+.member-contributions .contribution-item label {
+    font-family: sans-serif;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 400;
+}
+
+.member-contributions .contribution-item input {
+    width: 100%;
+    color: grey;
+    font-family: sans-serif;
+    font-size: 12px;
+    border-radius: 5px;
+    padding: 5px;
+
+}
+
+#amount {
+    color: #2291A5;
+    background-color: #E6F7FA;
+}
+
+.loan-section {
+    width: 100%;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 10px;
+    border: 1px solid grey;
+
+}
+
+.loan-section-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.loan-section .loan-section-header h6 {
+    color: var(--color-default);
+    letter-spacing: 1px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.loan-section .loan-section-header i {
+    color: var(--color-default);
+    font-size: 16px;
+}
+
+.member-loans {
+    display: none;
+    width: 100%;
+}
+
+.member-loans .loan-item {
+    background-color: #F1F5F9;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    margin-bottom: 4px;
+}
+
+.member-loans .loan-item label {
+    font-family: sans-serif;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 400;
+}
+
+.member-loans .loan-item input {
+    width: 100%;
+    color: grey;
+    font-family: sans-serif;
+    font-size: 12px;
+    border-radius: 5px;
+    padding: 5px;
+
+}
+
+.fine-section {
+    width: 100%;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 10px;
+    border: 1px solid grey;
+
+}
+
+.fine-section-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.fine-section .fine-section-header h6 {
+    color: var(--color-default);
+    letter-spacing: 1px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.fine-section .fine-section-header i {
+    color: var(--color-default);
+    font-size: 16px;
+}
+
+.member-fines {
+    display: none;
+    width: 100%;
+}
+
+.member-fines .fine-item {
+    background-color: #F1F5F9;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    margin-bottom: 4px;
+}
+
+.member-fines .fine-item label {
+    font-family: sans-serif;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 400;
+}
+
+.member-fines .fine-item input {
+    width: 100%;
+    color: grey;
+    font-family: sans-serif;
+    font-size: 12px;
+    border-radius: 5px;
+    padding: 5px;
+
+}
+
+.remove-user-button {
+    width: 100%;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 10px;
+    border: 1px solid red;
+
+}
+
+.remove-user-button-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.remove-user-button .remove-user-button-header h6 {
+    color: red;
+    letter-spacing: 1px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.remove-user-button .remove-user-button-header i {
+    color: red;
+    font-size: 16px;
+}
+
+
+.add-member-button {
+    width: 100%;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 10px;
+    border: 1px solid var(--color-default);
+
+}
+
+.add-member-button-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.add-member-button .add-member-button-header h6 {
+    color: var(--color-default);
+    letter-spacing: 1px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.add-member-button .add-member-button-header i {
+    color: var(--color-default);
+    font-size: 16px;
+}

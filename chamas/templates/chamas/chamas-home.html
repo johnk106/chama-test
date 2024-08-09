@@ -1,0 +1,90 @@
+{%extends 'chamas/chamas_base.html'%}
+{%load static%}
+
+{%block head%}
+<link rel="stylesheet" href="{%static 'chamas/chama-home.css'%}">
+{%endblock%}
+
+{%block body%}
+
+<div class="container-fluid row justify-content-center mt-2">
+    <div class="col-12 left-sect p-3">
+        <p class="intro-text text-center">
+            You can join on Online Merry-Go-round Chama. Do Book keeping for your Chama or Create and Manage your Table Banking Chama.
+        </p>
+
+    </div>
+</div>
+
+<div class="tab-view">
+    <p class="tab-view-header-text">Chamas</p>
+    <p class="sub-header-text">
+        Join or Manage your Chama Online
+    </p>
+    <div class="row tab-view-ban">
+        <div class="col-md-3 tab-view-item">
+            <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M12 10C14.2091 10 16 8.20914 16 6C16 3.79086 14.2091 2 12 2C9.79086 2 8 3.79086 8 6C8 8.20914 9.79086 10 12 10Z" stroke="#2291A5" stroke-width="1.5"/>
+                <path opacity="0.5" d="M18 9C19.6569 9 21 7.88071 21 6.5C21 5.11929 19.6569 4 18 4" stroke="#2291A5" stroke-width="1.5" stroke-linecap="round"/>
+                <path opacity="0.5" d="M6 9C4.34315 9 3 7.88071 3 6.5C3 5.11929 4.34315 4 6 4" stroke="#2291A5" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M12 21C15.3137 21 18 19.2091 18 17C18 14.7909 15.3137 13 12 13C8.68629 13 6 14.7909 6 17C6 19.2091 8.68629 21 12 21Z" stroke="#2291A5" stroke-width="1.5"/>
+                <path opacity="0.5" d="M20 19C21.7542 18.6153 23 17.6411 23 16.5C23 15.3589 21.7542 14.3847 20 14" stroke="#2291A5" stroke-width="1.5" stroke-linecap="round"/>
+                <path opacity="0.5" d="M4 19C2.24575 18.6153 1 17.6411 1 16.5C1 15.3589 2.24575 14.3847 4 14" stroke="#2291A5" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+
+              <p class="tab-text">Merry Go Chama</p>
+
+
+        </div>
+        <div class="col-md-3 tab-view-item" id="home-bookeeping-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
+                <path d="M20.2311 16H8.23103C7.30106 16 6.83607 16 6.45457 16.1022C5.41929 16.3796 4.61065 17.1883 4.33325 18.2235" stroke="#2291A5" stroke-width="1.5"/>
+                <path d="M8.33325 7H16.3333" stroke="#2291A5" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M8.33325 10.5H13.3333" stroke="#2291A5" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M19.8333 19H8.33325" stroke="#2291A5" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M10.3333 22C7.50482 22 6.09061 22 5.21193 21.1213C4.33325 20.2426 4.33325 18.8284 4.33325 16V8C4.33325 5.17157 4.33325 3.75736 5.21193 2.87868C6.09061 2 7.50482 2 10.3333 2H14.3333C17.1617 2 18.5759 2 19.4546 2.87868C20.3333 3.75736 20.3333 5.17157 20.3333 8M14.3333 22C17.1617 22 18.5759 22 19.4546 21.1213C20.3333 20.2426 20.3333 18.8284 20.3333 16V12" stroke="#2291A5" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+
+              <p class="tab-text">Book keeping </p>
+
+        </div>
+        <div class="col-md-3 tab-view-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
+                <g clip-path="url(#clip0_4039_4475)">
+                  <path d="M24.0958 2.85742H6.952C6.80093 2.85742 6.65608 2.91755 6.54829 3.02458L0.833747 8.73921C0.727473 8.84624 0.666504 8.99134 0.666504 9.14292V20.5713C0.666504 20.887 0.922252 21.143 1.23728 21.143H24.0957C24.4108 21.143 24.6665 20.887 24.6665 20.5713V3.42904C24.6666 3.11342 24.4108 2.85742 24.0958 2.85742ZM23.5233 20.0005H1.80975V9.71446H6.952C7.26863 9.71446 7.52438 9.45846 7.52438 9.14283V3.99991H23.5233V20.0005Z" fill="#2291A5"/>
+                  <path d="M5.80857 11.4285C5.49346 11.4285 5.23779 11.6845 5.23779 12.0002V16.2863C5.23779 16.6019 5.49346 16.8572 5.80857 16.8572H20.095C20.4101 16.8572 20.6659 16.6019 20.6659 16.2863V7.71442C20.6659 7.3988 20.4101 7.14355 20.095 7.14355H14.3805C14.0654 7.14355 13.8097 7.3988 13.8097 7.71442V11.4285H5.80857V11.4285ZM16.667 12.5718V15.7148H10.38V12.5718H16.667ZM6.38095 12.5718H9.23831V15.7148H6.38095V12.5718ZM17.8086 15.7147V12.5717H19.5242V15.7147H17.8086ZM19.5243 8.28613V11.4285H14.9529V8.28613H19.5243Z" fill="#2291A5"/>
+                </g>
+                <defs>
+                  <clipPath id="clip0_4039_4475">
+                    <rect width="24" height="24" fill="white" transform="translate(0.666504)"/>
+                  </clipPath>
+                </defs>
+              </svg>
+
+              <p class="tab-text">Table Banking</p>
+
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+  $(document).ready(function() {
+   
+
+    function handleBookeepingClick(){
+        window.location.href = `/chamas-bookeeping/your-chamas/`;
+    }
+
+   
+    
+    $('#home-bookeeping-link').on('click',function(event){
+      event.preventDefault();
+      handleBookeepingClick();
+    })
+
+   
+  });
+</script>
+
+
+{%endblock%}
