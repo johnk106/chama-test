@@ -1,35 +1,41 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-
 from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
 from mpesa_integration.mpesa_credentials import LipanaMpesaPpassword, MpesaAccessToken
 from .models import SubscriptionPlan, ChamaSubscription, PaymentDetail
 from django.utils import timezone
 from django.urls import reverse
 from urllib.parse import urlencode
-
 from notifications.utils import *
 from authentication.models import *
 from notifications.models import *
 from chamas.models import Chama
-
-
 from datetime import datetime, timedelta
 from .utils import generate_jwt, decode_jwt
-
 from django.conf import settings
-
 import requests
 import json
+# settings.py
+import base64
+import os
+from requests.auth import HTTPBasicAuth
+from dotenv import load_dotenv
+
+load_dotenv()
+
+BASE_URL = os.getenv('BASE_URL')
+CONSUMER_KEY = os.getenv('CONSUMER_KEY')
+CONSUMER_SECRET = os.getenv('CONSUMER_SECRET')
+
 
 PAYMENT_SECRET_KEY = settings.SECRET_KEY
 
 
+
 @login_required(login_url='/user/Login')
 def subscription_chama(request, chama_id):
-    if(chama_id):
+    if (chama_id):
         request.session['chama_id'] = chama_id
     return redirect('subscription_plans')
 
@@ -38,11 +44,12 @@ def subscription_chama(request, chama_id):
 def subscription_plans(request):
     chama_id = request.session['chama_id']
 
-    plan = SubscriptionPlan.objects.first() 
+    plan = SubscriptionPlan.objects.first()
     chama = Chama.objects.get(id=chama_id)
     plan = SubscriptionPlan.objects.first()
     user = User.objects.filter(username=request.user).first()
-    (isTrial, isActive, current_chama_subscription) = is_subscription_active(chama, plan, user)
+    (isTrial, isActive, current_chama_subscription) = is_subscription_active(
+        chama, plan, user)
 
     print(chama_id)
 
@@ -78,44 +85,94 @@ def start_trial(request):
         trial_subscription.save()
     return redirect('chamas:chama-dashboard', chama_id=chama_id)
 
+def get_access_token():
+    endpoint = 'https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials'
+    r = requests.get(endpoint, auth=HTTPBasicAuth(
+        settings.CONSUMER_KEY, settings.CONSUMER_SECRET))
+    data = r.json()
+    return data['access_token']
+
+def mpesa_express(request):
+    amount = request.GET.get('amount')
+    phone = request.GET.get('phone')
+
+    endpoint = 'https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest'
+    access_token = get_access_token()
+    headers = {"Authorization": "Bearer %s" % access_token}
+    my_endpoint = settings.BASE_URL + "/lnmo-callback"
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    password = "4090949" + "ededc0834e52c0149c31c949ec986dad39946e7be3cea32f1bc985134b3e7857" + timestamp
+    datapass = base64.b64encode(password.encode('utf-8')).decode('utf-8')
+
+    data = {
+        "BusinessShortCode": "4090949",
+        "Password": datapass,
+        "Timestamp": timestamp,
+        "TransactionType": "CustomerPayBillOnline",
+        "PartyA": phone,  
+        "PartyB": "4090949",
+        "PhoneNumber": phone,  
+        "CallBackURL": my_endpoint,
+        "AccountReference": "TestPay",
+        "TransactionDesc": "HelloTest",
+        "Amount": amount
+    }
+
+    res = requests.post(endpoint, json=data, headers=headers)
+    return JsonResponse(res.json())
+
+def lnmo_callback(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        print("Received M-Pesa callback data:", data)
+        return JsonResponse({"status": "ok"})
+
+
 @login_required(login_url='/user/Login')
 def subscribe(request):
     profile = Profile.objects.filter(owner=request.user).first()
 
-    if(request.session['chama_id']):
-        request.session['chama_id'] = request.session['chama_id']
-
-    chama_id = request.session['chama_id']
-
-    chama = Chama.objects.get(id=chama_id)
-    plan = SubscriptionPlan.objects.first()
-
-    chama_subscription = None
-    try:
-        chama_subscription = ChamaSubscription.objects.filter(
-            chama=chama,
-            plan=plan
-        ).latest('id')
-    except ChamaSubscription.DoesNotExist:
-        chama_subscription = None  
-
     if request.method == 'POST':
-        if chama and chama_subscription:
-            # chama_subscription = chama.chamasubscription
-            # chama_subscription.end_date = timezone.now() + plan.trial_duration
-            # chama_subscription.save()
-            pass
-        else:
+        phone = request.POST.get('phone')
+        amount = float(request.POST.get('amount'))
+        chama_id = request.POST.get('chama_id')
+        user_id = request.POST.get('user_id')
+        plan_id = request.POST.get('plan_id')
+
+        # Fetch plan and chama based on provided IDs
+        chama = Chama.objects.get(id=chama_id)
+        plan = SubscriptionPlan.objects.get(id=plan_id)
+
+        # Prepare M-Pesa payment
+        mpesa_url = reverse('mpesa_express') + f"?phone={phone}&amount={amount}"
+        response = requests.get(mpesa_url).json()
+
+        if response.get('ResponseCode') == '0':  # Payment initiated successfully
+            # Create or update the subscription
             chama_subscription = ChamaSubscription.objects.create(
                 end_date=timezone.now() + plan.trial_duration,
                 chama=chama,
                 plan=plan
             )
             chama_subscription.save()
-         
-        return redirect('subscription_success')
 
-    plan_price = float(plan.price) 
+            # Redirect to a waiting page or success page
+            return redirect('subscription_waiting')
+        else:
+            # Handle M-Pesa payment initiation failure
+            return redirect('payment_error_page')
+
+    # If the request is GET, just render the form
+    if request.session.get('chama_id'):
+        chama_id = request.session['chama_id']
+    else:
+        # Handle error if chama_id is not in session
+        return redirect('error_page')
+
+    chama = Chama.objects.get(id=chama_id)
+    plan = SubscriptionPlan.objects.first()
+
+    plan_price = float(plan.price)
     tax = plan_price * 0.16
     total_amount = plan_price
     amount = total_amount - tax
@@ -124,16 +181,21 @@ def subscribe(request):
         'plan': plan,
         'phone': profile.phone,
         'chama_id': chama_id,
-        'user_id': request.user,
+        'user_id': request.user.id,
         'plan_id': plan.id,
-
-        'receipt_amount': amount, 
-        'receipt_tax': tax, 
+        'receipt_amount': amount,
+        'receipt_tax': tax,
         'receipt_total_amount': total_amount
     })
 
+from django.shortcuts import render
 
-def lipa_na_mpesa_online(chama_id, user_id, plan_id, phone, amount:int):
+@login_required(login_url='/user/Login')
+def subscription_waiting(request):
+    return render(request, 'subscriptions/subscription_waiting.html')
+
+
+def lipa_na_mpesa_online(chama_id, user_id, plan_id, phone, amount: int):
     without_plus_cellno = phone[1:]
     phone = int(''.join(filter(str.isdigit, without_plus_cellno)))
 
@@ -142,13 +204,13 @@ def lipa_na_mpesa_online(chama_id, user_id, plan_id, phone, amount:int):
     headers = {"Authorization": "Bearer %s" % access_token}
 
     computed_signature = generate_jwt({
-        'chama_id':chama_id, 
-        'user_id':user_id, 
-        'plan_id':plan_id,
-        'phone':phone,
-        'amount':amount
+        'chama_id': chama_id,
+        'user_id': user_id,
+        'plan_id': plan_id,
+        'phone': phone,
+        'amount': amount
     }, PAYMENT_SECRET_KEY)
-    
+
     request = {
         "BusinessShortCode": LipanaMpesaPpassword.Business_short_code,
         "Password": LipanaMpesaPpassword.decode_password,
@@ -176,40 +238,39 @@ def lipa_na_mpesa_online(chama_id, user_id, plan_id, phone, amount:int):
             message = "Insufficient funds. Please top up your M-Pesa account."
         elif data['ResponseCode'] == "2":
             message = "M-Pesa service is currently unavailable. Please try again later."
-        
+
     return {
-        'success' : success,
-        'message' : message,
-        'signature' : computed_signature
+        'success': success,
+        'message': message,
+        'signature': computed_signature
     }
 
 
 def is_subscription_active(chama, plan, user):
     try:
         current_chama_subscription = ChamaSubscription.objects.filter(
-            end_date__gte=timezone.now(), 
+            end_date__gte=timezone.now(),
             chama=chama,
             plan=plan,
             user=user,
         ).latest('end_date')
     except ChamaSubscription.DoesNotExist:
         return (False, None, None)
-    
+
     isTrial = current_chama_subscription.is_trial()
     isActive = current_chama_subscription.is_active()
 
     return (isTrial, isActive, current_chama_subscription)
 
-
     # if current_chama_subscription.end_date > timezone.now():
     #     return (True, current_chama_subscription, current_chama_subscription.end_date)
     # else:
     #     return (False, current_chama_subscription, current_chama_subscription.end_date)
-    
+
 # def is_subscription_active(chama, plan, user):
 #     try:
 #         current_chama_subscription = ChamaSubscription.objects.filter(
-#             end_date__gte=timezone.now(), 
+#             end_date__gte=timezone.now(),
 #             chama=chama,
 #             plan=plan,
 #             user=user,
@@ -222,9 +283,10 @@ def is_subscription_active(chama, plan, user):
 #     else:
 #         return (False, None)
 
-def add_subscription(chama:Chama, user:User, plan:SubscriptionPlan, payment_details:PaymentDetail, current_chama_subscription:ChamaSubscription, phone:str, active:bool):
+
+def add_subscription(chama: Chama, user: User, plan: SubscriptionPlan, payment_details: PaymentDetail, current_chama_subscription: ChamaSubscription, phone: str, active: bool):
     remaining_days = 0
-    
+
     if current_chama_subscription and active:
         _remaining_days = current_chama_subscription.end_date - timezone.now()
         remaining_days = max(_remaining_days.days, 0)
@@ -241,13 +303,13 @@ def add_subscription(chama:Chama, user:User, plan:SubscriptionPlan, payment_deta
     chama_subscription.save()
 
 
-def parse_mpesa_info(payload:dict):
+def parse_mpesa_info(payload: dict):
     try:
         callback = payload.get('Body', {}).get('stkCallback', {})
         result_code = callback.get('ResultCode')
         result_desc = callback.get('ResultDesc')
         metadata = callback.get('CallbackMetadata', {}).get('Item', [])
-        
+
         payment_details = {
             "Amount": None,
             "MpesaReceiptNumber": None,
@@ -265,7 +327,8 @@ def parse_mpesa_info(payload:dict):
                 payment_details['MpesaReceiptNumber'] = item.get('Value')
             elif item.get('Name') == 'TransactionDate':
                 transaction_date_str = str(item.get('Value'))
-                transaction_date = datetime.strptime(transaction_date_str, '%Y%m%d%H%M%S')
+                transaction_date = datetime.strptime(
+                    transaction_date_str, '%Y%m%d%H%M%S')
                 payment_details['TransactionDate'] = transaction_date
             elif item.get('Name') == 'PhoneNumber':
                 payment_details['PhoneNumber'] = item.get('Value')
@@ -273,28 +336,27 @@ def parse_mpesa_info(payload:dict):
         print("Payment details:", payment_details)
 
         return (payment_details, None)
-        
+
     except json.JSONDecodeError:
         return (None, "Invalid JSON payload")
-    
 
 
 @csrf_exempt
 def subscription_webhook(request, signature):
-    #chama_id, user_id, plan_id, 
+    # chama_id, user_id, plan_id,
     if request.method == 'POST':
         if not signature:
             return HttpResponseForbidden('Missing signature query parameter')
-    
+
         payload = json.loads(request.body)
         print("Received payload:", payload)
-        
+
         decoded_payload = decode_jwt(signature, PAYMENT_SECRET_KEY)
 
         # verify the webhook with a signature
         if not decoded_payload:
             return HttpResponseForbidden('Invalid signature')
-        
+
         chama_id = decoded_payload.get('chama_id')
         user_id = decoded_payload.get('user_id')
         plan_id = decoded_payload.get('plan_id')
@@ -303,7 +365,8 @@ def subscription_webhook(request, signature):
         plan = SubscriptionPlan.objects.first()
         user = User.objects.filter(username=user_id).first()
 
-        (isTrial, isActive, current_chama_subscription) = is_subscription_active(chama, plan, user)
+        (isTrial, isActive, current_chama_subscription) = is_subscription_active(
+            chama, plan, user)
 
         (mpesa_response, error) = parse_mpesa_info(payload)
 
@@ -319,54 +382,53 @@ def subscription_webhook(request, signature):
         payment_details = PaymentDetail.objects.create(**payment_detail_data)
 
         if not error and not isActive:
-            add_subscription(chama, user, plan, payment_details, current_chama_subscription, mpesa_response['PhoneNumber'], isActive)
-    
+            add_subscription(chama, user, plan, payment_details,
+                             current_chama_subscription, mpesa_response['PhoneNumber'], isActive)
+
     return HttpResponse('Webhook received')
 
 
+# @login_required(login_url='/user/Login')
+# @csrf_exempt
+# def subscription_waiting(request, signature=None):
+#     if request.method == 'POST':
+#         amount = (float(request.POST.get('amount')))
+#         phone = request.POST.get('phone')
+#         user_id = request.POST.get('user_id')
+#         chama_id = request.POST.get('chama_id')
+#         plan_id = request.POST.get('plan_id')
 
+#         response = lipa_na_mpesa_online(
+#             chama_id, user_id, plan_id, phone, amount)
+#         signature = response.get('signature')
+
+#         if response.get('success'):
+#             redirect_url = reverse('subscription_waiting_with_signature', kwargs={
+#                 'signature': signature
+#             })
+#         else:
+#             query_params = {
+#                 'message': response.get('message')
+#             }
+#             query_string = urlencode(query_params)
+#             redirect_url = reverse('subscription_error') + '?' + query_string
+
+#         return redirect(redirect_url)
+#     else:
+#         profile = Profile.objects.filter(owner=request.user).first()
+#         if (request.session['chama_id']):
+#             request.session['chama_id'] = request.session['chama_id']
+#         chama_id = request.session['chama_id']
+
+#         return render(request, 'subscriptions/waiting.html', {
+#             'chama_id': chama_id,
+#             'signature': signature,
+#         })
 
 
 @login_required(login_url='/user/Login')
-@csrf_exempt
-def subscription_waiting(request, signature = None):
-    if request.method == 'POST':
-        amount = (float(request.POST.get('amount')))
-        phone = request.POST.get('phone')
-        user_id = request.POST.get('user_id')
-        chama_id = request.POST.get('chama_id')
-        plan_id = request.POST.get('plan_id')
-
-        response = lipa_na_mpesa_online(chama_id, user_id, plan_id, phone, amount)
-        signature = response.get('signature')
-
-        if response.get('success'):
-            redirect_url = reverse('subscription_waiting_with_signature',kwargs={
-                'signature' : signature
-            }) 
-        else:
-            query_params = {
-                'message' : response.get('message')
-            }
-            query_string = urlencode(query_params)
-            redirect_url = reverse('subscription_error') + '?' + query_string
-            
-        return redirect(redirect_url)
-    else:
-        profile = Profile.objects.filter(owner=request.user).first()
-        if(request.session['chama_id']):
-            request.session['chama_id'] = request.session['chama_id']
-        chama_id = request.session['chama_id']
-
-        return render(request, 'subscriptions/waiting.html', {
-            'chama_id': chama_id,
-            'signature': signature,
-        })
-   
-
-@login_required(login_url='/user/Login')
-def subscription_status(request, signature = None):
-    decoded_payload = decode_jwt(signature, PAYMENT_SECRET_KEY) 
+def subscription_status(request, signature=None):
+    decoded_payload = decode_jwt(signature, PAYMENT_SECRET_KEY)
     # print(decoded_payload)
 
     chama_id = decoded_payload.get('chama_id')
@@ -386,11 +448,11 @@ def subscription_status(request, signature = None):
             plan=plan
         ).latest('id')
     except ChamaSubscription.DoesNotExist:
-        chama_subscription = None  
+        chama_subscription = None
 
     if not chama_subscription:
         return
-    
+
     if amount != plan.price:
         return
 
@@ -428,16 +490,15 @@ def subscription_status(request, signature = None):
 
 @login_required(login_url='/user/Login')
 def subscription_success(request):
-    if(request.session['chama_id']):
+    if (request.session['chama_id']):
         request.session['chama_id'] = request.session['chama_id']
     chama_id = request.session['chama_id']
     return render(request, 'subscriptions/success.html', {'chama_id': chama_id})
 
 
-
 @login_required(login_url='/user/Login')
-def subscription_error(request, error = None):
-    if(request.session['chama_id']):
+def subscription_error(request, error=None):
+    if (request.session['chama_id']):
         request.session['chama_id'] = request.session['chama_id']
     chama_id = request.session['chama_id']
     return render(request, 'subscriptions/error.html', {
