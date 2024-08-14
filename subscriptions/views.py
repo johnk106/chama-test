@@ -192,7 +192,7 @@ from django.shortcuts import render
 
 @login_required(login_url='/user/Login')
 def subscription_waiting(request):
-    return render(request, 'subscriptions/subscription_waiting.html')
+    return render(request, 'subscriptions/waiting.html')
 
 
 def lipa_na_mpesa_online(chama_id, user_id, plan_id, phone, amount: int):
