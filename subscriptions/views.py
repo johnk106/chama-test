@@ -244,7 +244,7 @@ def lipa_na_mpesa_online(chama_id, user_id, plan_id, phone,current_chama_subscri
         "PartyA": phone,  # replace with your phone number to get stk push
         "PartyB": LipanaMpesaPpassword.Business_short_code,
         "PhoneNumber": phone,  # replace with your phone number to get stk push
-        "CallBackURL": f"https://27e1-37-111-202-138.ngrok-free.app/subscriptions/webhook/{computed_signature}",
+        "CallBackURL": f"https://chamaspace.com/subscriptions/webhook/{computed_signature}",
         "AccountReference": "chamaspace software",
         "TransactionDesc": "chamabora stk push"
     }
