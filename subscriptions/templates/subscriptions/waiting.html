@@ -55,7 +55,7 @@
                     } 
                     if(!response.success && response.message){
                         var error = response.message;
-                        url = '{% url "subscription_failed" %}/' + encodeURIComponent(error)
+                        url = '/subscriptions/failed/' + encodeURIComponent(error)
                         window.location.replace(url)
                     } 
                 },

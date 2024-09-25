@@ -284,7 +284,7 @@ class NotificationItem(models.Model):
     forGroup = models.BooleanField()
 
     def __Str__(self):
-        return f'{self.member.name}  - {self.type.name} - {self.type.date}'
+        return f'{self.member.name}  - {self.type.name} - {self.type}'
     
 class Document(models.Model):
     name = models.CharField(max_length=255)

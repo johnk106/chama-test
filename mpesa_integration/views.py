@@ -12,7 +12,7 @@ from .models import *
 from twilio.rest import Client
 from django.conf import settings
 from authentication.models import *
-from .mpesa_credentials import MpesaAccessToken, LipanaMpesaPpassword
+from .mpesa_credentials import MpesaAccessToken, LipanaMpesaPpassword, get_mpesa_access_token
 
 
 def send_mpesa_success_sms(mobile, body):
@@ -51,7 +51,7 @@ def lipa_na_mpesa_online(request):
         phone=int(''.join(filter(str.isdigit, without_plus_cellno)))
 
 
-        access_token = MpesaAccessToken.validated_mpesa_access_token
+        access_token = get_mpesa_access_token()
         api_url = "https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
         headers = {"Authorization": "Bearer %s" % access_token}
         request = {
@@ -184,7 +184,7 @@ def callback(request):
 
 @csrf_exempt
 def register_urls(request):
-    access_token = MpesaAccessToken.validated_mpesa_access_token
+    access_token = get_mpesa_access_token()
     api_url = "https://api.safaricom.co.ke/mpesa/c2b/v2/registerurl"
     headers = {"Authorization": "Bearer %s" % access_token}
     options = {"ShortCode": LipanaMpesaPpassword.Business_short_code,
