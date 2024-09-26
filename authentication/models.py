@@ -72,7 +72,7 @@ class Profile(models.Model):
     otp = models.CharField(max_length=6,blank=True,null=True)
 
     def __str__(self):
-        return self.NIC_No
+        return self.NIC_No if self.NIC_No else self.owner
 
 
 
