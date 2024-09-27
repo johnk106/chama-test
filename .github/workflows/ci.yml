@@ -78,6 +78,6 @@ jobs:
             echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u jeldinvestment --password-stdin
             docker pull jeldinvestment/chamaspace_app
             docker rm -f chamaspace_app caddy;
-            docker run -d --name chamaspace_app --network chamaspace_network -p 8000:8000 -e ENVIRONMENT=production --restart always -v chama_db:/db --restart always  jeldinvestment/chamaspace_app sh -c "python manage.py migrate && python manage.py loaddata fixture.json && python manage.py create_superuser && python manage.py collectstatic --noinput && gunicorn Chamabora.wsgi:application --bind 0.0.0.0:8000" ;
+            docker run -d --name chamaspace_app --network chamaspace_network -p 8000:8000 -e ENVIRONMENT=production --restart always -v chama_db:/db --restart always  jeldinvestment/chamaspace_app sh -c "python manage.py migrate && python manage.py create_superuser && python manage.py collectstatic --noinput && gunicorn Chamabora.wsgi:application --bind 0.0.0.0:8000" ;
             docker run -d --name caddy --network chamaspace_network -p 80:80 -p 443:443 -v $(pwd)/Caddyfile:/etc/caddy/Caddyfile -v $(pwd)/data:/data --restart always caddy;
 
