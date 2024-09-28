@@ -257,7 +257,7 @@ class GroupGoalMember_contribution(models.Model):
         days_difference = delta.years * 365 + delta.months * 30 + delta.days
         daily_interest_rate = Decimal(interest_value.fixed_deposit) / 365
 
-
+        total_amount = 0.0
         # Calculate the future value using Decimal type for more accuracy
         future_value = self.amount * (1 + daily_interest_rate) ** Decimal(days_difference)
         total_amount += Decimal(future_value) - (self.amount)
