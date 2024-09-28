@@ -12,8 +12,9 @@ def is_user_chama_member(function):
             try:
                 subscription = ChamaSubscription.objects.filter(chama=chama).latest('end_date')
                 if not subscription.is_active():
-                    return redirect('subscription_plans')
-            except:
+                    return redirect('subscription_chama', chama_id=kwargs['chama_id'])
+            except Exception as e:
+                print(e)
                 pass
             return function(request, *args, **kwargs)
         else:
