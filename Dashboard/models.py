@@ -27,7 +27,7 @@ class Chamas(models.Model):
     name = models.CharField(max_length=700, null=True, blank=True ,verbose_name = "Chamas Name")
     amount = models.CharField(max_length=700, null=True, blank=True ,verbose_name = "Chamas Amount")
 
-    No_of_people = models.CharField(max_length=225,verbose_name = "No. of People")
+    No_of_people = models.CharField(max_length=225,verbose_name = "No. of People",db_column='No_of_people')
     frequency_of_contribution = models.CharField(max_length=225,verbose_name = "Frequency of Contribution")
 
     contribution_turn = models.CharField(max_length=225, null=True, blank=True,verbose_name = "Contribution Turn")
@@ -37,8 +37,8 @@ class Chamas(models.Model):
     status = models.CharField(max_length=225 ,verbose_name = "Chamas Status")
     active = models.CharField(max_length=225 ,verbose_name = "Is Active")
     user_id = models.ForeignKey(User,on_delete=models.CASCADE ,verbose_name = "User Name")
-    Awarded = models.CharField(max_length=225,null=True, blank=True)
-    Award_turn = models.CharField(max_length=225,null=True, blank=True,verbose_name = "Award Turn")
+    Awarded = models.CharField(max_length=225,null=True, blank=True, db_column='Awarded')
+    Award_turn = models.CharField(max_length=225,null=True, blank=True,verbose_name = "Award Turn",db_column='Award_turn')
     inserted_on = models.DateField(default=now,null=True, blank=True,verbose_name = "Inserted On")
     updated_on = models.DateField(default=now,null=True, blank=True,verbose_name = "Updated On")
 

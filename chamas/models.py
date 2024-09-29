@@ -206,8 +206,8 @@ class FineItem(models.Model):
     last_updated = models.DateTimeField(default=timezone.now)
     loan = models.ForeignKey(LoanItem,on_delete=models.SET_NULL,related_name = 'fines',default='',null=True)
     contribution = models.ForeignKey(Contribution,on_delete=models.SET_NULL,related_name='fines',null=True)
-    forLoan = models.BooleanField(default=False)
-    forContribution = models.BooleanField(default=False)
+    forLoan = models.BooleanField(default=False, db_column='forLoan')
+    forContribution = models.BooleanField(default=False, db_column='forContribution')
     contribution_balance = models.DecimalField(decimal_places=2,max_digits=10,null=True)
 
     def __str__(self):
@@ -237,7 +237,7 @@ class SavingType(models.Model):
 class Saving(models.Model):
     owner = models.ForeignKey(ChamaMember,on_delete = models.SET_NULL,related_name ='savings',null=True)
     chama = models.ForeignKey(Chama,related_name='savings',on_delete=models.CASCADE)
-    forGroup = models.BooleanField(default=False)
+    forGroup = models.BooleanField(default=False, db_column='forGroup')
     amount = models.DecimalField(max_digits=10,decimal_places=2)
     saving_type = models.ForeignKey(SavingType,on_delete=models.SET_NULL,related_name='savings',null=True)
     date = models.DateTimeField(default=timezone.now)
@@ -258,7 +258,7 @@ class Income(models.Model):
     date = models.DateTimeField(default=timezone.now)
     owner = models.ForeignKey(ChamaMember,on_delete=models.SET_NULL,related_name='incomes',null=True)
     chama = models.ForeignKey(Chama,on_delete=models.CASCADE,related_name='incomes')
-    forGroup = models.BooleanField(default=False)
+    forGroup = models.BooleanField(default=False, db_column='forGroup')
     amount = models.DecimalField(max_digits=10,decimal_places=2)
     user_date = models.DateField(default=timezone.now)
     investment = models.ForeignKey(Investment,on_delete=models.CASCADE,related_name='incomes',null=True)
@@ -281,7 +281,7 @@ class NotificationItem(models.Model):
     date = models.DateTimeField(default=timezone.now)
     type = models.ForeignKey(NotificationType,on_delete=models.SET_NULL,related_name='notifications',null=True)
     chama = models.ForeignKey(Chama,on_delete=models.CASCADE,related_name='notifications')
-    forGroup = models.BooleanField()
+    forGroup = models.BooleanField(db_column='forGroup')
 
     def __Str__(self):
         return f'{self.member.name}  - {self.type.name} - {self.type}'
@@ -301,7 +301,7 @@ class CashflowReport(models.Model):
     type = models.CharField(max_length=25)
     amount = models.DecimalField(max_digits=10,decimal_places=2)
     chama = models.ForeignKey(Chama,on_delete=models.CASCADE,related_name='cashflow_reports')
-    forGroup = models.BooleanField()
+    forGroup = models.BooleanField(db_column='forGroup')
     date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self):

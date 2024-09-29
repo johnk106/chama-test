@@ -59,7 +59,7 @@ class amount_per_contribution(models.Model):
 class Profile(models.Model):
     owner=models.OneToOneField(User,on_delete=models.CASCADE)
     phone = models.CharField(max_length=25, blank=True, unique=True, null=True)
-    NIC_No=models.CharField(max_length=25,unique=True,blank=True,null=True)
+    NIC_No=models.CharField(max_length=25,unique=True,blank=True,null=True, db_column='NIC_No')
     physical_address=models.CharField(max_length=40,blank=True,null=True)
     picture = models.ImageField(upload_to='ProfileImages', blank=True)
     # No_of_chamas_memebrs=models.CharField(max_length=225,blank=True,null=True)
@@ -72,7 +72,7 @@ class Profile(models.Model):
     otp = models.CharField(max_length=6,blank=True,null=True)
 
     def __str__(self):
-        return self.NIC_No if self.NIC_No else self.owner
+        return self.NIC_No if self.NIC_No else str(self.owner)
 
 
 
