@@ -27,8 +27,10 @@ class Tax(models.Model):
 
 class SubscriptionPlan(models.Model):
     name = models.CharField(max_length=100, default="Standard Plan")
+    period_name = models.CharField(max_length=100, blank=True, null=True, default="year")
     price = models.DecimalField(max_digits=6, decimal_places=2, default=2000.00)
     trial_duration = models.DurationField(default=timedelta(days=14))
+    period_duration = models.DurationField(default=timedelta(days=365))
     grace_period = models.DurationField(default=timedelta(days=2))
     taxes = models.ManyToManyField(Tax, related_name='subscription_plans_tax', blank=True)
     def __str__(self):

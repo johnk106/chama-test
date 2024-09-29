@@ -327,7 +327,7 @@ def add_subscription(chama: Chama, user: User, plan: SubscriptionPlan, payment_d
         _remaining_days = current_chama_subscription.end_date - timezone.now()
         remaining_days = max(_remaining_days.days, 0)
     current_chama_subscription.start_date = timezone.now()
-    current_chama_subscription.end_date=timezone.now() + timedelta(days=remaining_days + 30)
+    current_chama_subscription.end_date=timezone.now() + timedelta(days=remaining_days)+plan.period_duration
     current_chama_subscription.phone=phone
     current_chama_subscription.payment_details=payment_details
     current_chama_subscription.save()
