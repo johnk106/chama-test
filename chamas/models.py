@@ -37,7 +37,7 @@ class ChamaMember(models.Model):
     group = models.ForeignKey(Chama,on_delete=models.CASCADE,related_name ='member')
     role = models.ForeignKey(Role,on_delete = models.SET_NULL,related_name='member',null=True)
     member_id = models.CharField(max_length=25,blank=True,null=True)
-    user = models.ForeignKey(User,on_delete = models.CASCADE,related_name = 'membership')
+    user = models.ForeignKey(User,on_delete = models.SET_NULL,related_name = 'membership',  null=True, blank=True)
     active = models.BooleanField(default=True)
     profile = models.ImageField(blank=True,null=True)
 
@@ -81,7 +81,7 @@ class ContributionRecord(models.Model):
     amount_paid = models.DecimalField(max_digits=10,decimal_places=2)
     balance = models.DecimalField(max_digits=10,decimal_places=2)
     member = models.ForeignKey(ChamaMember,on_delete=models.SET_NULL,related_name='member_records',null=True)
-    chama = models.ForeignKey(Chama,on_delete=models.CASCADE,related_name='contribution_records')
+    chama = models.ForeignKey(Chama,on_delete=models.SET_NULL,related_name='contribution_records',  null=True, blank=True)
     last_updated = models.DateTimeField(default=timezone.now)
     cluster = models.CharField(max_length=55,default='')
 
@@ -245,7 +245,7 @@ class Saving(models.Model):
 #------------------------------------------------------
 class Investment(models.Model):
     name = models.CharField(max_length=55)
-    chama = models.ForeignKey(Chama,on_delete=models.CASCADE,related_name='investments')
+    chama = models.ForeignKey(Chama,on_delete=models.SET_NULL,related_name='investments',  null=True, blank=True)
     date = models.DateTimeField(default=timezone.now)
     amount = models.DecimalField(max_digits=10,decimal_places=2)
     user_date = models.DateField(default=timezone.now)
@@ -276,7 +276,7 @@ class NotificationType(models.Model):
         return self.name
     
 class NotificationItem(models.Model):
-    member = models.ForeignKey(ChamaMember,on_delete=models.CASCADE,related_name='notifications')
+    member = models.ForeignKey(ChamaMember,on_delete=models.SET_NULL,related_name='notifications',  null=True, blank=True)
     message = models.TextField()
     date = models.DateTimeField(default=timezone.now)
     type = models.ForeignKey(NotificationType,on_delete=models.SET_NULL,related_name='notifications',null=True)
