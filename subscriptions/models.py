@@ -37,11 +37,11 @@ class SubscriptionPlan(models.Model):
         return self.name
 
 class ChamaSubscription(models.Model):
-    chama = models.ForeignKey(Chama, on_delete=models.CASCADE, default=None)
+    chama = models.ForeignKey(Chama, on_delete=models.CASCADE)
     start_date = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField()
-    plan = models.ForeignKey(SubscriptionPlan, on_delete=models.CASCADE, default=None)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True)
+    plan = models.ForeignKey(SubscriptionPlan, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     payment_details = models.ForeignKey(PaymentDetail, on_delete=models.SET_NULL,blank=True, null=True)
     phone = models.CharField(max_length=25, blank=True, null=True)
 
