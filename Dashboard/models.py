@@ -99,7 +99,7 @@ class Transection(models.Model):
     updated_on = models.DateField(default=now,null=True, blank=True)
 
 class Wallet(models.Model):
-    chamas_id = models.ForeignKey(Chamas,on_delete=models.CASCADE)
+    chamas_id = models.ForeignKey(Chamas,on_delete=models.SET_NULL,null=True, blank=True)
     user_id = models.ForeignKey(User,on_delete=models.CASCADE)
 
     available_for_withdraw = models.FloatField(null=True, blank=True)
