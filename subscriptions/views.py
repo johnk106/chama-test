@@ -414,7 +414,7 @@ def subscription_webhook(request, signature):
         payment_details = PaymentDetail.objects.filter(checkout_request_id=mpesa_response["checkout_request_id"],
                                                        chama_subscription_id=
                                                        current_chama_subscription_id).update(**payment_detail_data)
-        if not error and mpesa_response["result_code"] == 0 and current_chama_subscription.is_active():
+        if not error and mpesa_response["result_code"] == 0:
             add_subscription(chama, user, plan, PaymentDetail.objects.get(checkout_request_id=mpesa_response["checkout_request_id"],
                                                            chama_subscription_id=
                                                            current_chama_subscription_id),
