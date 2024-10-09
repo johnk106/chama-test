@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import ExpressionWrapper, F, FloatField
 from django.utils import timezone
 from datetime import timedelta
 from chamas.models import Chama
@@ -35,6 +36,16 @@ class SubscriptionPlan(models.Model):
     taxes = models.ManyToManyField(Tax, related_name='subscription_plans_tax', blank=True)
     def __str__(self):
         return self.name
+
+    def get_total_amount(self):
+        plan_price = float(self.price)
+        all_tax = float(0.0)
+        taxes = self.taxes.all().annotate(tax_price=ExpressionWrapper(F('rate') * plan_price,
+                                                                      output_field=FloatField()
+                                                                      ))
+        for tax in taxes:
+            all_tax = all_tax + (plan_price * float(tax.rate))
+        return plan_price + round(all_tax,0)
 
 class ChamaSubscription(models.Model):
     chama = models.ForeignKey(Chama, on_delete=models.CASCADE)
