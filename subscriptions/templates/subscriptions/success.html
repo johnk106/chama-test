@@ -11,6 +11,8 @@
         }
     }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+
 <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md overflow-hidden p-8">
     <!-- Header: M-PESA Logo and Invoice Title -->
     <!-- Payment Success Message -->
@@ -69,9 +71,31 @@
 </div>
 
 <!-- Add JavaScript for downloading the invoice -->
+<!--?<script>-->
+<!--?    document.getElementById('download').addEventListener('click', function() {-->
+<!--?        window.print();  // This will trigger the browser's print dialog which you can use to download as PDF-->
+<!--?    });-->
+<!--?</script>-->
 <script>
     document.getElementById('download').addEventListener('click', function() {
-        window.print();  // This will trigger the browser's print dialog which you can use to download as PDF
+        // Get elements with the 'no-print' class
+        var noPrintElements = document.querySelectorAll('.no-print');
+
+        // Hide the elements with 'no-print' class
+        noPrintElements.forEach(function(element) {
+            element.style.display = 'none';
+        });
+
+        // Generate the PDF
+        var element = document.body;  // You can specify a particular element if needed
+        var fileName="invoice_{{ payment_details.mpesa_receipt_number }}.pdf";
+        html2pdf().from(element).save(fileName).then(function() {
+            // Restore the 'no-print' elements after PDF generation
+            noPrintElements.forEach(function(element) {
+                element.style.display = '';
+            });
+        });
     });
 </script>
+
 {% endblock %}
