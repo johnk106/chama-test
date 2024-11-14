@@ -54,34 +54,34 @@ def Login(request):
                     return redirect('my_goals')
 
 
-                otp = str(random.randint(1000, 9999))
-                print('OTP is:',otp)
-                user.otp = otp
-                user.save()
-                mobile = user.phone
+                # otp = str(random.randint(1000, 9999))
+                # print('OTP is:',otp)
+                # user.otp = otp
+                # user.save()
+                # mobile = user.phone
 
 
-                res=send_otp(mobile, otp)
-                print('Response form send opt fun is:', res)
-                if res == '200':
+                # res=send_otp(mobile, otp)
+                # print('Response form send opt fun is:', res)
+                # if res == '200':
 
 
-                    request.session['mobile'] = mobile
-                    request.session['Username'] = Username
-                    request.session['Password'] = Password
-                    return redirect('login_otp')
+                #     request.session['mobile'] = mobile
+                #     request.session['Username'] = Username
+                #     request.session['Password'] = Password
+                #     return redirect('login_otp')
 
-                else:
-                    user = auth.authenticate(username=Username, password=Password)
-                    print('line no 47 called')
+                # else:
+                #     user = auth.authenticate(username=Username, password=Password)
+                #     print('line no 47 called')
 
-                    login(request, user)
-                    resp = send_notif(search_str, None, True, True, "Successfully Login",
-                                      "You have successfully logged in to ChamaSpace. Welcome!", None, False, user)
-                    print(resp)
-                    UserFcmTokens.objects.create(user=user, token=search_str)
+                login(request, user)
+                resp = send_notif(search_str, None, True, True, "Successfully Login",
+                                    "You have successfully logged in to ChamaSpace. Welcome!", None, False, user)
+                print(resp)
+                UserFcmTokens.objects.create(user=user, token=search_str)
 
-                    return redirect('my_goals')
+                return redirect('my_goals')
 
 
 
@@ -171,6 +171,22 @@ def Sign_Up(request):
 
                     x.save()
                     y.save()
+                                        # Send OTP here after user successfully registers
+                    otp = str(random.randint(1000, 9999))
+                    print("Generated OTP for SignUp:", otp)
+                    y.otp = otp  # Save OTP in the profile
+                    y.save()
+
+                    # Send OTP to the user's phone number
+                    res = send_otp(Phone_no, otp)
+                    if res == '200':
+                        request.session['mobile'] = Phone_no
+                        request.session['Username'] = username
+                        return redirect('verify_otp')  # Redirect to OTP verification page
+                    else:
+                        messages.error(request, 'Failed to send OTP. Please try again later.')
+                        return redirect('Sign_up')
+
                     Wallet.objects.create(user_id=x, available_for_withdraw=0.0, pending_clearence=0.0,
                                           withdrawal=0.0,
                                           description='Wallet created on Sign Up').save()
