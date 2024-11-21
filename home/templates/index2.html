@@ -463,9 +463,9 @@
             <!-- app download section -->
             <div class="app-download-section text-center text-white py-5" style="background: linear-gradient(rgba(34, 36, 72, 0.8), rgba(34, 36, 72, 0.8)), url('{% static 'images/sApp.jpg' %}') center/cover;">
                 <div class="container py-5">
-                    <h1 class="display-4 mb-4">App is available for all devices</h1>
-                    <p class="lead mb-5 px-md-5" style="color: white;">
-                        ChamaSpace is designed to work seamlessly across all your devices. Whether you’re using a smartphone, tablet, laptop, or desktop, you can access the platform anytime, anywhere. 
+                    <h1 class="display-4 mb-4 app-download-title">App is available for all devices</h1>
+                    <p class="lead mb-5 px-md-5 app-download-text" style="color: white;">
+                        ChamaSpace is designed to work seamlessly across all your devices. Whether you're using a smartphone, tablet, laptop, or desktop, you can access the platform anytime, anywhere. 
                         With a user-friendly interface optimized for both mobile and web browsers, managing your Chama activities and personal savings has never been easier. 
                         Stay connected and in control, no matter the device you use!
                     </p>
@@ -512,7 +512,7 @@
                 </div>
 
                 <div class="row g-5">
-                    <!-- Contact Info - Made smaller and added more top margin -->
+                    <!-- Contact Info -->
                     <div class="col-md-3 mb-4 mb-md-0">
                         <h5 class="mb-4">Visits Us, Call, WhatsApp or Email us.</h5>
                         
@@ -544,7 +544,7 @@
                         </div>
                     </div>
 
-                    <!-- Contact Form - Made wider -->
+                    <!-- Contact Form -->
                     <div class="col-md-8 offset-md-1">
                         <form>
                             <div class="mb-4">
@@ -654,10 +654,8 @@
                   }
                 }
 
-                // Listen for changes
                 mediaQuery.addListener(handleMediaChange);
 
-                // Initial check
                 handleMediaChange(mediaQuery);
             </script>
 

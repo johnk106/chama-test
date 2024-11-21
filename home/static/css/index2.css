@@ -17,21 +17,21 @@
 
 .svg-container {
     position: relative;
-    height: 325px; /* Match the height of the SVG */
-    background-color: #007BFF; /* Background color of the div */
-    overflow: hidden; /* Ensure the SVG doesn't overflow */
+    height: 325px;
+    background-color: #007BFF; 
+    overflow: hidden; 
     height: 165%;
 }
 .svg-cutout {
     position: absolute;
-    bottom: 0; /* Position the SVG at the bottom */
+    bottom: 0; 
     left: 0;
-    width: 100%; /* Make the SVG fill the container */
-    height: auto; /* Maintain aspect ratio */
+    width: 100%; 
+    height: auto; 
 }
 .svg-background {
-    background-color: #2291A5; /* Color that appears where the SVG cuts */
-    height: 100%; /* Fill the height of the container */
+    background-color: #2291A5;
+    height: 100%; 
 }
 
 .text-container-hero {
@@ -230,7 +230,7 @@
     fill: white;
 }
 .steps-container {
-    max-width: 1400px; /* Increased from default 1200px */
+    max-width: 1400px;
     margin: 0 auto;
     padding: 0 30px;
 }
@@ -280,9 +280,6 @@
 .accordion-button:not(.collapsed)::after {
     transform: rotate(45deg);
 }
-.setup-steps {
-    color: #76b947;
-}
 .accordion-item {
     border-radius: 8px;
     overflow: hidden;
@@ -295,10 +292,10 @@
 @media only screen and (max-width: 450px) {
     .svg-container {
         position: relative;
-        height: 325px; /* Match the height of the SVG */
-        background-color: #007BFF; /* Background color of the div */
-        overflow: hidden; /* Ensure the SVG doesn't overflow */
-        height: 150%;
+        height: 325px; 
+        background-color: #007BFF; 
+        overflow: hidden;
+        height: 170%;
     }
 
     .mobile-image-div{
@@ -320,17 +317,17 @@
     .main-text {
         color: white;
         line-height: 150%;
-        font-size: 80%;
+        font-size: 120%;
     }
     .sub-text {
         color: white; 
-        font-size: 50%; 
+        font-size: 80%; 
         margin-top: 4%; 
         line-height: 140%;
     }
     .info-text {
         color: white; 
-        font-size: 50%; 
+        font-size: 80%; 
         margin-top: 4%; 
         line-height: 140%; 
         font-style: italic;
@@ -403,6 +400,14 @@
         margin-top: 5%;
         color: white;
     }
+
+    .app-download-title {
+        font-size: 24px !important;
+    }
+    
+    .app-download-text {
+        font-size: 14px !important;
+    }
 }
 
 .store-button {
@@ -439,7 +444,6 @@
     opacity: 0.8;
 }
 
-/* Contact section styles */
 .contact-icon-box {
     background-color: #2291A5;
     padding: 12px;
