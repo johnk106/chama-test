@@ -5,6 +5,7 @@
 {% endblock %}
 {% block content %}
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="{% static 'css/index2.css' %}"> 
         <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
     </head>
@@ -14,7 +15,7 @@
             <nav class="navbar navbar-expand-lg nav">
                 <div class="container-fluid">
                   <a class="navbar-brand" href="/">
-                    <img src="{% static 'images/ChamaSpace_Logo.png' %}" alt="Logo" width="129" height="80" class="d-inline-block align-text-top logo">
+                    <img src="{% static 'images/ChamaSpace_Logo.png' %}" alt="Logo" width="100" height="60" class="d-inline-block align-text-top logo">
                   </a>
                   <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list prime-color" viewBox="0 0 16 16">
@@ -495,7 +496,7 @@
             </div>
 
             <!-- contact section -->
-            <div class="p-5" style="background-color:#F5F5F5;" id="contact">
+            <div class="p-3 p-md-5" style="background-color:#F5F5F5;" id="contact">
                 <div class="text-center mb-5">
                     <h1 class="display-4" style="color: black;">Contact Us</h1>
                     <div class="mx-auto" style="width: 200px; height: 3px; background-color: #7C4FE0;"></div>
@@ -609,7 +610,7 @@
             </div>
 
             <script defer>
-                const mediaQuery = window.matchMedia('(max-width: 375px)');
+                const mediaQuery = window.matchMedia('(max-width: 768px)');
                 const heroDiv = document.getElementById("heroContent")
                 const wekezaDiv = document.getElementById("wekeza-list-and-image-container")
                 const wekezaPaddingDiv = document.getElementById("wekeza-padding")

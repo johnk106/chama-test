@@ -71,8 +71,8 @@
     margin: 3% 11% 0px 0px;
 }
 .mobile-image {
-    height: 840px; 
-    width: 395px;
+    height: 50rem; 
+    width: 25rem;
 }
 
 .metrics-row {
@@ -292,7 +292,7 @@
     border-radius: 8px;
 }
 
-@media only screen and (max-width: 375px) {
+@media only screen and (max-width: 450px) {
     .svg-container {
         position: relative;
         height: 325px; /* Match the height of the SVG */
@@ -306,8 +306,8 @@
         justify-content: center;
     }
     .mobile-image {
-        height: 30%;
-        width: 80%;
+        height: 40rem;
+        width: 20rem;
     }
 
     .text-container-div {
