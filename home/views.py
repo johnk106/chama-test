@@ -4,7 +4,7 @@ from django.shortcuts import render
 # Create your views here.
 
 def Home(request):
-    return render(request, 'index.html')
+    return render(request, 'index2.html')
 
 
 def term_conditions(request):

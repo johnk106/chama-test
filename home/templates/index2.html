@@ -1,0 +1,661 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    Home
+{% endblock %}
+{% block content %}
+    <head>
+        <link rel="stylesheet" href="{% static 'css/index2.css' %}"> 
+        <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    </head>
+    <html>
+        <body>
+            <!-- nav bar -->
+            <nav class="navbar navbar-expand-lg nav">
+                <div class="container-fluid">
+                  <a class="navbar-brand" href="/">
+                    <img src="{% static 'images/ChamaSpace_Logo.png' %}" alt="Logo" width="129" height="80" class="d-inline-block align-text-top logo">
+                  </a>
+                  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list prime-color" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+                    </svg>                      
+                  </button>
+                  <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav w-100 d-flex justify-content-evenly">
+                      <li class="nav-item">
+                        <a class="nav-link fs-6 prime-color" aria-current="page" href="/">Home</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link fs-6 prime-color" href="#features" >Features</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link fs-6 prime-color" href="#faq">FAQs</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link fs-6 prime-color" href="#contact">Contact Us</a>
+                      </li>
+                      <div class="d-flex w-auto">
+                            <li class="nav-item me-5">
+                                <a href="{% url 'Sign_up' %}">
+                                  <button type="button" class="btn btn-primary second-color">Open Account</button>
+                                </a>
+                              </li>
+                            <li class="nav-item">
+                              <a href="{% url 'Login' %}">
+                                <button type="button" class="btn btn-primary second-color">Sign in</button>
+                              </a>
+                            </li>
+                      </div>
+                    </ul>
+                  </div>
+                </div>
+            </nav>
+
+            <!-- hero  -->
+            <div class="svg-container">
+                <div class="svg-background">
+                    <div class="d-flex" id="heroContent">
+                      <div class="d-flex text-container-div">
+                          <div class="d-flex flex-column text-container-hero">
+                              <h1 class="main-text font">Create a Personal or a Group Goal, Save Money & Earn Interest or Create and Manage a Chama</h1>
+                              <p class="sub-text font">ChamaSpace is the simple, safe and secure way to help you and your Chama perfect your journey of saving and growing your wealth together.</p>
+                              <p class="info-text font">Now Available on iPhone, iPad and all Android devices</p>
+                              <a href="{% url 'Sign_up' %}">
+                                <button class="hero-sign-up-button">Sign Up For Free</button>
+                              </a>
+                          </div>
+                      </div>
+                      <div class="mobile-image-div d-flex">
+                          <img src="{% static 'images/welcome_mockup.png' %}" alt="welcome_mockup" class="mobile-image">
+                      </div>
+                    </div>
+                </div>
+                <svg class="svg-cutout" viewBox="0 0 1440 323" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M-113 -3.14526C68.8993 213.159 196.523 316.951 269.872 308.23C379.896 295.148 429.576 254.055 502.82 222.218C576.064 190.381 675.1 134.1 885.337 187.73C1095.57 241.36 1342.66 130.968 1369.44 113.644C1396.22 96.3192 1486.22 39.2919 1594.14 45.7534C1666.08 50.0611 1717.7 36.02 1749 3.63016V324.144H-113" fill="white"/>
+                </svg>
+            </div>
+
+            <!-- metrics -->
+            <div class="metrics-row">
+              <div class="metric-item">
+                  <div class="metric-value">20,000</div>
+                  <div class="metric-label">Individuals</div>
+              </div>
+              <div class="metric-item">
+                  <div class="metric-value">5,000</div>
+                  <div class="metric-label">Groups</div>
+              </div>
+              <div class="metric-item">
+                  <div class="metric-value">KSh55M</div>
+                  <div class="metric-label">Investments</div>
+              </div>
+              <div class="metric-item">
+                  <div class="metric-value">KSh1.5M</div>
+                  <div class="metric-label">In Interests Paid</div>
+              </div>
+            </div>
+
+            <!-- features -->
+            <div class="container py-5" id="features">
+              <div class="text-center">
+                <div class="d-flex flex-row justify-content-center align-items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lightbulb" viewBox="0 0 16 16">
+                    <path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13a.5.5 0 0 1 0 1 .5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1 0-1 .5.5 0 0 1 0-1 .5.5 0 0 1-.46-.302l-.761-1.77a2 2 0 0 0-.453-.618A5.98 5.98 0 0 1 2 6m6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1" class="prime-color"/>
+                  </svg>
+                  <p style="margin: 0px 0px 0px 2px;" class="prime-color">Premium</p>
+                  <p style="margin: 0px 0px 0px 3px;">Features</p>
+                </div>
+                <h1 class="display-5 fw-bold text-dark">ChamaSpace Assures you of a safe space to explore yours and your Chamas potentials</h1>
+                <p class="text-muted" style="margin-top: 3%;">Enjoy our simple, secure and secure features that come with our app.</p>
+              </div>
+          
+              <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mt-4">
+                <div class="col text-center">
+                  <img src="{% static 'images/simple_icon.png' %}" alt="Simple" class="mb-3" width="64" height="64">
+                  <h3 class="h5 fw-medium text-dark">Simple</h3>
+                  <p class="text-muted" style="margin-top: 3%;">Setting up and running your ChamaSpace account is simple.</p>
+                </div>
+          
+                <div class="col text-center">
+                  <img src="{% static 'images/sure_icon.png' %}" alt="Sure" class="mb-3" width="64" height="64">
+                  <h3 class="h5 fw-medium text-dark">Sure</h3>
+                  <p class="text-muted">Sure and reliable app, assured investment option</p>
+                </div>
+          
+                <div class="col text-center">
+                  <img src="{% static 'images/secure_icon.png' %}" alt="Secure" class="mb-3" width="64" height="64">
+                  <h3 class="h5 fw-medium text-dark">Secure</h3>
+                  <p class="text-muted">Your personal information or group investments are safe and secure.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- wekeza part -->
+            <div class="wekeza-container">
+              <div class="pe-5 ps-5 pb-5" id="wekeza-padding">
+                <div class="d-flex flex-row justify-content-center align-items-center wekeza-goals">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lightbulb" viewBox="0 0 16 16">
+                    <path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13a.5.5 0 0 1 0 1 .5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1 0-1 .5.5 0 0 1 0-1 .5.5 0 0 1-.46-.302l-.761-1.77a2 2 0 0 0-.453-.618A5.98 5.98 0 0 1 2 6m6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1" class="prime-color"/>
+                  </svg>
+                  <h5 class="m-0 ms-1 prime-color">Wekeza</h5>
+                  <h5 class="m-0 ms-1">Goals</h5>
+                </div>
+                <div class="d-flex justify-content-center wekeza-list-and-image-container" id="wekeza-list-and-image-container">
+                  <div class="d-flex flex-column wekeza-1">
+                    <h1 class="wekeza-heading">Wekeza on ChamaSpace is packed with Investment features</h1>
+                    <div class="wekeza-list-container">
+                      <div class="d-flex flex-row">
+                        <div class="wekeza-list-item-svg">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-stack p-3" viewBox="0 0 16 16">
+                            <path d="m14.12 10.163 1.715.858c.22.11.22.424 0 .534L8.267 15.34a.6.6 0 0 1-.534 0L.165 11.555a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.66zM7.733.063a.6.6 0 0 1 .534 0l7.568 3.784a.3.3 0 0 1 0 .535L8.267 8.165a.6.6 0 0 1-.534 0L.165 4.382a.299.299 0 0 1 0-.535z" style="color:#7C4FE0;"/>
+                            <path d="m14.12 6.576 1.715.858c.22.11.22.424 0 .534l-7.568 3.784a.6.6 0 0 1-.534 0L.165 7.968a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0z" style="color:#7C4FE0;"/>
+                          </svg>
+                        </div>
+                        <div class="ms-3 mx-auto">
+                          <h5 class="font wekeza-list-item-heading-description">Create a Personal Goal:</h5>
+                          <p class="font text-muted wekeza-list-item-heading-description">Create a personal goal, give it a name and save towards that goal.</p>
+                        </div>
+                      </div>
+                      <div class="d-flex flex-row wekeza-list-item-margin">
+                        <div class="wekeza-list-item-svg">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-stack p-3" viewBox="0 0 16 16">
+                            <path d="m14.12 10.163 1.715.858c.22.11.22.424 0 .534L8.267 15.34a.6.6 0 0 1-.534 0L.165 11.555a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.66zM7.733.063a.6.6 0 0 1 .534 0l7.568 3.784a.3.3 0 0 1 0 .535L8.267 8.165a.6.6 0 0 1-.534 0L.165 4.382a.299.299 0 0 1 0-.535z" style="color: #222E48;"/>
+                            <path d="m14.12 6.576 1.715.858c.22.11.22.424 0 .534l-7.568 3.784a.6.6 0 0 1-.534 0L.165 7.968a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0z"  style="color: #222E48;"/>
+                          </svg>
+                        </div>
+                        <div class="ms-3 mx-auto">
+                          <h5 class="font wekeza-list-item-heading-description">Create a Group Goal:</h5>
+                          <p class="font text-muted wekeza-list-item-heading-description">Create a group goal, give it a name, add or invite members and save together. </p>
+                        </div>
+                      </div>
+                      <div class="d-flex flex-row wekeza-list-item-margin">
+                        <div class="wekeza-list-item-svg">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-stack p-3" viewBox="0 0 16 16">
+                            <path d="m14.12 10.163 1.715.858c.22.11.22.424 0 .534L8.267 15.34a.6.6 0 0 1-.534 0L.165 11.555a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.66zM7.733.063a.6.6 0 0 1 .534 0l7.568 3.784a.3.3 0 0 1 0 .535L8.267 8.165a.6.6 0 0 1-.534 0L.165 4.382a.299.299 0 0 1 0-.535z"  style="color:#A9D621;"/>
+                            <path d="m14.12 6.576 1.715.858c.22.11.22.424 0 .534l-7.568 3.784a.6.6 0 0 1-.534 0L.165 7.968a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0z" style="color:#A9D621;"/>
+                          </svg>
+                        </div>
+                        <div class="ms-3 mx-auto">
+                          <h5 class="font wekeza-list-item-heading-description">Earn an Interest on every deposit:</h5>
+                          <p class="font text-muted wekeza-list-item-heading-description">Earn an annual interest compounded daily of 12% on fixed goals and 10% on regular goals</p>
+                        </div>
+                      </div>
+                      <div class="d-flex flex-row wekeza-list-item-margin">
+                        <div class="wekeza-list-item-svg">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-stack p-3" viewBox="0 0 16 16">
+                            <path d="m14.12 10.163 1.715.858c.22.11.22.424 0 .534L8.267 15.34a.6.6 0 0 1-.534 0L.165 11.555a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.66zM7.733.063a.6.6 0 0 1 .534 0l7.568 3.784a.3.3 0 0 1 0 .535L8.267 8.165a.6.6 0 0 1-.534 0L.165 4.382a.299.299 0 0 1 0-.535z" style="color: #FF9705;"/>
+                            <path d="m14.12 6.576 1.715.858c.22.11.22.424 0 .534l-7.568 3.784a.6.6 0 0 1-.534 0L.165 7.968a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0z" style="color: #FF9705;"/>
+                          </svg>
+                        </div>
+                        <div class="ms-3 mx-auto">
+                          <h5 class="font wekeza-list-item-heading-description">Track your progress:</h5>
+                          <p class="font text-muted wekeza-list-item-heading-description">Deposits, interests and statements are easily visible  and downloadable from your dashboard.</p>
+                        </div>
+                      </div>
+                      <div class="d-flex flex-row wekeza-list-item-margin">
+                        <div class="wekeza-list-item-svg">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-stack p-3" viewBox="0 0 16 16">
+                            <path d="m14.12 10.163 1.715.858c.22.11.22.424 0 .534L8.267 15.34a.6.6 0 0 1-.534 0L.165 11.555a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.66zM7.733.063a.6.6 0 0 1 .534 0l7.568 3.784a.3.3 0 0 1 0 .535L8.267 8.165a.6.6 0 0 1-.534 0L.165 4.382a.299.299 0 0 1 0-.535z" style="color: #A52224;"/>
+                            <path d="m14.12 6.576 1.715.858c.22.11.22.424 0 .534l-7.568 3.784a.6.6 0 0 1-.534 0L.165 7.968a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0z" style="color: #A52224;"/>
+                          </svg>
+                        </div>
+                        <div class="ms-3 mx-auto">
+                          <h5 class="font wekeza-list-item-heading-description">Get reminders:</h5>
+                          <p class="font text-muted wekeza-list-item-heading-description">Our app reminds you of your saving commitments to help you grow a saving culture.</p>
+                        </div>
+                      </div>
+                      <a href="{% url 'Sign_up' %}">
+                        <button class="wekeza-start-saving-now-button">Start Saving Now</button>
+                      </a>
+                    </div>
+                    <div>
+                      
+                    </div>
+                  
+                  </div>
+                  <div class="text-center align-self-center m-5 wekeza-2">
+                    <img src="{% static 'images/wekeza.png' %}">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- chamaz part -->
+            <div class="chamaz-container">
+              <div class="pe-5 ps-5 pb-5" id="wekeza-padding">
+                <div class="d-flex flex-row justify-content-center align-items-center wekeza-goals">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lightbulb" viewBox="0 0 16 16">
+                    <path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13a.5.5 0 0 1 0 1 .5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1 0-1 .5.5 0 0 1 0-1 .5.5 0 0 1-.46-.302l-.761-1.77a2 2 0 0 0-.453-.618A5.98 5.98 0 0 1 2 6m6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1" class="prime-color"/>
+                  </svg>
+                  <h5 class="m-0 ms-1 prime-color">Chamaz</h5>
+                </div>
+                <div class="d-flex flex-row-reverse justify-content-center wekeza-list-and-image-container" id="chamaz-list-and-image-container">
+                  <div class="d-flex flex-column wekeza-1">
+                    <h1 class="wekeza-heading">Easily collaborate with your chama members.</h1>
+                    <h4 style="margin-top: 2%;">Create a Chama and explore our Book Keeping or Table Banking ChamaSpace features.</h4>
+                    <div class="wekeza-list-container">
+                      <div class="d-flex flex-row">
+                        <div class="wekeza-list-item-svg">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                            <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" style="color: #7C4FE0;"/>
+                          </svg>
+                        </div>
+                        <div class="ms-3 mx-auto align-self-center">
+                          <h5 class="font wekeza-list-item-heading-description">Create a Personal Goal:</h5>
+                        </div>
+                      </div>
+                      <div class="d-flex flex-row wekeza-list-item-margin ">
+                        <div class="wekeza-list-item-svg">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                            <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" style="color: #7C4FE0;"/>
+                          </svg>
+                        </div>
+                        <div class="ms-3 mx-auto align-self-center">
+                          <h5 class="font wekeza-list-item-heading-description">Add members, officials to your Chama.</h5>
+                        </div>
+                      </div>
+                      <div class="d-flex flex-row wekeza-list-item-margin">
+                        <div class="wekeza-list-item-svg">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                            <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" style="color: #7C4FE0;"/>
+                          </svg>
+                        </div>
+                        <div class="ms-3 mx-auto align-self-center">
+                          <h5 class="font wekeza-list-item-heading-description">Manage your Chama finances, meetings, notifications, records, statements and expenses from ChamaSpace.</h5>
+                        </div>
+                      </div>
+                      <div class="d-flex flex-row wekeza-list-item-margin">
+                        <div class="wekeza-list-item-svg">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                            <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" style="color: #7C4FE0;"/>
+                          </svg>
+                        </div>
+                        <div class="ms-3 mx-auto align-self-center">
+                          <h5 class="font wekeza-list-item-heading-description">Manage contributions, loans, expenses, fines and investments.</h5>
+                        </div>
+                      </div>
+                      <div class="d-flex flex-row wekeza-list-item-margin">
+                        <div class="wekeza-list-item-svg">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                            <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" style="color: #7C4FE0;"/>
+                          </svg>
+                        </div>
+                        <div class="ms-3 mx-auto align-self-center">
+                          <h5 class="font wekeza-list-item-heading-description">Get notifications, reminders and alerts on all transactions regarding your chamas.</h5>
+                        </div>
+                      </div>
+                      <a href="{% url 'Sign_up' %}">
+                        <button class="chamaz-start-chama-now-button">Start a Chama Now</button>
+                      </a>
+                    </div>
+                    <div>
+                      
+                    </div>
+                  
+                  </div>
+                  <div class="text-center align-self-center m-5 chamaz-2">
+                    <img src="{% static 'images/chamaz_image.png' %}" width="100%">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- how it works part -->
+            <div class="how-it-works text-white">
+              <div class="steps-container">
+                  <h1 class="text-center display-4 mb-5">How it works?</h1>
+                  
+                  <div class="row align-items-center justify-content-between text-center g-4">
+                      <!-- Step 1 -->
+                      <div class="col-md-3 mx-md-4">
+                          <div class="mb-4">
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="step-icon bi bi-cloud-download" viewBox="0 0 16 16">
+                                  <path d="M4.406 1.342A5.53 5.53 0 0 1 8 0c2.69 0 4.923 2 5.166 4.579C14.758 4.804 16 6.137 16 7.773 16 9.569 14.502 11 12.687 11H10a.5.5 0 0 1 0-1h2.688C13.979 10 15 8.988 15 7.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 2.825 10.328 1 8 1a4.53 4.53 0 0 0-2.941 1.1c-.757.652-1.153 1.438-1.153 2.055v.448l-.445.049C2.064 4.805 1 5.952 1 7.318 1 8.785 2.23 10 3.781 10H6a.5.5 0 0 1 0 1H3.781C1.708 11 0 9.366 0 7.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383"/>
+                                  <path d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708z"/>
+                              </svg>
+                          </div>
+                          <h2 class="h4 mb-3">Sign up</h2>
+                          <p class="mb-0 text-white-50">Create Account</p>
+                      </div>
+          
+                      <!-- Arrow 1 -->
+                      <div class="col-auto d-none d-md-block">
+                          <div class="arrow">›</div>
+                      </div>
+          
+                      <!-- Step 2 -->
+                      <div class="col-md-3 mx-md-4">
+                          <div class="mb-4">
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="step-icon bi bi-sliders2-vertical" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M0 10.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1H3V1.5a.5.5 0 0 0-1 0V10H.5a.5.5 0 0 0-.5.5M2.5 12a.5.5 0 0 0-.5.5v2a.5.5 0 0 0 1 0v-2a.5.5 0 0 0-.5-.5m3-6.5A.5.5 0 0 0 6 6h1.5v8.5a.5.5 0 0 0 1 0V6H10a.5.5 0 0 0 0-1H6a.5.5 0 0 0-.5.5M8 1a.5.5 0 0 0-.5.5v2a.5.5 0 0 0 1 0v-2A.5.5 0 0 0 8 1m3 9.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1H14V1.5a.5.5 0 0 0-1 0V10h-1.5a.5.5 0 0 0-.5.5m2.5 1.5a.5.5 0 0 0-.5.5v2a.5.5 0 0 0 1 0v-2a.5.5 0 0 0-.5-.5"/>
+                              </svg>
+                          </div>
+                          <h2 class="h4 mb-3">Setup your profile</h2>
+                          <p class="mb-0 text-white-50">Set up your account</p>
+                      </div>
+          
+                      <!-- Arrow 2 -->
+                      <div class="col-auto d-none d-md-block">
+                          <div class="arrow">›</div>
+                      </div>
+          
+                      <!-- Step 3 -->
+                      <div class="col-md-3 mx-md-4">
+                          <div class="mb-4">
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="step-icon bi bi-gear-fill" viewBox="0 0 16 16">
+                                  <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
+                              </svg>
+                          </div>
+                          <h2 class="h4 mb-3">Enjoy the features!</h2>
+                          <p class="mb-0 text-white-50">Explore Chamaz and Wekeza Goals</p>
+                      </div>
+                  </div>
+              </div>
+            </div>
+
+            <!-- faq part -->
+            <div class="faq-section w-100" id="faq">
+              <div class="container py-5">
+                <!-- FAQ Header -->
+                <div class="faq-header text-center mb-5">
+                    <h1 class="display-4 mb-3">Frequently Asked Questions</h1>
+                    <p class="lead">We've compiled a list of frequently asked questions to provide you with quick and helpful answers. If you have a question that is not addressed below, do not hesitate to contact us.</p>
+                </div>
+        
+                <!-- FAQ Content -->
+                <div class="row">
+                    <!-- Left Column -->
+                    <div class="col-md-6">
+                        <div class="accordion" id="faqAccordionLeft">
+                            <div class="accordion-item mb-3">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                        How can I Set up an account on ChamaBORA?
+                                    </button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#faqAccordionLeft">
+                                    <div class="accordion-body">
+                                        <div class="setup-steps">Visit ChamaBORA Website, Create and account and optimize it. Select the types of Chamas you would like to join.</div>
+                                    </div>
+                                </div>
+                            </div>
+        
+                            <div class="accordion-item mb-3">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                                        Is there a limit to number of Chamas one can join?
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordionLeft">
+                                    <div class="accordion-body">
+                                        [Chama limit content goes here]
+                                    </div>
+                                </div>
+                            </div>
+        
+                            <div class="accordion-item mb-3">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                                        What happens if I stop saving?
+                                    </button>
+                                </h2>
+                                <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordionLeft">
+                                    <div class="accordion-body">
+                                        [Stopping savings content goes here]
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <!-- Right Column -->
+                    <div class="col-md-6">
+                        <div class="accordion" id="faqAccordionRight">
+                            <div class="accordion-item mb-3">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour">
+                                        What payment methods are available?
+                                    </button>
+                                </h2>
+                                <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#faqAccordionRight">
+                                    <div class="accordion-body">
+                                        [Payment methods content goes here]
+                                    </div>
+                                </div>
+                            </div>
+        
+                            <div class="accordion-item mb-3">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive">
+                                        What is the minimum & Maximum savings?
+                                    </button>
+                                </h2>
+                                <div id="collapseFive" class="accordion-collapse collapse" data-bs-parent="#faqAccordionRight">
+                                    <div class="accordion-body">
+                                        [Savings limits content goes here]
+                                    </div>
+                                </div>
+                            </div>
+        
+                            <div class="accordion-item mb-3">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix">
+                                        What are the current interest rates?
+                                    </button>
+                                </h2>
+                                <div id="collapseSix" class="accordion-collapse collapse" data-bs-parent="#faqAccordionRight">
+                                    <div class="accordion-body">
+                                        [Interest rates content goes here]
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- app download section -->
+            <div class="app-download-section text-center text-white py-5" style="background: linear-gradient(rgba(34, 36, 72, 0.8), rgba(34, 36, 72, 0.8)), url('{% static 'images/sApp.jpg' %}') center/cover;">
+                <div class="container py-5">
+                    <h1 class="display-4 mb-4">sApp is available for all devices</h1>
+                    <p class="lead mb-5 px-md-5" style="color: white;">
+                        sApp is available for all devices, consectetur adipisicing elit. Itaque at harum quam explicabo. Aliquam optio, delectus, dolorem quod neque eos totam. Delectus quae animi tenetur voluptates doloribus commodi dicta modi aliquid deserunt, quis maiores nesciunt autem, aperiam natus.
+                    </p>
+                    
+                    <div class="d-flex justify-content-center gap-4">
+                        <a href="#" class="store-button d-flex align-items-center">
+                            <div class="store-badge d-flex align-items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-google-play me-2" viewBox="0 0 16 16">
+                                    <path d="M14.222 9.374c1.037-.61 1.037-2.137 0-2.748L11.528 5.04 8.32 8l3.207 2.96zm-3.595 2.116L7.583 8.68 1.03 14.73c.201 1.029 1.36 1.61 2.303 1.055zM1 13.396V2.603L6.846 8zM1.03 1.27l6.553 6.05 3.044-2.81L3.333.215C2.39-.341 1.231.24 1.03 1.27"/>
+                                </svg>
+                                <div class="d-flex flex-column align-items-start">
+                                    <small class="store-label">GET IT ON</small>
+                                    <strong class="store-name">Google Play</strong>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="#" class="store-button d-flex align-items-center">
+                            <div class="store-badge d-flex align-items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-phone me-2" viewBox="0 0 16 16">
+                                    <path d="M11 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                                    <path d="M8 14a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
+                                </svg>
+                                <div class="d-flex flex-column align-items-start">
+                                    <small class="store-label">Download on the</small>
+                                    <strong class="store-name">App Store</strong>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <p class="mt-4 font-italic" style="color: white;">* Available on iPhone, iPad and all Android devices</p>
+                </div>
+            </div>
+
+            <!-- contact section -->
+            <div class="p-5" style="background-color:#F5F5F5;" id="contact">
+                <div class="text-center mb-5">
+                    <h1 class="display-4" style="color: black;">Contact Us</h1>
+                    <div class="mx-auto" style="width: 200px; height: 3px; background-color: #7C4FE0;"></div>
+                    <p class="mt-4 text-muted">
+                        You have tried our easy steps to setting up an account, joining a chama or setting up Wekeza Goals 
+                        saving space and you still have a question. Contact us using the form below.
+                    </p>
+                </div>
+
+                <div class="row g-5">
+                    <!-- Contact Info - Made smaller and added more top margin -->
+                    <div class="col-md-3 mb-4 mb-md-0">
+                        <h5 class="mb-4">Visits Us, Call, WhatsApp or Email us.</h5>
+                        
+                        <div class="d-flex align-items-start mb-4">
+                            <div class="contact-icon-box">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-house-door" viewBox="0 0 16 16">
+                                    <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146ZM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5Z" style="color:white;"/>
+                                </svg>
+                            </div>
+                            <p class="mb-0">Kastermil, Seasons Road, Kasarani, Nairobi</p>
+                        </div>
+
+                        <div class="d-flex align-items-start mb-4">
+                            <div class="contact-icon-box">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-telephone" viewBox="0 0 16 16">
+                                    <path d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.568 17.568 0 0 0 4.168 6.608 17.569 17.569 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.678.678 0 0 0-.58-.122l-2.19.547a1.745 1.745 0 0 1-1.657-.459L5.482 8.062a1.745 1.745 0 0 1-.46-1.657l.548-2.19a.678.678 0 0 0-.122-.58L3.654 1.328zM1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z" style="color:white;"/>
+                                </svg>
+                            </div>
+                            <p class="mb-0">+254716642790, +254710741263</p>
+                        </div>
+
+                        <div class="d-flex align-items-start">
+                            <div class="contact-icon-box">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-envelope" viewBox="0 0 16 16">
+                                    <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z" style="color:white;"/>
+                                </svg>
+                            </div>
+                            <p class="mb-0">support@chamaspace.com</p>
+                        </div>
+                    </div>
+
+                    <!-- Contact Form - Made wider -->
+                    <div class="col-md-8 offset-md-1">
+                        <form>
+                            <div class="mb-4">
+                                <input type="text" class="form-control shadow-sm" placeholder="Name" style="padding: 15px;">
+                            </div>
+                            <div class="mb-4">
+                                <input type="email" class="form-control shadow-sm" placeholder="Email" style="padding: 15px;">
+                            </div>
+                            <div class="mb-4">
+                                <input type="text" class="form-control shadow-sm" placeholder="Subject" style="padding: 15px;">
+                            </div>
+                            <div class="mb-4">
+                                <textarea class="form-control shadow-sm" rows="5" placeholder="Message" style="padding: 15px;"></textarea>
+                            </div>
+                            <button type="submit" class="btn w-100 py-3 contact-form-button" style="background-color: #2291A5;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-send me-2" viewBox="0 0 16 16">
+                                    <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z" style="color:white;"/>
+                                </svg>
+                                <span class="text-white">Send Message</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- footer -->
+            <div class="footer1 p-5">
+              <div class="d-flex flex-column flex-md-row">
+                <!-- Logo and Description Section -->
+                <div class="w-100 w-md-50 mb-4 mb-md-0">
+                  <img src="{% static 'images/ChamaSpace_Logo.png' %}" alt="ChamaSpace Logo" class="img-fluid" style="max-width: 200px;">
+                  <p class="mt-3" style="font-size: medium;">ChamaSpace is the simple, safe and secure way to help you and your Chama perfect your journey of saving and growing your wealth.</p>
+                  <p style="font-size: medium;">The app is designed to simplify management of chamas, merry-go-rounds and saving towards personal and group goals.</p>
+                </div>
+                
+                <!-- Links Section -->
+                <div class="w-100 w-md-50 d-flex flex-column flex-md-row ms-md-5 justify-content-evenly">
+                  <!-- About Section -->
+                  <div class="d-flex flex-column align-items-start align-items-md-center w-100 w-md-25 mb-4 mb-md-0">
+                    <h2 style="color: black;">ABOUT</h2>
+                    <p>About Us</p>
+                    <p>Partnerships</p>
+                    <p>Finance Experts</p>
+                    <p>The Team</p>
+                    <p>Knowledge Base</p>
+                    <p>News</p>
+                  </div>
+                  
+                  <!-- Resources Section -->
+                  <div class="d-flex flex-column align-items-start align-items-md-center w-100 w-md-25">
+                    <h2 style="color: black;">RESOURCES</h2>
+                    <p>Chamaz</p>
+                    <p>Wekeza Goals</p>
+                    <p>Kopeshana</p>
+                    <p>Terms of Use</p>
+                    <a href="{% url 'term_conditions' %}" style="text-decoration: none">
+                      <p>Terms and Conditions</p>
+                    </a>
+                    <a href="{% url 'privacy_policies' %}" style="text-decoration: none">
+                      <p>Privacy Policy</p>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="w-100" style="background-color: #000F37;">
+              <h6 style="color: white;" class="text-center p-3" >Copyright © 2024 all rights reserved ChamaSpace by Jeld Investment Ltd</h6>
+            </div>
+
+            <script defer>
+                const mediaQuery = window.matchMedia('(max-width: 375px)');
+                const heroDiv = document.getElementById("heroContent")
+                const wekezaDiv = document.getElementById("wekeza-list-and-image-container")
+                const wekezaPaddingDiv = document.getElementById("wekeza-padding")
+                const chamazDiv = document.getElementById("chamaz-list-and-image-container")
+
+                function handleMediaChange(e) {
+                  if (e.matches) {
+                    heroDiv.classList.add("flex-column-reverse")
+
+                    wekezaDiv.classList.add("flex-column")
+                    wekezaPaddingDiv.classList.remove('pe-5')
+                    wekezaPaddingDiv.classList.remove('ps-5')
+                    wekezaPaddingDiv.classList.remove('pb-5')
+                    wekezaPaddingDiv.classList.add('pe-3')
+                    wekezaPaddingDiv.classList.add('ps-3')
+                    wekezaPaddingDiv.classList.add('pb-3')
+
+                    chamazDiv.classList.remove("flex-row-reverse")
+                    chamazDiv.classList.add("flex-column-reverse")
+                    
+
+                  } else {
+                    heroDiv.classList.remove("flex-column-reverse")
+                    wekezaDiv.classList.remove("flex-column")
+
+                    wekezaPaddingDiv.classList.remove('pe-3')
+                    wekezaPaddingDiv.classList.remove('ps-3')
+                    wekezaPaddingDiv.classList.remove('pb-3')
+                    wekezaPaddingDiv.classList.add('pe-5')
+                    wekezaPaddingDiv.classList.add('ps-5')
+                    wekezaPaddingDiv.classList.add('pb-5')
+
+                    chamazDiv.classList.add("flex-row-reverse")
+                    chamazDiv.classList.remove("flex-column-reverse")
+
+                  }
+                }
+
+                // Listen for changes
+                mediaQuery.addListener(handleMediaChange);
+
+                // Initial check
+                handleMediaChange(mediaQuery);
+            </script>
+
+            
+        </body>
+    </html>
+{% endblock %}
