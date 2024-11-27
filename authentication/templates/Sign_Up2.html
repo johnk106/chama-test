@@ -9,7 +9,7 @@
     <body>
         <div class="header-head">
             <div class="container">
-                <h1><a href="{% url 'index' %}">ChamaBORA</a></h1>
+                <h1><a href="{% url 'index' %}">ChamaSpace</a></h1>
             </div>
         </div>
 
@@ -19,7 +19,7 @@
                     <form  class="login-form" method="post" action="{% url 'Sign_Up2' %}">
                         {% csrf_token %}
                         <p class="title">
-                            ChamaBORA
+                            ChamaSpace
                         </p>
                         <br>
                         <p class ="log">Tell us more about yourself</p>
@@ -51,7 +51,7 @@
                         </div>
 
                         <div class="form-input" >
-                            <span class="label" >How did you find about ChamaBORA?</span>
+                            <span class="label" >How did you find about ChamaSpace?</span>
                             <select name="how_find_us" class="input" style="height: 35px;border: 1px solid #000;margin: 8px 0;background-color: #fff; border-radius: 10px;">
                                  <option>Select</option>
                                 {% for find in How_did_you_finds %}
@@ -72,7 +72,7 @@
 
 
                         <div class="last-buttons">
-                            <span class="one">This information help in optimizing your account for a ChamaBora experience.  </span>
+                            <span class="one">This information help in optimizing your account for a ChamaSpace experience.  </span>
                         </div>
 
 
