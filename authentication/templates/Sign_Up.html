@@ -36,7 +36,7 @@ Home
 <body>
 <div class="header-head">
     <div class="container">
-        <h1><a href="{% url 'index' %}">ChamaBORA</a></h1>
+        <h1><a href="{% url 'index' %}">ChamaSpace</a></h1>
     </div>
 </div>
 
@@ -47,10 +47,10 @@ Home
             <form method="post" action="{% url 'Sign_up' %}" class="login-form">
                 {% csrf_token %}
                 <p class="title">
-                    ChamaBORA
+                    ChamaSpace
                 </p>
                 <br>
-                <p class="log">Sign up for ChamaBORA for Free</p>
+                <p class="log">Sign up for ChamaSpace for Free</p>
                 <p class="log" style="text-decoration:#be2626"> {% include '_messages.html' %}</p>
                 <hr/>
 
