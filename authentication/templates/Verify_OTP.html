@@ -14,7 +14,7 @@
             <form method="post" action="{% url 'verify_otp' %}" class="login-form">
                 {% csrf_token %}
                 <p class="title" style="font-size: 1.5rem; font-weight: bold; color: #0089A2;">Verify Your Phone Number</p>
-                <p class="log" style="font-size: 1rem; color: #333;">Enter the verification code sent to your registered mobile number.</p>
+                <p class="log" style="font-size: 1rem; color: #333;">A verification code has been sent to your Whatsapp.</p>
                 <hr style="margin: 15px 0;" />
     
                 <h5 style="text-decoration: #00a65a;">{% include '_messages.html' %}</h5>
