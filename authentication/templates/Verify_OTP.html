@@ -9,33 +9,34 @@
         </div>
     </div>
 
-    <div class="container" style="display: flex; justify-content: center; align-items: center; min-height: 80vh;">
-        <div class="content" style="width: 100%; max-width: 400px; text-align: center; background: #f9f9f9; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-            <form method="post" action="{% url 'verify_otp' %}" class="login-form">
-                {% csrf_token %}
-                <p class="title" style="font-size: 1.5rem; font-weight: bold; color: #0089A2;">Verify Your Phone Number</p>
-                <p class="log" style="font-size: 1rem; color: #333;">Enter the verification code sent to your registered mobile number.</p>
-                <hr style="margin: 15px 0;" />
-    
-                <h5 style="text-decoration: #00a65a;">{% include '_messages.html' %}</h5>
-    
-                <div class="form-input" style="margin: 15px 0;">
-                    <span class="label" style="display: block; font-size: 0.9rem; color: #555; margin-bottom: 5px;">Verification Code</span>
-                    <input class="input" type="text" name="otp" id="otp" placeholder="Enter OTP" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" />
-                </div>
-    
-                <div class="container-button" style="margin: 15px 0;">
-                    <button type="submit" class="button" style="width: 100%; background-color: #0089A2; color: #fff; padding: 10px; border: none; border-radius: 4px; font-size: 1rem; cursor: pointer;">
-                        Verify
-                    </button>
-                </div>
-          
-                <p style="font-size: 0.9rem; color: #555;">
-                    <a href="{% url 'Sign_up' %}" style="color: #0089A2;">Back to Sign Up</a>
-                </p>
-            </form>
+    <div class="verify-otp">
+        <div class="container">
+            <div class="content">
+                <form method="post" action="{% url 'verify_otp' %}" class="login-form">
+                    {% csrf_token %}
+                    <p class="title">Verify Your Phone Number</p>
+                    <p class="log">Enter the verification code sent to your registered mobile number.</p>
+                    <hr />
+
+                    <h5 style="text-decoration:#00a65a">{% include '_messages.html' %}</h5>
+
+                    <div class="form-input">
+                        <span class="label">Verification Code</span>
+                        <input class="input" type="text" name="otp" id="otp" placeholder="Enter OTP" required />
+                    </div>
+
+                    <div class="container-button">
+                        <button type="submit" class="button" style="background-color: #0089A2; color: #fff;">
+                            Verify
+                        </button>
+                    </div>
+                    <p style="margin-top: 15px;">
+                        Didn't receive the code? <a href="{% url 'forget_password' %}">Resend OTP</a>
+                    </p>
+                    <p><a href="{% url 'Sign_up' %}">Back to Sign Up</a></p>
+                </form>
+            </div>
         </div>
     </div>
-    
 </body>
 {% endblock %}
