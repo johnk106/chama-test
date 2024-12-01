@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Verify OTP{% endblock %}
+{% block content %}
+<div class="verify-otp">
+    <h2>Verify Your Phone Number</h2>
+    <p>Enter the OTP sent to your phone number.</p>
+    <form method="post" action="{% url 'verify_otp' %}">
+        {% csrf_token %}
+        <div class="form-input">
+            <label for="otp">OTP</label>
+            <input type="text" name="otp" id="otp" placeholder="Enter OTP" required>
+        </div>
+        <button type="submit" class="btn">Verify</button>
+    </form>
+    <p><a href="{% url 'Sign_up' %}">Back to Sign Up</a></p>
+</div>
+{% endblock %}
