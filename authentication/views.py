@@ -409,7 +409,10 @@ import json
 
 def send_otp(mobile, otp):
     try:
-        # Infobip API configuration
+
+        if mobile[0]=='+':
+            mobile=mobile[1:]
+
         base_url = f"{settings.INFOBIP_API_BASE_URL}"  # Replace with your Infobip base URL
         endpoint = "/whatsapp/1/message/template"
         headers = {
@@ -692,7 +695,7 @@ def Sign_Up(request):
             l_name = request.POST.get('lname')
             Phone_no_input = str(request.POST.get('phone_no'))
             without_zero_cellno = Phone_no_input[1:]
-            Phone_no = '254' + without_zero_cellno
+            Phone_no = '+254' + without_zero_cellno
             Password = request.POST.get('password')
 
             # Check if NIC or phone already exists
