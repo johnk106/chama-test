@@ -710,11 +710,12 @@ ul.offcanvas_list {
     padding: 13px 8px 8px 8px;
 }
 .car_banner{
-    background-image: url(../images/car_banner.png);
-    background-position: top;
-    padding: 30px 0px 30px 0px;
-    border-bottom-left-radius: 30px;
-    border-bottom-right-radius: 30px;
+	background-image: url(../images/car_banner.png);
+	background-position: top;
+	height:360px;
+	padding: 30px 0px 30px 0px;
+	border-bottom-left-radius: 30px;
+	border-bottom-right-radius: 30px;
 }
 .house_banner{
     background-image: url(../images/house_banner.png);
