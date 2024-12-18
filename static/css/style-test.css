@@ -491,7 +491,8 @@ ul.offcanvas_list {
 .wekenz-banner {
     background-image: url(../images/wekaza.png);
     padding: 10px 0px 30px 0px;
-    border-bottom-right-radius: 40px;
+	height: 360px;
+	border-bottom-right-radius: 40px;
     border-bottom-left-radius: 40px;
     background-position: bottom;
 }
