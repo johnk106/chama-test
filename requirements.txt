@@ -22,11 +22,10 @@ django-cloudinary-storage
 django-jazzmin
 pyfcm
 django-twilio
-psycopg2-binary
 fcm-django
 django-crontab
 channels
 xhtml2pdf
 django-mathfilters
 django_environ
- python-dotenv
+python-dotenv
