@@ -25,7 +25,10 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
 from reportlab.lib.styles import ParagraphStyle,getSampleStyleSheet
-
+from reportlab.platypus             import (
+    BaseDocTemplate, Frame, PageTemplate,
+    Paragraph, Table, TableStyle, Spacer
+)
 # import logging
 # logger = logging.getLogger(__name__)
 
@@ -1529,6 +1532,7 @@ def finances(request,chama_id):
 
 
 
+
     context = {
          'saving_types':saving_types,
         'members':members,
@@ -1792,14 +1796,16 @@ def reports(request,chama_id):
 
         try:
             c = Contribution.objects.get(pk=int(contribution['contribution']))
-            contribution['contribution'] = c.name
+            contribution['contribution'] = c.id
+            contribution['scheme_name'] = c.name
 
         except:
             pass
 
         try:
             m = ChamaMember.objects.get(pk=int(contribution['member_id']))
-            contribution['member_id'] = m.name
+            contribution['member_id'] = m.id
+            contribution['member_name'] = m.name
 
         except:
             pass
@@ -2006,10 +2012,6 @@ def reports(request,chama_id):
     my_investment_incomes = json.dumps(_my_investment_income)
     
 
-
-
-
-
     my_total_contributions = Decimal('0.00')
     my_total_loan_disbursment = Decimal('0.00')
     my_total_loan_repayments = Decimal('0.00')
@@ -2052,6 +2054,8 @@ def reports(request,chama_id):
         tot += float(contribution.amount_paid)
         print(contribution.amount_paid)
 
+    contribution_schemes = Contribution.objects.filter(chama=chama).all()
+
     
 
     
@@ -2089,7 +2093,8 @@ def reports(request,chama_id):
         'my_contributions':my_contributions,
         'my_tot_contributions':tot,
         'chama_expense_reports':chama_expenses,
-        'expenses_tot':expenses_tot
+        'expenses_tot':expenses_tot,
+        'schemes':contribution_schemes
         
     }
 
@@ -2098,67 +2103,100 @@ def reports(request,chama_id):
     return render(request,'chamas/reports.html',context)
 
 #------------------------Report download handlers-----------------
-@login_required(login_url='/user/Login')
-@is_user_chama_member
 def download_loan_report(request, chama_id):
-    # Fetch Chama and Loans data
+    # ─────────────────────────────────────────────
+    # 1) Fetch your Chama and its LoanItems
+    # ─────────────────────────────────────────────
     chama = Chama.objects.get(pk=chama_id)
     loans = LoanItem.objects.filter(chama=chama)
-    
-    # Create a PDF response
+
+    # ─────────────────────────────────────────────
+    # 2) Prepare PDF response & document
+    # ─────────────────────────────────────────────
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="{chama.name}_loan_report.pdf"'
-    
-    # Create a PDF document
-    doc = SimpleDocTemplate(response, pagesize=letter)
-    elements = []
+    response['Content-Disposition'] = (
+        f'attachment; filename="{chama.name}_loan_report.pdf"'
+    )
 
-    # Define styles
-    title_style = ParagraphStyle(name='TitleStyle', fontName='Times-Bold', fontSize=16, spaceAfter=12, alignment=1)
-    sub_heading_style = ParagraphStyle(name='SubHeadingStyle', fontName='Times-Bold', fontSize=12, spaceAfter=6, alignment=1)
+    doc = BaseDocTemplate(
+        response,
+        pagesize=letter,
+        leftMargin=36, rightMargin=36,
+        topMargin=72, bottomMargin=36
+    )
+    frame = Frame(
+        doc.leftMargin, doc.bottomMargin,
+        doc.width, doc.height,
+        id='normal'
+    )
 
-    # Add title, subheading, and date
-    elements.append(Paragraph(chama.name, title_style))
-    elements.append(Paragraph("Loan Report", sub_heading_style))
-    elements.append(Paragraph(datetime.now().strftime("%Y-%m-%d"), sub_heading_style))
+    # ─────────────────────────────────────────────
+    # 3) Header callback for every page
+    # ─────────────────────────────────────────────
+    def draw_header(canvas, doc):
+        canvas.saveState()
+        # Main title
+        canvas.setFont('Times-Bold', 16)
+        canvas.drawCentredString(
+            letter[0]/2, letter[1]-40,
+            chama.name
+        )
+        # Subtitle and date
+        canvas.setFont('Times-Bold', 12)
+        canvas.drawCentredString(
+            letter[0]/2, letter[1]-60,
+            "Loan Report"
+        )
+        canvas.setFont('Times-Roman', 10)
+        canvas.drawCentredString(
+            letter[0]/2, letter[1]-75,
+            datetime.now().strftime("%Y-%m-%d")
+        )
+        canvas.restoreState()
 
-    # Prepare data for the table
-    data = [['Member Name', 'Loan Type', 'Start Date', 'Due Date', 'Amount', 'Total Paid', 'Balance', 'Status']]
+    doc.addPageTemplates([
+        PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
+    ])
+
+    # ─────────────────────────────────────────────
+    # 4) Build your table data & style
+    # ─────────────────────────────────────────────
+    data = [[
+        'Member Name', 'Loan Type',
+        'Start Date', 'Due Date',
+        'Amount', 'Total Paid',
+        'Balance', 'Status'
+    ]]
     for loan in loans:
         data.append([
-            loan.member.name, 
+            loan.member.name,
             loan.type.name,
             loan.start_date.strftime('%Y-%m-%d'),
             loan.end_date.strftime('%Y-%m-%d'),
-            f'ksh {loan.amount}', 
+            f'ksh {loan.amount}',
             f'ksh {loan.total_paid}',
             f'ksh {loan.balance}',
-            loan.status
+            loan.status,
         ])
 
-    # Create the table
-    table = Table(data)
+    table = Table(data, repeatRows=1)
+    table.setStyle(TableStyle([
+        ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
+        ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
+        ('GRID',         (0, 0), (-1, -1), 1, colors.black),
+    ]))
 
-    # Define style for the table
-    style = TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Times-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ])
-
-    # Apply the style to the table
-    table.setStyle(style)
-
-    # Add the table to the document
-    elements.append(table)
-
-    # Build the PDF document
-    doc.build(elements)
-
+    # ─────────────────────────────────────────────
+    # 5) Assemble & build
+    # ─────────────────────────────────────────────
+    story = [
+        Spacer(1, 40),  # space below header
+        table
+    ]
+    doc.build(story)
     return response
 
 
@@ -2166,132 +2204,179 @@ def download_loan_report(request, chama_id):
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_loan_repayment_schedule(request, chama_id):
-    # Fetch Chama and Loans data
+    # 1) Fetch Chama and active Loans
     chama = Chama.objects.get(pk=chama_id)
-    loans = LoanItem.objects.filter(chama=chama, status='active') 
+    loans = LoanItem.objects.filter(chama=chama, status='active')
 
-    # Create a PDF response
+    # 2) Prepare PDF response & BaseDocTemplate
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="{chama.name}_loan_repayment_schedule.pdf"'
+    response['Content-Disposition'] = (
+        f'attachment; filename="{chama.name}_loan_repayment_schedule.pdf"'
+    )
 
-    # Create a PDF document
-    doc = SimpleDocTemplate(response, pagesize=letter)
-    elements = []
+    doc = BaseDocTemplate(
+        response,
+        pagesize=letter,
+        leftMargin=36, rightMargin=36,
+        topMargin=72, bottomMargin=36
+    )
+    frame = Frame(
+        doc.leftMargin, doc.bottomMargin,
+        doc.width, doc.height,
+        id='normal'
+    )
 
-    # Define styles
-    title_style = ParagraphStyle(name='TitleStyle', fontName='Times-Bold', fontSize=16, spaceAfter=12, alignment=1)
-    sub_heading_style = ParagraphStyle(name='SubHeadingStyle', fontName='Times-Bold', fontSize=12, spaceAfter=6, alignment=1)
+    # 3) Header callback for every page
+    def draw_header(canvas, doc):
+        canvas.saveState()
+        # Main title
+        canvas.setFont('Times-Bold', 16)
+        canvas.drawCentredString(
+            letter[0]/2, letter[1]-40,
+            chama.name
+        )
+        # Subtitle and date
+        canvas.setFont('Times-Bold', 12)
+        canvas.drawCentredString(
+            letter[0]/2, letter[1]-60,
+            "Loan Repayment Schedule"
+        )
+        canvas.setFont('Times-Roman', 10)
+        canvas.drawCentredString(
+            letter[0]/2, letter[1]-75,
+            datetime.now().strftime("%Y-%m-%d")
+        )
+        canvas.restoreState()
 
-    # Add title, subheading, and date
-    elements.append(Paragraph(chama.name, title_style))
-    elements.append(Paragraph("Loan Repayment Schedule", sub_heading_style))
-    elements.append(Paragraph(datetime.now().strftime("%Y-%m-%d"), sub_heading_style))
+    doc.addPageTemplates([
+        PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
+    ])
 
-    # Prepare data for the table
-    data = [['Member Name', 'Loan Type', 'Start Date','Due Date', 'Amount','Total Paid','Balance','Status','Repayment Term']]
+    # 4) Build table data & style
+    data = [[
+        'Member Name', 'Loan Type', 'Start Date',
+        'Due Date', 'Amount', 'Total Paid',
+        'Balance', 'Status', 'Repayment Term'
+    ]]
     for loan in loans:
         data.append([
-            loan.member.name, 
+            loan.member.name,
             loan.type.name,
             loan.start_date.strftime('%Y-%m-%d'),
             loan.end_date.strftime('%Y-%m-%d'),
-            f'ksh {loan.amount}', 
+            f'ksh {loan.amount}',
             f'ksh {loan.total_paid}',
             f'ksh {loan.balance}',
             loan.status,
-            loan.due
+            loan.due,
         ])
 
-    # Create the table
-    table = Table(data)
+    table = Table(data, repeatRows=1)
+    table.setStyle(TableStyle([
+        ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
+        ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
+        ('GRID',         (0, 0), (-1, -1), 1, colors.black),
+    ]))
 
-    # Define style for the table
-    style = TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Times-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ])
-
-    # Apply the style to the table
-    table.setStyle(style)
-
-    # Add the table to the document
-    elements.append(table)
-
-    # Build the PDF document
-    doc.build(elements)
-
+    # 5) Assemble & build
+    story = [
+        Spacer(1, 40),  # space below header
+        table
+    ]
+    doc.build(story)
     return response
 
     
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_group_investment_income(request, chama_id):
-    # Fetch Chama and Income data
-    chama = Chama.objects.get(pk=chama_id)
+    # 1) Fetch Chama and group Income data
+    chama   = Chama.objects.get(pk=chama_id)
     incomes = Income.objects.filter(chama=chama, forGroup=True)
 
-    # Create a PDF response
+    # 2) Prepare PDF response & BaseDocTemplate
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="{chama.name}_group_investment_income.pdf"'
+    response['Content-Disposition'] = (
+        f'attachment; filename="{chama.name}_group_investment_income.pdf"'
+    )
 
-    # Create a PDF document
-    doc = SimpleDocTemplate(response, pagesize=letter)
-    elements = []
+    doc = BaseDocTemplate(
+        response,
+        pagesize=letter,
+        leftMargin=36, rightMargin=36,
+        topMargin=72, bottomMargin=36
+    )
+    frame = Frame(
+        doc.leftMargin, doc.bottomMargin,
+        doc.width, doc.height,
+        id='normal'
+    )
 
-    # Define styles
-    title_style = ParagraphStyle(name='TitleStyle', fontName='Times-Bold', fontSize=16, spaceAfter=12, alignment=1)
-    sub_heading_style = ParagraphStyle(name='SubHeadingStyle', fontName='Times-Bold', fontSize=12, spaceAfter=6, alignment=1)
+    # 3) Header callback for every page
+    def draw_header(canvas, doc):
+        canvas.saveState()
+        # Main title
+        canvas.setFont('Times-Bold', 16)
+        canvas.drawCentredString(
+            letter[0]/2, letter[1]-40,
+            chama.name
+        )
+        # Subtitle and date
+        canvas.setFont('Times-Bold', 12)
+        canvas.drawCentredString(
+            letter[0]/2, letter[1]-60,
+            "Group Investment Income"
+        )
+        canvas.setFont('Times-Roman', 10)
+        canvas.drawCentredString(
+            letter[0]/2, letter[1]-75,
+            datetime.now().strftime("%Y-%m-%d")
+        )
+        canvas.restoreState()
 
-    # Add title, subheading, and date
-    elements.append(Paragraph(chama.name, title_style))
-    elements.append(Paragraph("Group Investment Income", sub_heading_style))
-    elements.append(Paragraph(datetime.now().strftime("%Y-%m-%d"), sub_heading_style))
-
-    # Prepare data for the table
-    data = [['Income Name', 'Investment', 'Date', 'Amount']]
-    for income in incomes:
-        data.append([
-            income.name,
-            income.investment.name,
-            income.date.strftime('%Y-%m-%d'),
-            f'ksh {income.amount}'
-        ])
-
-    # Create the table
-    table = Table(data)
-
-    # Define style for the table
-    style = TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Times-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    doc.addPageTemplates([
+        PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
     ])
 
-    # Apply the style to the table
-    table.setStyle(style)
+    # 4) Build table data & style
+    data = [[
+        'Income Name', 'Investment',
+        'Date', 'Amount'
+    ]]
+    for inc in incomes:
+        data.append([
+            inc.name,
+            inc.investment.name,
+            inc.date.strftime('%Y-%m-%d'),
+            f'ksh {inc.amount}',
+        ])
 
-    # Add the table to the document
-    elements.append(table)
+    table = Table(data, repeatRows=1)
+    table.setStyle(TableStyle([
+        ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
+        ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
+        ('GRID',         (0, 0), (-1, -1), 1, colors.black),
+    ]))
 
-    # Build the PDF document
-    doc.build(elements)
-
+    # 5) Assemble & build
+    story = [
+        Spacer(1, 40),  # space below header
+        table
+    ]
+    doc.build(story)
     return response
 
     
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_member_investment_income(request, chama_id):
-    # Fetch Chama and Income data
+    # 1) Fetch Chama and Income data
     chama = Chama.objects.get(pk=chama_id)
     member_id = request.GET.get('member-id', None)
 
@@ -2301,25 +2386,55 @@ def download_member_investment_income(request, chama_id):
     else:
         incomes = Income.objects.filter(chama=chama, forGroup=False)
 
-    # Create a PDF response
+    # 2) Prepare PDF response & BaseDocTemplate
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="{chama.name}_member_investment_income.pdf"'
+    response['Content-Disposition'] = (
+        f'attachment; filename="{chama.name}_member_investment_income.pdf"'
+    )
 
-    # Create a PDF document
-    doc = SimpleDocTemplate(response, pagesize=letter)
-    elements = []
+    doc = BaseDocTemplate(
+        response,
+        pagesize=letter,
+        leftMargin=36, rightMargin=36,
+        topMargin=72, bottomMargin=36
+    )
+    frame = Frame(
+        doc.leftMargin, doc.bottomMargin,
+        doc.width, doc.height,
+        id='normal'
+    )
 
-    # Define styles
-    title_style = ParagraphStyle(name='TitleStyle', fontName='Times-Bold', fontSize=16, spaceAfter=12, alignment=1)
-    sub_heading_style = ParagraphStyle(name='SubHeadingStyle', fontName='Times-Bold', fontSize=12, spaceAfter=6, alignment=1)
+    # 3) Header callback for every page
+    def draw_header(canvas, doc):
+        canvas.saveState()
+        # Main title
+        canvas.setFont('Times-Bold', 16)
+        canvas.drawCentredString(
+            letter[0] / 2, letter[1] - 40,
+            chama.name
+        )
+        # Subtitle and date
+        canvas.setFont('Times-Bold', 12)
+        canvas.drawCentredString(
+            letter[0] / 2, letter[1] - 60,
+            "Member Investment Income"
+        )
+        canvas.setFont('Times-Roman', 10)
+        canvas.drawCentredString(
+            letter[0] / 2, letter[1] - 75,
+            datetime.now().strftime("%Y-%m-%d")
+        )
+        canvas.restoreState()
 
-    # Add title, subheading, and date
-    elements.append(Paragraph(chama.name, title_style))
-    elements.append(Paragraph("Member Investment Income", sub_heading_style))
-    elements.append(Paragraph(datetime.now().strftime("%Y-%m-%d"), sub_heading_style))
+    doc.addPageTemplates([
+        PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
+    ])
 
-    # Prepare data for the table
-    data = [['Income Name', 'Member Name', 'Investment', 'Amount', 'Date']]
+    # 4) Build table data & style
+    data = [[
+        'Income Name', 'Member Name',
+        'Investment', 'Amount', 'Date'
+    ]]
     for income in incomes:
         data.append([
             income.name,
@@ -2329,157 +2444,197 @@ def download_member_investment_income(request, chama_id):
             income.date.strftime('%Y-%m-%d')
         ])
 
-    # Create the table
-    table = Table(data)
+    table = Table(data, repeatRows=1)
+    table.setStyle(TableStyle([
+        ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
+        ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
+        ('GRID',         (0, 0), (-1, -1), 1, colors.black),
+    ]))
 
-    # Define style for the table
-    style = TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Times-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ])
-
-    # Apply the style to the table
-    table.setStyle(style)
-
-    # Add the table to the document
-    elements.append(table)
-
-    # Build the PDF document
-    doc.build(elements)
-
+    # 5) Assemble & build
+    story = [
+        Spacer(1, 40),  # space below header
+        table
+    ]
+    doc.build(story)
     return response
+
 
 
 
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_individual_saving_report(request, chama_id):
-    # Fetch Chama and Saving data
+    # 1) Fetch Chama and individual saving data
     chama = Chama.objects.get(pk=chama_id)
     member_id = request.GET.get('member-id', None)
 
     if member_id:
-        member = ChamaMember.objects.get(pk=int(member_id))
+        member  = ChamaMember.objects.get(pk=int(member_id))
         savings = Saving.objects.filter(chama=chama, forGroup=False, owner=member)
     else:
         savings = Saving.objects.filter(chama=chama, forGroup=False)
 
-    # Create a PDF response
+    # 2) Prepare PDF response & BaseDocTemplate
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="{chama.name}_individual_savings_report.pdf"'
+    response['Content-Disposition'] = (
+        f'attachment; filename="{chama.name}_individual_savings_report.pdf"'
+    )
 
-    # Create a PDF document
-    doc = SimpleDocTemplate(response, pagesize=letter)
-    elements = []
+    doc = BaseDocTemplate(
+        response,
+        pagesize=letter,
+        leftMargin=36, rightMargin=36,
+        topMargin=72, bottomMargin=36
+    )
+    frame = Frame(
+        doc.leftMargin, doc.bottomMargin,
+        doc.width, doc.height,
+        id='main'
+    )
 
-    # Define styles
-    title_style = ParagraphStyle(name='TitleStyle', fontName='Times-Bold', fontSize=16, spaceAfter=12, alignment=1)
-    sub_heading_style = ParagraphStyle(name='SubHeadingStyle', fontName='Times-Bold', fontSize=12, spaceAfter=6, alignment=1)
+    # 3) Header callback for every page
+    def draw_header(canvas, doc):
+        canvas.saveState()
+        # Main title
+        canvas.setFont('Times-Bold', 16)
+        canvas.drawCentredString(
+            letter[0]/2, letter[1]-40,
+            chama.name
+        )
+        # Subtitle and date
+        canvas.setFont('Times-Bold', 12)
+        canvas.drawCentredString(
+            letter[0]/2, letter[1]-60,
+            "Individual Savings Report"
+        )
+        canvas.setFont('Times-Roman', 10)
+        canvas.drawCentredString(
+            letter[0]/2, letter[1]-75,
+            datetime.now().strftime('%Y-%m-%d')
+        )
+        canvas.restoreState()
 
-    # Add title, subheading, and date
-    elements.append(Paragraph(chama.name, title_style))
-    elements.append(Paragraph("Individual Savings Report", sub_heading_style))
-    elements.append(Paragraph(datetime.now().strftime("%Y-%m-%d"), sub_heading_style))
-
-    # Prepare data for the table
-    data = [['Member', 'Amount', 'Type', 'Date']]
-    for saving in savings:
-        data.append([
-            saving.owner.name,
-            f'ksh {saving.amount}',
-            saving.saving_type.name,
-            saving.date.strftime('%Y-%m-%d')
-        ])
-
-    # Create the table
-    table = Table(data)
-
-    # Define style for the table
-    style = TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Times-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    doc.addPageTemplates([
+        PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
     ])
 
-    # Apply the style to the table
-    table.setStyle(style)
+    # 4) Build table data & style
+    data = [[
+        'Member', 'Amount', 'Type', 'Date'
+    ]]
+    for s in savings:
+        data.append([
+            s.owner.name,
+            f'ksh {s.amount}',
+            s.saving_type.name,
+            s.date.strftime('%Y-%m-%d')
+        ])
 
-    # Add the table to the document
-    elements.append(table)
+    table = Table(data, repeatRows=1)
+    table.setStyle(TableStyle([
+        ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
+        ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
+        ('GRID',         (0, 0), (-1, -1), 1, colors.black),
+    ]))
 
-    # Build the PDF document
-    doc.build(elements)
-
+    # 5) Assemble & build document
+    story = [
+        Spacer(1, 40),  # space below header
+        table
+    ]
+    doc.build(story)
     return response
+
 
 
 
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_group_saving_report(request, chama_id):
-    # Fetch Chama and Saving data
-    chama = Chama.objects.get(pk=chama_id)
+    # 1) Fetch Chama and group Saving data
+    chama   = Chama.objects.get(pk=chama_id)
     savings = Saving.objects.filter(chama=chama, forGroup=True)
 
-    # Create a PDF response
+    # 2) Prepare PDF response & BaseDocTemplate
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="{chama.name}_group_savings_report.pdf"'
+    response['Content-Disposition'] = (
+        f'attachment; filename="{chama.name}_group_savings_report.pdf"'
+    )
 
-    # Create a PDF document
-    doc = SimpleDocTemplate(response, pagesize=letter)
-    elements = []
+    doc = BaseDocTemplate(
+        response,
+        pagesize=letter,
+        leftMargin=36, rightMargin=36,
+        topMargin=72, bottomMargin=36
+    )
+    frame = Frame(
+        doc.leftMargin, doc.bottomMargin,
+        doc.width, doc.height,
+        id='normal'
+    )
 
-    # Define styles
-    title_style = ParagraphStyle(name='TitleStyle', fontName='Times-Bold', fontSize=16, spaceAfter=12, alignment=1)
-    sub_heading_style = ParagraphStyle(name='SubHeadingStyle', fontName='Times-Bold', fontSize=12, spaceAfter=6, alignment=1)
+    # 3) Header callback for every page
+    def draw_header(canvas, doc):
+        canvas.saveState()
+        # Main title
+        canvas.setFont('Times-Bold', 16)
+        canvas.drawCentredString(
+            letter[0]/2, letter[1]-40,
+            chama.name
+        )
+        # Subtitle and date
+        canvas.setFont('Times-Bold', 12)
+        canvas.drawCentredString(
+            letter[0]/2, letter[1]-60,
+            "Group Savings Report"
+        )
+        canvas.setFont('Times-Roman', 10)
+        canvas.drawCentredString(
+            letter[0]/2, letter[1]-75,
+            datetime.now().strftime('%Y-%m-%d')
+        )
+        canvas.restoreState()
 
-    # Add title, subheading, and date
-    elements.append(Paragraph(chama.name, title_style))
-    elements.append(Paragraph("Group Savings Report", sub_heading_style))
-    elements.append(Paragraph(datetime.now().strftime("%Y-%m-%d"), sub_heading_style))
-
-    # Prepare data for the table
-    data = [['Amount', 'Type', 'Date']]
-    for saving in savings:
-        data.append([
-            f'ksh {saving.amount}',
-            saving.saving_type.name,
-            saving.date.strftime('%Y-%m-%d')
-        ])
-
-    # Create the table
-    table = Table(data)
-
-    # Define style for the table
-    style = TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Times-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    doc.addPageTemplates([
+        PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
     ])
 
-    # Apply the style to the table
-    table.setStyle(style)
+    # 4) Build table data & style
+    data = [[
+        'Amount', 'Type', 'Date'
+    ]]
+    for s in savings:
+        data.append([
+            f'ksh {s.amount}',
+            s.saving_type.name,
+            s.date.strftime('%Y-%m-%d')
+        ])
 
-    # Add the table to the document
-    elements.append(table)
+    table = Table(data, repeatRows=1)
+    table.setStyle(TableStyle([
+        ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
+        ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
+        ('GRID',         (0, 0), (-1, -1), 1, colors.black),
+    ]))
 
-    # Build the PDF document
-    doc.build(elements)
-
+    # 5) Assemble & build
+    story = [
+        Spacer(1, 40),  # space below header
+        table
+    ]
+    doc.build(story)
     return response
+
 
 
 
@@ -2487,169 +2642,249 @@ def download_group_saving_report(request, chama_id):
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_group_contributions_report(request, chama_id):
-    # Fetch Chama and Contribution data
+    # ─────────────────────────────────────────────
+    # 1) Fetch & flatten your contribution records
+    # ─────────────────────────────────────────────
     chama = Chama.objects.get(pk=chama_id)
     contribution_types = Contribution.objects.filter(chama=chama)
     contributions = []
-    
-    # Flatten the contribution types into a single list
-    for contribution_type in contribution_types:
-        contributions.extend(contribution_type.records.all())
-        
-    # Sort contributions by date_created in descending order
-    contributions = sorted(contributions, key=lambda x: x.date_created, reverse=True)
+    for ct in contribution_types:
+        contributions.extend(ct.records.all())
+    contributions = sorted(
+        contributions,
+        key=lambda x: x.date_created,
+        reverse=True
+    )
 
-    # Create a PDF response
+    # ─────────────────────────────────────────────
+    # 2) Prepare HTTP + PDF document
+    # ─────────────────────────────────────────────
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="{chama.name}_group_contributions_report.pdf"'
+    response['Content-Disposition'] = (
+        f'attachment; filename="{chama.name}_group_contributions_report.pdf"'
+    )
 
-    # Create a PDF document
-    doc = SimpleDocTemplate(response, pagesize=letter)
-    elements = []
+    doc = BaseDocTemplate(
+        response,
+        pagesize=letter,
+        leftMargin=36, rightMargin=36,
+        topMargin=72, bottomMargin=36
+    )
+    frame = Frame(
+        doc.leftMargin, doc.bottomMargin,
+        doc.width, doc.height,
+        id='normal'
+    )
 
-    # Define styles
-    title_style = ParagraphStyle(name='TitleStyle', fontName='Times-Bold', fontSize=16, spaceAfter=12, alignment=1)
-    sub_heading_style = ParagraphStyle(name='SubHeadingStyle', fontName='Times-Bold', fontSize=12, spaceAfter=6, alignment=1)
+    # ─────────────────────────────────────────────
+    # 3) Define header callback (runs on every page)
+    # ─────────────────────────────────────────────
+    def draw_header(canvas, doc):
+        canvas.saveState()
+        # Main title
+        canvas.setFont('Times-Bold', 16)
+        canvas.drawCentredString(
+            letter[0]/2, letter[1] - 40,
+            chama.name
+        )
+        # Subtitle and date
+        canvas.setFont('Times-Bold', 12)
+        canvas.drawCentredString(
+            letter[0]/2, letter[1] - 60,
+            "Group Contributions Report"
+        )
+        canvas.setFont('Times-Roman', 10)
+        canvas.drawCentredString(
+            letter[0]/2, letter[1] - 75,
+            datetime.now().strftime("%Y-%m-%d")
+        )
+        canvas.restoreState()
 
-    # Add title, subheading, and date
-    elements.append(Paragraph(chama.name, title_style))
-    elements.append(Paragraph("Group Contributions Report", sub_heading_style))
-    elements.append(Paragraph(datetime.now().strftime("%Y-%m-%d"), sub_heading_style))
-
-    # Prepare data for the table
-    data = [['Member', 'Contribution Type', 'Date', 'Expected Amount', 'Amount Paid', 'Balance']]
-    for contribution in contributions:
-        data.append([
-            contribution.member.name,
-            contribution.contribution.name,
-            contribution.date_created.strftime('%Y-%m-%d'),
-            f'ksh {contribution.amount_expected}',
-            f'ksh {contribution.amount_paid}',
-            f'ksh {contribution.balance}'
-        ])
-
-    # Create the table
-    table = Table(data)
-
-    # Define style for the table
-    style = TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Times-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    doc.addPageTemplates([
+        PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
     ])
 
-    # Apply the style to the table
-    table.setStyle(style)
 
-    # Add the table to the document
-    elements.append(table)
+    data = [[
+        'Member', 'Contribution Type', 'Date',
+        'Expected Amount', 'Amount Paid', 'Balance'
+    ]]
+    for c in contributions:
+        data.append([
+            c.member.name,
+            c.contribution.name,
+            c.date_created.strftime('%Y-%m-%d'),
+            f'ksh {c.amount_expected}',
+            f'ksh {c.amount_paid}',
+            f'ksh {c.balance}',
+        ])
 
-    # Build the PDF document
-    doc.build(elements)
+    table = Table(data, repeatRows=1)
+    table.setStyle(TableStyle([
+        ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
+        ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
+        ('GRID',         (0, 0), (-1, -1), 1, colors.black),
+    ]))
 
+  
+    story = [
+        Spacer(1, 40),  # gives some space below header
+        table
+    ]
+    doc.build(story)
     return response
-
 
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_member_contribution_report(request, chama_id, member_id):
-    # Retrieve Chama and member
-    chama = Chama.objects.get(pk=chama_id)
+    # 1) Retrieve Chama and Member
+    chama  = Chama.objects.get(pk=chama_id)
     member = ChamaMember.objects.get(pk=member_id)
 
-    # Retrieve member's contributions
+    # 2) Collect this member's contributions
     contribution_types = Contribution.objects.filter(chama=chama)
     contributions = []
-    for type in contribution_types:
-        for contribution in type.records.all():
-            if contribution.member == member:
-                 contributions.append(contribution)
+    for ctype in contribution_types:
+        for contrib in ctype.records.all():
+            if contrib.member == member:
+                contributions.append(contrib)
 
-    # Create PDF response
+    # 3) Prepare PDF response
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="member_contribution_report.pdf"'
+    response['Content-Disposition'] = (
+        f'attachment; filename="{chama.name}_{member.name}_contribution_report.pdf"'
+    )
 
-    # Create PDF document
-    doc = SimpleDocTemplate(response, pagesize=letter)
-    elements = []
+    # 4) Setup BaseDocTemplate with header on each page
+    doc = BaseDocTemplate(
+        response,
+        pagesize=letter,
+        leftMargin=36, rightMargin=36,
+        topMargin=72, bottomMargin=36
+    )
+    frame = Frame(
+        doc.leftMargin, doc.bottomMargin,
+        doc.width, doc.height,
+        id='normal'
+    )
 
-    # Define header
-    header_text = f"Member Contribution Report - {member.name}"
-    stylesheet = getSampleStyleSheet()
-    header_style = stylesheet['Title']
-    header = Paragraph(header_text, header_style)
-    elements.append(header)
+    # Header callback
+    def draw_header(canvas, doc):
+        canvas.saveState()
+        # Title line
+        canvas.setFont('Times-Bold', 14)
+        canvas.drawCentredString(
+            letter[0]/2, letter[1] - 40,
+            f"Member Contribution Report - {member.name}"
+        )
+        # Date line
+        canvas.setFont('Times-Roman', 10)
+        canvas.drawCentredString(
+            letter[0]/2, letter[1] - 55,
+            datetime.now().strftime('%Y-%m-%d')
+        )
+        canvas.restoreState()
 
-    # Add subheading with current date
-    current_date = datetime.now().strftime('%Y-%m-%d')
-    subheading_text = f"Report Date: {current_date}"
-    subheading = Paragraph(subheading_text, stylesheet['BodyText'])
-    elements.append(subheading)
+    doc.addPageTemplates([
+        PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
+    ])
 
-    # Define table data
-    data = [['Name', 'Contribution Type', 'Date', 'Expected Amount', 'Amount Paid', 'Balance']]
-    for contribution in contributions:
-        data.append([contribution.member.name, contribution.contribution.name,
-                     contribution.date_created.strftime('%Y-%m-%d'),
-                     f'ksh {contribution.amount_expected}', f'ksh {contribution.amount_paid}',
-                     f'ksh {contribution.balance}'])
+    # 5) Build table data
+    data = [[
+        'Name', 'Contribution Type', 'Date',
+        'Expected Amount', 'Amount Paid', 'Balance'
+    ]]
+    for contrib in contributions:
+        data.append([
+            contrib.member.name,
+            contrib.contribution.name,
+            contrib.date_created.strftime('%Y-%m-%d'),
+            f'ksh {contrib.amount_expected}',
+            f'ksh {contrib.amount_paid}',
+            f'ksh {contrib.balance}'
+        ])
 
-    # Create table
-    table = Table(data)
-    style = TableStyle([('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-                        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-                        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-                        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-                        ('GRID', (0, 0), (-1, -1), 1, colors.black)])
+    # 6) Create table with repeating header row
+    table = Table(data, repeatRows=1)
+    table.setStyle(TableStyle([
+        ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
+        ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
+        ('GRID',         (0, 0), (-1, -1), 1, colors.black),
+    ]))
 
-    # Apply table style
-    table.setStyle(style)
-    elements.append(table)
-
-    # Build PDF document
-    doc.build(elements)
-
+    # 7) Build story
+    story = [
+        Spacer(1, 40),
+        table
+    ]
+    doc.build(story)
     return response
+
 
 
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_collected_fine_report(request, chama_id):
-    # Fetch Chama and Fine Type data
+    # 1) Fetch Chama and cleared fines
     chama = Chama.objects.get(pk=chama_id)
-    fine_types = FineType.objects.filter(chama=chama)
-    fines = []
+    # Pull all fines with status 'cleared' in a single queryset
+    fines = FineItem.objects.filter(fine_type__chama=chama, status='cleared')
 
-    # Gather fines with status 'cleared'
-    for fine_type in fine_types:
-        for fine in fine_type.fine_items.filter(status='cleared'):
-            fines.append(fine)
-
-    # Create a PDF response
+    # 2) Prepare PDF response & BaseDocTemplate
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="{chama.name}_collected_fines_report.pdf"'
+    response['Content-Disposition'] = (
+        f'attachment; filename="{chama.name}_collected_fines_report.pdf"'
+    )
 
-    # Create a PDF document
-    doc = SimpleDocTemplate(response, pagesize=letter)
-    elements = []
+    doc = BaseDocTemplate(
+        response,
+        pagesize=letter,
+        leftMargin=36, rightMargin=36,
+        topMargin=72, bottomMargin=36
+    )
+    frame = Frame(
+        doc.leftMargin, doc.bottomMargin,
+        doc.width, doc.height,
+        id='normal'
+    )
 
-    # Define styles
-    title_style = ParagraphStyle(name='TitleStyle', fontName='Times-Bold', fontSize=16, spaceAfter=12, alignment=1)
-    sub_heading_style = ParagraphStyle(name='SubHeadingStyle', fontName='Times-Bold', fontSize=12, spaceAfter=6, alignment=1)
+    # 3) Header callback for every page
+    def draw_header(canvas, doc):
+        canvas.saveState()
+        # Main title
+        canvas.setFont('Times-Bold', 16)
+        canvas.drawCentredString(
+            letter[0] / 2, letter[1] - 40,
+            chama.name
+        )
+        # Subtitle and date
+        canvas.setFont('Times-Bold', 12)
+        canvas.drawCentredString(
+            letter[0] / 2, letter[1] - 60,
+            "Collected Fines Report"
+        )
+        canvas.setFont('Times-Roman', 10)
+        canvas.drawCentredString(
+            letter[0] / 2, letter[1] - 75,
+            datetime.now().strftime('%Y-%m-%d')
+        )
+        canvas.restoreState()
 
-    # Add title, subheading, and date
-    elements.append(Paragraph(chama.name, title_style))
-    elements.append(Paragraph("Collected Fines Report", sub_heading_style))
-    elements.append(Paragraph(datetime.now().strftime("%Y-%m-%d"), sub_heading_style))
+    doc.addPageTemplates([
+        PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
+    ])
 
-    # Prepare data for the table
-    data = [['Member', 'Type', 'Amount', 'Paid Amount', 'Balance', 'Status', 'Created', 'Last Updated']]
+    # 4) Build table data
+    data = [[
+        'Member', 'Type', 'Amount', 'Paid Amount',
+        'Balance', 'Status', 'Created', 'Last Updated'
+    ]]
     for fine in fines:
         data.append([
             fine.member.name,
@@ -2662,65 +2897,82 @@ def download_collected_fine_report(request, chama_id):
             fine.last_updated.strftime('%Y-%m-%d')
         ])
 
-    # Create the table
-    table = Table(data)
+    # 5) Create table with header row repeated
+    table = Table(data, repeatRows=1)
+    table.setStyle(TableStyle([
+        ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
+        ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
+        ('GRID',         (0, 0), (-1, -1), 1, colors.black),
+    ]))
 
-    # Define style for the table
-    style = TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Times-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ])
-
-    # Apply the style to the table
-    table.setStyle(style)
-
-    # Add the table to the document
-    elements.append(table)
-
-    # Build the PDF document
-    doc.build(elements)
-
+    # 6) Assemble and build document
+    story = [
+        Spacer(1, 40),  # space below header
+        table
+    ]
+    doc.build(story)
     return response
+
 
 
 
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_uncollected_fines_report(request, chama_id):
-    # Fetch Chama and Fine Type data
+    # 1) Fetch Chama and active fines
     chama = Chama.objects.get(pk=chama_id)
-    fine_types = FineType.objects.filter(chama=chama)
-    fines = []
+    fines = FineItem.objects.filter(fine_type__chama=chama, status='active')
 
-    # Gather fines with status 'active'
-    for fine_type in fine_types:
-        for fine in fine_type.fine_items.filter(status='active'):
-            fines.append(fine)
-
-    # Create a PDF response
+    # 2) Prepare PDF response & BaseDocTemplate
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="{chama.name}_unpaid_fines_report.pdf"'
+    response['Content-Disposition'] = (
+        f'attachment; filename="{chama.name}_uncollected_fines_report.pdf"'
+    )
 
-    # Create a PDF document
-    doc = SimpleDocTemplate(response, pagesize=letter)
-    elements = []
+    doc = BaseDocTemplate(
+        response,
+        pagesize=letter,
+        leftMargin=36, rightMargin=36,
+        topMargin=72, bottomMargin=36
+    )
+    frame = Frame(
+        doc.leftMargin, doc.bottomMargin,
+        doc.width, doc.height,
+        id='normal'
+    )
 
-    # Define styles
-    title_style = ParagraphStyle(name='TitleStyle', fontName='Times-Bold', fontSize=16, spaceAfter=12, alignment=1)
-    sub_heading_style = ParagraphStyle(name='SubHeadingStyle', fontName='Times-Bold', fontSize=12, spaceAfter=6, alignment=1)
+    # 3) Header callback for every page
+    def draw_header(canvas, doc):
+        canvas.saveState()
+        canvas.setFont('Times-Bold', 16)
+        canvas.drawCentredString(
+            letter[0] / 2, letter[1] - 40,
+            chama.name
+        )
+        canvas.setFont('Times-Bold', 12)
+        canvas.drawCentredString(
+            letter[0] / 2, letter[1] - 60,
+            "Uncollected Fines Report"
+        )
+        canvas.setFont('Times-Roman', 10)
+        canvas.drawCentredString(
+            letter[0] / 2, letter[1] - 75,
+            datetime.now().strftime('%Y-%m-%d')
+        )
+        canvas.restoreState()
 
-    # Add title, subheading, and date
-    elements.append(Paragraph(chama.name, title_style))
-    elements.append(Paragraph("Uncollected Fines Report", sub_heading_style))
-    elements.append(Paragraph(datetime.now().strftime("%Y-%m-%d"), sub_heading_style))
+    doc.addPageTemplates([
+        PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
+    ])
 
-    # Prepare data for the table
-    data = [['Member', 'Type', 'Amount', 'Paid Amount', 'Balance', 'Status', 'Created', 'Last Updated']]
+    # 4) Build table data
+    data = [[
+        'Member', 'Type', 'Amount', 'Paid Amount',
+        'Balance', 'Status', 'Created', 'Last Updated'
+    ]]
     for fine in fines:
         data.append([
             fine.member.name,
@@ -2733,29 +2985,23 @@ def download_uncollected_fines_report(request, chama_id):
             fine.last_updated.strftime('%Y-%m-%d')
         ])
 
-    # Create the table
-    table = Table(data)
+    # 5) Create table with header row repeated
+    table = Table(data, repeatRows=1)
+    table.setStyle(TableStyle([
+        ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
+        ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
+        ('GRID',         (0, 0), (-1, -1), 1, colors.black),
+    ]))
 
-    # Define style for the table
-    style = TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Times-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ])
-
-    # Apply the style to the table
-    table.setStyle(style)
-
-    # Add the table to the document
-    elements.append(table)
-
-    # Build the PDF document
-    doc.build(elements)
-
+    # 6) Assemble and build document
+    story = [
+        Spacer(1, 40),
+        table
+    ]
+    doc.build(story)
     return response
 
 
@@ -2765,28 +3011,53 @@ def download_uncollected_fines_report(request, chama_id):
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_cashflow_report(request, chama_id):
-    # Fetch Chama and Cashflow Report data
+    # 1) Fetch Chama and Cashflow Report data
     chama = Chama.objects.get(pk=chama_id)
     reports = CashflowReport.objects.filter(chama=chama).order_by('-date_created')
 
-    # Create a PDF response
+    # 2) Prepare PDF response & BaseDocTemplate
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="{chama.name}_cashflow_report.pdf"'
+    response['Content-Disposition'] = (
+        f'attachment; filename="{chama.name}_cashflow_report.pdf"'
+    )
 
-    # Create a PDF document
-    doc = SimpleDocTemplate(response, pagesize=letter)
-    elements = []
+    doc = BaseDocTemplate(
+        response,
+        pagesize=letter,
+        leftMargin=36, rightMargin=36,
+        topMargin=72, bottomMargin=36
+    )
+    frame = Frame(
+        doc.leftMargin, doc.bottomMargin,
+        doc.width, doc.height,
+        id='normal'
+    )
 
-    # Define styles
-    title_style = ParagraphStyle(name='TitleStyle', fontName='Times-Bold', fontSize=16, spaceAfter=12, alignment=1)
-    sub_heading_style = ParagraphStyle(name='SubHeadingStyle', fontName='Times-Bold', fontSize=12, spaceAfter=6, alignment=1)
+    # 3) Header callback for every page
+    def draw_header(canvas, doc):
+        canvas.saveState()
+        canvas.setFont('Times-Bold', 16)
+        canvas.drawCentredString(
+            letter[0] / 2, letter[1] - 40,
+            chama.name
+        )
+        canvas.setFont('Times-Bold', 12)
+        canvas.drawCentredString(
+            letter[0] / 2, letter[1] - 60,
+            "Cashflow Report"
+        )
+        canvas.setFont('Times-Roman', 10)
+        canvas.drawCentredString(
+            letter[0] / 2, letter[1] - 75,
+            datetime.now().strftime('%Y-%m-%d')
+        )
+        canvas.restoreState()
 
-    # Add title, subheading, and date
-    elements.append(Paragraph(chama.name, title_style))
-    elements.append(Paragraph("Cashflow Report", sub_heading_style))
-    elements.append(Paragraph(datetime.now().strftime("%Y-%m-%d"), sub_heading_style))
+    doc.addPageTemplates([
+        PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
+    ])
 
-    # Prepare data for the table
+    # 4) Build table data
     data = [['Member', 'Type', 'Amount', 'Date Created']]
     for report in reports:
         member_name = report.member.name if report.member else 'Group'
@@ -2797,29 +3068,23 @@ def download_cashflow_report(request, chama_id):
             report.object_date.strftime('%Y-%m-%d')
         ])
 
-    # Create the table
-    table = Table(data)
+    # 5) Create table with header row repeated
+    table = Table(data, repeatRows=1)
+    table.setStyle(TableStyle([
+        ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
+        ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
+        ('GRID',         (0, 0), (-1, -1), 1, colors.black),
+    ]))
 
-    # Define style for the table
-    style = TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Times-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ])
-
-    # Apply the style to the table
-    table.setStyle(style)
-
-    # Add the table to the document
-    elements.append(table)
-
-    # Build the PDF document
-    doc.build(elements)
-
+    # 6) Assemble and build document
+    story = [
+        Spacer(1, 40),
+        table
+    ]
+    doc.build(story)
     return response
 
 
@@ -2827,29 +3092,54 @@ def download_cashflow_report(request, chama_id):
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_member_cashflow_report(request, chama_id, member_id):
-    # Fetch Chama, Member, and Cashflow Report data
-    chama = Chama.objects.get(pk=chama_id)
+    # 1) Fetch Chama, Member, and Cashflow Report data
+    chama  = Chama.objects.get(pk=chama_id)
     member = ChamaMember.objects.get(pk=member_id)
     reports = CashflowReport.objects.filter(chama=chama, member=member).order_by('-date_created')
 
-    # Create a PDF response
+    # 2) Prepare PDF response & BaseDocTemplate
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="{member.name}_cashflow_report.pdf"'
+    response['Content-Disposition'] = (
+        f'attachment; filename="{member.name}_cashflow_report.pdf"'
+    )
 
-    # Create a PDF document
-    doc = SimpleDocTemplate(response, pagesize=letter)
-    elements = []
+    doc = BaseDocTemplate(
+        response,
+        pagesize=letter,
+        leftMargin=36, rightMargin=36,
+        topMargin=72, bottomMargin=36
+    )
+    frame = Frame(
+        doc.leftMargin, doc.bottomMargin,
+        doc.width, doc.height,
+        id='normal'
+    )
 
-    # Define styles
-    title_style = ParagraphStyle(name='TitleStyle', fontName='Times-Bold', fontSize=16, spaceAfter=12, alignment=1)
-    sub_heading_style = ParagraphStyle(name='SubHeadingStyle', fontName='Times-Bold', fontSize=12, spaceAfter=6, alignment=1)
+    # 3) Header callback for every page
+    def draw_header(canvas, doc):
+        canvas.saveState()
+        canvas.setFont('Times-Bold', 16)
+        canvas.drawCentredString(
+            letter[0] / 2, letter[1] - 40,
+            chama.name
+        )
+        canvas.setFont('Times-Bold', 12)
+        canvas.drawCentredString(
+            letter[0] / 2, letter[1] - 60,
+            f"{member.name} Cashflow Report"
+        )
+        canvas.setFont('Times-Roman', 10)
+        canvas.drawCentredString(
+            letter[0] / 2, letter[1] - 75,
+            datetime.now().strftime('%Y-%m-%d')
+        )
+        canvas.restoreState()
 
-    # Add title, subheading, and date
-    elements.append(Paragraph(member.name, title_style))
-    elements.append(Paragraph("Cashflow Report", sub_heading_style))
-    elements.append(Paragraph(datetime.now().strftime("%Y-%m-%d"), sub_heading_style))
+    doc.addPageTemplates([
+        PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
+    ])
 
-    # Prepare data for the table
+    # 4) Build table data
     data = [['Member', 'Type', 'Amount', 'Date Created']]
     for report in reports:
         data.append([
@@ -2859,29 +3149,23 @@ def download_member_cashflow_report(request, chama_id, member_id):
             report.date_created.strftime('%Y-%m-%d')
         ])
 
-    # Create the table
-    table = Table(data)
+    # 5) Create table with header row repeated
+    table = Table(data, repeatRows=1)
+    table.setStyle(TableStyle([
+        ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
+        ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
+        ('GRID',         (0, 0), (-1, -1), 1, colors.black),
+    ]))
 
-    # Define style for the table
-    style = TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Times-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ])
-
-    # Apply the style to the table
-    table.setStyle(style)
-
-    # Add the table to the document
-    elements.append(table)
-
-    # Build the PDF document
-    doc.build(elements)
-
+    # 6) Assemble and build document
+    story = [
+        Spacer(1, 40),
+        table
+    ]
+    doc.build(story)
     return response
 
 
@@ -2891,35 +3175,57 @@ def download_member_cashflow_report(request, chama_id, member_id):
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_my_cashflow_report(request, chama_id):
-    # Fetch Chama and current user's Member data
+    # 1) Fetch Chama and current user's member record
     chama = Chama.objects.get(pk=chama_id)
-    user_member = None
-    for member in chama.member.all():
-        if member.user == request.user:
-            user_member = member
-            break
+    try:
+        user_member = chama.member.get(user=request.user)
+    except ChamaMember.DoesNotExist:
+        return HttpResponse("You are not a member of this chama.", status=403)
 
-    # Fetch Cashflow Report data for the current user
+    # 2) Fetch Cashflow Reports
     reports = CashflowReport.objects.filter(chama=chama, member=user_member).order_by('-date_created')
 
-    # Create a PDF response
+    # 3) Create PDF response
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="my_cashflow_report.pdf"'
+    response['Content-Disposition'] = 'attachment; filename="my_cashflow_report.pdf"'
 
-    # Create a PDF document
-    doc = SimpleDocTemplate(response, pagesize=letter)
-    elements = []
+    doc = BaseDocTemplate(
+        response,
+        pagesize=letter,
+        leftMargin=36, rightMargin=36,
+        topMargin=72, bottomMargin=36
+    )
+    frame = Frame(
+        doc.leftMargin, doc.bottomMargin,
+        doc.width, doc.height,
+        id='normal'
+    )
 
-    # Define styles
-    title_style = ParagraphStyle(name='TitleStyle', fontName='Times-Bold', fontSize=16, spaceAfter=12, alignment=1)
-    sub_heading_style = ParagraphStyle(name='SubHeadingStyle', fontName='Times-Bold', fontSize=12, spaceAfter=6, alignment=1)
+    # 4) Header callback for every page
+    def draw_header(canvas, doc):
+        canvas.saveState()
+        canvas.setFont('Times-Bold', 16)
+        canvas.drawCentredString(
+            letter[0] / 2, letter[1] - 40,
+            chama.name
+        )
+        canvas.setFont('Times-Bold', 12)
+        canvas.drawCentredString(
+            letter[0] / 2, letter[1] - 60,
+            "My Cashflow Report"
+        )
+        canvas.setFont('Times-Roman', 10)
+        canvas.drawCentredString(
+            letter[0] / 2, letter[1] - 75,
+            datetime.now().strftime('%Y-%m-%d')
+        )
+        canvas.restoreState()
 
-    # Add title, subheading, and date
-    elements.append(Paragraph("My Cashflow Report", title_style))
-    elements.append(Paragraph(chama.name, sub_heading_style))
-    elements.append(Paragraph(datetime.now().strftime("%Y-%m-%d"), sub_heading_style))
+    doc.addPageTemplates([
+        PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
+    ])
 
-    # Prepare data for the table
+    # 5) Build table data
     data = [['Member', 'Type', 'Amount', 'Date Created']]
     for report in reports:
         data.append([
@@ -2929,86 +3235,100 @@ def download_my_cashflow_report(request, chama_id):
             report.date_created.strftime('%Y-%m-%d')
         ])
 
-    # Create the table
-    table = Table(data)
+    # 6) Create and style table
+    table = Table(data, repeatRows=1)
+    table.setStyle(TableStyle([
+        ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
+        ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
+        ('GRID',         (0, 0), (-1, -1), 1, colors.black),
+    ]))
 
-    # Define style for the table
-    style = TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Times-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ])
-
-    # Apply the style to the table
-    table.setStyle(style)
-
-    # Add the table to the document
-    elements.append(table)
-
-    # Build the PDF document
-    doc.build(elements)
+    # 7) Assemble and build document
+    story = [
+        Spacer(1, 40),
+        table
+    ]
+    doc.build(story)
 
     return response
-
 
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_expense_report(request, chama_id):
-    # Retrieve Chama and expenses
+    # 1) Retrieve Chama and expenses
     chama = Chama.objects.get(pk=chama_id)
-    expenses = Expense.objects.filter(chama=chama).order_by('-created_on').all()
+    expenses = Expense.objects.filter(chama=chama).order_by('-created_on')
 
-    # Create PDF response
+    # 2) Create PDF response
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="expense_report.pdf"'
 
-    # Create PDF document
-    doc = SimpleDocTemplate(response, pagesize=letter)
-    elements = []
+    doc = BaseDocTemplate(
+        response,
+        pagesize=letter,
+        leftMargin=36, rightMargin=36,
+        topMargin=72, bottomMargin=36
+    )
+    frame = Frame(
+        doc.leftMargin, doc.bottomMargin,
+        doc.width, doc.height,
+        id='normal'
+    )
 
-    # Define header
-    header_text = f"{chama.name} Expense Report"
-    stylesheet = getSampleStyleSheet()
-    header_style = stylesheet['Title']
-    header = Paragraph(header_text, header_style)
-    elements.append(header)
+    # 3) Header callback
+    def draw_header(canvas, doc):
+        canvas.saveState()
+        canvas.setFont('Times-Bold', 16)
+        canvas.drawCentredString(
+            letter[0] / 2, letter[1] - 40,
+            chama.name
+        )
+        canvas.setFont('Times-Bold', 12)
+        canvas.drawCentredString(
+            letter[0] / 2, letter[1] - 60,
+            "Expense Report"
+        )
+        canvas.setFont('Times-Roman', 10)
+        canvas.drawCentredString(
+            letter[0] / 2, letter[1] - 75,
+            datetime.now().strftime('%Y-%m-%d')
+        )
+        canvas.restoreState()
 
-    # Add subheading with current date
-    current_date = datetime.now().strftime('%Y-%m-%d')
-    subheading_text = f"Report Date: {current_date}"
-    subheading = Paragraph(subheading_text, stylesheet['BodyText'])
-    elements.append(subheading)
-
-    # Define table data
-    data = [['Name', 'Created By', 'Created On', 'Amount']]
-    for expense in expenses:
-        created_by = expense.created_by.name if expense.created_by else ''
-        created_on = expense.created_on.strftime('%Y-%m-%d') if expense.created_on else ''
-        amount = f'ksh {expense.amount}'
-        data.append([expense.name, created_by, created_on, amount])
-
-    # Create table
-    table = Table(data)
-    style = TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    doc.addPageTemplates([
+        PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
     ])
 
-    # Apply table style
-    table.setStyle(style)
-    elements.append(table)
+    # 4) Define table data
+    data = [['Name', 'Created By', 'Created On', 'Amount']]
+    for expense in expenses:
+        data.append([
+            expense.name,
+            expense.created_by.name if expense.created_by else '',
+            expense.created_on.strftime('%Y-%m-%d') if expense.created_on else '',
+            f'ksh {expense.amount}'
+        ])
 
-    # Build PDF document
-    doc.build(elements)
+    # 5) Create and style table
+    table = Table(data, repeatRows=1)
+    table.setStyle(TableStyle([
+        ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
+        ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
+        ('GRID',         (0, 0), (-1, -1), 1, colors.black),
+    ]))
+
+    # 6) Assemble and build document
+    story = [
+        Spacer(1, 40),
+        table
+    ]
+    doc.build(story)
 
     return response
 

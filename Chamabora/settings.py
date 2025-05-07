@@ -105,6 +105,7 @@ INSTALLED_APPS = [
     'Goals',
     'chamas',
     'subscriptions',
+    'bot'
 ]
 
 # FIREBASE_APP = initialize_app()
@@ -157,15 +158,15 @@ WSGI_APPLICATION = 'Chamabora.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 FCM_SERVER_KEY = "AAAApuuyOe4:APA91bFVU7guIWu7NXlMjndp7s3MjY2u3z9SQRLhrHDljcBfdYk87Bj4aPdxIOEl_1Y14MuaTd4FtQ74LBXvRGT625o071FGoTgGYRcCpB67-m8sfuL4DDr6Cka1BNtuLrDaA4Dex6Ko"
 
-DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME':env('DB_NAME') ,
-            'USER': env('DB_USER'),
-            'PASSWORD': env('DB_PASSWORD'),
-            'HOST': env('DB_HOST'),
-        }
-    }
+# DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#             'NAME':env('DB_NAME') ,
+#             'USER': env('DB_USER'),
+#             'PASSWORD': env('DB_PASSWORD'),
+#             'HOST': env('DB_HOST'),
+#         }
+#     }
 # db_from_env = dj_database_url.config(conn_max_age=600)
 # DATABASES['default'].update(db_from_env)
 
@@ -179,12 +180,12 @@ DATABASES = {
 # }
 
 # After development
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -247,6 +248,7 @@ CLOUDINARY_STORAGE = {
 
 INFOBIP_API_BASE_URL = "rpvp61.api.infobip.com"
 INFOBIP_API_KEY = "9a4a9e8eb58c7df3052bd9e1800cdfc8-9ec1d405-7860-493c-85b7-9480705bb656"
+INFOBIP_SENDER_ID = "254710741263"
 # TWILIO_PHONE_NUMBER= 'CHAMABORA'
 
 MESSAGE_TAGS = {

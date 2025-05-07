@@ -33,6 +33,7 @@ urlpatterns = [
     path('firebase-messaging-sw.js', showFirebaseJS, name="show_firebase_js"),
     path('subscriptions/', include('subscriptions.urls')),
     path('chamas-bookeeping/',include('chamas.urls')),
+    path('bot/',include('bot.urls'))
 ]
 
 

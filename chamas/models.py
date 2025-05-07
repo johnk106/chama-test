@@ -88,8 +88,6 @@ class ContributionRecord(models.Model):
     def __str__(self):
         return f'{self.member.name} - {self.date_created}'
     
-   
-
 
 #--------------------------------------
 class LoanType(models.Model):

@@ -22,3 +22,5 @@ def is_user_chama_member(function):
     wrap.__doc__ = function.__doc__
     wrap.__name__ = function.__name__
     return wrap
+
+
