@@ -122,10 +122,7 @@ class ServiceGroup:
             amount_paid        = paid_amount,
             submitted_chama    = chama_name,
             retrieved_chama    = chama,
-            original_fine      = fine,
-            edited_fine_amount = paid_amount,
-            edited_fine_balance= new_balance,
-            edited_fine_status = new_status,
+            edited_fine      = fine,
             chama=chama
         )
 
