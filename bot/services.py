@@ -44,17 +44,21 @@ class ServiceGroup:
                 f"No contribution named '{contribution_name}' in chama '{chama.name}'",
                 sender
             )
+        
+        member = ChamaMember.objects.filter(member_id=member_id,group=chama).first()
 
         
         BotContribution.objects.create(
             submitted_contribution = contribution_name,
             retrieved_contribution = contributions.first(),
             amount_paid           = amount,
-            submitted_member      = member_id,
+            submitted_member      = member,
             submitted_chama       = chama_name,
             retrieved_chama       = chama,
             chama=chama
         )
+
+       
 
         
         return self.send_message(
