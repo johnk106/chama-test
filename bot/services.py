@@ -66,11 +66,10 @@ class ServiceGroup:
         amount     = Decimal(message['amount'])
         chama_name = message['chama_name']
 
-        
+        # 1) Find the chama & member (unchanged)
         chamas = Chama.objects.filter(name__icontains=chama_name)
         if not chamas.exists():
             return self.send_message(f"No chama found matching '{chama_name}'", sender)
-
         if chamas.count() > 1:
             chamas = chamas.filter(chamamember__member_id=member_id).distinct()
             if not chamas.exists():
@@ -78,10 +77,8 @@ class ServiceGroup:
                     f"Multiple chamas match '{chama_name}' but none have member '{member_id}'",
                     sender
                 )
-
         chama = chamas.first()
 
-        
         member = ChamaMember.objects.filter(member_id=member_id, group=chama).first()
         if not member:
             return self.send_message(
@@ -89,7 +86,7 @@ class ServiceGroup:
                 sender
             )
 
-        
+        # 2) Grab the oldest outstanding fine (unchanged)
         fine = (
             FineItem.objects
             .filter(member=member, fine_balance__gt=0, fine_type__chama=chama)
@@ -99,36 +96,38 @@ class ServiceGroup:
         if not fine:
             return self.send_message("You have no outstanding fines to pay.", sender)
 
-        
+        # 3) Compute “edited” values without touching `fine`
         original_balance = fine.fine_balance
         if amount >= original_balance:
-            fine.paid_fine_amount += original_balance
-            fine.fine_balance = Decimal('0')
-            fine.status = 'cleared'
+            new_balance = Decimal('0.00')
+            new_status  = 'cleared'
+            paid_amount = original_balance
             msg = (
-                f"Fine '{fine.fine_type.name}' (ID {fine.id}) fully cleared. "
-                f"You paid {original_balance:.2f}."
+                f"Fine '{fine.fine_type.name}' (ID {fine.id}) would be fully cleared. "
+                f"You paid {paid_amount:.2f}."
             )
         else:
-            fine.fine_balance     = original_balance - amount
-            fine.paid_fine_amount += amount
+            new_balance = original_balance - amount
+            new_status  = fine.status  # leave status unchanged if not zero
+            paid_amount = amount
             msg = (
-                f"Applied {amount:.2f} to fine '{fine.fine_type.name}' (ID {fine.id}). "
-                f"Remaining balance: {fine.fine_balance:.2f}."
+                f"Applied {paid_amount:.2f} to fine '{fine.fine_type.name}' (ID {fine.id}). "
+                f"Remaining balance would be {new_balance:.2f}."
             )
 
-        fine.last_updated = timezone.now()
-        fine.save()
-
-        
+        # 4) Record it in BotFine, linking to the original FineItem
         BotFine.objects.create(
             member             = member,
-            amount_paid        = amount,
+            amount_paid        = paid_amount,
             submitted_chama    = chama_name,
             retrieved_chama    = chama,
-            edited_fine        = fine
+            original_fine      = fine,
+            edited_fine_amount = paid_amount,
+            edited_fine_balance= new_balance,
+            edited_fine_status = new_status,
         )
 
+        # 5) Notify user
         return self.send_message(msg, sender)
     
     def process_loan(self, message, sender):
@@ -136,6 +135,7 @@ class ServiceGroup:
         amount     = Decimal(message['amount'])
         chama_name = message['chama_name']
 
+        # 1) Find the chama
         chamas = Chama.objects.filter(name__icontains=chama_name)
         if not chamas.exists():
             return self.send_message(f'No chama found matching "{chama_name}"', sender)
@@ -149,6 +149,7 @@ class ServiceGroup:
                 )
         chama = chamas.first()
 
+        # 2) Find the member
         member = ChamaMember.objects.filter(member_id=member_id, group=chama).first()
         if not member:
             return self.send_message(
@@ -156,6 +157,7 @@ class ServiceGroup:
                 sender
             )
 
+        # 3) Get the oldest outstanding loan
         loan = (
             LoanItem.objects
             .filter(member=member, chama=chama, balance__gt=0)
@@ -168,37 +170,38 @@ class ServiceGroup:
                 sender
             )
 
+        # 4) Compute edited values
         original_balance = loan.balance or Decimal('0.00')
         if amount >= original_balance:
-            loan.total_paid = (loan.total_paid or Decimal('0.00')) + original_balance
-            loan.balance    = Decimal('0.00')
-            loan.status     = 'cleared'
-            paid_amount     = original_balance
+            new_balance   = Decimal('0.00')
+            new_status    = 'cleared'
+            paid_amount   = original_balance
             msg = (
-                f"Loan (ID {loan.id}, type '{loan.type.name}') fully paid off. "
-                f"You paid {original_balance:.2f}."
+                f"Loan (ID {loan.id}, type '{loan.type.name}') would be fully paid off. "
+                f"You paid {paid_amount:.2f}."
             )
         else:
-            loan.total_paid = (loan.total_paid or Decimal('0.00')) + amount
-            loan.balance   -= amount
-            paid_amount     = amount
+            new_balance   = original_balance - amount
+            new_status    = loan.status  # leave unchanged
+            paid_amount   = amount
             msg = (
-                f"Applied {amount:.2f} to loan (ID {loan.id}, type '{loan.type.name}'). "
-                f"Remaining balance: {loan.balance:.2f}."
+                f"Applied {paid_amount:.2f} to loan (ID {loan.id}, type '{loan.type.name}'). "
+                f"Remaining balance would be {new_balance:.2f}."
             )
 
-        loan.last_updated = timezone.now()
-        loan.save()
-
-        new_bot_loan_update = BotLoan.objects.create(
-            member=member_id,
-            amount_paid=amount,
-            submitted_chama=chama_name,
-            retrieved_chama=chama,
-            updated_loan=loan
+        # 5) Record in BotLoan without touching the real loan
+        BotLoan.objects.create(
+            member               = member,
+            amount_paid          = paid_amount,
+            submitted_chama      = chama_name,
+            retrieved_chama      = chama,
+            original_loan        = loan,
+            edited_loan_amount   = paid_amount,
+            edited_loan_balance  = new_balance,
+            edited_loan_status   = new_status,
         )
 
-        # 5) Send confirmation
+        # 6) Notify user
         return self.send_message(msg, sender)
 
 
