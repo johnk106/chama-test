@@ -18,22 +18,34 @@ INFOBIP_BASE_URL   = "https://api.infobip.com"
 
 
 
+def _sanitize_amount(raw: str) -> str | None:
+    """
+    Strip out currency words, commas, spaces. 
+    Return a pure digit[.digit] string, or None if invalid.
+    """
+    # drop any letters (e.g. "ksh", "usd"), keep digits, commas, dots
+    s = re.sub(r'(?i)[^0-9\.,]', '', raw)
+    # remove commas
+    s = s.replace(',', '')
+    # strip leading/trailing whitespace
+    s = s.strip()
+    # must be something like "1234" or "1234.56"
+    if re.fullmatch(r'\d+(\.\d+)?', s):
+        return s
+    return None
+
 @csrf_exempt
 def receive_message(request):
     if request.method != "POST":
         return JsonResponse({"error": "invalid method"}, status=405)
 
     data = json.loads(request.body)
+    print(data)
 
     for result in data.get("results", []):
-        # 1) Grab the real sender key
         sender = result.get("sender")
-
-        # 2) Pull text from the first content element
         content = result.get("content", [])
-        text = ""
-        if content and isinstance(content, list):
-            text = content[0].get("text", "").strip()
+        text = content[0].get("text", "").strip() if content else ""
 
         lines = [l.strip() for l in text.splitlines() if l.strip()]
         if not lines:
@@ -50,64 +62,63 @@ def receive_message(request):
             )
 
         svc = ServiceGroup()
-        if tag == "#CONTRIBUTION":
-            required_fields = ["member ID", "amount", "contribution name", "chama name"]
-            if len(lines) < 5:
-                missing = required_fields[len(lines) - 1]
+        # common sanitization for the amount line (always index 2)
+        if len(lines) >= 3:
+            raw_amount = lines[2]
+            clean_amount = _sanitize_amount(raw_amount)
+            if clean_amount is None:
                 return ServiceGroup.send_message(
-                    f"Missing required field: {missing}. Please resend in the format:\n"
-                    "#CONTRIBUTION\n"
-                    "member_id\n"
-                    "amount\n"
-                    "contribution_name\n"
-                    "chama_name",
+                    f"Invalid amount format: '{raw_amount}'. Please use e.g. 2000 or Ksh 2,000",
+                    sender
+                )
+        else:
+            clean_amount = None
+
+        if tag == "#CONTRIBUTION":
+            if len(lines) < 5:
+                missing = ["member ID", "amount", "contribution name", "chama name"][len(lines)-1]
+                return ServiceGroup.send_message(
+                    f"Missing required field: {missing}. Please format as:\n"
+                    "#CONTRIBUTION\nmember_id\namount\ncontribution_name\nchama_name",
                     sender
                 )
 
             payload = {
                 "member_id":         lines[1],
-                "amount":            lines[2],
+                "amount":            clean_amount,
                 "contribution_name": lines[3],
                 "chama_name":        lines[4],
             }
             return svc.process_contribution(payload, sender)
 
         elif tag == "#FINE":
-            required_fields = ["member ID", "amount", "chama name"]
             if len(lines) < 4:
-                missing = required_fields[len(lines) - 1]
+                missing = ["member ID", "amount", "chama name"][len(lines)-1]
                 return ServiceGroup.send_message(
-                    f"Missing required field: {missing}. Please resend in the format:\n"
-                    "#FINE\n"
-                    "member_id\n"
-                    "amount\n"
-                    "chama_name",
+                    f"Missing required field: {missing}. Please format as:\n"
+                    "#FINE\nmember_id\namount\nchama_name",
                     sender
                 )
 
             payload = {
                 "member_id":  lines[1],
-                "amount":     lines[2],
+                "amount":     clean_amount,
                 "chama_name": lines[3],
             }
             return svc.process_fine(payload, sender)
 
         elif tag == "#LOAN":
-            required_fields = ["member ID", "amount", "chama name"]
             if len(lines) < 4:
-                missing = required_fields[len(lines) - 1]
+                missing = ["member ID", "amount", "chama name"][len(lines)-1]
                 return ServiceGroup.send_message(
-                    f"Missing required field: {missing}. Please resend in the format:\n"
-                    "#LOAN\n"
-                    "member_id\n"
-                    "amount\n"
-                    "chama_name",
+                    f"Missing required field: {missing}. Please format as:\n"
+                    "#LOAN\nmember_id\namount\nchama_name",
                     sender
                 )
 
             payload = {
                 "member_id":  lines[1],
-                "amount":     lines[2],
+                "amount":     clean_amount,
                 "chama_name": lines[3],
             }
             return svc.process_loan(payload, sender)
