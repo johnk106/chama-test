@@ -4,6 +4,13 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.conf import settings
 from .services import ServiceGroup
+from chamas.decorators import is_user_chama_member
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from chamas.models import *
+from .models import *
+
+
 
 INFOBIP_API_KEY    = settings.INFOBIP_API_KEY
 INFOBIP_SENDER_ID  = settings.INFOBIP_SENDER_ID  # e.g. "447500000000"
@@ -23,60 +30,6 @@ def send_infobip_whatsapp(to, text):
     }
     resp = requests.post(url, headers=headers, json=payload)
     return resp.ok
-
-# @csrf_exempt
-# def infobip_webhook(request):
-#     if request.method != "POST":
-#         return JsonResponse({"error":"invalid method"}, status=405)
-
-#     data = json.loads(request.body)
-#     # 1) Save raw payload for debugging
-#     RawWhatsAppMessage.objects.create(payload=data)
-
-#     # 2) Extract messages
-#     for msg in data.get("messages", []):
-#         sender = msg.get("from")
-#         text   = msg.get("text", {}).get("body", "").strip()
-        
-#         # Basic format-check
-#         tag_match = re.search(r"#(Contribution|Loan|Fine)", text, re.IGNORECASE)
-#         amount_match = re.search(r"Ksh\s*([\d,]+(?:\.\d{1,2})?)", text)
-#         name_match = re.search(r"–\s*(\w+)", text) 
-        
-#         if not tag_match or not amount_match or not name_match:
-#             # malformed → ask for clarification
-#             reply = (
-#                 "Sorry, I couldn't understand your message. "
-#                 "Please send like: “Confirmed. Ksh1,000 sent to John. #Contribution – Alice”"
-#             )
-#             send_infobip_whatsapp(sender, reply)
-#             continue
-
-#         tag    = tag_match.group(1).lower()
-#         amount = amount_match.group(1).replace(",", "")
-#         name   = name_match.group(1)
-
-#         # Try to match to a User
-#         user = None
-#         from django.contrib.auth import get_user_model
-#         User = get_user_model()
-#         try:
-#             user = User.objects.get(profile__phone_number=sender)
-#         except User.DoesNotExist:
-#             # leave as None; admin can resolve later
-#             pass
-
-#         # 3) Save transaction
-#         BotTransaction.objects.create(
-#             user=user,
-#             phone_number=sender,
-#             message_text=text,
-#             transaction_type=tag,
-#             amount=amount,
-#         )
-#         send_infobip_whatsapp(sender, "✅ Your transaction has been recorded. Thank you!")
-    
-#     return JsonResponse({"status":"received"})
 
 @csrf_exempt
 def receive_message(request):
@@ -167,3 +120,23 @@ def receive_message(request):
 
 
     return JsonResponse({"status": "no inbound messages"}, status=200)
+
+
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def bot_records(request,chama_id):
+    chama = Chama.objects.filter(id=chama_id).first()
+    contributions = BotContribution.objects.filter(chama=chama).order_by('-id').all()
+
+    loans = BotLoan.objects.filter(chama=chama).order_by('-id').all()
+
+    fines = BotFine.objects.filter(chama=chama).order_by('-id').all()
+
+
+
+
+    return render(request,'bot/records.html',{
+        'contributions':contributions,
+        'loans':loans,
+        'fines':fines
+    })

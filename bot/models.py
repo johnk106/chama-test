@@ -10,6 +10,7 @@ class BotContribution(models.Model):
     submitted_member = models.TextField()
     submitted_chama = models.TextField()
     retrieved_chama = models.ForeignKey(Chama,on_delete=models.SET_NULL,related_name='bot_contribution_records',  null=True, blank=True)
+    chama = models.ForeignKey(Chama,on_delete=models.CASCADE,related_name='chama_bot_contributions',null=True,blank=True)
 
     def __str__(self):
         return f'{self.submitted_member} - {self.date_created}'
@@ -23,6 +24,7 @@ class BotFine(models.Model):
     retrieved_chama = models.ForeignKey(Chama,on_delete=models.SET_NULL,related_name='bot_fine_records',  null=True, blank=True)
     edited_fine = models.ForeignKey(FineItem,on_delete=models.SET_NULL,related_name='bot_updates',null=True,blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
+    chama = models.ForeignKey(Chama,on_delete=models.CASCADE,related_name='chama_bot_fines',null=True,blank=True)
 
     def __str__(self):
         return f'{self.member} - {self.date_created}'
@@ -34,6 +36,7 @@ class BotLoan(models.Model):
     retrieved_chama = models.ForeignKey(Chama,on_delete=models.SET_NULL,related_name='bot_loan_records',  null=True, blank=True)
     updated_loan = models.ForeignKey(LoanItem,on_delete=models.SET_NULL,related_name='bot_updates',null=True,blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
+    chama = models.ForeignKey(Chama,on_delete=models.CASCADE,related_name='chama_bot_loans',null=True,blank=True)
 
     def __str__(self):
         return f'{self.member} - {self.date_created}'

@@ -166,6 +166,12 @@
             </a>
           </li>
           <li>
+            <a href="#" class="bot-link">
+              <i class="bx bx-robot" style="font-size: 24px"></i>
+              <span class="link_name">Bot Controll</span>
+            </a>
+          </li>
+          <li>
             <a href="#" class="chat-link">
               <i class='bx bx-message-rounded-detail' style="font-size: 24px"></i>
               <span class="link_name">Chat</span>
@@ -281,6 +287,12 @@
                   <a href="#" class="notifications-link">
                     <i class="bx bx-bell" style="font-size: 24px"></i>
                     <span class="link_name">Notifications</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="bot-link">
+                    <i class="bx bx-robot" style="font-size: 24px"></i>
+                    <span class="link_name">Bot Controll</span>
                   </a>
                 </li>
                 {% comment %} <li>
@@ -537,6 +549,16 @@
         }
       }
 
+      function handleBotClick() {
+        var chama_id = getGroupId();
+
+        if(chama_id) {
+          window.location.href = `/bot/reports/${chama_id}/`;
+        }else{
+          console.log('Invalid chama id');
+        }
+      }
+
       // Attach the click event handlers to  links
       $('.dashboard-link').on('click', function (event) {
         event.preventDefault();
@@ -581,6 +603,11 @@
     $('.notifications-link').on('click',function(event){
       event.preventDefault();
       handleNotificationsClick();
+    })
+
+    $('.bot-link').on('click',function(event){
+      event.preventDefault();
+      handleBotClick();
     })
 
   
