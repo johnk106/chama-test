@@ -52,7 +52,8 @@ class ServiceGroup:
             amount_paid           = amount,
             submitted_member      = member_id,
             submitted_chama       = chama_name,
-            retrieved_chama       = chama
+            retrieved_chama       = chama,
+            chama=chama
         )
 
         
@@ -125,6 +126,7 @@ class ServiceGroup:
             edited_fine_amount = paid_amount,
             edited_fine_balance= new_balance,
             edited_fine_status = new_status,
+            chama=chama
         )
 
         # 5) Notify user
@@ -195,10 +197,8 @@ class ServiceGroup:
             amount_paid          = paid_amount,
             submitted_chama      = chama_name,
             retrieved_chama      = chama,
-            original_loan        = loan,
-            edited_loan_amount   = paid_amount,
-            edited_loan_balance  = new_balance,
-            edited_loan_status   = new_status,
+            updated_loan        = loan,
+            chama=chama
         )
 
         # 6) Notify user
@@ -208,6 +208,7 @@ class ServiceGroup:
 
     @staticmethod
     def send_message(text, to):
+        print(to)
         to_digits = "".join(filter(str.isdigit, to))
 
         url = f"{ServiceGroup.INFOBIP_BASE_URL}/whatsapp/1/message/text"

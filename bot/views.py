@@ -16,20 +16,7 @@ INFOBIP_API_KEY    = settings.INFOBIP_API_KEY
 INFOBIP_SENDER_ID  = settings.INFOBIP_SENDER_ID  # e.g. "447500000000"
 INFOBIP_BASE_URL   = "https://api.infobip.com"
 
-def send_infobip_whatsapp(to, text):
-    url = f"{INFOBIP_BASE_URL}/whatsapp/1/message/text"
-    headers = {
-        "Authorization": f"App {INFOBIP_API_KEY}",
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-    }
-    payload = {
-        "from": INFOBIP_SENDER_ID,
-        "to": to,
-        "content": { "text": text }
-    }
-    resp = requests.post(url, headers=headers, json=payload)
-    return resp.ok
+
 
 @csrf_exempt
 def receive_message(request):
@@ -39,8 +26,14 @@ def receive_message(request):
     data = json.loads(request.body)
 
     for result in data.get("results", []):
-        sender = result.get("from")
-        text = result.get("message", {}).get("text", "").strip()
+        # 1) Grab the real sender key
+        sender = result.get("sender")
+
+        # 2) Pull text from the first content element
+        content = result.get("content", [])
+        text = ""
+        if content and isinstance(content, list):
+            text = content[0].get("text", "").strip()
 
         lines = [l.strip() for l in text.splitlines() if l.strip()]
         if not lines:
@@ -55,6 +48,7 @@ def receive_message(request):
                 "Invalid message tag. First line must be one of #CONTRIBUTION, #LOAN, or #FINE.",
                 sender
             )
+
         svc = ServiceGroup()
         if tag == "#CONTRIBUTION":
             required_fields = ["member ID", "amount", "contribution name", "chama name"]
@@ -77,9 +71,9 @@ def receive_message(request):
                 "chama_name":        lines[4],
             }
             return svc.process_contribution(payload, sender)
-        
+
         elif tag == "#FINE":
-            required_fields = ["member ID","amount","chama name"]
+            required_fields = ["member ID", "amount", "chama name"]
             if len(lines) < 4:
                 missing = required_fields[len(lines) - 1]
                 return ServiceGroup.send_message(
@@ -90,16 +84,16 @@ def receive_message(request):
                     "chama_name",
                     sender
                 )
-            payload = {
-                "member_id": lines[1],
-                "amount" : lines[2],
-                "chama_name": lines[3]
-            }
 
-            return svc.process_fine(payload,sender)
-        
+            payload = {
+                "member_id":  lines[1],
+                "amount":     lines[2],
+                "chama_name": lines[3],
+            }
+            return svc.process_fine(payload, sender)
+
         elif tag == "#LOAN":
-            required_fields = ["member_id","amount","chama name"]
+            required_fields = ["member ID", "amount", "chama name"]
             if len(lines) < 4:
                 missing = required_fields[len(lines) - 1]
                 return ServiceGroup.send_message(
@@ -110,17 +104,15 @@ def receive_message(request):
                     "chama_name",
                     sender
                 )
+
             payload = {
-                "member_id": lines[1],
-                "amount": lines[2],
-                "chama_name": lines[3]
+                "member_id":  lines[1],
+                "amount":     lines[2],
+                "chama_name": lines[3],
             }
-
-            return svc.process_loan(payload,sender)
-
+            return svc.process_loan(payload, sender)
 
     return JsonResponse({"status": "no inbound messages"}, status=200)
-
 
 @login_required(login_url='/user/Login')
 @is_user_chama_member
