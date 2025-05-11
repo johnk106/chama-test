@@ -55,12 +55,11 @@ class ServiceGroup:
             submitted_member      = member,
             submitted_chama       = chama_name,
             retrieved_chama       = chama,
-            chama=chama
+            chama=chama,
+            member_id=member_id
         )
 
-       
-
-        
+    
         return self.send_message(
             "Contribution recorded successfully ✅",
             sender
