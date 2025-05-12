@@ -41,7 +41,6 @@ def receive_message(request):
         return JsonResponse({"error": "invalid method"}, status=405)
 
     data = json.loads(request.body)
-    print(data)
 
     for result in data.get("results", []):
         sender = result.get("sender")
@@ -152,7 +151,7 @@ def approve_contribution(request, chama_id):
     try:
         payload = json.loads(request.body)
         bot_contribution_id = payload.get('record_id')
-        cluster            = payload.get('cluster_name', '').strip()
+        cluster_name = payload.get('cluster_name')
 
         if not bot_contribution_id:
             return JsonResponse({'error': 'Missing record_id'}, status=400)
@@ -160,40 +159,14 @@ def approve_contribution(request, chama_id):
         bot_record = BotContribution.objects.filter(id=bot_contribution_id).first()
         if not bot_record:
             return JsonResponse({'error': 'Bot contribution not found'}, status=404)
-        
+
         if bot_record.approved:
-            return JsonResponse({'status': 'success', 'message': 'Contribution approved already approved'})
+            return JsonResponse({'status': 'success', 'message': 'Contribution already approved'})
 
-        contribution = bot_record.retrieved_contribution
-        balance      = contribution.amount - bot_record.amount_paid
-
-        member = ChamaMember.objects.filter(
-            member_id=bot_record.member_id,
-            group_id=chama_id
-        ).first()
-        if not member:
-            return JsonResponse({'error': 'Member not found in this chama'}, status=404)
-        
-        chama = Chama.objects.filter(id=chama_id).first()
-
-        # create the actual ContributionRecord
-        ContributionRecord.objects.create(
-            contribution     = contribution,
-            date_created     = bot_record.date_created,
-            amount_expected  = contribution.amount,
-            amount_paid      = bot_record.amount_paid,
-            balance          = balance,
-            member           = member,
-            chama            = chama,
-            cluster          = cluster
-        )
-
-        # mark original bot contribution as approved
         bot_record.approved = True
         bot_record.save()
 
-    
-        return JsonResponse({'status': 'success', 'message': 'Contribution approved'})
+        return JsonResponse({'status': 'success', 'message': 'Contribution approved ✅'})
 
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid JSON payload'}, status=400)
@@ -204,12 +177,13 @@ def approve_contribution(request, chama_id):
 
 @login_required(login_url='/user/login')
 @is_user_chama_member
+@csrf_exempt
 def approve_fine(request, chama_id):
     if request.method != 'POST':
         return JsonResponse({'error': 'Invalid method'}, status=405)
 
     try:
-        payload = json.loads(request.body)
+        payload     = json.loads(request.body)
         bot_fine_id = payload.get('record_id')
         if not bot_fine_id:
             return JsonResponse({'error': 'Missing record_id'}, status=400)
@@ -218,20 +192,11 @@ def approve_fine(request, chama_id):
         if not record:
             return JsonResponse({'error': 'Bot fine record not found'}, status=404)
 
-        # apply the payment to the original fine item
-        fine = record.edited_fine
-        payment = record.amount_paid
-        fine.fine_balance = (fine.fine_balance or Decimal('0.00')) - payment
-        if fine.fine_balance <= 0:
-            fine.status = 'cleared'
-            fine.fine_balance = Decimal('0.00')
-        fine.last_updated = timezone.now()
-        fine.save()
+        if record.approved:
+            return JsonResponse({'status': 'success', 'message': 'Already approved'})
 
-        # mark the bot record approved
         record.approved = True
         record.save()
-
         return JsonResponse({'status': 'success', 'message': 'Fine approved'})
 
     except json.JSONDecodeError:
@@ -239,8 +204,10 @@ def approve_fine(request, chama_id):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
+
 @login_required(login_url='/user/login/')
 @is_user_chama_member
+@csrf_exempt
 def approve_loan(request, chama_id):
     if request.method != 'POST':
         return JsonResponse({'error': 'Invalid method'}, status=405)
@@ -255,26 +222,18 @@ def approve_loan(request, chama_id):
         if not record:
             return JsonResponse({'error': 'Bot loan record not found'}, status=404)
 
-        loan = record.updated_loan  # or .updated_loan if your model uses that
-        payment = record.amount_paid
-
-        loan.total_paid = (loan.total_paid or Decimal('0.00')) + payment
-        loan.balance    = (loan.balance or Decimal('0.00')) - payment
-        if loan.balance <= 0:
-            loan.balance = Decimal('0.00')
-            loan.status  = 'cleared'
-        loan.last_updated = timezone.now()
-        loan.save()
+        if record.approved:
+            return JsonResponse({'status': 'success', 'message': 'Already approved'})
 
         record.approved = True
         record.save()
 
         return JsonResponse({'status': 'success', 'message': 'Loan approved'})
+
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid JSON payload'}, status=400)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
-
 
 
 
