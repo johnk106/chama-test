@@ -19,7 +19,7 @@ def get_mpesa_access_token():
     print(mpesa_access_token)
     return mpesa_access_token['access_token'] if 'access_token' in mpesa_access_token else None
 class MpesaAccessToken:
-    # print(MpesaC2bCredential.api_URL, MpesaC2bCredential.consumer_key, MpesaC2bCredential.consumer_secret)
+    print(MpesaC2bCredential.api_URL, MpesaC2bCredential.consumer_key, MpesaC2bCredential.consumer_secret)
     validated_mpesa_access_token = get_mpesa_access_token()
 
 class LipanaMpesaPpassword:

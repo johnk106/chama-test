@@ -97,12 +97,6 @@
         <div class="cycle-name-alerts">
 
         </div>
-        <div class="input-sect">
-          <div class="some-cont">
-            <label for="cycle-name" class="form-label fw-semibold">Cycle name</label>
-            <input type="text" name="cycle-name" class="form-control" id="cycle-name" placeholder="eg. Week One" required />
-          </div>
-        </div>
       </div>
       <table class="table table-hover" id="member-list">
         <thead>
@@ -326,93 +320,82 @@
   $(document).ready(function () {
     // Function to handle click on a contribution item
     function fetchAndRenderContributionDetails(contributionName) {
-      var chamaId = localStorage.getItem("groupId");
+  const chamaId = localStorage.getItem("groupId");
+  const csrfToken = getCookie("csrftoken");
 
-      // Get the CSRF token from the cookie
-      var csrfToken = getCookie("csrftoken");
+  $.ajaxSetup({
+    headers: { "X-CSRFToken": csrfToken }
+  });
 
-      // Include CSRF token in the headers
-      $.ajaxSetup({
-        headers: {
-          "X-CSRFToken": csrfToken,
-        },
+  $.ajax({
+    url: `/chamas-bookeeping/retrieve-contribution/${chamaId}/`,
+    type: "POST",
+    data: JSON.stringify({ name: contributionName }),
+    contentType: "application/json",
+    success: function (response) {
+      if (response.status !== "success") {
+        alert("Failed to retrieve contribution details. Please try again.");
+        return;
+      }
+
+      // Update header details
+      $("#contribution-details-name").text(response.contribution.name);
+      $("#contribution-id").text(response.contribution.id);
+      $(".contribution-details-amount").text(response.contribution.amount);
+
+      // Render all records without grouping
+      const tbody = $("#contribution-records tbody");
+      tbody.empty();
+
+      response.records.results.forEach(record => {
+        const date    = new Date(record.date_created).toLocaleDateString();
+        const member  = record.member;
+        const contrib = record.contribution;
+        const paid    = parseFloat(record.amount_paid)
+                         .toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const bal     = parseFloat(record.balance)
+                         .toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        let rowHtml;
+        if (localStorage.getItem('selectedView') === 'admin') {
+          rowHtml = `
+            <tr data-record-id="${record.id}">
+              <td>${date}</td>
+              <td>${member}</td>
+              <td>${contrib}</td>
+              <td>ksh ${paid}</td>
+              <td>ksh ${bal}</td>
+              <td class="admin">
+                <button type="button" class="btn btn-sm border-0" style="background-color:#2191a5;"
+                        data-bs-toggle="modal" data-bs-target="#fineContribution">
+                  fine
+                </button>
+                <button type="button" class="btn btn-sm border-0" style="background-color:#2191a5;"
+                        data-bs-toggle="modal" data-bs-target="#exampleModal">
+                  pay
+                </button>
+              </td>
+            </tr>`;
+        } else {
+          rowHtml = `
+            <tr data-record-id="${record.id}">
+              <td>${date}</td>
+              <td>${member}</td>
+              <td>${contrib}</td>
+              <td>ksh ${paid}</td>
+              <td>ksh ${bal}</td>
+            </tr>`;
+        }
+
+        tbody.append(rowHtml);
       });
-
-      // Make AJAX request to retrieve contribution details
-      $.ajax({
-        url: `/chamas-bookeeping/retrieve-contribution/${chamaId}/`,
-        type: "POST",
-        data: JSON.stringify({ name: contributionName }),
-        contentType: "application/json",
-        success: function (response) {
-          if (response.status === "success") {
-            // Update contribution details div
-            $("#contribution-details-name").text(response.contribution.name);
-            $("#contribution-id").text(response.contribution.id);
-            $(".contribution-details-amount").text(response.contribution.amount);
-            // You can update other details as needed
-
-            // Update contribution records table
-            var recordsTableBody = $("#contribution-records tbody");
-            recordsTableBody.empty(); // Clear existing rows
-
-            // Group records by cluster
-            var clusters = {};
-            $.each(response.records.results, function (index, record) {
-              if (!clusters[record.cluster]) {
-                clusters[record.cluster] = [];
-              }
-              clusters[record.cluster].push(record);
-            });
-
-            // Render records by clusters
-            $.each(clusters, function (clusterName, records) {
-              // Add cluster subtopic
-              var clusterSubtopic = `
-                        <tr>
-                            <td colspan="5" class="cluster-subtopic" style="font-weight:bold;margin:5px;font-size:16px;">${clusterName}</td>
-                        </tr>`;
-              recordsTableBody.append(clusterSubtopic);
-
-              // Add records for the cluster
-              $.each(records, function (index, record) {
-                var selectedView = localStorage.getItem('selectedView');
-                 if(selectedView === 'admin'){
-                  var recordRow = `
-                            <tr data-record-id="${record.id}">
-                                <td>${new Date(record.date_created).toLocaleDateString()}</td>
-                                <td>${record.member}</td>
-                                <td>${record.contribution}</td>
-                                <td>ksh ${parseFloat(record.amount_paid).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                                <td>ksh ${parseFloat(record.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                                <td class="admin">
-                                    <button type="button" class="btn btn-primary btn-sm table-fine-button border-0" style="background-color:#2191a5;" data-bs-toggle="modal" data-bs-target="#fineContribution">fine</button>
-                                    <button type="button" class="btn btn-primary btn-sm table-pay-button border-0" style="background-color:#2191a5;" data-bs-toggle="modal" data-bs-target="#exampleModal">pay</button>
-                                </td>
-                            </tr>`;
-                } else{
-                  var recordRow = `
-                  <tr data-record-id="${record.id}">
-                      <td>${new Date(record.date_created).toLocaleDateString()}</td>
-                      <td>${record.member}</td>
-                      <td>${record.contribution}</td>
-                      <td>ksh ${parseFloat(record.amount_paid).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                      <td>ksh ${parseFloat(record.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                  </tr>`;
-
-                }
-                recordsTableBody.append(recordRow);
-              });
-            });
-          } else {
-            alert("Failed to retrieve contribution details. Please try again.");
-          }
-        },
-        error: function (xhr, status, error) {
-          alert("Failed to retrieve contribution details. Please try again.");
-        },
-      });
+    },
+    error: function () {
+      alert("Failed to retrieve contribution details. Please try again.");
     }
+  });
+}
+
 
 
     // Automatically fetch and render details for the first contribution item
@@ -434,15 +417,9 @@
     $("#update-contributions").on("click", function () {
       var chamaId = localStorage.getItem("groupId");
       var contributionId = $("#contribution-id").text();
-      var cluster = $('#cycle-name').val()
 
       var isValid = true;
 
-      if (!cluster.trim()) {
-        var errorAlert = $('<div class="alert alert-danger" role="alert">Please enter a cycle name.</div>');
-        $(".cycle-name-alerts").html(errorAlert); // Display error message in the alerts hub
-        isValid = false;
-      }
 
       if (!isValid) {
         return;
@@ -464,9 +441,7 @@
             data: JSON.stringify({
               contribution: contributionId,
               member: memberId,
-              amount: amount,
-              cluster: cluster
-            }),
+              amount: amount,            }),
             contentType: "application/json",
             success: function (response) {
               if (response.status === "success") {

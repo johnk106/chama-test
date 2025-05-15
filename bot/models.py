@@ -44,3 +44,20 @@ class BotLoan(models.Model):
 
     def __str__(self):
         return f'{self.member} - {self.date_created}'
+    
+class BotMember(models.Model):
+    name = models.TextField()
+    email = models.EmailField()
+    id_number = models.TextField()
+    phone = models.TextField()
+    role = models.TextField()
+    chama_name = models.TextField()
+    member = models.ForeignKey(ChamaMember,related_name="bot_members",on_delete=models.SET_NULL,null=True,blank=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    approved = models.BooleanField(default=False)
+    chama = models.ForeignKey(Chama,related_name="bot_members",on_delete=models.CASCADE,null=True,default=None)
+
+    def __str__(self):
+        return f'{self.name} - {self.id_number}'
+
+

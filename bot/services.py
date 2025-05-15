@@ -5,6 +5,8 @@ from django.conf import settings
 from django.http import JsonResponse
 import json
 from decimal import Decimal, InvalidOperation
+from django.db import IntegrityError
+from authentication.models import Profile
 
 
 class ServiceGroup:
@@ -17,7 +19,6 @@ class ServiceGroup:
         raw_amount        = message['amount']
         contribution_name = message['contribution_name']
         chama_name        = message['chama_name']
-        cluster_name      = message.get('cluster_name', 'Bot record').strip()
 
         # 1) Parse amount into Decimal
         try:
@@ -83,7 +84,6 @@ class ServiceGroup:
             balance         = balance,
             member          = member,
             chama           = chama,
-            cluster         = cluster_name
         )
 
         # 8) Notify user
@@ -225,9 +225,74 @@ class ServiceGroup:
         )
 
         return self.send_message(msg, sender)
+    
+    def process_member(self,message,sender):
+        name = message['name']
+        email = message['email']
+        id_number = message['id_number']
+        phone = message['phone']
+        role = message['role']
+        chama_name = message['chama']
 
+        chamas = Chama.objects.filter(name__icontains=chama_name)
+        if not chamas.exists():
+            return self.send_message(f"No chama found matching '{chama_name}'",sender)
+        
+        if chamas.count() > 1:
+            return self.send_message(f"Multiple chamas match the submitted name,please add the user manually",sender)
+        
+        chama = chamas.first()
 
+        role = Role.objects.filter(name = str(role)).first()
 
+        if not role:
+            return self.send_message("Submitted role is not valid,please submit a valid role",sender)
+        
+        user = User.objects.filter(username=id_number).first()
+
+        try:
+            if user:
+                profile = Profile.objects.get(owner=user)
+
+                new_member = ChamaMember.objects.create(
+                    name = user.first_name + ' ' + user.last_name,
+                    email = user.email,
+                    mobile = profile.phone,
+                    group = chama,
+                    role = role,
+                    user=user,
+                    profile=profile.picture,
+                    member_id=id_number
+                )
+            else:
+                new_member = ChamaMember.objects.create(
+                    name = name,
+                    mobile=phone,
+                    email=email,
+                    group=chama,
+                    role=role,
+                    member_id=id_number
+                )
+            new_bot_member = BotMember.objects.create(
+                name=name,
+                email=email,
+                id_number=id_number,
+                phone=phone,
+                role=role,
+                chama_name=chama.name,
+                member=new_member,
+                chama=chama
+            )
+
+            return self.send_message(f"New member with id {id_number} succesfully added to chama '{chama.name}'",sender)
+
+        except IntegrityError:
+            return self.send_message(f"Member with that ID already exists in chama '{chama_name}'",sender)
+        
+        except:
+            return self.send_message(f'An error occured during member creation,please try again.',sender)
+
+        
     @staticmethod
     def send_message(text, to):
         print(to)

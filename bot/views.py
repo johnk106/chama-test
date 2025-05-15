@@ -55,7 +55,7 @@ def receive_message(request):
             )
 
         tag = lines[0].upper()
-        if tag not in ("#CONTRIBUTION", "#FINE", "#LOAN"):
+        if tag not in ("#CONTRIBUTION", "#FINE", "#LOAN","#MEMBER"):
             return ServiceGroup.send_message(
                 "Invalid message tag. First line must be one of #CONTRIBUTION, #LOAN, or #FINE.",
                 sender
@@ -63,16 +63,17 @@ def receive_message(request):
 
         svc = ServiceGroup()
         # common sanitization for the amount line (always index 2)
-        if len(lines) >= 3:
-            raw_amount = lines[2]
-            clean_amount = _sanitize_amount(raw_amount)
-            if clean_amount is None:
-                return ServiceGroup.send_message(
-                    f"Invalid amount format: '{raw_amount}'. Please use e.g. 2000 or Ksh 2,000",
-                    sender
-                )
-        else:
-            clean_amount = None
+        if tag != "#MEMBER":
+            if len(lines) >= 3:
+                raw_amount = lines[2]
+                clean_amount = _sanitize_amount(raw_amount)
+                if clean_amount is None:
+                    return ServiceGroup.send_message(
+                        f"Invalid amount format: '{raw_amount}'. Please use e.g. 2000 or Ksh 2,000",
+                        sender
+                    )
+            else:
+                clean_amount = None
 
         if tag == "#CONTRIBUTION":
             if len(lines) < 5:
@@ -122,6 +123,27 @@ def receive_message(request):
                 "chama_name": lines[3],
             }
             return svc.process_loan(payload, sender)
+        
+        elif tag == "#MEMBER":
+            if len(lines) < 7:
+                missing = ['member name','email','member ID','phone number','role','chama name'][len(lines) - 1]
+                return ServiceGroup.send_message(
+                    f"Missing required field: {missing}. Please format as:\n"
+                    "#MEMBER\nmember name\nmember email\nmember ID number\nphone number\nmember role\nchama name",
+                    sender
+                )
+            payload = {
+                "name": lines[1],
+                "email": lines[2],
+                "id_number": lines[3],
+                "phone": lines[4],
+                "role": lines[5],
+                "chama": lines[6]
+            }
+
+            return svc.process_member(payload,sender)
+            
+
 
     return JsonResponse({"status": "no inbound messages"}, status=200)
 
@@ -135,10 +157,13 @@ def bot_records(request,chama_id):
 
     fines = BotFine.objects.filter(chama=chama,approved=False).order_by('-id').all()
 
+    members = BotMember.objects.filter(chama=chama,approved=False).order_by('-id').all()
+
     return render(request,'bot/records.html',{
         'contributions':contributions,
         'loans':loans,
-        'fines':fines
+        'fines':fines,
+        'members':members
     })
 
 @login_required(login_url='/user/login')
@@ -151,7 +176,6 @@ def approve_contribution(request, chama_id):
     try:
         payload = json.loads(request.body)
         bot_contribution_id = payload.get('record_id')
-        cluster_name = payload.get('cluster_name')
 
         if not bot_contribution_id:
             return JsonResponse({'error': 'Missing record_id'}, status=400)
@@ -236,10 +260,37 @@ def approve_loan(request, chama_id):
         return JsonResponse({'error': str(e)}, status=500)
 
 
+@login_required(login_url='/user/login/')
+@is_user_chama_member
+@csrf_exempt
+def approve_member(request,chama_id):
+    if request.method != 'POST':
+        return JsonResponse({'error':'Invalid Method'}, status = 405)
+    
+    try:
+        payload = json.loads(request.body)
+        bot_member_id = payload.get('record_id')
 
+        if not bot_member_id:
+            return JsonResponse({'error':'missing record id'},status=404)
+        
+        record = BotMember.objects.filter(id=bot_member_id).first()
+        if not record:
+            return JsonResponse({'error': 'Bot member record not found'},status=404)
+        
+        if record.approved:
+            return JsonResponse({'status':'success','message':'member already approved'})
+        
+        record.approved = True
+        record.save()
 
+        return JsonResponse({'status':'success','message':'member already approved'})
 
-
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON payload'},status=400)
+    
+    except Exception as e:
+        return JsonResponse({'error': str(e)},status=500)
 
 
 

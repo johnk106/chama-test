@@ -620,7 +620,6 @@ def create_contribution_record(request, chama_id):
             amount_expected = contribution.amount
             amount_paid = Decimal(data.get('amount'))
             member = ChamaMember.objects.get(pk=data.get('member'))
-            cluster = data.get('cluster')
 
             # Calculate balance
             balance = amount_paid - amount_expected
@@ -642,7 +641,6 @@ def create_contribution_record(request, chama_id):
                     amount_paid=amount_expected,  # Set amount paid to the expected amount
                     balance=0,  # No balance remaining for this contribution
                     member=member,
-                    cluster=cluster,
                     chama = chama
                 )
 
@@ -658,7 +656,6 @@ def create_contribution_record(request, chama_id):
                         amount_paid=extra_amount,
                         balance=amount_expected - extra_amount,  # No balance for extra contribution
                         member=member,
-                        cluster=cluster,
                         chama=chama
                     )
 
@@ -671,7 +668,6 @@ def create_contribution_record(request, chama_id):
                     amount_paid=amount_paid,
                     balance=abs(balance),
                     member=member,
-                    cluster=cluster,
                     chama=chama
                 )
 

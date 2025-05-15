@@ -7,5 +7,6 @@ urlpatterns = [
     path('reports/<int:chama_id>/',views.bot_records,name='bot-records'),
     path('contributions/approve/<int:chama_id>/',views.approve_contribution,name='approve-contribution'),
     path('loans/approve/<int:chama_id>/',views.approve_loan,name='approve-loan'),
-    path('fines/approve/<int:chama_id>/',views.approve_fine,name='approve-fine')
+    path('fines/approve/<int:chama_id>/',views.approve_fine,name='approve-fine'),
+    path('members/approve/<int:chama_id>/',views.approve_member,name='approve-fine')
 ]

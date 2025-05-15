@@ -83,7 +83,6 @@ class ContributionRecord(models.Model):
     member = models.ForeignKey(ChamaMember,on_delete=models.SET_NULL,related_name='member_records',null=True)
     chama = models.ForeignKey(Chama,on_delete=models.SET_NULL,related_name='contribution_records',  null=True, blank=True)
     last_updated = models.DateTimeField(default=timezone.now)
-    cluster = models.CharField(max_length=55,default='')
 
     def __str__(self):
         return f'{self.member.name} - {self.date_created}'
