@@ -58,7 +58,16 @@ class ServiceGroup:
         # 4) Find the member
         member = ChamaMember.objects.filter(member_id=member_id, group=chama).first()
         if not member:
-            return self.send_message("Member not found in the chama", sender)
+            admin_role = Role.objects.filter(name='admin').first()
+            admin = ChamaMember.objects.filter(group=chama,role=admin_role).first()
+
+            if admin.user.username != member_id:
+                return self.send_message("Member not found in the chama", sender)
+            
+            else:
+                member = admin
+
+            
 
         # 5) Compute balance
         balance = contribution.amount - amount
@@ -109,10 +118,14 @@ class ServiceGroup:
 
         member = ChamaMember.objects.filter(member_id=member_id, group=chama).first()
         if not member:
-            return self.send_message(
-                f"No member with ID '{member_id}' in chama '{chama.name}'",
-                sender
-            )
+            admin_role = Role.objects.filter(name='admin').first()
+            admin = ChamaMember.objects.filter(group=chama,role=admin_role).first()
+
+            if admin.user.username != member_id:
+                return self.send_message("Member not found in the chama", sender)
+            
+            else:
+                member = admin
 
         fine = (
             FineItem.objects
@@ -178,10 +191,14 @@ class ServiceGroup:
 
         member = ChamaMember.objects.filter(member_id=member_id, group=chama).first()
         if not member:
-            return self.send_message(
-                f"No member with ID '{member_id}' in chama '{chama.name}'",
-                sender
-            )
+            admin_role = Role.objects.filter(name='admin').first()
+            admin = ChamaMember.objects.filter(group=chama,role=admin_role).first()
+
+            if admin.user.username != member_id:
+                return self.send_message("Member not found in the chama", sender)
+            
+            else:
+                member = admin
 
         loan = (
             LoanItem.objects
