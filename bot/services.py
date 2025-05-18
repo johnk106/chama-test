@@ -71,27 +71,26 @@ class ServiceGroup:
                 return self.send_message("Member not found in the chama", sender)
             
             else:
-                member = admin
+                member = ChamaMember.objects.filter(group=chama,member_id=admin.username).first()
 
             
 
         # 5) Compute balance
         balance = contribution.amount - amount
-
-        # 6) Create BotContribution record
         bot_contribution = BotContribution.objects.create(
             submitted_contribution = contribution_name,
             retrieved_contribution = contribution,
             amount_paid            = amount,
-            submitted_member       = member,
+            submitted_member       = f"{member.name} - {member.mobile}",
             submitted_chama        = chama_name,
             retrieved_chama        = chama,
             chama                  = chama,
-            member_id              = member_id
+            member_id              = member_id,
         )
 
+
         # 7) Create real ContributionRecord
-        ContributionRecord.objects.create(
+        record = ContributionRecord.objects.create(
             contribution    = contribution,
             date_created    = bot_contribution.date_created,
             amount_expected = contribution.amount,
@@ -100,6 +99,11 @@ class ServiceGroup:
             member          = member,
             chama           = chama,
         )
+
+        bot_contribution.record = record
+        bot_contribution.save()
+
+        
 
         # 8) Notify user
         return self.send_message("Contribution recorded successfully ✅", sender)

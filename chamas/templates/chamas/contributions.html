@@ -359,18 +359,18 @@
         let rowHtml;
         if (localStorage.getItem('selectedView') === 'admin') {
           rowHtml = `
-            <tr data-record-id="${record.id}">
+            <tr data-record-id="${record.id}" id="record-id">
               <td>${date}</td>
               <td>${member}</td>
               <td>${contrib}</td>
               <td>ksh ${paid}</td>
               <td>ksh ${bal}</td>
               <td class="admin">
-                <button type="button" class="btn btn-sm border-0" style="background-color:#2191a5;"
+                <button type="button" class="btn btn-sm border-0 table-fine-button" style="background-color:#2191a5;"
                         data-bs-toggle="modal" data-bs-target="#fineContribution">
                   fine
                 </button>
-                <button type="button" class="btn btn-sm border-0" style="background-color:#2191a5;"
+                <button type="button" class="btn btn-sm border-0 table-pay-button" style="background-color:#2191a5;"
                         data-bs-toggle="modal" data-bs-target="#exampleModal">
                   pay
                 </button>
@@ -539,7 +539,9 @@
     });
     // Function to handle click on the pay button in the modal
     $("#fine-modal-button").on("click", function () {
-      var recordId = $("#fine-contribution-record-id").val(); // Assuming you have an input with id "contribution-record-id" to store the record ID
+      var recordId = $("#fine-contribution-record-id").val();
+      console.log(recordId);
+      // Assuming you have an input with id "contribution-record-id" to store the record ID
       var fine = $("#fine-type option:selected").val();
 
       $.ajax({

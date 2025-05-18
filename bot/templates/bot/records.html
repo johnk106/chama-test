@@ -188,7 +188,7 @@
 
         <div class="mb-3">
           <label class="form-label">Amount Paid</label>
-          <input type="text" class="form-control" id="contrib-amount">
+          <input type="text"  class="form-control" id="contrib-amount">
         </div>
         <input type="hidden" id="contrib-id">
       </div>
@@ -406,6 +406,7 @@
       successEl.classList.remove('d-none');
 
       const recordId = document.getElementById('contrib-id').value;
+      const amount = document.getElementById('contrib-amount').value;
       fetch(`/bot/contributions/approve/${chamaId}/`, {
         method: 'POST',
         headers: {
@@ -414,6 +415,7 @@
         },
         body: JSON.stringify({
           record_id: recordId,
+          amount:amount
         })
       })
         .then(response => response.json().then(data => ({ status: response.status, data })))

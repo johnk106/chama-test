@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from chamas.models import *
 from .models import *
+from decimal import Decimal
 
 
 
@@ -176,6 +177,7 @@ def approve_contribution(request, chama_id):
     try:
         payload = json.loads(request.body)
         bot_contribution_id = payload.get('record_id')
+        amount = payload.get('amount')
 
         if not bot_contribution_id:
             return JsonResponse({'error': 'Missing record_id'}, status=400)
@@ -186,6 +188,17 @@ def approve_contribution(request, chama_id):
 
         if bot_record.approved:
             return JsonResponse({'status': 'success', 'message': 'Contribution already approved'})
+        
+        try:
+            if bot_record.record.amount_paid != Decimal(amount):
+                balance = bot_record.record.contribution.amount - Decimal(amount)
+                bot_record.record.amount_paid = Decimal(amount)
+                bot_record.record.balance = balance
+                bot_record.record.save()
+            
+        except Exception as e:
+            return JsonResponse({'error':f'Transaction record could not be edited;{e}'},status=400)
+                
 
         bot_record.approved = True
         bot_record.save()
