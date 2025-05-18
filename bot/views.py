@@ -189,15 +189,16 @@ def approve_contribution(request, chama_id):
         if bot_record.approved:
             return JsonResponse({'status': 'success', 'message': 'Contribution already approved'})
         
-        try:
-            if bot_record.record.amount_paid != Decimal(amount):
-                balance = bot_record.record.contribution.amount - Decimal(amount)
-                bot_record.record.amount_paid = Decimal(amount)
-                bot_record.record.balance = balance
-                bot_record.record.save()
-            
-        except Exception as e:
-            return JsonResponse({'error':f'Transaction record could not be edited;{e}'},status=400)
+        if bot_record.record:
+            try:
+                if bot_record.record.amount_paid != Decimal(amount):
+                    balance = bot_record.record.contribution.amount - Decimal(amount)
+                    bot_record.record.amount_paid = Decimal(amount)
+                    bot_record.record.balance = balance
+                    bot_record.record.save()
+                
+            except Exception as e:
+                return JsonResponse({'error':f'Transaction record could not be edited;'},status=400)
                 
 
         bot_record.approved = True
