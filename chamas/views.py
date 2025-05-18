@@ -243,7 +243,8 @@ def create_chama(request):
                 email=created_by.email,
                 mobile = created_by.profile.phone,
                 group = new_chama,
-                role = role,user=created_by
+                role = role,
+                user=created_by
             )
 
             data = {

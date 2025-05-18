@@ -7,6 +7,7 @@ import json
 from decimal import Decimal, InvalidOperation
 from django.db import IntegrityError
 from authentication.models import Profile
+from django.db.models import Q
 
 
 class ServiceGroup:
@@ -31,7 +32,12 @@ class ServiceGroup:
             )
 
         # 2) Find the chama
-        chamas = Chama.objects.filter(name__icontains=chama_name)
+        terms = chama_name.strip().split()
+        q = Q()
+        for term in terms:
+            q &= Q(name__icontains=term)
+        chamas = Chama.objects.filter(q)
+
         if not chamas.exists():
             return self.send_message(f"No chama found matching '{chama_name}'", sender)
         if chamas.count() > 1:
@@ -104,7 +110,11 @@ class ServiceGroup:
         amount     = Decimal(message['amount'])
         chama_name = message['chama_name']
 
-        chamas = Chama.objects.filter(name__icontains=chama_name)
+        terms = chama_name.strip().split()
+        q = Q()
+        for term in terms:
+            q &= Q(name__icontains=term)
+        chamas = Chama.objects.filter(q)
         if not chamas.exists():
             return self.send_message(f"No chama found matching '{chama_name}'", sender)
         if chamas.count() > 1:
@@ -177,7 +187,11 @@ class ServiceGroup:
         amount     = Decimal(message['amount'])
         chama_name = message['chama_name']
 
-        chamas = Chama.objects.filter(name__icontains=chama_name)
+        terms = chama_name.strip().split()
+        q = Q()
+        for term in terms:
+            q &= Q(name__icontains=term)
+        chamas = Chama.objects.filter(q)
         if not chamas.exists():
             return self.send_message(f'No chama found matching "{chama_name}"', sender)
         if chamas.count() > 1:
@@ -248,10 +262,14 @@ class ServiceGroup:
         email = message['email']
         id_number = message['id_number']
         phone = message['phone']
-        role = message['role']
+        role = message['role'].lower()
         chama_name = message['chama']
 
-        chamas = Chama.objects.filter(name__icontains=chama_name)
+        terms = chama_name.strip().split()
+        q = Q()
+        for term in terms:
+            q &= Q(name__icontains=term)
+        chamas = Chama.objects.filter(q)
         if not chamas.exists():
             return self.send_message(f"No chama found matching '{chama_name}'",sender)
         
@@ -261,11 +279,14 @@ class ServiceGroup:
         chama = chamas.first()
 
         role = Role.objects.filter(name = str(role)).first()
-
         if not role:
             return self.send_message("Submitted role is not valid,please submit a valid role",sender)
         
         user = User.objects.filter(username=id_number).first()
+
+        existing_member = ChamaMember.objects.filter(group=chama,member_id=id_number).first()
+        if existing_member:
+            return self.send_message("Member with that ID already exists in  this chama",sender)
 
         try:
             if user:
