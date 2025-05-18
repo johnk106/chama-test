@@ -103,8 +103,6 @@ class ServiceGroup:
         bot_contribution.record = record
         bot_contribution.save()
 
-        
-
         # 8) Notify user
         return self.send_message("Contribution recorded successfully ✅", sender)
 
