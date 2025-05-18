@@ -71,7 +71,7 @@ class ServiceGroup:
                 return self.send_message("Member not found in the chama", sender)
             
             else:
-                member = ChamaMember.objects.filter(group=chama,member_id=admin.username).first()
+                member = admin
 
             
 
