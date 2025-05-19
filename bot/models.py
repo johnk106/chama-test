@@ -14,12 +14,18 @@ class BotContribution(models.Model):
     member_id = models.TextField(null=True)
     approved = models.BooleanField(default=False)
     record = models.ForeignKey(ContributionRecord,on_delete=models.CASCADE,related_name='contribution_records',null=True,blank=True)
-    
+    sender = models.TextField(default="",blank=True)
+
 
     def __str__(self):
         return f'{self.submitted_member} - {self.date_created}'
     
+class ContributionFraud(models.Model):
+    record = models.ForeignKey(BotContribution,related_name="bot_fraud",on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f"{self.record.sender}"
+    
 
 class BotFine(models.Model):
     member = models.TextField()
@@ -30,9 +36,16 @@ class BotFine(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     chama = models.ForeignKey(Chama,on_delete=models.CASCADE,related_name='chama_bot_fines',null=True,blank=True)
     approved = models.BooleanField(default=False)
+    sender = models.TextField(default="")
 
     def __str__(self):
         return f'{self.member} - {self.date_created}'
+    
+class FineFraud(models.Model):
+    record = models.ForeignKey(BotFine,on_delete=models.CASCADE,related_name="bot_fraud")
+
+    def __str__(self):
+        return f'{self.record.sender}'
     
 class BotLoan(models.Model):
     member = models.TextField()
@@ -43,9 +56,16 @@ class BotLoan(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     chama = models.ForeignKey(Chama,on_delete=models.CASCADE,related_name='chama_bot_loans',null=True,blank=True)
     approved = models.BooleanField(default=False)
+    sender = models.TextField(default="")
 
     def __str__(self):
         return f'{self.member} - {self.date_created}'
+    
+class LoanFraud(models.Model):
+    record = models.ForeignKey(BotLoan,on_delete=models.CASCADE,related_name="bot_fraud")
+
+    def __str__(self):
+        return f"{self.record.sender}"
     
 class BotMember(models.Model):
     name = models.TextField()
@@ -58,8 +78,15 @@ class BotMember(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     approved = models.BooleanField(default=False)
     chama = models.ForeignKey(Chama,related_name="bot_members",on_delete=models.CASCADE,null=True,default=None)
+    sender = models.TextField(default="")
 
     def __str__(self):
         return f'{self.name} - {self.id_number}'
+    
+class MemberFraud(models.Model):
+    record = models.ForeignKey(BotMember,on_delete=models.CASCADE,related_name="bot_fraud")
+
+    def __str__(self):
+        return f"{self.record.sender}"
 
 

@@ -305,12 +305,142 @@ def approve_member(request,chama_id):
     
     except Exception as e:
         return JsonResponse({'error': str(e)},status=500)
+    
+
+@login_required(login_url='/user/login/')
+@is_user_chama_member
+def flag_contribution(request,chama_id):
+    if request.method != 'POST':
+        return JsonResponse({'error':'Invalid method'},status=405)
+    
+    try:
+        payload = json.loads(request.body)
+        bot_contribution_id = payload.get('record_id')
+
+        record = BotContribution.objects.filter(id=bot_contribution_id).first()
+
+        record.record.delete()
+
+        record.record = None
+        record.approved = True
+
+        record.save()
+
+        flag = ContributionFraud.objects.create(record=record)
+
+        return JsonResponse({'status':'success','message':'Transaction marked as fraud'})
+
+    except json.JSONDecodeError:
+        return JsonResponse({'error':'Invalid JSON payload'},status=400)
+    
+    except Exception as e:
+        return JsonResponse({'error':str(e)},status=500)
+    
+@login_required(login_url='/user/login/')
+@is_user_chama_member
+def flag_fine(request,chama_id):
+    if request.method != 'POST':
+        return JsonResponse({'error':'Invalid Method'},status=405)
+    
+    try:
+        payload = json.loads(request.body)
+        bot_fine_id = payload.get('record_id')
+
+        record = BotFine.objects.filter(id=bot_fine_id).first()
+        original_fine = record.edited_fine
+
+        original_fine.fine_balance += record.amount_paid
+
+        if original_fine.status == 'cleared':
+            original_fine.status = 'active'
+
+        original_fine.last_updated = timezone.now()
+
+        record.approved = True
+        record.save()
+
+        original_fine.save()
+
+        fraud = FineFraud.objects.create(record=record)
+
+        return JsonResponse({'status':'success','message':'Transaction marked as fraud'})
 
 
+    except json.JSONDecodeError:
+        return JsonResponse({'error':'Invalid JSON payload'},status=400)
+    
+    except Exception as e:
+        return JsonResponse({'error':str(e)},status=500)
+
+@login_required(login_url='/user/login/')
+@is_user_chama_member
+def flag_loan(request,chama_id):
+    if request.method != 'POST':
+        return JsonResponse({'error':'Invalid method'},status=405)
+    
+    try:
+        payload = json.loads(request.body)
+        bot_loan_id = payload.get('record_id')
+
+        record = BotLoan.objects.filter(id=bot_loan_id).first()
+        original_loan = record.updated_loan
+
+        original_loan.balance += record.amount_paid
+
+        if original_loan.status == 'cleared':
+            original_loan.status = "active"
+
+        original_loan.total_paid -= record.amount_paid
+        original_loan.last_updated = timezone.now()
+
+        original_loan.save()
+
+        record.approved = True
+        record.save()
+
+        fraud = LoanFraud.objects.create(record=record)
+
+        return JsonResponse({'status':'Success','message':'Transaction has been flagged succesfully'})
+
+    except json.JSONDecodeError:
+        return JsonResponse({'error':'Invalid JSON payload'},status=400)
+    
+    except Exception as e:
+        print(e)
+        return JsonResponse({'error': str(e)},status=500)
+
+@login_required(login_url='/user/login/')
+@is_user_chama_member
+def flag_member(request,chama_id):
+    if request.method != 'POST':
+        return JsonResponse({'error':'Invalid method'},status=405)
+    
+    try:
+        chama = Chama.objects.filter(id=chama_id).first()
+
+        payload = json.loads(request.body)
+        bot_member_id = payload.get('member_id')
+
+        record = BotMember.objects.filter(id=bot_member_id).first()
+
+        member = ChamaMember.objects.filter(group=chama,member_id=record.id_number).first()
+        if member:
+            member.delete()
+
+        fraud = MemberFraud.objects.create(record=record)
+
+        record.approved = True
+        record.save()
+
+        return JsonResponse({'status':'success','message':'Member removed from group succesfully'})
 
 
-
-
+    except json.JSONDecodeError:
+        return JsonResponse({'error':'Invalid JSON payload'})
+    
+    except Exception as e:
+        print(e)
+        return JsonResponse({'error':str(e)},status=500)
 
 
 

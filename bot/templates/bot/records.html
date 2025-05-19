@@ -193,6 +193,7 @@
         <input type="hidden" id="contrib-id">
       </div>
       <div class="modal-footer">
+        <button type="button" class="btn btn-danger" id="contribution-reject-button">Reject</button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <button type="submit" class="btn" style="background-color:#2191a5; color:white;">Approve</button>
       </div>
@@ -233,6 +234,9 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+        <button type="button" class="btn btn-danger" id="fine-reject-button">Reject</button>
+
         <button type="submit" class="btn" style="background-color:#2191a5; color:white;">Approve</button>
       </div>
     </form>
@@ -272,6 +276,9 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+        <button type="button" class="btn btn-danger" id="loan-reject-button">Reject</button>
+
         <button type="submit" class="btn" style="background-color:#2191a5; color:white;">Approve</button>
       </div>
     </form>
@@ -297,6 +304,8 @@
         <input type="hidden" id="member-bot-id">
       </div>
       <div class="modal-footer">
+        <button type="button" class="btn btn-danger" id="member-reject-button">Reject</button>
+
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <button type="submit" class="btn" style="background-color:#2191a5; color:white;">Approve</button>
       </div>
@@ -627,5 +636,252 @@
     });
   });
   </script>
-  
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      const btn = document.getElementById('fine-reject-button');
+      const successEl = document.getElementById('alert-success');
+      const dangerEl = document.getElementById('alert-danger');
+      const modalEl = document.getElementById('modal-fine');
+
+      const chamaId = localStorage.getItem('groupId');
+
+      function getCookie(name) {
+      let cookieValue = null;
+      document.cookie.split(';').forEach(cookie => {
+        const [k, v] = cookie.trim().split('=');
+        if (k === name) cookieValue = decodeURIComponent(v);
+      });
+      return cookieValue;
+    }
+    const csrfToken = getCookie('csrftoken');
+
+    btn.addEventListener('click',function(e){
+      e.preventDefault();
+
+      successEl.classList.add('d-none');
+      dangerEl.classList.add('d-none');
+
+      successEl.textContent = 'Processing...';
+      successEl.classList.remove('d-none');
+
+      const recordId = document.getElementById('fine-id').value;
+
+      fetch(`/bot/fines/reject/${chamaId}/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify({record_id: recordId })
+      })
+      .then(res => res.json().then(data => ({status: res.status,data})))
+      .then(({status,data}) => {
+        successEl.classList.add('d-none');
+
+          if (status >= 200 && status < 300 && !data.error) {
+            successEl.textContent = '✅ Fine flagged successfully';
+            successEl.classList.remove('d-none');
+            let bsModal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            bsModal.hide();
+          } else {
+            const err = data.error || data.details || 'Unknown error';
+            dangerEl.textContent = `❌ Failed to flag: ${err}`;
+            dangerEl.classList.remove('d-none');
+          }
+        })
+        .catch(() => {
+          successEl.classList.add('d-none');
+          dangerEl.textContent = '❌ Network error, please try again';
+          dangerEl.classList.remove('d-none');
+
+      });
+    });
+    });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      const btn = document.getElementById('loan-reject-button');
+      const successEl = document.getElementById('alert-success');
+      const dangerEl = document.getElementById('alert-danger');
+      const modalEl = document.getElementById('modal-loan');
+
+      const chamaId = localStorage.getItem('groupId');
+
+      function getCookie(name) {
+      let cookieValue = null;
+      document.cookie.split(';').forEach(cookie => {
+        const [k, v] = cookie.trim().split('=');
+        if (k === name) cookieValue = decodeURIComponent(v);
+      });
+      return cookieValue;
+    }
+    const csrfToken = getCookie('csrftoken');
+
+    btn.addEventListener('click',function(e){
+      e.preventDefault();
+
+      successEl.classList.add('d-none');
+      dangerEl.classList.add('d-none');
+
+      successEl.textContent = 'Processing...';
+      successEl.classList.remove('d-none');
+
+      const recordId = document.getElementById('loan-id').value;
+
+      fetch(`/bot/loans/reject/${chamaId}/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify({record_id: recordId })
+      })
+      .then(res => res.json().then(data => ({status: res.status,data})))
+      .then(({status,data}) => {
+        successEl.classList.add('d-none');
+
+          if (status >= 200 && status < 300 && !data.error) {
+            successEl.textContent = '✅ Loan flagged successfully';
+            successEl.classList.remove('d-none');
+            let bsModal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            bsModal.hide();
+          } else {
+            const err = data.error || data.details || 'Unknown error';
+            dangerEl.textContent = `❌ Failed to flag: ${err}`;
+            dangerEl.classList.remove('d-none');
+          }
+        })
+        .catch(() => {
+          successEl.classList.add('d-none');
+          dangerEl.textContent = '❌ Network error, please try again';
+          dangerEl.classList.remove('d-none');
+
+      });
+    });
+    });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      const btn = document.getElementById('member-reject-button');
+      const successEl = document.getElementById('alert-success');
+      const dangerEl = document.getElementById('alert-danger');
+      const modalEl = document.getElementById('modal-member');
+
+      const chamaId = localStorage.getItem('groupId');
+
+      function getCookie(name) {
+      let cookieValue = null;
+      document.cookie.split(';').forEach(cookie => {
+        const [k, v] = cookie.trim().split('=');
+        if (k === name) cookieValue = decodeURIComponent(v);
+      });
+      return cookieValue;
+    }
+    const csrfToken = getCookie('csrftoken');
+
+    btn.addEventListener('click',function(e){
+      e.preventDefault();
+
+      successEl.classList.add('d-none');
+      dangerEl.classList.add('d-none');
+
+      successEl.textContent = 'Processing...';
+      successEl.classList.remove('d-none');
+
+      const recordId = document.getElementById('member-bot-id').value;
+
+      fetch(`/bot/members/reject/${chamaId}/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify({member_id: recordId })
+      })
+      .then(res => res.json().then(data => ({status: res.status,data})))
+      .then(({status,data}) => {
+        successEl.classList.add('d-none');
+
+          if (status >= 200 && status < 300 && !data.error) {
+            successEl.textContent = '✅ member flagged successfully';
+            successEl.classList.remove('d-none');
+            let bsModal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            bsModal.hide();
+          } else {
+            const err = data.error || data.details || 'Unknown error';
+            dangerEl.textContent = `❌ Failed to flag: ${err}`;
+            dangerEl.classList.remove('d-none');
+          }
+        })
+        .catch(() => {
+          successEl.classList.add('d-none');
+          dangerEl.textContent = '❌ Network error, please try again';
+          dangerEl.classList.remove('d-none');
+
+      });
+    });
+    });
+  </script>
+   <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      const btn = document.getElementById('contribution-reject-button');
+      const successEl = document.getElementById('alert-success');
+      const dangerEl = document.getElementById('alert-danger');
+      const modalEl = document.getElementById('modal-contribution');
+
+      const chamaId = localStorage.getItem('groupId');
+
+      function getCookie(name) {
+      let cookieValue = null;
+      document.cookie.split(';').forEach(cookie => {
+        const [k, v] = cookie.trim().split('=');
+        if (k === name) cookieValue = decodeURIComponent(v);
+      });
+      return cookieValue;
+    }
+    const csrfToken = getCookie('csrftoken');
+
+    btn.addEventListener('click',function(e){
+      e.preventDefault();
+
+      successEl.classList.add('d-none');
+      dangerEl.classList.add('d-none');
+
+      successEl.textContent = 'Processing...';
+      successEl.classList.remove('d-none');
+
+      const recordId = document.getElementById('contrib-id').value;
+
+      fetch(`/bot/contributions/reject/${chamaId}/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify({record_id: recordId })
+      })
+      .then(res => res.json().then(data => ({status: res.status,data})))
+      .then(({status,data}) => {
+        successEl.classList.add('d-none');
+
+          if (status >= 200 && status < 300 && !data.error) {
+            successEl.textContent = '✅ Contribution flagged successfully';
+            successEl.classList.remove('d-none');
+            let bsModal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            bsModal.hide();
+          } else {
+            const err = data.error || data.details || 'Unknown error';
+            dangerEl.textContent = `❌ Failed to flag: ${err}`;
+            dangerEl.classList.remove('d-none');
+          }
+        })
+        .catch(() => {
+          successEl.classList.add('d-none');
+          dangerEl.textContent = '❌ Network error, please try again';
+          dangerEl.classList.remove('d-none');
+
+      });
+    });
+    });
+  </script>
 {% endblock %}

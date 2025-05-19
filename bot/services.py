@@ -86,6 +86,7 @@ class ServiceGroup:
             retrieved_chama        = chama,
             chama                  = chama,
             member_id              = member_id,
+            sender=sender
         )
 
 
@@ -175,7 +176,8 @@ class ServiceGroup:
             submitted_chama     = chama_name,
             retrieved_chama     = chama,
             edited_fine       = fine,
-            chama               = chama
+            chama               = chama,
+            sender = sender
         )
 
         return self.send_message(msg, sender)
@@ -254,7 +256,8 @@ class ServiceGroup:
             submitted_chama     = chama_name,
             retrieved_chama     = chama,
             updated_loan       = loan,
-            chama               = chama
+            chama               = chama,
+            sender=sender
         )
 
         return self.send_message(msg, sender)
@@ -321,7 +324,8 @@ class ServiceGroup:
                 role=role,
                 chama_name=chama.name,
                 member=new_member,
-                chama=chama
+                chama=chama,
+                sender=sender
             )
 
             return self.send_message(f"New member with id {id_number} succesfully added to chama '{chama.name}'",sender)
