@@ -398,6 +398,8 @@ from authentication.models import Profile
 from authentication.models import Gender, Payment_Method, How_did_you_find, Profile
 
 from notifications.models import *
+from django.contrib.auth.decorators import login_required
+from chamas.models import Chama,ChamaMember
 
 
 
@@ -966,3 +968,23 @@ def showFirebaseJS(request):
            '});'
 
     return HttpResponse(data, content_type="text/javascript")
+
+
+@login_required(login_url='/user/login/')
+def delete_account(request):
+    user = request.user
+
+    chama_members = ChamaMember.objects.filter(user=user).all()
+    for member in chama_members:
+        member.user = None
+
+        member.save()
+
+    user.delete()
+
+    messages.success(request,'we are sad to see you leave')
+
+    return redirect('Sign_up')
+
+
+

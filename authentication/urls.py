@@ -16,4 +16,5 @@ urlpatterns=[
     path('reset_password', views.reset_password , name="reset_password"),
     path('update_password', views.update_password , name="update_password"),
     path('verify_otp', views.verify_otp , name="verify_otp"),
+    path('delete-account',views.delete_account,name='delete-account')
 ]
