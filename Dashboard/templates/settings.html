@@ -275,9 +275,8 @@
                                             <button type="reset" class="btn btn-primary">Save Change</button>
                                         {% else %}
                                             <button type="submit" class="btn btn-primary">Save Change</button>
-                                            <a href="{%url 'delete-account'%}">
+                                            <a href="{% url 'delete-account' %}" onclick="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
                                                 <button type="button" class="btn btn-danger">Delete account</button>
-
                                             </a>
 
                                         {% endif %}
