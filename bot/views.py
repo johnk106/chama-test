@@ -430,6 +430,7 @@ def flag_member(request,chama_id):
         fraud = MemberFraud.objects.create(record=record)
 
         record.approved = True
+        record.member_id = None
         record.save()
 
         return JsonResponse({'status':'success','message':'Member removed from group succesfully'})
