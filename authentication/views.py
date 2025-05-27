@@ -765,6 +765,7 @@ def verify_otp(request):
                 del request.session['signup_data']
                 messages.success(request, 'Sign up successful. You can now log in.')
 
+
                 login(request, x)
                 return redirect('my_goals')            
             except Exception as e:
