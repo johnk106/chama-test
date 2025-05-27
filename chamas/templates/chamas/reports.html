@@ -498,7 +498,7 @@
           border-radius: var(--bs-border-radius);
           transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
           color: #2291A5;">
-          <select style="width: 100%; color: #2291A5;" id="member-contribution-owner" class="border-0 bg-white p-2">
+          <select style="width: 100%; color: #2291A5;" id="member-contribution-owner-2" class="border-0 bg-white p-2">
             <option value="" disabled selected>Select Member</option>
             {%for member in members%}
             <option selected value="{{member.id}}">{{member.name}}</option>
@@ -809,7 +809,10 @@
 
     document.querySelector('#download-group-contributions').addEventListener('click', function () {
       var chama_id = localStorage.getItem('groupId');
-      fetch(`/chamas-bookeeping/download-group-contributions-report/${chama_id}/`, {
+      const schemeId = document.getElementById('group-contribution-scheme').value;
+
+
+      fetch(`/chamas-bookeeping/download-group-contributions-report/${chama_id}/${schemeId}/`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -867,10 +870,14 @@
 
     document.querySelector('#download-member-contribution-report').addEventListener('click', function () {
       var chama_id = localStorage.getItem('groupId');
-      var member_id = document.getElementById('member-contribution-owner').value;
+      var member_id = document.getElementById('member-contribution-owner-2').value;
+      const selectedSchemeId = document.getElementById('member-contribution-scheme').value;
+
+      console.log(member_id);
 
 
-      fetch(`/chamas-bookeeping/download-member-contributions-report/${chama_id}/${member_id}/`, {
+
+      fetch(`/chamas-bookeeping/download-member-contributions-report/${chama_id}/${member_id}/${selectedSchemeId}/`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -2181,42 +2188,56 @@
 
   // Filter reports based on selected start and end dates and member
   function filterMemberContributions() {
-  const startDate        = document.getElementById('group-contributions-start').value;
-  const endDate          = document.getElementById('group-contributions-end').value;
-  const selectedMemberId = document.getElementById('member-contribution-owner').value;
-  const selectedSchemeId = document.getElementById('member-contribution-scheme').value;
+    const startDate        = document.getElementById('group-contributions-start').value;
+    const endDate          = document.getElementById('group-contributions-end').value;
+    const selectedMemberId = document.getElementById('member-contribution-owner-2').value;
+    const selectedSchemeId = document.getElementById('member-contribution-scheme').value;
 
+    
 
+    const filtered = memberContributions.filter(item => {
 
-  const filtered = memberContributions.filter(item => {
+      // date-created filter
+      if (startDate) {
+        if (new Date(item.date_created) < new Date(startDate)) {
+          return false;
+        }
+      }
+      if (endDate) {
+        if (new Date(item.date_created) > new Date(endDate)) {
+          return false;
+        }
+      }
 
-    const rd = new Date(item.date_created);
-    if (startDate && rd < new Date(startDate)) {
-      return false;
-    }
-    if (endDate && rd > new Date(endDate)) {
-      return false;
-    }
+      // member filter
+      if (selectedMemberId) {
+        if (item.member_id.toString() !== selectedMemberId) {
+         
+          return false;
+        }
+      }
 
-    // now use the numeric IDs
-    if (selectedMemberId && item.member_id.toString() !== selectedMemberId) {
-      return false;
-    }
-    if (selectedSchemeId && item.contribution_id.toString() !== selectedSchemeId) {
-      return false;
-    }
+      // scheme filter
+      if (selectedSchemeId) {
+        if (item.contribution_id.toString() !== selectedSchemeId) {
+     
+          return false;
+        }
+      }
 
-    return true;
-  });
+    
+      return true;
+    });
 
-  
-  renderMemberContributions(filtered);
-}
+    console.log('→ filtered result:', filtered);
 
-  // Add event listeners to start and end date inputs and member selection
+    renderMemberContributions(filtered);
+  }
+
+  // re-attach your event listeners (no changes here)
   document.getElementById('group-contributions-start').addEventListener('change', filterMemberContributions);
   document.getElementById('group-contributions-end').addEventListener('change', filterMemberContributions);
-  document.getElementById('member-contribution-owner').addEventListener('change', filterMemberContributions);
+  document.getElementById('member-contribution-owner-2').addEventListener('change', filterMemberContributions);
   document.getElementById('member-contribution-scheme').addEventListener('change', filterMemberContributions);
 
 </script>

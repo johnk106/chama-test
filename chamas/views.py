@@ -1782,7 +1782,7 @@ def reports(request,chama_id):
     group_savings = json.dumps(_group_savings)
     c = ContributionRecord.objects.order_by('-id').all()
 
-    group_contributions = Paginator(ContributionRecord.objects.filter(chama=chama).order_by('-date_created').all(),10).page(1)
+    group_contributions = Paginator(ContributionRecord.objects.filter(chama=chama).order_by('-date_created').all(),30).page(1)
     _group_contributions = list(group_contributions.object_list.values())
     for contribution in _group_contributions:
         contribution['date_created'] = contribution['date_created'].strftime("%Y-%m-%d")
@@ -2638,15 +2638,14 @@ def download_group_saving_report(request, chama_id):
 
 @login_required(login_url='/user/Login')
 @is_user_chama_member
-def download_group_contributions_report(request, chama_id):
+def download_group_contributions_report(request, chama_id,contribution_id):
     # ─────────────────────────────────────────────
     # 1) Fetch & flatten your contribution records
     # ─────────────────────────────────────────────
     chama = Chama.objects.get(pk=chama_id)
-    contribution_types = Contribution.objects.filter(chama=chama)
+    contribution = Contribution.objects.filter(chama=chama,id=contribution_id).first()
     contributions = []
-    for ct in contribution_types:
-        contributions.extend(ct.records.all())
+    contributions.extend(contribution.records.all())
     contributions = sorted(
         contributions,
         key=lambda x: x.date_created,
@@ -2688,7 +2687,7 @@ def download_group_contributions_report(request, chama_id):
         canvas.setFont('Times-Bold', 12)
         canvas.drawCentredString(
             letter[0]/2, letter[1] - 60,
-            "Group Contributions Report"
+            f"Group Contributions Report for '{contribution.name}'"
         )
         canvas.setFont('Times-Roman', 10)
         canvas.drawCentredString(
@@ -2736,18 +2735,18 @@ def download_group_contributions_report(request, chama_id):
 
 @login_required(login_url='/user/Login')
 @is_user_chama_member
-def download_member_contribution_report(request, chama_id, member_id):
+def download_member_contribution_report(request, chama_id, member_id,scheme_id):
     # 1) Retrieve Chama and Member
     chama  = Chama.objects.get(pk=chama_id)
     member = ChamaMember.objects.get(pk=member_id)
 
     # 2) Collect this member's contributions
-    contribution_types = Contribution.objects.filter(chama=chama)
+    contribution = Contribution.objects.filter(chama=chama,id=scheme_id).first()
     contributions = []
-    for ctype in contribution_types:
-        for contrib in ctype.records.all():
-            if contrib.member == member:
-                contributions.append(contrib)
+
+    for contrib in contribution.records.all():
+        if contrib.member == member:
+            contributions.append(contrib)
 
     # 3) Prepare PDF response
     response = HttpResponse(content_type='application/pdf')
@@ -2775,7 +2774,7 @@ def download_member_contribution_report(request, chama_id, member_id):
         canvas.setFont('Times-Bold', 14)
         canvas.drawCentredString(
             letter[0]/2, letter[1] - 40,
-            f"Member Contribution Report - {member.name}"
+            f"Member Contribution Report - {member.name} - for '{contribution.name}'"
         )
         # Date line
         canvas.setFont('Times-Roman', 10)
@@ -3003,8 +3002,6 @@ def download_uncollected_fines_report(request, chama_id):
 
 
     
-
-
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_cashflow_report(request, chama_id):
