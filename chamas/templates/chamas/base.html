@@ -662,53 +662,64 @@
 {% comment %} <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> {% endcomment %}
 <script>
 $(document).ready(function() {
-  // 1) Read the user's last selection (or default)
-  var savedView = localStorage.getItem("selectedView") || "member";
-
-  // 2) Get the group ID (unchanged)
-  function getGroupId() {
-    return localStorage.getItem('groupId');
-  }
-  var groupId = getGroupId();
-
-  // 3) Fetch the user's role, then apply the saved view
+  // Get current groupId once
+  var groupId = localStorage.getItem('groupId');
+  if (!groupId) return console.error("No groupId in localStorage!");
+  
+  // Build a per-group key
+  var storageKey = "selectedView_" + groupId;
+  
+  // 1) Load saved view for this group, default to member
+  var savedView = localStorage.getItem(storageKey) || "member";
+  
+  // 2) Ask the server what my role is in this group
   $.ajax({
     url: '/chamas-bookeeping/get_user_role/',
     data: { group_id: groupId },
     dataType: 'json',
-    success: function (data) {
-      // apply whatever they had last time
-      updateView(savedView);
-
-      // only show the “switch to admin” button if they really *are* an admin
-      if (data.role === "admin") {
-        $(".view-option[data-view='admin']").show();
-
-        var savedView = "admin";
-        updateView(savedView);
-        
-      } else {
+    success: function(data) {
+      // If I’m *not* admin here, force member mode
+      if (data.role !== "admin") {
+        savedView = "member";
         $(".view-option[data-view='admin']").hide();
+      } else {
+        // otherwise show the admin toggle
+        $(".view-option[data-view='admin']").show();
       }
+      
+      // Now apply the proper view
+      updateView(savedView);
+    },
+    error: function() {
+      // On error, default safely
+      $(".view-option[data-view='admin']").hide();
+      updateView("member");
     }
   });
-
-  // 4) When they click either link, save & apply it
+  
+  // 3) When they click a toggle, verify & then save to the per-group key
   $(".view-option").on("click", function() {
     var view = $(this).data("view");
-    localStorage.setItem("selectedView", view);
+    
+    // If they clicked "admin" but this group isn't admin, block it
+    if (view === "admin" && $(".view-option[data-view='admin']").is(":hidden")) {
+      alert("You don’t have permission to view as admin here.");
+      return;
+    }
+    
+    // Apply and save for this group
     updateView(view);
+    localStorage.setItem(storageKey, view);
   });
-
-  // 5) This is your old toggle logic, unchanged except for resetting both link-texts
+  
+  // 4) Your existing show/hide logic
   function updateView(view) {
     if (view === "member") {
       $(".admin, #remove-user, #add-member-button").hide();
       $(".member").show();
       $(".view-option[data-view='member']").text("Viewing as member");
       $(".view-option[data-view='admin']").text("Switch to admin view");
-    }
-    else if (view === "admin") {
+    } else {
       $(".member").hide();
       $(".admin, #remove-user, #add-member-button").show();
       $(".view-option[data-view='admin']").text("Viewing as admin");
@@ -717,6 +728,7 @@ $(document).ready(function() {
   }
 });
 </script>
+
 
 <script>
  document.getElementById('add-member-modal-button').addEventListener('click', function() {
