@@ -662,63 +662,62 @@
 {% comment %} <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> {% endcomment %}
 <script>
 $(document).ready(function() {
-  // Retrieve the saved view from localStorage
-  var savedView = "member";
+  // 1) Read the user's last selection (or default)
+  var savedView = localStorage.getItem("selectedView") || "member";
 
-  // Get the group ID from localStorage
+  // 2) Get the group ID (unchanged)
+  function getGroupId() {
+    return localStorage.getItem('groupId');
+  }
   var groupId = getGroupId();
 
-  // Make an AJAX request to get the user's role in the group
+  // 3) Fetch the user's role, then apply the saved view
   $.ajax({
     url: '/chamas-bookeeping/get_user_role/',
-    data: {
-      'group_id': groupId
-    },
+    data: { group_id: groupId },
     dataType: 'json',
     success: function (data) {
-      // Use the returned role to update the view
-      var currentView = savedView;
-      updateView(currentView);
-  
-      // Show or hide the "View as admin" option based on the user's role
+      // apply whatever they had last time
+      updateView(savedView);
+
+      // only show the “switch to admin” button if they really *are* an admin
       if (data.role === "admin") {
         $(".view-option[data-view='admin']").show();
+
+        var savedView = "admin";
+        updateView(savedView);
+        
       } else {
         $(".view-option[data-view='admin']").hide();
       }
     }
   });
 
+  // 4) When they click either link, save & apply it
   $(".view-option").on("click", function() {
     var view = $(this).data("view");
-
-    // Save the selected view to localStorage
     localStorage.setItem("selectedView", view);
-
     updateView(view);
   });
 
-  function getGroupId() {
-    return localStorage.getItem('groupId');
-  }
-
-  // Function to update the view and link text
+  // 5) This is your old toggle logic, unchanged except for resetting both link-texts
   function updateView(view) {
     if (view === "member") {
-      $(".admin").hide();
-      $("#remove-user").hide();
-      $("#add-member-button").hide();
+      $(".admin, #remove-user, #add-member-button").hide();
       $(".member").show();
-    } else if (view === "admin") {
-      $(".member").hide();
-      $(".admin").show();
-      $("#remove-user").show();
-      $("#add-member-button").show();
       $(".view-option[data-view='member']").text("Viewing as member");
+      $(".view-option[data-view='admin']").text("Switch to admin view");
+    }
+    else if (view === "admin") {
+      $(".member").hide();
+      $(".admin, #remove-user, #add-member-button").show();
+      $(".view-option[data-view='admin']").text("Viewing as admin");
+      $(".view-option[data-view='member']").text("Switch to member view");
     }
   }
 });
 </script>
+
 <script>
  document.getElementById('add-member-modal-button').addEventListener('click', function() {
     // Collect form data
