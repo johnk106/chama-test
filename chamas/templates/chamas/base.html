@@ -662,57 +662,125 @@
 {% comment %} <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> {% endcomment %}
 <script>
 $(document).ready(function() {
-  // Get current groupId once
+  // 1) Grab groupId and localStorage key
   var groupId = localStorage.getItem('groupId');
-  if (!groupId) return console.error("No groupId in localStorage!");
-  
-  // Build a per-group key
+  if (!groupId) {
+    console.error("No groupId in localStorage!");
+    return;
+  }
   var storageKey = "selectedView_" + groupId;
-  
-  // 1) Load saved view for this group, default to member
   var savedView = localStorage.getItem(storageKey) || "member";
-  
-  // 2) Ask the server what my role is in this group
+
+  // 2) IMMEDIATELY hide all admin‐only elements on page load
+  //    (so that nothing flashes on the screen before AJAX finishes)
+  $(".admin, #remove-user, #add-member-button").hide();
+
+  // 3) Initialize the toggle text based on savedView
+  if (savedView === "member") {
+    // If last‐saved was member, show “Viewing as member” right away.
+    $(".view-option[data-view='member']")
+      .text("Viewing as member");
+    $(".view-option[data-view='admin']")
+      .text("Switch to admin view");
+  } else {
+    // savedView is “admin” (user clicked admin on a previous page).
+    // Don’t actually show admin‐only bits yet—just update toggle text to indicate we’re “verifying.”
+    $(".view-option[data-view='admin']")
+      .text("Verifying admin…");
+    $(".view-option[data-view='member']")
+      .text("Switch to member view");
+  }
+
+  // 4) Now call the server to see “am I admin in this group?”
   $.ajax({
     url: '/chamas-bookeeping/get_user_role/',
     data: { group_id: groupId },
     dataType: 'json',
     success: function(data) {
-      // If I’m *not* admin here, force member mode
+      // If the server says I’m not an admin here:
       if (data.role !== "admin") {
+        // Force member mode, hide the admin toggle entirely
         savedView = "member";
         $(".view-option[data-view='admin']").hide();
+        // Re‐apply member‐only UI
+        updateView("member");
+        // Overwrite localStorage in case it was “admin” before
+        localStorage.setItem(storageKey, "member");
       } else {
-        // otherwise show the admin toggle
+        // I am admin. Show the admin toggle now (it may have been hidden)
         $(".view-option[data-view='admin']").show();
+
+        // If they had last‐saved “admin,” now we can safely flip on admin features:
+        if (savedView === "admin") {
+          updateView("admin");
+          $(".view-option[data-view='admin']")
+            .text("Viewing as admin");
+          $(".view-option[data-view='member']")
+            .text("Switch to member view");
+        } else {
+          // They last‐saved “member,” so keep member view
+          updateView("member");
+          $(".view-option[data-view='member']")
+            .text("Viewing as member");
+          $(".view-option[data-view='admin']")
+            .text("Switch to admin view");
+        }
       }
-      
-      // Now apply the proper view
-      updateView(savedView);
     },
     error: function() {
-      // On error, default safely
+      // If the AJAX fails, hide admin toggle and stay in member view.
       $(".view-option[data-view='admin']").hide();
       updateView("member");
+      localStorage.setItem(storageKey, "member");
     }
   });
-  
-  // 3) When they click a toggle, verify & then save to the per-group key
+
+  // 5) Click handler: whenever they click “member” or “admin,” re‐verify if necessary
   $(".view-option").on("click", function() {
     var view = $(this).data("view");
-    
-    // If they clicked "admin" but this group isn't admin, block it
-    if (view === "admin" && $(".view-option[data-view='admin']").is(":hidden")) {
-      alert("You don’t have permission to view as admin here.");
-      return;
+
+    if (view === "admin") {
+      // If they click “Switch to admin,” do one more AJAX check:
+      $.ajax({
+        url: '/chamas-bookeeping/get_user_role/',
+        data: { group_id: groupId },
+        dataType: 'json',
+        success: function(data) {
+          if (data.role === "admin") {
+            // OK, they really are an admin: flip on admin mode
+            updateView("admin");
+            $(".view-option[data-view='admin']").text("Viewing as admin");
+            $(".view-option[data-view='member']").text("Switch to member view");
+            localStorage.setItem(storageKey, "admin");
+          } else {
+            // Not an admin—show alert and revert to member
+            alert("You don’t have permission to view as admin here.");
+            updateView("member");
+            $(".view-option[data-view='member']").text("Viewing as member");
+            $(".view-option[data-view='admin']").text("Switch to admin view");
+            localStorage.setItem(storageKey, "member");
+          }
+        },
+        error: function() {
+          // If AJAX fails, revert to member mode
+          alert("Unable to verify your role. Showing member view.");
+          updateView("member");
+          $(".view-option[data-view='member']").text("Viewing as member");
+          $(".view-option[data-view='admin']").text("Switch to admin view");
+          localStorage.setItem(storageKey, "member");
+        }
+      });
+
+    } else {
+      // They clicked “member”—just switch immediately (no need to re‐verify)
+      updateView("member");
+      $(".view-option[data-view='member']").text("Viewing as member");
+      $(".view-option[data-view='admin']").text("Switch to admin view");
+      localStorage.setItem(storageKey, "member");
     }
-    
-    // Apply and save for this group
-    updateView(view);
-    localStorage.setItem(storageKey, view);
   });
-  
-  // 4) Your existing show/hide logic
+
+  // 6) show/hide logic for each view
   function updateView(view) {
     if (view === "member") {
       $(".admin, #remove-user, #add-member-button").hide();
@@ -728,6 +796,8 @@ $(document).ready(function() {
   }
 });
 </script>
+
+
 
 
 <script>
