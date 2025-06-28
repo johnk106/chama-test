@@ -17,9 +17,4 @@ path('stats_page_3/<category_name>', views.stats_page_3, name='stats_page_3'),
 path('paypal', views.payment_paypal, name='paypal'),
 path('paypal_payment_success', views.paypal_payment_success,name='paypal_paymentcomplete'),
 
-
-
-
-
-
 ]

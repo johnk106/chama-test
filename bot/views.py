@@ -3,19 +3,21 @@ import requests
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.conf import settings
-from .services import ServiceGroup
 from chamas.decorators import is_user_chama_member
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from chamas.models import *
 from .models import *
 from decimal import Decimal
-
+from services.contribution_service import ContributionService
+from services.member_service import MemberService
+from services.fine_service import FineService
+from services.loan_service import LoanService
 
 
 
 INFOBIP_API_KEY    = settings.INFOBIP_API_KEY
-INFOBIP_SENDER_ID  = settings.INFOBIP_SENDER_ID  # e.g. "447500000000"
+INFOBIP_SENDER_ID  = settings.INFOBIP_SENDER_ID 
 INFOBIP_BASE_URL   = "https://api.infobip.com"
 
 
@@ -50,26 +52,26 @@ def receive_message(request):
 
         lines = [l.strip() for l in text.splitlines() if l.strip()]
         if not lines:
-            return ServiceGroup.send_message(
+            return ContributionService.send_message(
                 "Empty message received. Please resend with a valid tag.",
                 sender
             )
 
         tag = lines[0].upper()
         if tag not in ("#CONTRIBUTION", "#FINE", "#LOAN","#MEMBER"):
-            return ServiceGroup.send_message(
+            return ContributionService.send_message(
                 "Invalid message tag. First line must be one of #CONTRIBUTION, #LOAN, or #FINE.",
                 sender
             )
 
-        svc = ServiceGroup()
+        
         # common sanitization for the amount line (always index 2)
         if tag != "#MEMBER":
             if len(lines) >= 3:
                 raw_amount = lines[2]
                 clean_amount = _sanitize_amount(raw_amount)
                 if clean_amount is None:
-                    return ServiceGroup.send_message(
+                    return MemberService.send_message(
                         f"Invalid amount format: '{raw_amount}'. Please use e.g. 2000 or Ksh 2,000",
                         sender
                     )
@@ -79,7 +81,7 @@ def receive_message(request):
         if tag == "#CONTRIBUTION":
             if len(lines) < 5:
                 missing = ["member ID", "amount", "contribution name", "chama name"][len(lines)-1]
-                return ServiceGroup.send_message(
+                return ContributionService.send_message(
                     f"Missing required field: {missing}. Please format as:\n"
                     "#CONTRIBUTION\nmember_id\namount\ncontribution_name\nchama_name",
                     sender
@@ -91,12 +93,12 @@ def receive_message(request):
                 "contribution_name": lines[3],
                 "chama_name":        lines[4],
             }
-            return svc.process_contribution(payload, sender)
+            return ContributionService.process_contribution(payload, sender)
 
         elif tag == "#FINE":
             if len(lines) < 4:
                 missing = ["member ID", "amount", "chama name"][len(lines)-1]
-                return ServiceGroup.send_message(
+                return FineService.send_message(
                     f"Missing required field: {missing}. Please format as:\n"
                     "#FINE\nmember_id\namount\nchama_name",
                     sender
@@ -107,12 +109,12 @@ def receive_message(request):
                 "amount":     clean_amount,
                 "chama_name": lines[3],
             }
-            return svc.process_fine(payload, sender)
+            return FineService.process_fine(payload, sender)
 
         elif tag == "#LOAN":
             if len(lines) < 4:
                 missing = ["member ID", "amount", "chama name"][len(lines)-1]
-                return ServiceGroup.send_message(
+                return LoanService.send_message(
                     f"Missing required field: {missing}. Please format as:\n"
                     "#LOAN\nmember_id\namount\nchama_name",
                     sender
@@ -123,12 +125,12 @@ def receive_message(request):
                 "amount":     clean_amount,
                 "chama_name": lines[3],
             }
-            return svc.process_loan(payload, sender)
+            return LoanService.process_loan(payload, sender)
         
         elif tag == "#MEMBER":
             if len(lines) < 7:
                 missing = ['member name','email','member ID','phone number','role','chama name'][len(lines) - 1]
-                return ServiceGroup.send_message(
+                return MemberService.send_message(
                     f"Missing required field: {missing}. Please format as:\n"
                     "#MEMBER\nmember name\nmember email\nmember ID number\nphone number\nmember role\nchama name",
                     sender
@@ -142,9 +144,8 @@ def receive_message(request):
                 "chama": lines[6]
             }
 
-            return svc.process_member(payload,sender)
+            return MemberService.process_member(payload,sender)
             
-
 
     return JsonResponse({"status": "no inbound messages"}, status=200)
 

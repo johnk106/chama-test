@@ -899,11 +899,6 @@ def withdraw_money_group_goal(request):
             goal_info.save()
 
 
-
-
-
-            # subtract balance from chamabora user account
-
             # redirect with success message
             response = {'success': '1'}
             print('Response being returning is from group goal withdrawal request:', response)
