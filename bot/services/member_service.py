@@ -88,6 +88,7 @@ class MemberService:
         
         except:
             return self.send_message(f'An error occured during member creation,please try again.',sender)
+        
     @staticmethod
     def send_message(text, to):
         print(to)

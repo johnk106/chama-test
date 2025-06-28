@@ -1,34 +1,30 @@
 import json
-import uuid
-from django.db import IntegrityError
 from django.shortcuts import render,get_object_or_404
 
 from chamas.decorators import is_user_chama_member
 from .models import *
-from django.http import JsonResponse,HttpResponse
+from django.http import JsonResponse
 from django.forms.models import model_to_dict
 from django.utils import timezone
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from datetime import timedelta,datetime
 from django.db.models import Sum
 import calendar
 from django.http import FileResponse
 import os
-import csv
-from authentication.models import Profile
-from dateutil.relativedelta import relativedelta
 from django.core.serializers.json import DjangoJSONEncoder
-from django.http import HttpResponse
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
-from reportlab.lib.styles import ParagraphStyle,getSampleStyleSheet
-from reportlab.platypus             import (
-    BaseDocTemplate, Frame, PageTemplate,
-    Paragraph, Table, TableStyle, Spacer
-)
+
+
+from services.download_service import DownloadService
+from services.contribution_service import ContributionService
+from services.fine_service import FineService
+from services.loan_service import LoanService
+from services.finance_service import FinanceService
+from services.expense_service import ExpenseService
+from services.notification_service import NotificationService
+from services.chama_service import ChamaService
+from services.member_service import MemberService
 # import logging
 # logger = logging.getLogger(__name__)
 
@@ -184,24 +180,8 @@ def your_chamas(request):
 
 def create_chama_type(request):
     if request.method == 'POST':
-        name = request.POST['name']
-
-        try:
-            new_type = ChamaType.objects.create(name=name)
-            data = {
-                'status':'success',
-                'message':'chama type created succesfully',
-                'type':model_to_dict(new_type)
-
-            }
-            return JsonResponse(data,status=200)
-        except Exception as e:
-            data = {
-                'status':'failed',
-                'message':f'an error occured:{e}'
-
-            }
-            return JsonResponse(data,status=400)
+        return ChamaService.create_chama_type(request)
+    
     else:
         data = {
             'status':'failed',
@@ -218,50 +198,8 @@ def new_chama_form(request):
 @login_required(login_url='/user/Login')
 def create_chama(request):
     if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            name = data.get('name')
-            start = data.get('date')
-            type = data.get('type')
-            created_by = request.user
-           
-
-            _type = ChamaType.objects.get(pk=int(type))
-
-            new_chama = Chama.objects.create(
-                name=name,
-                type = _type,
-                created_by = created_by,
-                start_date=start
-            )
-
-            name = f'{created_by.first_name} {created_by.last_name}'
-            role = Role.objects.filter(name='admin').first()
-
-            new_chama_member = ChamaMember.objects.create(
-                name = name,
-                email=created_by.email,
-                mobile = created_by.profile.phone,
-                group = new_chama,
-                role = role,
-                user=created_by
-            )
-
-            data = {
-                'status':'success',
-                'message':'Chama created succesfully',
-                'chama':model_to_dict(new_chama)
-            }
-            return JsonResponse(data,status = 200,)
+        return ChamaService.create_chama(request)
         
-        except Exception as e:
-            print(e.args)
-            data = {
-                'status':'failed',
-                'message':f'An error occured: {e}'
-            }
-            return JsonResponse(data,status=200)
-       
     else:
         data = {
             'status':'failed',
@@ -273,65 +211,8 @@ def create_chama(request):
 @login_required(login_url='/user/Login')
 def add_member_to_chama(request):
     if request.method == 'POST':
-
-        data = json.loads(request.body)
-        print(data)
-    
-        name = data.get('name')
-        email = data.get('email')
-        id_number = data.get('id_number')
-        phone = data.get('phone')
-        role = data.get('role')
-        group = data.get('group')
-        
-        group = Chama.objects.get(pk=int(group))
-        role = Role.objects.get(name = str(role))
-        
-        # Strip the first digit and add '+254'
-        phone = '+254' + phone[1:]
-        
-        user = User.objects.filter(username=id_number).first()
-        print('This is the user:', user)
-        
-        try:
-            if user:
-                profile = Profile.objects.get(owner=user)
-                
-                new_member = ChamaMember.objects.create(
-                name = user.first_name + ' ' + user.last_name,
-                email=user.email,
-                mobile = profile.phone,
-                group = group,
-                role = role,
-                user=user,
-                profile=profile.picture,
-                member_id=id_number
-                
-                )
-                member_name = new_member.name
-            else:
-                new_member = ChamaMember.objects.create(
-                name = name,
-                mobile = phone,
-                email=email,
-                group = group,
-                role = role,
-                member_id=id_number
-                )
-                member_name = new_member.name
-        except IntegrityError:
-            data = {
-                'status':'failed',
-                'message':'User with that ID number already exists in the chama'
-            }
-            return JsonResponse(data,status=400)
-        data = {
-            'status':'success',
-            'message':'member added succesfully',
-            'member': member_name
-        }
-
-        return JsonResponse(data,status=200) 
+        return MemberService.add_member_to_chama(request)
+  
     else:
         data = {
             'status':'failed',
@@ -340,13 +221,7 @@ def add_member_to_chama(request):
         print(data)
         return JsonResponse(data,status=405)
 
-def audit_chama_members(chama_id):
-    chama = Chama.objects.get(pk=chama_id)
-    for member in chama.member.all():
-        user = User.objects.filter(username=member.member_id).first()
-        if user:
-            member.user = user
-            member.save()
+
 
 
 @login_required(login_url='/user/Login')    
@@ -354,31 +229,8 @@ def remove_member_from_chama(request, member_id, chama_id):
     chama = get_object_or_404(Chama, pk=chama_id)
 
     if chama:
-        try:
-            chama_member = ChamaMember.objects.get(group=chama, id=member_id)
-            if chama_member.user == chama.created_by:
-                data = {
-                    'status':'failed',
-                    'message':'Sorry you can not remove a group creator!'
-                        }
-                return JsonResponse(data,status=200)
-            try:
-                chama_member.active = False
-                chama_member.save()
-            except Exception as e:
-                print(e)
-            data = {
-                'status':'success',
-                'message':'User succesfully removed from chama',
-                'member_id':member_id
-            }
-            return JsonResponse(data,status=200)
-        except ChamaMember.DoesNotExist:
-            data = {
-                'status':'failed',
-                'message':'Member is not group of this chama'
-            }
-            return JsonResponse(data,status=400)
+        return MemberService.remove_member_from_chama(member_id,chama)
+        
     else:
         data = {
             'status':'failed',
@@ -391,7 +243,7 @@ def members(request,chama_id):
 
     chama = Chama.objects.get(pk=chama_id)
     members = ChamaMember.objects.filter(active=True,group=chama).all()
-    audit_chama_members(chama.id)
+    MemberService.audit_chama_members(chama.id)
 
     if chama:
         print(chama.name.__str__(),chama.member.count())
@@ -479,63 +331,7 @@ def ascertain_member_role(request,chama_id):
 @is_user_chama_member
 def create_contribution(request,chama_id):
     if request.method == 'POST':
-        name = request.POST['name']
-        amount = request.POST['amount']
-        start_date = request.POST['start-date']
-        grace_period = request.POST['grace-period']
-        description = request.POST['description']
-        end_date = request.POST['end-date']
-
-        try:
-            chama = Chama.objects.get(pk=chama_id)
-            contribution = Contribution.objects.filter(name=name).first()
-
-            if contribution:
-                data = {
-                    'status':'failed',
-                    'message':'A contribution with that id already exists,please choose another name'
-                }
-
-                return JsonResponse(data,status=409)
-            if chama:
-                 try:
-                    new_contribution = Contribution.objects.create(
-                name=name,
-                amount=amount,
-                grace_period=grace_period,
-                description=description,
-                chama = chama,
-                start_date=start_date,
-                end_date=end_date
-
-                    )
-
-                    data = {
-                'status':'success',
-                'message':'Contribution created succesfully.',
-                'contribution':model_to_dict(new_contribution)
-                    }
-                    return JsonResponse(data,status=200)
-                 except Exception as e:
-                     data = {
-                         'status':'Failed',
-                         'message':f'An error accured {e}'
-                     }
-                     print(e)
-                     return JsonResponse(data,status=400)
-            else:
-                data = {
-                    'status':'failed',
-                    'message':'Chama with that id could not be found'
-                }
-                return JsonResponse(data,status=404)
-        except Exception as e:
-            print(e)
-            data = {
-                'status':'success',
-                'message':f'an error accurred:{e}'
-            }
-            return JsonResponse(data,status=400)
+        return ContributionService.create_contribution(request,chama_id)
         
 @login_required(login_url='/user/Login')
 @is_user_chama_member
@@ -551,39 +347,8 @@ def contributions(request,chama_id):
 @is_user_chama_member
 def contributions_details(request, chama_id):
     if request.method == 'POST':
-        data = json.loads(request.body)
-        name = data.get('name')
-        chama = Chama.objects.get(pk=chama_id)
-
-        try:
-            contribution = Contribution.objects.get(name=name, chama=chama)
-            _records = Paginator(ContributionRecord.objects.filter(contribution=contribution).order_by('-date_created').all(),(chama.member.count()*5))
-            records_page = _records.page(1)
-
-            data = {
-                'status': 'success',
-                'message': 'contribution retrieved successfully',
-                'contribution': model_to_dict(contribution, fields=['name', 'id', 'amount']),  # Adjust fields as needed
-                'records': serialize_paginated_records(records_page),
-            }
-
-            return JsonResponse(data, status=200)
-
-        except Contribution.DoesNotExist:
-            data = {
-                'status': 'error',
-                'message': f'Contribution with name "{name}" not found in Chama {chama_id}',
-            }
-            return JsonResponse(data, status=404)
-
-        except Exception as e:
-            print(e)
-            data = {
-                'status': 'error',
-                'message': f'An error occurred: {e}',
-            }
-            return JsonResponse(data, status=500)
-
+        return ContributionService.contribution_details(request,chama_id)
+        
     else:
         data = {
             'status': 'error',
@@ -592,110 +357,13 @@ def contributions_details(request, chama_id):
         return JsonResponse(data, status=405)
 
 
-def serialize_paginated_records(records_page):
-    serialized_records = [model_to_dict(record) for record in records_page]
-    for record in serialized_records:
-        member = ChamaMember.objects.get(pk=record['member'])
-        record['member'] = member.name
-        contribution = Contribution.objects.get(pk=record['contribution'])
-        record['contribution'] = contribution.name
-        record['date_created']  = record['date_created'].strftime('%Y-%m-%d %H:%M:%S')
-    
-    return {
-        'page': records_page.number,
-        'total_pages': records_page.paginator.num_pages,
-        'total_records': records_page.paginator.count,
-        'results': serialized_records,
-    }
+
 
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def create_contribution_record(request, chama_id):
     if request.method == 'POST':
-        try:
-            chama = Chama.objects.get(pk=chama_id)
-
-            data = json.loads(request.body)
-            contribution = Contribution.objects.get(pk=data.get('contribution'))
-            date = timezone.now()
-            amount_expected = contribution.amount
-            amount_paid = Decimal(data.get('amount'))
-            member = ChamaMember.objects.get(pk=data.get('member'))
-
-            # Calculate balance
-            balance = amount_paid - amount_expected
-
-            if amount_paid < 0 or amount_paid is None:
-                data = {
-                    'status': 'failed',
-                    'message': f'Amount for member {member.name} is either negative or has not been passed.'
-                }
-                return JsonResponse(data, status=200)
-
-            # If amount paid is greater than the contribution amount
-            if amount_paid > amount_expected:
-                # Create contribution record with balance carried forward
-                new_contribution_record = ContributionRecord.objects.create(
-                    contribution=contribution,
-                    date_created=date,
-                    amount_expected=amount_expected,
-                    amount_paid=amount_expected,  # Set amount paid to the expected amount
-                    balance=0,  # No balance remaining for this contribution
-                    member=member,
-                    chama = chama
-                )
-
-                # Calculate the extra amount
-                extra_amount = amount_paid - amount_expected
-
-                # Create a contribution record for the extra amount with the next due date
-                
-                ContributionRecord.objects.create(
-                        contribution=contribution,
-                        date_created=timezone.now(),
-                        amount_expected=amount_expected,  # No expected amount for extra contribution
-                        amount_paid=extra_amount,
-                        balance=amount_expected - extra_amount,  # No balance for extra contribution
-                        member=member,
-                        chama=chama
-                    )
-
-            else:
-                # Create contribution record with no balance carried forward
-                new_contribution_record = ContributionRecord.objects.create(
-                    contribution=contribution,
-                    date_created=date,
-                    amount_expected=amount_expected,
-                    amount_paid=amount_paid,
-                    balance=abs(balance),
-                    member=member,
-                    chama=chama
-                )
-
-            new_cashflow_object = CashflowReport.objects.create(
-                object_date=new_contribution_record.date_created,
-                member=new_contribution_record.member,
-                type='contribution',
-                amount=new_contribution_record.amount_paid,
-                chama=chama,
-                forGroup=False
-            )
-
-            data = {
-                'status': 'success',
-                'message': f'Contribution record created successfully for {member.name}',
-                'record': model_to_dict(new_contribution_record)
-            }
-
-            return JsonResponse(data, status=200)
-        except Exception as e:
-            print(e)
-            data = {
-                'status': 'failed',
-                'message': f'An error occurred during record creation: {e}'
-            }
-
-            return JsonResponse(data, status=200)
+        return ContributionService.create_contribution_record(request,chama_id)
     else:
         data = {
             'status': 'failed',
@@ -707,73 +375,8 @@ def create_contribution_record(request, chama_id):
 
 @login_required(login_url='/user/Login')
 def pay_contribution(request, contribution_id):
-    try:
-        contribution = ContributionRecord.objects.get(pk=contribution_id)
-
-        data = json.loads(request.body)
-        amount = Decimal(data.get('amount'))
-
-        if contribution.balance <= Decimal('0.00'):
-            data = {
-                'status': 'failed',
-                'message': 'This contribution does not have a balance'
-            }
-            return JsonResponse(data, status=200)
-        else:
-            # Calculate remaining balance after payment
-            remaining_balance = contribution.balance - amount
-
-            if remaining_balance >= Decimal('0.00'):
-                # Update the contribution record with the payment and new balance
-                contribution.amount_paid += amount
-                contribution.balance = remaining_balance
-                contribution.save()
-            else:
-                # Create a new contribution record for the extra amount with the next due date
-                extra_amount = abs(remaining_balance)
-                next_due_date = contribution.contribution.calculate_next_due_date()
-                if next_due_date:
-                    ContributionRecord.objects.create(
-                        contribution=contribution.contribution,
-                        date_created=next_due_date,
-                        amount_expected=0,  # No expected amount for extra contribution
-                        amount_paid=extra_amount,
-                        balance=0,  # No balance for extra contribution
-                        member=contribution.member
-                    )
-
-                # Update the current contribution record with the full balance paid
-                contribution.amount_paid += (amount - extra_amount)
-                contribution.balance = 0
-                contribution.save()
-
-            cashflow = CashflowReport.objects.create(
-                object_date = timezone.now(),
-                member = contribution.member,
-                type = 'contribution balance payment',
-                chama = contribution.contribution.chama,
-                amount = Decimal(amount),
-                forGroup=False
-            )
-
-            data = {
-                'status': 'success',
-                'message': 'Contribution payment processed successfully'
-            }
-            return JsonResponse(data, status=200)
-    except ContributionRecord.DoesNotExist:
-        data = {
-            'status': 'failed',
-            'message': 'Contribution record does not exist'
-        }
-        return JsonResponse(data, status=404)
-    except Exception as e:
-        data = {
-            'status': 'failed',
-            'message': f'An error occurred during payment: {str(e)}'
-        }
-        return JsonResponse(data, status=500)
-  
+    return ContributionService.pay_contribution(request,contribution_id)
+    
 #----------LOAN HANDLERS------------------
 @login_required(login_url='/user/Login')
 @is_user_chama_member
@@ -821,284 +424,35 @@ def chama_loans(request, chama_id):
 @is_user_chama_member  
 def create_loan_type(request,chama_id):
     if request.method == 'POST':
-        data =  json.loads(request.body)
-
-        random_number = uuid.uuid4().int % 1000  
-        type_id = f'LT{random_number:03d}' 
-        name = data.get('name')
-        max_loan_amount = data.get('max')
-        grace_period = data.get('grace_period')
-
-        max_due = data.get('max_due')
-        late_fine = data.get('late_fine')
-        intrest_rate = data.get('intrest_rate')
-        description = data.get('description')
-        schedule = data.get('schedule')
-
-
-        try:
-            chama = Chama.objects.get(pk=chama_id)
-            new_type = LoanType.objects.create(
-                
-                type_id = type_id,
-                name = name,
-                max_loan_amount=max_loan_amount,
-                grace_period=grace_period,
-                late_fine=late_fine,
-                intrest_rate=intrest_rate,
-                description=description,
-                chama= chama,
-                max_due = max_due,
-                schedule=schedule
-            )
-            
-
-            data = {
-                'status':'success',
-                'message':'loan type created succesfully',
-                'type':model_to_dict(new_type)
-            }
-            return JsonResponse(data,status=200)
-        except Exception as e:
-            data = {
-                'status':'failed',
-                'message':f'an error occurred:{e}'
-            }
-            print(2)
-            return JsonResponse(data,status=200)
+        return LoanService.create_loan_type(request,chama_id)
         
         
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def issue_loan(request, chama_id):
-    chama = Chama.objects.get(pk=chama_id)
-
-    data = json.loads(request.body)
-    type = LoanType.objects.get(pk=data.get('type'))
-    member = ChamaMember.objects.get(pk=data.get('member'))
-    amount = int(data.get('amount'))
-    schedule = type.schedule
-    due = data.get('due')
-
-    start_date_str = data.get('start_date')
-    start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
-
-    status = 'active'
-
-    if type.schedule == 'weekly':
-        end_date = start_date + relativedelta(weeks=int(due))
-        
-    elif type.schedule == 'monthly':
-        end_date = start_date + relativedelta(weeks=int(due))
+    return LoanService.issue_loan(request,chama_id)
     
-    if schedule == 'monthly':
-        if type.schedule == 'weekly':
-            weeks = int(due) * 4
-            if weeks < int(due):
-                data = {
-                'status':'failed',
-                'message':'the loan amount due is longer than the allowed period for this loan'
-                }
-                return JsonResponse(data,status=200)
-            
-        elif type.max_due < int(due):
-            data = {
-                'status':'failed',
-                'message':'the loan amount due is longer than the allowed period for this loan'
-            }
-            return JsonResponse(data,status=200)
-
-
-    elif schedule == 'weekly':
-        if type.schedule == 'weekly':
-            if type.max_due < int(due):
-                data = {
-                'status':'failed',
-                'message':'the loan amount due is longer than the allowed period for this loan'
-                }
-                return JsonResponse(data,status=200)
-        elif type.schedule == 'monthly':
-            weeks = type.max_due * 4
-            if weeks < int(due):
-                data = {
-                'status':'failed',
-                'message':'the loan amount due is longer than the allowed period for this loan'
-                }
-                return JsonResponse(data,status=200)
-
-    if(amount > type.max_loan_amount):
-        data = {
-            'status':'failed',
-            'message':'The loan amount is greater than the maximum allowed for this loan'
-        }
-        return JsonResponse(data,status=406)
-
-    new_loan = LoanItem.objects.create(
-        member=member,
-        amount=amount,
-        intrest_rate=type.intrest_rate,  # Directly assign interest rate
-        start_date=start_date,
-        end_date=end_date,
-        status=status,
-        type=type,
-        total_paid=Decimal('0.00'),
-        chama=chama,
-        due = due,
-        schedule = schedule
-    )
-    new_loan.calc_tot_amount_to_be_paid()
-
-    new_loan = model_to_dict(new_loan)
-    new_loan['member'] = member.name
-    new_loan['type'] = type.name
-
-    data = {
-        'status': 'success',
-        'message': 'Loan issued successfully',
-        'loan': new_loan
-    }
-
-    return JsonResponse(data, status=200)
 
 
 @login_required(login_url='/user/Login')
 def apply_loan(request,chama_id):
     if request.method == 'POST':
-        data = json.loads(request.body)
-
-        loan_type = data.get('loan_type')
-        loan = LoanType.objects.get(pk=loan_type)
-        amount = int(data.get('amount'))
-        due = data.get('due')
-        schedule = loan.schedule
-        chama = Chama.objects.get(pk=chama_id)
-
-        if schedule == 'monthly':
-            if loan.schedule == 'weekly':
-                weeks = int(due) * 4
-                if weeks < int(due):
-                    data = {
-                    'status':'failed',
-                    'message':'the loan amount due is longer than the allowed period for this loan'
-                    }
-                    return JsonResponse(data,status=200)
-            
-            elif loan.max_due < int(due):
-                data = {
-                'status':'failed',
-                'message':'the loan amount due is longer than the allowed period for this loan'
-                }
-                return JsonResponse(data,status=200)
-
-
-        elif schedule == 'weekly':
-            if loan.schedule == 'weekly':
-                if loan.max_due < int(due):
-
-                    data = {
-                    'status':'failed',
-                    'message':'the loan amount due is longer than the allowed period for this loan'
-                    }
-                    return JsonResponse(data,status=200)
-            elif loan.schedule == 'monthly':
-                weeks = loan.max_due * 4
-                if weeks < int(due):
-                    data = {
-                    'status':'failed',
-                    'message':'the loan amount due is longer than the allowed period for this loan'
-                    }
-                    return JsonResponse(data,status=200)
-
+        return LoanService.apply_loan(request,chama_id)
         
-
-
-        if(amount > loan.max_loan_amount):
-            data = {
-                'status':'failed',
-                'message':'The loan amount or repayment term is greater than the maximum allowed'
-            }
-            return JsonResponse(data,status=406)
-
-
-        for member in chama.member.all():
-            if member.user == request.user:
-                member = member
-                break
-
-        try:
-            new_application = LoanItem.objects.create(
-                member=member,
-                amount = amount,
-                type=loan,
-                chama=chama,
-                due = due,
-                schedule=schedule
-            )
-            data = {
-                'status':'success',
-                'message':'Loan request submitted succesfully',
-                'application':model_to_dict(new_application)
-            }
-            return JsonResponse(data,status=200)
-
-        except Exception as e:
-            data = {
-                'status':'failed',
-                'message':f'an error happened:{e}'
-            }
-            return JsonResponse(data,status=200)
 
 
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def accept_loan_request(request, chama_id, loan_id):
-    loan = LoanItem.objects.get(pk=loan_id)
-
-    loan.status = 'active'
-    loan.intrest_rate = loan.type.intrest_rate
-    loan.start_date = timezone.now()
-    if loan.schedule == 'monthly':
-        loan.end_date = timezone.now() + relativedelta(months=loan.due)
-    elif loan.schedule == 'weekly':
-        loan.end_date = timezone.now() + relativedelta(weeks=loan.due)
+    return LoanService.accept_loan_request(request,chama_id,loan_id)
     
-    loan.total_paid = 0.00
-    loan.last_updated = timezone.now()
-    loan.calc_tot_amount_to_be_paid()
-    loan.save()
-
-    new_cashflow_object = CashflowReport.objects.create(
-        object_date=loan.start_date,
-        member=loan.member,
-        type='loan disbursment',
-        amount=loan.amount,
-        chama=loan.chama,
-        forGroup=False
-    )
-
-    data = {
-        'status': 'success',
-        'message': 'Loan approved successfully',
-        'loan': model_to_dict(loan)
-    }
-    return JsonResponse(data, status=200)
 
 
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def decline_loan(request,loan_id,chama_id):
-    loan = LoanItem.objects.get(pk=loan_id)
-    loan.status = 'declined'
-    loan.last_updated = timezone.now()
-
-    loan.save()
-
-    data = {
-        'status':'success',
-        'message':'loan declined succesfully'
-
-    }
-    return JsonResponse(data,status = 200)
+    return LoanService.decline_loan(loan_id)
+    
 
 
 @login_required(login_url='/user/Login')
@@ -1106,38 +460,8 @@ def update_loan(request, loan_id):
     loan = LoanItem.objects.get(pk=loan_id)
 
     if request.method == 'POST':
-        data = json.loads(request.body)
-
-        loan_amount = data.get('loan_amount')
-
-        if loan.status == 'active':
-            loan.balance -= int(loan_amount)
-            loan.total_paid += int(loan_amount)  # Add interest to total paid
-            loan.last_updated = timezone.now()
-            loan.save()
-
-            if loan.balance <= Decimal('0.00'):
-                loan.status = 'cleared'
-                loan.save()
-
-            new_cashflow_object = CashflowReport.objects.create(
-                object_date=loan.start_date,
-                type='loan payment',
-                amount=Decimal(loan_amount),
-                chama=loan.chama,
-                forGroup=False,
-                member=loan.member,
-            )
-        else:
-            pass
-
-        data = {
-            'status': 'success',
-            'message': 'Loan updated successfully',
-            'loan': model_to_dict(loan)
-        }
-
-        return JsonResponse(data, status=200)
+        return LoanService.update_loan(request,loan)
+        
 
 
 #------------Fine handlers---------------------------------------------
@@ -1205,36 +529,8 @@ def chama_fines(request,chama_id):
 @is_user_chama_member
 def create_fine_type(request,chama_id):
     if request.method == 'POST':
-        data = json.loads(request.body)
-
-        name = data.get('name')
-        amount = int(data.get('amount'))
-        description = str(data.get('description'))
-        chama = Chama.objects.get(pk = chama_id)
-
-        try:
-            new_fine_type = FineType.objects.create(
-                name = name,
-                amount=amount,
-                description=description,
-                chama=chama
-            )
-
-            data = {
-                'status':'success',
-                'message':'fine type created succesfully',
-                'fine_type':model_to_dict(new_fine_type)
-            }
-            return JsonResponse(data,status=200)
-
-        except Exception as e:
-
-            data = {
-                'status':'failed',
-                'message':f'an error occcurred:{e}'
-            }
-
-            return JsonResponse(data,status=200)
+        return FineService.create_fine_type(request,chama_id)
+        
     else:
         data = {
             'status':'failed',
@@ -1246,52 +542,8 @@ def create_fine_type(request,chama_id):
 @login_required(login_url='/user/Login')
 def fine_contribution(request,contribution_id):
     if request.method == 'POST':
-        data = json.loads(request.body)
-        contribution_item = ContributionRecord.objects.get(pk=contribution_id)
-        contribution = contribution_item.contribution
-        member = contribution_item.member
-        fine = FineType.objects.get(pk=data.get('fine'))
-        contribution_balance = contribution_item.balance
-
-        try:
-            new_fine_object = FineItem.objects.create(
-                fine_type = fine,
-                member = member,
-                fine_amount = fine.amount,
-                paid_fine_amount = 0.00,
-                fine_balance = fine.amount,
-                contribution = contribution,
-                forLoan = False,
-                forContribution = True,
-                contribution_balance = Decimal(contribution_balance)
-            )
-            new_cashflow_object = CashflowReport.objects.create(
-                        object_date = new_fine_object.created,
-                        member = new_fine_object.member,
-                        type = 'imposed fine',
-                        amount = new_fine_object.fine_amount,
-                        chama = new_fine_object.fine_type.chama,
-                        forGroup = False
-                    )
-            fine = model_to_dict(new_fine_object)
-            fine['member'] = member.name
-            fine['fine_type'] = new_fine_object.fine_type.name
-
-            data = {
-                'status':'success',
-                'message':f'Fine imposed on {member.name} successfully',
-
-            }
-
-            return JsonResponse(data,status=200)
-    
-        except Exception as e:
-            data = {
-                'status':'failed',
-                'message':'an error occured,the fine could not be imposed'
-            }
-
-            return JsonResponse(data,status=200)
+        return FineService.fine_contribution(request,contribution_id)
+        
     else:
         data = {
             'status':'failed',
@@ -1304,102 +556,15 @@ def fine_contribution(request,contribution_id):
 @login_required(login_url='/user/Login')
 def impose_fine(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
-
-        loan = LoanItem.objects.get(pk=int(data.get('loan_id')))
-
-        member = loan.member
-        fine_type = FineType.objects.get(pk = int(data.get('fine_type')))
-
-
-        loan_amount = loan.amount
-        loan_balance = loan.balance
-        fine_amount = fine_type.amount
-        paid_fine_amount = 0.00
-        fine_balance = fine_type.amount
-
-        try:
-            new_fine_object = FineItem.objects.create(
-                member = member,
-                fine_type = fine_type,
-                loan_amount=loan_amount,
-                loan_balance=loan_balance,
-                fine_amount=fine_amount,
-                paid_fine_amount = paid_fine_amount,
-                fine_balance=fine_balance,
-                loan = loan,
-                forLoan = True
-            )
-
-            new_cashflow_object = CashflowReport.objects.create(
-                        object_date = new_fine_object.created,
-                        member = new_fine_object.member,
-                        type = 'imposed fine',
-                        amount = new_fine_object.fine_amount,
-                        chama = new_fine_object.fine_type.chama,
-                        forGroup = False
-                    )
-
-            data = {
-                'status' :'success',
-                'message':f'Fine imposed on {member.name} succesfully.'
-            }
-
-            return JsonResponse(data,status=200)
-
-
-        except Exception as e:
-            data = {
-                'status':'failed',
-                'message':f'An error occurred:{e}'
-            }
-            return JsonResponse(data,status=200)
+        return FineService.impose_fine(request)
+        
         
 
 @login_required(login_url='/user/Login')
 def update_fine(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
-        fine = FineItem.objects.get(pk = int(data.get('fine_id')))
-        loan = fine.loan
-
-        if fine.forLoan:
-            fine.loan_balance = loan.balance
-            fine.paid_fine_amount += int(data.get('fine-amount'))
-            fine.fine_balance -= int(data.get('fine-amount'))
-            fine.last_updated = timezone.now()
-            if fine.fine_balance <= 0.00:
-                fine.status = 'cleared'
-            
-            fine.save()
+        return FineService.update_fine(request)
         
-        elif fine.forContribution:
-            fine.paid_fine_amount += int(data.get('fine-amount'))
-            fine.fine_balance -= int(data.get('fine-amount'))
-            fine.last_updated = timezone.now()
-            if fine.fine_balance <= 0.00:
-                fine.status = 'cleared'
-
-            fine.save()
-
-        new_cashflow_object = CashflowReport.objects.create(
-            object_date = fine.created,
-            type = 'fine payment',
-            amount = Decimal(data.get('fine-amount')),
-            chama = fine.fine_type.chama,
-            forGroup = False,
-            member = fine.member
-        )
-
-        
-
-        data = {
-            'status':'success',
-            'message':'fine updated succesfully',
-            'fine':model_to_dict(fine)
-        }
-
-        return JsonResponse(data,status=200)
     else:
         data = {
             'status':'failed',
@@ -1429,49 +594,8 @@ def create_expense(request,chama_id):
     chama = Chama.objects.get(pk=chama_id)
 
     if request.method == 'POST':
-        data = json.loads(request.body)
-
-        name = data.get('name')
-        amount = data.get('amount')
-        description = data.get('description')
-
-        for member in chama.member.all():
-            if member.user == request.user:
-                member = member
-                print(member)
-
-        try:
-            new_expense = Expense.objects.create(
-                name=name,
-                amount=amount,
-                description=description,
-                chama=chama,
-                created_by=member
-                )
-            
-            new_cashflow_object = CashflowReport.objects.create(
-                        object_date = new_expense.created_on,
-                        type = 'expense',
-                        amount = new_expense.amount,
-                        chama = chama,
-                        forGroup = True
-                    )
-            
-            data = {
-                'status':'success',
-                'message':'expense created succesfully',
-                'expense':model_to_dict(new_expense)
-            }
-
-            return JsonResponse(data,status=200)
-
-        except Exception as e:
-
-            data = {
-               'status':'failed',
-               'message':f'an error occurred:{e}' 
-            }
-            return JsonResponse(data,status=200)
+        return ExpenseService.create_expense(request,chama)
+        
         
 
 #finance handlers
@@ -1554,49 +678,8 @@ def finances(request,chama_id):
 @is_user_chama_member
 def create_saving(request,chama_id):
     if request.method == 'POST':
-        try:
-            chama = Chama.objects.get(pk=chama_id)
-            data = json.loads(request.body)
-            owner = data.get('owner')
-            amount = data.get('amount')
-            saving_type = data.get('saving-type')
-            saving_type = SavingType.objects.get(pk=int(saving_type))
-
-
-            if owner == 'group':
-                forGroup = True
-                new_saving = Saving.objects.create(
-                    chama = chama,
-                    forGroup = forGroup,
-                    amount=amount,
-                    saving_type = saving_type
-
-                )
-
-            else:
-                forGroup = False
-                owner = ChamaMember.objects.get(pk=int(owner))
-                new_saving = Saving.objects.create(
-                    owner = owner,
-                    chama = chama,
-                    forGroup = forGroup,
-                    amount = amount,
-                    saving_type = saving_type
-                )
-            
-            data = {
-                'status':'success',
-                'message':'Saving created succesfully',
-                'saving':model_to_dict(new_saving)
-            }
-            return JsonResponse(data,status=200)
-
-        except Exception as e:
-            data = {
-                'status':'failed',
-                'message':f'an error occured:{e}'
-            }
-            return JsonResponse(data,status=200)
+        return FinanceService.create_saving(request,chama_id)
+        
     else:
         data = {
             'status':'failed',
@@ -1608,89 +691,16 @@ def create_saving(request,chama_id):
 @is_user_chama_member
 def create_investment(request,chama_id):
     if request.method == 'POST':
-        data = json.loads(request.body)
-        name = data.get('name')
-        amount = data.get('amount')
-        date = data.get('date')
-
-        chama = Chama.objects.get(pk=chama_id)
-
-        try:
-            new_investment = Investment.objects.create(
-                name = name,
-                amount = amount,
-                chama = chama,
-                user_date = date
-            )
-            data = {
-                'status':'success',
-                'message':'New investment created succesfully',
-                'investment':model_to_dict(new_investment)
-            }
-
-            return JsonResponse(data,status=200)
-
-        except Exception as e:
-            data = {
-                'status':'failed',
-                'message':f'an error occurred: {e}'
-            }
-
-            return JsonResponse(data,status=200)
+        return FinanceService.create_investment(request,chama_id)
+       
 
         
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def create_income(request,chama_id):
     if request.method == 'POST':
-        data = json.loads(request.body)
-        name = data.get('name')
-        owner = data.get('owner')
-        chama = Chama.objects.get(pk=chama_id)
-        amount = data.get('amount')
-        date = data.get('date')
-        investment = data.get('investment-scheme')
-
-        if investment == 'others':
-            try:
-                investment = Investment.object.get(name='others',chama=chama)
-
-            except Exception as e:
-                new_investment = Investment.objects.create(name='others',amount=Decimal('0.00'),chama=chama)
-                investment = new_investment
-        else:
-            investment = Investment.objects.get(pk=int(investment))
+        return FinanceService.create_income(request,chama_id)
         
-        if owner == 'group':
-            forGroup = True
-            new_income = Income.objects.create(
-                name = name,
-                chama = chama,
-                forGroup = forGroup,
-                amount = amount,
-                user_date = date,
-                investment = investment
-            )
-
-        else:
-            forGroup = False
-            owner = ChamaMember.objects.get(pk=int(owner))
-            new_income = Income.objects.create(
-                name = name,
-                owner = owner,
-                chama = chama,
-                forGroup = forGroup,
-                amount = amount,
-                investment = investment
-            )
-
-        data = {
-            'status':'success',
-            'message':'new income created succesfully',
-            'income':model_to_dict(new_income)
-        }
-
-        return JsonResponse(data,status=200)
     else:
         data = {
             'status':'failed',
@@ -2100,1231 +1110,101 @@ def reports(request,chama_id):
     return render(request,'chamas/reports.html',context)
 
 #------------------------Report download handlers-----------------
+@login_required(login_url='/user/Login')
+@is_user_chama_member
 def download_loan_report(request, chama_id):
-    # ─────────────────────────────────────────────
-    # 1) Fetch your Chama and its LoanItems
-    # ─────────────────────────────────────────────
-    chama = Chama.objects.get(pk=chama_id)
-    loans = LoanItem.objects.filter(chama=chama)
-
-    # ─────────────────────────────────────────────
-    # 2) Prepare PDF response & document
-    # ─────────────────────────────────────────────
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = (
-        f'attachment; filename="{chama.name}_loan_report.pdf"'
-    )
-
-    doc = BaseDocTemplate(
-        response,
-        pagesize=letter,
-        leftMargin=36, rightMargin=36,
-        topMargin=72, bottomMargin=36
-    )
-    frame = Frame(
-        doc.leftMargin, doc.bottomMargin,
-        doc.width, doc.height,
-        id='normal'
-    )
-
-    # ─────────────────────────────────────────────
-    # 3) Header callback for every page
-    # ─────────────────────────────────────────────
-    def draw_header(canvas, doc):
-        canvas.saveState()
-        # Main title
-        canvas.setFont('Times-Bold', 16)
-        canvas.drawCentredString(
-            letter[0]/2, letter[1]-40,
-            chama.name
-        )
-        # Subtitle and date
-        canvas.setFont('Times-Bold', 12)
-        canvas.drawCentredString(
-            letter[0]/2, letter[1]-60,
-            "Loan Report"
-        )
-        canvas.setFont('Times-Roman', 10)
-        canvas.drawCentredString(
-            letter[0]/2, letter[1]-75,
-            datetime.now().strftime("%Y-%m-%d")
-        )
-        canvas.restoreState()
-
-    doc.addPageTemplates([
-        PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
-    ])
-
-    # ─────────────────────────────────────────────
-    # 4) Build your table data & style
-    # ─────────────────────────────────────────────
-    data = [[
-        'Member Name', 'Loan Type',
-        'Start Date', 'Due Date',
-        'Amount', 'Total Paid',
-        'Balance', 'Status'
-    ]]
-    for loan in loans:
-        data.append([
-            loan.member.name,
-            loan.type.name,
-            loan.start_date.strftime('%Y-%m-%d'),
-            loan.end_date.strftime('%Y-%m-%d'),
-            f'ksh {loan.amount}',
-            f'ksh {loan.total_paid}',
-            f'ksh {loan.balance}',
-            loan.status,
-        ])
-
-    table = Table(data, repeatRows=1)
-    table.setStyle(TableStyle([
-        ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
-        ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
-        ('GRID',         (0, 0), (-1, -1), 1, colors.black),
-    ]))
-
-    # ─────────────────────────────────────────────
-    # 5) Assemble & build
-    # ─────────────────────────────────────────────
-    story = [
-        Spacer(1, 40),  # space below header
-        table
-    ]
-    doc.build(story)
-    return response
+    
+    return DownloadService.download_loan_report(request,chama_id)
 
 
 
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_loan_repayment_schedule(request, chama_id):
-    # 1) Fetch Chama and active Loans
-    chama = Chama.objects.get(pk=chama_id)
-    loans = LoanItem.objects.filter(chama=chama, status='active')
-
-    # 2) Prepare PDF response & BaseDocTemplate
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = (
-        f'attachment; filename="{chama.name}_loan_repayment_schedule.pdf"'
-    )
-
-    doc = BaseDocTemplate(
-        response,
-        pagesize=letter,
-        leftMargin=36, rightMargin=36,
-        topMargin=72, bottomMargin=36
-    )
-    frame = Frame(
-        doc.leftMargin, doc.bottomMargin,
-        doc.width, doc.height,
-        id='normal'
-    )
-
-    # 3) Header callback for every page
-    def draw_header(canvas, doc):
-        canvas.saveState()
-        # Main title
-        canvas.setFont('Times-Bold', 16)
-        canvas.drawCentredString(
-            letter[0]/2, letter[1]-40,
-            chama.name
-        )
-        # Subtitle and date
-        canvas.setFont('Times-Bold', 12)
-        canvas.drawCentredString(
-            letter[0]/2, letter[1]-60,
-            "Loan Repayment Schedule"
-        )
-        canvas.setFont('Times-Roman', 10)
-        canvas.drawCentredString(
-            letter[0]/2, letter[1]-75,
-            datetime.now().strftime("%Y-%m-%d")
-        )
-        canvas.restoreState()
-
-    doc.addPageTemplates([
-        PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
-    ])
-
-    # 4) Build table data & style
-    data = [[
-        'Member Name', 'Loan Type', 'Start Date',
-        'Due Date', 'Amount', 'Total Paid',
-        'Balance', 'Status', 'Repayment Term'
-    ]]
-    for loan in loans:
-        data.append([
-            loan.member.name,
-            loan.type.name,
-            loan.start_date.strftime('%Y-%m-%d'),
-            loan.end_date.strftime('%Y-%m-%d'),
-            f'ksh {loan.amount}',
-            f'ksh {loan.total_paid}',
-            f'ksh {loan.balance}',
-            loan.status,
-            loan.due,
-        ])
-
-    table = Table(data, repeatRows=1)
-    table.setStyle(TableStyle([
-        ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
-        ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
-        ('GRID',         (0, 0), (-1, -1), 1, colors.black),
-    ]))
-
-    # 5) Assemble & build
-    story = [
-        Spacer(1, 40),  # space below header
-        table
-    ]
-    doc.build(story)
-    return response
+    return DownloadService.download_loan_repayment_schedule(chama_id)
+    
 
     
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_group_investment_income(request, chama_id):
-    # 1) Fetch Chama and group Income data
-    chama   = Chama.objects.get(pk=chama_id)
-    incomes = Income.objects.filter(chama=chama, forGroup=True)
-
-    # 2) Prepare PDF response & BaseDocTemplate
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = (
-        f'attachment; filename="{chama.name}_group_investment_income.pdf"'
-    )
-
-    doc = BaseDocTemplate(
-        response,
-        pagesize=letter,
-        leftMargin=36, rightMargin=36,
-        topMargin=72, bottomMargin=36
-    )
-    frame = Frame(
-        doc.leftMargin, doc.bottomMargin,
-        doc.width, doc.height,
-        id='normal'
-    )
-
-    # 3) Header callback for every page
-    def draw_header(canvas, doc):
-        canvas.saveState()
-        # Main title
-        canvas.setFont('Times-Bold', 16)
-        canvas.drawCentredString(
-            letter[0]/2, letter[1]-40,
-            chama.name
-        )
-        # Subtitle and date
-        canvas.setFont('Times-Bold', 12)
-        canvas.drawCentredString(
-            letter[0]/2, letter[1]-60,
-            "Group Investment Income"
-        )
-        canvas.setFont('Times-Roman', 10)
-        canvas.drawCentredString(
-            letter[0]/2, letter[1]-75,
-            datetime.now().strftime("%Y-%m-%d")
-        )
-        canvas.restoreState()
-
-    doc.addPageTemplates([
-        PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
-    ])
-
-    # 4) Build table data & style
-    data = [[
-        'Income Name', 'Investment',
-        'Date', 'Amount'
-    ]]
-    for inc in incomes:
-        data.append([
-            inc.name,
-            inc.investment.name,
-            inc.date.strftime('%Y-%m-%d'),
-            f'ksh {inc.amount}',
-        ])
-
-    table = Table(data, repeatRows=1)
-    table.setStyle(TableStyle([
-        ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
-        ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
-        ('GRID',         (0, 0), (-1, -1), 1, colors.black),
-    ]))
-
-    # 5) Assemble & build
-    story = [
-        Spacer(1, 40),  # space below header
-        table
-    ]
-    doc.build(story)
-    return response
+    return DownloadService.download_group_investment_income(chama_id)
+   
 
     
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_member_investment_income(request, chama_id):
-    # 1) Fetch Chama and Income data
-    chama = Chama.objects.get(pk=chama_id)
-    member_id = request.GET.get('member-id', None)
-
-    if member_id:
-        member = ChamaMember.objects.get(pk=int(member_id))
-        incomes = Income.objects.filter(chama=chama, forGroup=False, owner=member)
-    else:
-        incomes = Income.objects.filter(chama=chama, forGroup=False)
-
-    # 2) Prepare PDF response & BaseDocTemplate
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = (
-        f'attachment; filename="{chama.name}_member_investment_income.pdf"'
-    )
-
-    doc = BaseDocTemplate(
-        response,
-        pagesize=letter,
-        leftMargin=36, rightMargin=36,
-        topMargin=72, bottomMargin=36
-    )
-    frame = Frame(
-        doc.leftMargin, doc.bottomMargin,
-        doc.width, doc.height,
-        id='normal'
-    )
-
-    # 3) Header callback for every page
-    def draw_header(canvas, doc):
-        canvas.saveState()
-        # Main title
-        canvas.setFont('Times-Bold', 16)
-        canvas.drawCentredString(
-            letter[0] / 2, letter[1] - 40,
-            chama.name
-        )
-        # Subtitle and date
-        canvas.setFont('Times-Bold', 12)
-        canvas.drawCentredString(
-            letter[0] / 2, letter[1] - 60,
-            "Member Investment Income"
-        )
-        canvas.setFont('Times-Roman', 10)
-        canvas.drawCentredString(
-            letter[0] / 2, letter[1] - 75,
-            datetime.now().strftime("%Y-%m-%d")
-        )
-        canvas.restoreState()
-
-    doc.addPageTemplates([
-        PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
-    ])
-
-    # 4) Build table data & style
-    data = [[
-        'Income Name', 'Member Name',
-        'Investment', 'Amount', 'Date'
-    ]]
-    for income in incomes:
-        data.append([
-            income.name,
-            income.owner.name,
-            income.investment.name,
-            f'ksh {income.amount}',
-            income.date.strftime('%Y-%m-%d')
-        ])
-
-    table = Table(data, repeatRows=1)
-    table.setStyle(TableStyle([
-        ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
-        ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
-        ('GRID',         (0, 0), (-1, -1), 1, colors.black),
-    ]))
-
-    # 5) Assemble & build
-    story = [
-        Spacer(1, 40),  # space below header
-        table
-    ]
-    doc.build(story)
-    return response
-
-
+    return DownloadService.download_member_investment_income(request,chama_id)
+    
 
 
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_individual_saving_report(request, chama_id):
-    # 1) Fetch Chama and individual saving data
-    chama = Chama.objects.get(pk=chama_id)
-    member_id = request.GET.get('member-id', None)
-
-    if member_id:
-        member  = ChamaMember.objects.get(pk=int(member_id))
-        savings = Saving.objects.filter(chama=chama, forGroup=False, owner=member)
-    else:
-        savings = Saving.objects.filter(chama=chama, forGroup=False)
-
-    # 2) Prepare PDF response & BaseDocTemplate
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = (
-        f'attachment; filename="{chama.name}_individual_savings_report.pdf"'
-    )
-
-    doc = BaseDocTemplate(
-        response,
-        pagesize=letter,
-        leftMargin=36, rightMargin=36,
-        topMargin=72, bottomMargin=36
-    )
-    frame = Frame(
-        doc.leftMargin, doc.bottomMargin,
-        doc.width, doc.height,
-        id='main'
-    )
-
-    # 3) Header callback for every page
-    def draw_header(canvas, doc):
-        canvas.saveState()
-        # Main title
-        canvas.setFont('Times-Bold', 16)
-        canvas.drawCentredString(
-            letter[0]/2, letter[1]-40,
-            chama.name
-        )
-        # Subtitle and date
-        canvas.setFont('Times-Bold', 12)
-        canvas.drawCentredString(
-            letter[0]/2, letter[1]-60,
-            "Individual Savings Report"
-        )
-        canvas.setFont('Times-Roman', 10)
-        canvas.drawCentredString(
-            letter[0]/2, letter[1]-75,
-            datetime.now().strftime('%Y-%m-%d')
-        )
-        canvas.restoreState()
-
-    doc.addPageTemplates([
-        PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
-    ])
-
-    # 4) Build table data & style
-    data = [[
-        'Member', 'Amount', 'Type', 'Date'
-    ]]
-    for s in savings:
-        data.append([
-            s.owner.name,
-            f'ksh {s.amount}',
-            s.saving_type.name,
-            s.date.strftime('%Y-%m-%d')
-        ])
-
-    table = Table(data, repeatRows=1)
-    table.setStyle(TableStyle([
-        ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
-        ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
-        ('GRID',         (0, 0), (-1, -1), 1, colors.black),
-    ]))
-
-    # 5) Assemble & build document
-    story = [
-        Spacer(1, 40),  # space below header
-        table
-    ]
-    doc.build(story)
-    return response
-
-
+    return DownloadService.download_individual_saving_report(request,chama_id)
+    
 
 
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_group_saving_report(request, chama_id):
-    # 1) Fetch Chama and group Saving data
-    chama   = Chama.objects.get(pk=chama_id)
-    savings = Saving.objects.filter(chama=chama, forGroup=True)
-
-    # 2) Prepare PDF response & BaseDocTemplate
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = (
-        f'attachment; filename="{chama.name}_group_savings_report.pdf"'
-    )
-
-    doc = BaseDocTemplate(
-        response,
-        pagesize=letter,
-        leftMargin=36, rightMargin=36,
-        topMargin=72, bottomMargin=36
-    )
-    frame = Frame(
-        doc.leftMargin, doc.bottomMargin,
-        doc.width, doc.height,
-        id='normal'
-    )
-
-    # 3) Header callback for every page
-    def draw_header(canvas, doc):
-        canvas.saveState()
-        # Main title
-        canvas.setFont('Times-Bold', 16)
-        canvas.drawCentredString(
-            letter[0]/2, letter[1]-40,
-            chama.name
-        )
-        # Subtitle and date
-        canvas.setFont('Times-Bold', 12)
-        canvas.drawCentredString(
-            letter[0]/2, letter[1]-60,
-            "Group Savings Report"
-        )
-        canvas.setFont('Times-Roman', 10)
-        canvas.drawCentredString(
-            letter[0]/2, letter[1]-75,
-            datetime.now().strftime('%Y-%m-%d')
-        )
-        canvas.restoreState()
-
-    doc.addPageTemplates([
-        PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
-    ])
-
-    # 4) Build table data & style
-    data = [[
-        'Amount', 'Type', 'Date'
-    ]]
-    for s in savings:
-        data.append([
-            f'ksh {s.amount}',
-            s.saving_type.name,
-            s.date.strftime('%Y-%m-%d')
-        ])
-
-    table = Table(data, repeatRows=1)
-    table.setStyle(TableStyle([
-        ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
-        ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
-        ('GRID',         (0, 0), (-1, -1), 1, colors.black),
-    ]))
-
-    # 5) Assemble & build
-    story = [
-        Spacer(1, 40),  # space below header
-        table
-    ]
-    doc.build(story)
-    return response
-
-
-
+    return DownloadService.download_group_saving_report(request,chama_id)
+    
 
 
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_group_contributions_report(request, chama_id,contribution_id):
-    # ─────────────────────────────────────────────
-    # 1) Fetch & flatten your contribution records
-    # ─────────────────────────────────────────────
-    chama = Chama.objects.get(pk=chama_id)
-    contribution = Contribution.objects.filter(chama=chama,id=contribution_id).first()
-    contributions = []
-    contributions.extend(contribution.records.all())
-    contributions = sorted(
-        contributions,
-        key=lambda x: x.date_created,
-        reverse=True
-    )
-
-    # ─────────────────────────────────────────────
-    # 2) Prepare HTTP + PDF document
-    # ─────────────────────────────────────────────
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = (
-        f'attachment; filename="{chama.name}_group_contributions_report.pdf"'
-    )
-
-    doc = BaseDocTemplate(
-        response,
-        pagesize=letter,
-        leftMargin=36, rightMargin=36,
-        topMargin=72, bottomMargin=36
-    )
-    frame = Frame(
-        doc.leftMargin, doc.bottomMargin,
-        doc.width, doc.height,
-        id='normal'
-    )
-
-    # ─────────────────────────────────────────────
-    # 3) Define header callback (runs on every page)
-    # ─────────────────────────────────────────────
-    def draw_header(canvas, doc):
-        canvas.saveState()
-        # Main title
-        canvas.setFont('Times-Bold', 16)
-        canvas.drawCentredString(
-            letter[0]/2, letter[1] - 40,
-            chama.name
-        )
-        # Subtitle and date
-        canvas.setFont('Times-Bold', 12)
-        canvas.drawCentredString(
-            letter[0]/2, letter[1] - 60,
-            f"Group Contributions Report for '{contribution.name}'"
-        )
-        canvas.setFont('Times-Roman', 10)
-        canvas.drawCentredString(
-            letter[0]/2, letter[1] - 75,
-            datetime.now().strftime("%Y-%m-%d")
-        )
-        canvas.restoreState()
-
-    doc.addPageTemplates([
-        PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
-    ])
-
-
-    data = [[
-        'Member', 'Contribution Type', 'Date',
-        'Expected Amount', 'Amount Paid', 'Balance'
-    ]]
-    for c in contributions:
-        data.append([
-            c.member.name,
-            c.contribution.name,
-            c.date_created.strftime('%Y-%m-%d'),
-            f'ksh {c.amount_expected}',
-            f'ksh {c.amount_paid}',
-            f'ksh {c.balance}',
-        ])
-
-    table = Table(data, repeatRows=1)
-    table.setStyle(TableStyle([
-        ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
-        ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
-        ('GRID',         (0, 0), (-1, -1), 1, colors.black),
-    ]))
-
-  
-    story = [
-        Spacer(1, 40),  # gives some space below header
-        table
-    ]
-    doc.build(story)
-    return response
+    return DownloadService.download_group_contributions_report(chama_id,contribution_id)
+    
 
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_member_contribution_report(request, chama_id, member_id,scheme_id):
-    # 1) Retrieve Chama and Member
-    chama  = Chama.objects.get(pk=chama_id)
-    member = ChamaMember.objects.get(pk=member_id)
-
-    # 2) Collect this member's contributions
-    contribution = Contribution.objects.filter(chama=chama,id=scheme_id).first()
-    contributions = []
-
-    for contrib in contribution.records.all():
-        if contrib.member == member:
-            contributions.append(contrib)
-
-    # 3) Prepare PDF response
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = (
-        f'attachment; filename="{chama.name}_{member.name}_contribution_report.pdf"'
-    )
-
-    # 4) Setup BaseDocTemplate with header on each page
-    doc = BaseDocTemplate(
-        response,
-        pagesize=letter,
-        leftMargin=36, rightMargin=36,
-        topMargin=72, bottomMargin=36
-    )
-    frame = Frame(
-        doc.leftMargin, doc.bottomMargin,
-        doc.width, doc.height,
-        id='normal'
-    )
-
-    # Header callback
-    def draw_header(canvas, doc):
-        canvas.saveState()
-        # Title line
-        canvas.setFont('Times-Bold', 14)
-        canvas.drawCentredString(
-            letter[0]/2, letter[1] - 40,
-            f"Member Contribution Report - {member.name} - for '{contribution.name}'"
-        )
-        # Date line
-        canvas.setFont('Times-Roman', 10)
-        canvas.drawCentredString(
-            letter[0]/2, letter[1] - 55,
-            datetime.now().strftime('%Y-%m-%d')
-        )
-        canvas.restoreState()
-
-    doc.addPageTemplates([
-        PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
-    ])
-
-    # 5) Build table data
-    data = [[
-        'Name', 'Contribution Type', 'Date',
-        'Expected Amount', 'Amount Paid', 'Balance'
-    ]]
-    for contrib in contributions:
-        data.append([
-            contrib.member.name,
-            contrib.contribution.name,
-            contrib.date_created.strftime('%Y-%m-%d'),
-            f'ksh {contrib.amount_expected}',
-            f'ksh {contrib.amount_paid}',
-            f'ksh {contrib.balance}'
-        ])
-
-    # 6) Create table with repeating header row
-    table = Table(data, repeatRows=1)
-    table.setStyle(TableStyle([
-        ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
-        ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
-        ('GRID',         (0, 0), (-1, -1), 1, colors.black),
-    ]))
-
-    # 7) Build story
-    story = [
-        Spacer(1, 40),
-        table
-    ]
-    doc.build(story)
-    return response
+    return DownloadService.download_member_contribution_report(chama_id,member_id,scheme_id)
+    
 
 
 
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_collected_fine_report(request, chama_id):
-    # 1) Fetch Chama and cleared fines
-    chama = Chama.objects.get(pk=chama_id)
-    # Pull all fines with status 'cleared' in a single queryset
-    fines = FineItem.objects.filter(fine_type__chama=chama, status='cleared')
-
-    # 2) Prepare PDF response & BaseDocTemplate
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = (
-        f'attachment; filename="{chama.name}_collected_fines_report.pdf"'
-    )
-
-    doc = BaseDocTemplate(
-        response,
-        pagesize=letter,
-        leftMargin=36, rightMargin=36,
-        topMargin=72, bottomMargin=36
-    )
-    frame = Frame(
-        doc.leftMargin, doc.bottomMargin,
-        doc.width, doc.height,
-        id='normal'
-    )
-
-    # 3) Header callback for every page
-    def draw_header(canvas, doc):
-        canvas.saveState()
-        # Main title
-        canvas.setFont('Times-Bold', 16)
-        canvas.drawCentredString(
-            letter[0] / 2, letter[1] - 40,
-            chama.name
-        )
-        # Subtitle and date
-        canvas.setFont('Times-Bold', 12)
-        canvas.drawCentredString(
-            letter[0] / 2, letter[1] - 60,
-            "Collected Fines Report"
-        )
-        canvas.setFont('Times-Roman', 10)
-        canvas.drawCentredString(
-            letter[0] / 2, letter[1] - 75,
-            datetime.now().strftime('%Y-%m-%d')
-        )
-        canvas.restoreState()
-
-    doc.addPageTemplates([
-        PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
-    ])
-
-    # 4) Build table data
-    data = [[
-        'Member', 'Type', 'Amount', 'Paid Amount',
-        'Balance', 'Status', 'Created', 'Last Updated'
-    ]]
-    for fine in fines:
-        data.append([
-            fine.member.name,
-            fine.fine_type.name,
-            f'ksh {fine.fine_amount}',
-            f'ksh {fine.paid_fine_amount}',
-            f'ksh {fine.fine_balance}',
-            fine.status,
-            fine.created.strftime('%Y-%m-%d'),
-            fine.last_updated.strftime('%Y-%m-%d')
-        ])
-
-    # 5) Create table with header row repeated
-    table = Table(data, repeatRows=1)
-    table.setStyle(TableStyle([
-        ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
-        ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
-        ('GRID',         (0, 0), (-1, -1), 1, colors.black),
-    ]))
-
-    # 6) Assemble and build document
-    story = [
-        Spacer(1, 40),  # space below header
-        table
-    ]
-    doc.build(story)
-    return response
-
-
+    return DownloadService.download_collected_fine_report(chama_id)
+    
 
 
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_uncollected_fines_report(request, chama_id):
-    # 1) Fetch Chama and active fines
-    chama = Chama.objects.get(pk=chama_id)
-    fines = FineItem.objects.filter(fine_type__chama=chama, status='active')
-
-    # 2) Prepare PDF response & BaseDocTemplate
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = (
-        f'attachment; filename="{chama.name}_uncollected_fines_report.pdf"'
-    )
-
-    doc = BaseDocTemplate(
-        response,
-        pagesize=letter,
-        leftMargin=36, rightMargin=36,
-        topMargin=72, bottomMargin=36
-    )
-    frame = Frame(
-        doc.leftMargin, doc.bottomMargin,
-        doc.width, doc.height,
-        id='normal'
-    )
-
-    # 3) Header callback for every page
-    def draw_header(canvas, doc):
-        canvas.saveState()
-        canvas.setFont('Times-Bold', 16)
-        canvas.drawCentredString(
-            letter[0] / 2, letter[1] - 40,
-            chama.name
-        )
-        canvas.setFont('Times-Bold', 12)
-        canvas.drawCentredString(
-            letter[0] / 2, letter[1] - 60,
-            "Uncollected Fines Report"
-        )
-        canvas.setFont('Times-Roman', 10)
-        canvas.drawCentredString(
-            letter[0] / 2, letter[1] - 75,
-            datetime.now().strftime('%Y-%m-%d')
-        )
-        canvas.restoreState()
-
-    doc.addPageTemplates([
-        PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
-    ])
-
-    # 4) Build table data
-    data = [[
-        'Member', 'Type', 'Amount', 'Paid Amount',
-        'Balance', 'Status', 'Created', 'Last Updated'
-    ]]
-    for fine in fines:
-        data.append([
-            fine.member.name,
-            fine.fine_type.name,
-            f'ksh {fine.fine_amount}',
-            f'ksh {fine.paid_fine_amount}',
-            f'ksh {fine.fine_balance}',
-            fine.status,
-            fine.created.strftime('%Y-%m-%d'),
-            fine.last_updated.strftime('%Y-%m-%d')
-        ])
-
-    # 5) Create table with header row repeated
-    table = Table(data, repeatRows=1)
-    table.setStyle(TableStyle([
-        ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
-        ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
-        ('GRID',         (0, 0), (-1, -1), 1, colors.black),
-    ]))
-
-    # 6) Assemble and build document
-    story = [
-        Spacer(1, 40),
-        table
-    ]
-    doc.build(story)
-    return response
-
-
+    return DownloadService.download_uncollected_fines_report(chama_id)
     
+
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_cashflow_report(request, chama_id):
-    # 1) Fetch Chama and Cashflow Report data
-    chama = Chama.objects.get(pk=chama_id)
-    reports = CashflowReport.objects.filter(chama=chama).order_by('-date_created')
 
-    # 2) Prepare PDF response & BaseDocTemplate
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = (
-        f'attachment; filename="{chama.name}_cashflow_report.pdf"'
-    )
-
-    doc = BaseDocTemplate(
-        response,
-        pagesize=letter,
-        leftMargin=36, rightMargin=36,
-        topMargin=72, bottomMargin=36
-    )
-    frame = Frame(
-        doc.leftMargin, doc.bottomMargin,
-        doc.width, doc.height,
-        id='normal'
-    )
-
-    # 3) Header callback for every page
-    def draw_header(canvas, doc):
-        canvas.saveState()
-        canvas.setFont('Times-Bold', 16)
-        canvas.drawCentredString(
-            letter[0] / 2, letter[1] - 40,
-            chama.name
-        )
-        canvas.setFont('Times-Bold', 12)
-        canvas.drawCentredString(
-            letter[0] / 2, letter[1] - 60,
-            "Cashflow Report"
-        )
-        canvas.setFont('Times-Roman', 10)
-        canvas.drawCentredString(
-            letter[0] / 2, letter[1] - 75,
-            datetime.now().strftime('%Y-%m-%d')
-        )
-        canvas.restoreState()
-
-    doc.addPageTemplates([
-        PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
-    ])
-
-    # 4) Build table data
-    data = [['Member', 'Type', 'Amount', 'Date Created']]
-    for report in reports:
-        member_name = report.member.name if report.member else 'Group'
-        data.append([
-            member_name,
-            report.type,
-            f'ksh {report.amount}',
-            report.object_date.strftime('%Y-%m-%d')
-        ])
-
-    # 5) Create table with header row repeated
-    table = Table(data, repeatRows=1)
-    table.setStyle(TableStyle([
-        ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
-        ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
-        ('GRID',         (0, 0), (-1, -1), 1, colors.black),
-    ]))
-
-    # 6) Assemble and build document
-    story = [
-        Spacer(1, 40),
-        table
-    ]
-    doc.build(story)
-    return response
-
+    return DownloadService.download_cashflow_report(chama_id)
 
 
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_member_cashflow_report(request, chama_id, member_id):
-    # 1) Fetch Chama, Member, and Cashflow Report data
-    chama  = Chama.objects.get(pk=chama_id)
-    member = ChamaMember.objects.get(pk=member_id)
-    reports = CashflowReport.objects.filter(chama=chama, member=member).order_by('-date_created')
-
-    # 2) Prepare PDF response & BaseDocTemplate
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = (
-        f'attachment; filename="{member.name}_cashflow_report.pdf"'
-    )
-
-    doc = BaseDocTemplate(
-        response,
-        pagesize=letter,
-        leftMargin=36, rightMargin=36,
-        topMargin=72, bottomMargin=36
-    )
-    frame = Frame(
-        doc.leftMargin, doc.bottomMargin,
-        doc.width, doc.height,
-        id='normal'
-    )
-
-    # 3) Header callback for every page
-    def draw_header(canvas, doc):
-        canvas.saveState()
-        canvas.setFont('Times-Bold', 16)
-        canvas.drawCentredString(
-            letter[0] / 2, letter[1] - 40,
-            chama.name
-        )
-        canvas.setFont('Times-Bold', 12)
-        canvas.drawCentredString(
-            letter[0] / 2, letter[1] - 60,
-            f"{member.name} Cashflow Report"
-        )
-        canvas.setFont('Times-Roman', 10)
-        canvas.drawCentredString(
-            letter[0] / 2, letter[1] - 75,
-            datetime.now().strftime('%Y-%m-%d')
-        )
-        canvas.restoreState()
-
-    doc.addPageTemplates([
-        PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
-    ])
-
-    # 4) Build table data
-    data = [['Member', 'Type', 'Amount', 'Date Created']]
-    for report in reports:
-        data.append([
-            report.member.name,
-            report.type,
-            f'ksh {report.amount}',
-            report.date_created.strftime('%Y-%m-%d')
-        ])
-
-    # 5) Create table with header row repeated
-    table = Table(data, repeatRows=1)
-    table.setStyle(TableStyle([
-        ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
-        ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
-        ('GRID',         (0, 0), (-1, -1), 1, colors.black),
-    ]))
-
-    # 6) Assemble and build document
-    story = [
-        Spacer(1, 40),
-        table
-    ]
-    doc.build(story)
-    return response
-
-
+    return DownloadService.download_member_cashflow_report(chama_id,member_id)
     
 
 
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_my_cashflow_report(request, chama_id):
-    # 1) Fetch Chama and current user's member record
-    chama = Chama.objects.get(pk=chama_id)
-    try:
-        user_member = chama.member.get(user=request.user)
-    except ChamaMember.DoesNotExist:
-        return HttpResponse("You are not a member of this chama.", status=403)
-
-    # 2) Fetch Cashflow Reports
-    reports = CashflowReport.objects.filter(chama=chama, member=user_member).order_by('-date_created')
-
-    # 3) Create PDF response
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="my_cashflow_report.pdf"'
-
-    doc = BaseDocTemplate(
-        response,
-        pagesize=letter,
-        leftMargin=36, rightMargin=36,
-        topMargin=72, bottomMargin=36
-    )
-    frame = Frame(
-        doc.leftMargin, doc.bottomMargin,
-        doc.width, doc.height,
-        id='normal'
-    )
-
-    # 4) Header callback for every page
-    def draw_header(canvas, doc):
-        canvas.saveState()
-        canvas.setFont('Times-Bold', 16)
-        canvas.drawCentredString(
-            letter[0] / 2, letter[1] - 40,
-            chama.name
-        )
-        canvas.setFont('Times-Bold', 12)
-        canvas.drawCentredString(
-            letter[0] / 2, letter[1] - 60,
-            "My Cashflow Report"
-        )
-        canvas.setFont('Times-Roman', 10)
-        canvas.drawCentredString(
-            letter[0] / 2, letter[1] - 75,
-            datetime.now().strftime('%Y-%m-%d')
-        )
-        canvas.restoreState()
-
-    doc.addPageTemplates([
-        PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
-    ])
-
-    # 5) Build table data
-    data = [['Member', 'Type', 'Amount', 'Date Created']]
-    for report in reports:
-        data.append([
-            report.member.name,
-            report.type,
-            f'ksh {report.amount}',
-            report.date_created.strftime('%Y-%m-%d')
-        ])
-
-    # 6) Create and style table
-    table = Table(data, repeatRows=1)
-    table.setStyle(TableStyle([
-        ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
-        ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
-        ('GRID',         (0, 0), (-1, -1), 1, colors.black),
-    ]))
-
-    # 7) Assemble and build document
-    story = [
-        Spacer(1, 40),
-        table
-    ]
-    doc.build(story)
-
-    return response
+    return DownloadService.download_my_cashflow_report(request,chama_id)
+    
 
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_expense_report(request, chama_id):
-    # 1) Retrieve Chama and expenses
-    chama = Chama.objects.get(pk=chama_id)
-    expenses = Expense.objects.filter(chama=chama).order_by('-created_on')
-
-    # 2) Create PDF response
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="expense_report.pdf"'
-
-    doc = BaseDocTemplate(
-        response,
-        pagesize=letter,
-        leftMargin=36, rightMargin=36,
-        topMargin=72, bottomMargin=36
-    )
-    frame = Frame(
-        doc.leftMargin, doc.bottomMargin,
-        doc.width, doc.height,
-        id='normal'
-    )
-
-    # 3) Header callback
-    def draw_header(canvas, doc):
-        canvas.saveState()
-        canvas.setFont('Times-Bold', 16)
-        canvas.drawCentredString(
-            letter[0] / 2, letter[1] - 40,
-            chama.name
-        )
-        canvas.setFont('Times-Bold', 12)
-        canvas.drawCentredString(
-            letter[0] / 2, letter[1] - 60,
-            "Expense Report"
-        )
-        canvas.setFont('Times-Roman', 10)
-        canvas.drawCentredString(
-            letter[0] / 2, letter[1] - 75,
-            datetime.now().strftime('%Y-%m-%d')
-        )
-        canvas.restoreState()
-
-    doc.addPageTemplates([
-        PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
-    ])
-
-    # 4) Define table data
-    data = [['Name', 'Created By', 'Created On', 'Amount']]
-    for expense in expenses:
-        data.append([
-            expense.name,
-            expense.created_by.name if expense.created_by else '',
-            expense.created_on.strftime('%Y-%m-%d') if expense.created_on else '',
-            f'ksh {expense.amount}'
-        ])
-
-    # 5) Create and style table
-    table = Table(data, repeatRows=1)
-    table.setStyle(TableStyle([
-        ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
-        ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
-        ('GRID',         (0, 0), (-1, -1), 1, colors.black),
-    ]))
-
-    # 6) Assemble and build document
-    story = [
-        Spacer(1, 40),
-        table
-    ]
-    doc.build(story)
-
-    return response
+    return DownloadService.download_expense_report(chama_id)
+    
 
 
 
@@ -3361,29 +1241,8 @@ def notifications(request,chama_id):
 @is_user_chama_member
 def create_notif_type(request,chama_id):
     if request.method == 'POST':
-        try:
-            chama = Chama.objects.get(pk=chama_id)
-
-            data = json.loads(request.body)
-            name = data.get('name')
-            description = data.get('description')
-
-            new_type = NotificationType.objects.create(name=name,chama=chama,description=description)
-
-            data = {
-                'status':'success',
-                'message':'New notification type created succesfully',
-                'type':model_to_dict(new_type)
-            }
-            return JsonResponse(data,status=200)
-
-        except Exception as e:
-            data = {
-                'status':'failed',
-                'message':f'An error occured:{e}'
-            }
-
-            return JsonResponse(data,status=200)
+        return NotificationService.create_notif_type(request,chama_id)
+        
     else:
         data = {
             'status':'failed',
@@ -3397,55 +1256,8 @@ def create_notif_type(request,chama_id):
 @is_user_chama_member
 def create_notif(request,chama_id):
     if request.method == 'POST':
-        try:
-            chama = Chama.objects.get(pk=chama_id)
-
-            data = json.loads(request.body)
-            member = data.get('member')
-            message = str(data.get('message'))
-            type = NotificationType.objects.get(pk=int(data.get('type')))
-
-            if member == 'group':
-                forGroup = True
-                new_notif = NotificationItem.objects.create(
-                forGroup = forGroup,
-                message=message,
-                type=type,
-                chama=chama
-            )
-            else:
-                forGroup = False
-
-                try:
-                    member = ChamaMember.objects.get(pk=int(member),group=chama)
-
-                except Exception as e:
-                    print(e)
-
-
-                new_notif = NotificationItem.objects.create(
-                member= member,
-                message=message,
-                type=type,
-                chama=chama,
-                forGroup=forGroup
-            )
-                
-            
-            data = {
-                'status':'success',
-                'message':'Notification sent succesfully',
-                'notification':model_to_dict(new_notif)
-            }
-
-            return JsonResponse(data,status=200)
-        except Exception as e:
-            data = {
-                'status':'failed',
-                'message':f'An error occurred:{e}'
-            }
-
-            return JsonResponse(data,status=200)
+        return NotificationService.create_notif(request,chama_id)
+        
     else:
         data = {
             'status':'failed',
