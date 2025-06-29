@@ -5,8 +5,8 @@ import json
 import uuid
 
 class NotificationService:
-
-    def create_notif_type(self,request,chama_id):
+    @staticmethod
+    def create_notif_type(request,chama_id):
         try:
             chama = Chama.objects.get(pk=chama_id)
 
@@ -31,6 +31,7 @@ class NotificationService:
 
             return JsonResponse(data,status=200)
         
+    @staticmethod
     def create_notif(request,chama_id):
         try:
             chama = Chama.objects.get(pk=chama_id)

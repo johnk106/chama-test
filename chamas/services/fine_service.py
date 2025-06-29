@@ -4,8 +4,8 @@ from django.forms.models import model_to_dict
 import json
 
 class FineService:
-
-    def create_fine_type(self,request,chama_id):
+    @staticmethod
+    def create_fine_type(request,chama_id):
         data = json.loads(request.body)
 
         name = data.get('name')
@@ -37,7 +37,8 @@ class FineService:
 
             return JsonResponse(data,status=200)
         
-    def fine_contribution(self,request,contribution_id):
+    @staticmethod
+    def fine_contribution(request,contribution_id):
         data = json.loads(request.body)
         contribution_item = ContributionRecord.objects.get(pk=contribution_id)
         contribution = contribution_item.contribution
@@ -85,6 +86,7 @@ class FineService:
 
             return JsonResponse(data,status=200)
         
+    @staticmethod
     def impose_fine(request):
         data = json.loads(request.body)
 
@@ -137,6 +139,7 @@ class FineService:
             }
             return JsonResponse(data,status=200)
         
+    @staticmethod
     def update_fine(request):
         data = json.loads(request.body)
         fine = FineItem.objects.get(pk = int(data.get('fine_id')))

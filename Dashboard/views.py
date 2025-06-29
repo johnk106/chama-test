@@ -129,6 +129,7 @@ def joinchamas(request):
     context = {'joined_chamas':joined_chamas,'no_chamas_members': no_chamas_members, 'frequency_of_contribution': frequency_of_contribution,
                'amount_per_contributions': amount_per_contributions, 'no_of_cycles': no_of_cycles,
                'user_profile': user_profile}
+    
     if request.method == 'POST':
         Numbers_of_chamas_members = request.POST.get('Numbers_of_chamas_members')
         frequency = request.POST.get('frequency')
@@ -151,21 +152,12 @@ def joinchamas(request):
         members = Chamas.objects.filter(status='joined', category_id__name=cat.name)
         waiting_memebrs_list = []
 
-
-
-
-
-
-
         user = User.objects.get(username=request.user.username)
         if not Wallet.objects.filter(user_id=user_profile.owner).exists():
 
             Wallet.objects.create(user_id=user_profile.owner, available_for_withdraw=0.0,
                                   description='Wallet created on join chama request').save()
         x = Wallet.objects.get(user_id=request.user)
-
-
-
 
         if float(amount)*2 > x.available_for_withdraw:
             txt='You have not sufficent amount in your wallet to join this chama.Minimum KES '+ str(float(amount)*2) + ' amount must be in your wallet.Please Load money into your wallet first to proceed.'
@@ -181,10 +173,7 @@ def joinchamas(request):
                                           status='joined', category_id=cat, active='No',amount=amount,Awarded='No',user_id=user,Award_turn=Numbers_of_chamas_members)
 
                 y.save()
-
                 Chamas.objects.filter(pk=y.id).update(name=str(y.category_id.name) + str(y.id))
-
-
                 # joining chamas 2 code starts from here
 
                 h = Chamas.objects.create(name=name, No_of_people=Numbers_of_chamas_members,
@@ -192,17 +181,11 @@ def joinchamas(request):
                                           status='joined', category_id=cat, active='No',amount=amount,Awarded='No',user_id=user,Award_turn=Numbers_of_chamas_members)
 
                 h.save()
-
                 Chamas.objects.filter(pk=h.id).update(name=str(h.category_id.name) + str(h.id))
 
                 x.available_for_withdraw-=float(amount)*2
-
-
                 #add transaction record also here
                 x.save()
-
-
-
                 messages.success(request,'You have successfully joined chamas. We will notify you when chama starts')
                 return redirect('manage_chamas')
             else:
@@ -316,20 +299,7 @@ def joinchamas(request):
 
                     messages.warning(request, 'Congratulations, You joined chamas')
                     return redirect('manage_chamas')
-
-
-
-
-
-
-
                 else:
-
-
-
-
-
-
                     #setting award turn code starts from here
                     geting_award_turn_of_all_users_one = Chamas.objects.filter(status='joined', name=chamas_one_name)
                     geting_award_turn_of_all_users_two = Chamas.objects.filter(status='joined', name=chamas_two_name)
@@ -387,13 +357,6 @@ def joinchamas(request):
                     return redirect('manage_chamas')
 
 
-
-
-
-
-
-
-
     return render(request, 'join-chama.html', context)
 
 @login_required(login_url='Login')
@@ -439,11 +402,6 @@ def payment_paypal(request):
         chamas_data = Chamas.objects.get(name=user_active_chamas, user_id=request.user)
 
 
-
-
-
-
-
         context={'chamas_data':chamas_data,'user_profile': user_profile, 'user_notifications': user_notifications}
         return render(request, 'paypal.html', context)
 
@@ -456,9 +414,6 @@ def payment_paypal(request):
 
 def paypal_payment_success(request):
     if request.method == 'POST':
-
-
-
         try:
             chamas_name = request.POST.get('name')
             print('line no 422 ', chamas_name)
@@ -476,8 +431,6 @@ def paypal_payment_success(request):
                 y.save()
                 z = Transection.objects.create(chamas_id=chamas_data, user_id=request.user, amount=chamas_data.amount)
                 z.save()
-
-
 
 
                 messages.warning(request, 'Contribution added successfully.')

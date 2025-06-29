@@ -9,10 +9,11 @@ from django.shortcuts import render
 from chamas.models import *
 from .models import *
 from decimal import Decimal
-from services.contribution_service import ContributionService
-from services.member_service import MemberService
-from services.fine_service import FineService
-from services.loan_service import LoanService
+
+from .services.contribution_service import ContributionService
+from .services.member_service import MemberService
+from .services.fine_service import FineService
+from .services.loan_service import LoanService
 
 
 

@@ -6,8 +6,8 @@ import uuid
 
 
 class ExpenseService:
-
-    def create_expense(self,request,chama):
+    @staticmethod
+    def create_expense(request,chama):
         data = json.loads(request.body)
 
         name = data.get('name')

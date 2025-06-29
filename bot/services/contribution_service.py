@@ -2,8 +2,7 @@ from bot.models import *
 from django.conf import settings
 from decimal import Decimal, InvalidOperation
 from django.db.models import Q
-from django.http import JsonResponse
-import requests
+from .message_service import MessageService
 
 
 class ContributionService:
@@ -11,7 +10,8 @@ class ContributionService:
     INFOBIP_SENDER_ID = settings.INFOBIP_SENDER_ID     
     INFOBIP_BASE_URL  = "https://api.infobip.com"
 
-    def process_contribution(self, message, sender):
+    @staticmethod
+    def process_contribution(message, sender):
         member_id         = message['member_id']
         raw_amount        = message['amount']
         contribution_name = message['contribution_name']
@@ -22,7 +22,7 @@ class ContributionService:
             # support commas: "2,000" → "2000"
             amount = Decimal(str(raw_amount).replace(',', '').strip())
         except (InvalidOperation, AttributeError):
-            return self.send_message(
+            return MessageService.send_message(
                 f"Invalid amount '{raw_amount}'. Please provide a numeric value.",
                 sender
             )
@@ -35,11 +35,11 @@ class ContributionService:
         chamas = Chama.objects.filter(q)
 
         if not chamas.exists():
-            return self.send_message(f"No chama found matching '{chama_name}'", sender)
+            return MessageService.send_message(f"No chama found matching '{chama_name}'", sender)
         if chamas.count() > 1:
             chamas = chamas.filter(chamamember__member_id=member_id).distinct()
             if not chamas.exists():
-                return self.send_message(
+                return MessageService.send_message(
                     f"Multiple chamas match '{chama_name}', but none have member {member_id}",
                     sender
                 )
@@ -51,7 +51,7 @@ class ContributionService:
             chama=chama
         )
         if not contributions.exists():
-            return self.send_message(
+            return MessageService.send_message(
                 f"No contribution named '{contribution_name}' in chama '{chama.name}'",
                 sender
             )
@@ -64,7 +64,7 @@ class ContributionService:
             admin = ChamaMember.objects.filter(group=chama,role=admin_role).first()
 
             if admin.user.username != member_id:
-                return self.send_message("Member not found in the chama", sender)
+                return MessageService.send_message("Member not found in the chama", sender)
             
             else:
                 member = admin
@@ -101,50 +101,6 @@ class ContributionService:
         bot_contribution.save()
 
         # 8) Notify user
-        return self.send_message("Contribution recorded successfully ✅", sender)
+        return MessageService.send_message("Contribution recorded successfully ✅", sender)
     
-    @staticmethod
-    def send_message(text, to):
-        print(to)
-        to_digits = "".join(filter(str.isdigit, to))
-
-        url = f"{ContributionService.INFOBIP_BASE_URL}/whatsapp/1/message/text"
-        headers = {
-            "Authorization": f"App {ContributionService.INFOBIP_API_KEY}",
-            "Content-Type":  "application/json",
-            "Accept":        "application/json",
-        }
-
-        payload = {
-            "from": ContributionService.INFOBIP_SENDER_ID,
-            "to":   to_digits,
-            "content": {
-                "text": text
-            }
-        }
-
-        try:
-            resp = requests.post(url, headers=headers, json=payload)
-        except Exception as e:
-            return JsonResponse(
-                {"error": "Exception during send_message", "details": str(e)},
-                status=502
-            )
-
-        if 200 <= resp.status_code < 300:
-            return JsonResponse(
-                {"status": "message_sent", "to": to_digits},
-                status=200
-            )
-        else:
-            return JsonResponse(
-                {
-                    "error":   "Failed to send message",
-                    "status":  resp.status_code,
-                    "details": resp.text
-                },
-                status=502
-            )
-
-
-
+    

@@ -16,15 +16,15 @@ import os
 from django.core.serializers.json import DjangoJSONEncoder
 
 
-from services.download_service import DownloadService
-from services.contribution_service import ContributionService
-from services.fine_service import FineService
-from services.loan_service import LoanService
-from services.finance_service import FinanceService
-from services.expense_service import ExpenseService
-from services.notification_service import NotificationService
-from services.chama_service import ChamaService
-from services.member_service import MemberService
+from .services.download_service import DownloadService
+from .services.contribution_service import ContributionService
+from .services.fine_service import FineService
+from .services.loan_service import LoanService
+from .services.finance_service import FinanceService
+from .services.expense_service import ExpenseService
+from .services.notification_service import NotificationService
+from .services.chama_service import ChamaService
+from .services.member_service import MemberService
 # import logging
 # logger = logging.getLogger(__name__)
 
@@ -444,7 +444,7 @@ def apply_loan(request,chama_id):
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def accept_loan_request(request, chama_id, loan_id):
-    return LoanService.accept_loan_request(request,chama_id,loan_id)
+    return LoanService.accept_loan_request(loan_id)
     
 
 

@@ -1,16 +1,17 @@
 from bot.models import *
 from django.conf import settings
-from decimal import Decimal, InvalidOperation
+from decimal import Decimal
 from django.db.models import Q
-from django.http import JsonResponse
-import requests
+from .message_service import MessageService
 
 class FineService:
     INFOBIP_API_KEY   = settings.INFOBIP_API_KEY
     INFOBIP_SENDER_ID = settings.INFOBIP_SENDER_ID     
     INFOBIP_BASE_URL  = "https://api.infobip.com"
 
-    def process_fine(self, message, sender):
+
+    @staticmethod
+    def process_fine(message, sender):
         member_id  = message['member_id']
         amount     = Decimal(message['amount'])
         chama_name = message['chama_name']
@@ -21,11 +22,11 @@ class FineService:
             q &= Q(name__icontains=term)
         chamas = Chama.objects.filter(q)
         if not chamas.exists():
-            return self.send_message(f"No chama found matching '{chama_name}'", sender)
+            return MessageService.send_message(f"No chama found matching '{chama_name}'", sender)
         if chamas.count() > 1:
             chamas = chamas.filter(chamamember__member_id=member_id).distinct()
             if not chamas.exists():
-                return self.send_message(
+                return MessageService.send_message(
                     f"Multiple chamas match '{chama_name}' but none have member '{member_id}'",
                     sender
                 )
@@ -37,7 +38,7 @@ class FineService:
             admin = ChamaMember.objects.filter(group=chama,role=admin_role).first()
 
             if admin.user.username != member_id:
-                return self.send_message("Member not found in the chama", sender)
+                return MessageService.send_message("Member not found in the chama", sender)
             
             else:
                 member = admin
@@ -49,7 +50,7 @@ class FineService:
             .first()
         )
         if not fine:
-            return self.send_message("You have no outstanding fines to pay.", sender)
+            return MessageService.send_message("You have no outstanding fines to pay.", sender)
 
         original_balance = fine.fine_balance
 
@@ -82,50 +83,6 @@ class FineService:
             sender = sender
         )
 
-        return self.send_message(msg, sender)
+        return MessageService.send_message(msg, sender)
     
-    @staticmethod
-    def send_message(text, to):
-        print(to)
-        to_digits = "".join(filter(str.isdigit, to))
-
-        url = f"{FineService.INFOBIP_BASE_URL}/whatsapp/1/message/text"
-        headers = {
-            "Authorization": f"App {FineService.INFOBIP_API_KEY}",
-            "Content-Type":  "application/json",
-            "Accept":        "application/json",
-        }
-
-        payload = {
-            "from": FineService.INFOBIP_SENDER_ID,
-            "to":   to_digits,
-            "content": {
-                "text": text
-            }
-        }
-
-        try:
-            resp = requests.post(url, headers=headers, json=payload)
-        except Exception as e:
-            return JsonResponse(
-                {"error": "Exception during send_message", "details": str(e)},
-                status=502
-            )
-
-        if 200 <= resp.status_code < 300:
-            return JsonResponse(
-                {"status": "message_sent", "to": to_digits},
-                status=200
-            )
-        else:
-            return JsonResponse(
-                {
-                    "error":   "Failed to send message",
-                    "status":  resp.status_code,
-                    "details": resp.text
-                },
-                status=502
-            )
-    
-
-
+   

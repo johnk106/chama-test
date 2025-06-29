@@ -6,8 +6,8 @@ import uuid
 
 
 class LoanService:
-
-    def create_loan_type(self,request,chama_id):
+    @staticmethod
+    def create_loan_type(request,chama_id):
         data =  json.loads(request.body)
 
         random_number = uuid.uuid4().int % 1000  
@@ -54,7 +54,8 @@ class LoanService:
             print(2)
             return JsonResponse(data,status=200)
         
-    def issue_loan(self,request,chama_id):
+    @staticmethod
+    def issue_loan(request,chama_id):
         chama = Chama.objects.get(pk=chama_id)
 
         data = json.loads(request.body)
@@ -144,7 +145,8 @@ class LoanService:
 
         return JsonResponse(data, status=200)
     
-    def apply_loan(self,request,chama_id):
+    @staticmethod
+    def apply_loan(request,chama_id):
         data = json.loads(request.body)
 
         loan_type = data.get('loan_type')
@@ -229,7 +231,8 @@ class LoanService:
             }
             return JsonResponse(data,status=200)
         
-    def accept_loan_request(self,request,chama_id,loan_id):
+    @staticmethod
+    def accept_loan_request(loan_id):
         loan = LoanItem.objects.get(pk=loan_id)
 
         loan.status = 'active'
@@ -261,7 +264,8 @@ class LoanService:
         }
         return JsonResponse(data, status=200)
     
-    def decline_loan(self,loan_id):
+    @staticmethod
+    def decline_loan(loan_id):
         loan = LoanItem.objects.get(pk=loan_id)
         loan.status = 'declined'
         loan.last_updated = timezone.now()
@@ -275,7 +279,8 @@ class LoanService:
         }
         return JsonResponse(data,status = 200)
     
-    def update_loan(self,request,loan):
+    @staticmethod
+    def update_loan(request,loan):
         data = json.loads(request.body)
 
         loan_amount = data.get('loan_amount')

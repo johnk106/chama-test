@@ -10,8 +10,8 @@ from reportlab.platypus             import (
 )
 
 class DownloadService:
-
-    def download_loan_report(self,request,chama_id):
+    @staticmethod
+    def download_loan_report(request,chama_id):
         chama = Chama.objects.get(pk=chama_id)
         loans = LoanItem.objects.filter(chama=chama)
 
@@ -96,7 +96,8 @@ class DownloadService:
         doc.build(story)
         return response
     
-    def download_loan_repayment_schedule(self,chama_id):
+    @staticmethod
+    def download_loan_repayment_schedule(chama_id):
         # 1) Fetch Chama and active Loans
         chama = Chama.objects.get(pk=chama_id)
         loans = LoanItem.objects.filter(chama=chama, status='active')
@@ -182,7 +183,8 @@ class DownloadService:
         doc.build(story)
         return response
     
-    def download_group_investment_income(self,chama_id):
+    @staticmethod
+    def download_group_investment_income(chama_id):
         # 1) Fetch Chama and group Income data
         chama   = Chama.objects.get(pk=chama_id)
         incomes = Income.objects.filter(chama=chama, forGroup=True)
@@ -262,7 +264,8 @@ class DownloadService:
         doc.build(story)
         return response
     
-    def download_member_investment_income(self,request,chama_id):
+    @staticmethod
+    def download_member_investment_income(request,chama_id):
         # 1) Fetch Chama and Income data
         chama = Chama.objects.get(pk=chama_id)
         member_id = request.GET.get('member-id', None)
@@ -349,7 +352,8 @@ class DownloadService:
         doc.build(story)
         return response
     
-    def download_individual_saving_report(self,request,chama_id):
+    @staticmethod
+    def download_individual_saving_report(request,chama_id):
         # 1) Fetch Chama and individual saving data
         chama = Chama.objects.get(pk=chama_id)
         member_id = request.GET.get('member-id', None)
@@ -434,7 +438,8 @@ class DownloadService:
         doc.build(story)
         return response
     
-    def download_group_saving_report(self,request,chama_id):
+    @staticmethod
+    def download_group_saving_report(request,chama_id):
         # 1) Fetch Chama and group Saving data
         chama   = Chama.objects.get(pk=chama_id)
         savings = Saving.objects.filter(chama=chama, forGroup=True)
@@ -512,7 +517,8 @@ class DownloadService:
         doc.build(story)
         return response
     
-    def download_group_contributions_report(self,chama_id,contribution_id):
+    @staticmethod
+    def download_group_contributions_report(chama_id,contribution_id):
         # ─────────────────────────────────────────────
         # 1) Fetch & flatten your contribution records
         # ─────────────────────────────────────────────
@@ -607,7 +613,8 @@ class DownloadService:
         doc.build(story)
         return response
     
-    def download_member_contribution_report(self,chama_id,member_id,scheme_id):
+    @staticmethod
+    def download_member_contribution_report(chama_id,member_id,scheme_id):
         # 1) Retrieve Chama and Member
         chama  = Chama.objects.get(pk=chama_id)
         member = ChamaMember.objects.get(pk=member_id)
@@ -694,7 +701,8 @@ class DownloadService:
         doc.build(story)
         return response
     
-    def download_collected_fine_report(self,chama_id):
+    @staticmethod
+    def download_collected_fine_report(chama_id):
         # 1) Fetch Chama and cleared fines
         chama = Chama.objects.get(pk=chama_id)
         # Pull all fines with status 'cleared' in a single queryset
@@ -780,8 +788,8 @@ class DownloadService:
         doc.build(story)
         return response
     
-
-    def download_uncollected_fines_report(self,chama_id):
+    @staticmethod
+    def download_uncollected_fines_report(chama_id):
         # 1) Fetch Chama and active fines
         chama = Chama.objects.get(pk=chama_id)
         fines = FineItem.objects.filter(fine_type__chama=chama, status='active')
@@ -864,7 +872,8 @@ class DownloadService:
         doc.build(story)
         return response
     
-    def download_cashflow_report(self,chama_id):
+    @staticmethod
+    def download_cashflow_report(chama_id):
          # 1) Fetch Chama and Cashflow Report data
         chama = Chama.objects.get(pk=chama_id)
         reports = CashflowReport.objects.filter(chama=chama).order_by('-date_created')
@@ -941,8 +950,8 @@ class DownloadService:
         doc.build(story)
         return response
     
-
-    def download_member_cahsflow_report(self,chama_id,member_id):
+    @staticmethod
+    def download_member_cahsflow_report(chama_id,member_id):
         # 1) Fetch Chama, Member, and Cashflow Report data
         chama  = Chama.objects.get(pk=chama_id)
         member = ChamaMember.objects.get(pk=member_id)
@@ -1019,7 +1028,8 @@ class DownloadService:
         doc.build(story)
         return response
     
-    def download_my_cashflow_report(self,request,chama_id):
+    @staticmethod
+    def download_my_cashflow_report(request,chama_id):
         # 1) Fetch Chama and current user's member record
         chama = Chama.objects.get(pk=chama_id)
         try:
@@ -1100,7 +1110,8 @@ class DownloadService:
 
         return response
     
-    def download_expense_report(self,chama_id):
+    @staticmethod
+    def download_expense_report(chama_id):
         # 1) Retrieve Chama and expenses
         chama = Chama.objects.get(pk=chama_id)
         expenses = Expense.objects.filter(chama=chama).order_by('-created_on')

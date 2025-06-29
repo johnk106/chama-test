@@ -5,8 +5,8 @@ import json
 
 
 class ChamaService:
-
-    def create_chama_type(self,request):
+    @staticmethod
+    def create_chama_type(request):
         name = request.POST['name']
 
         try:
@@ -26,7 +26,8 @@ class ChamaService:
             }
             return JsonResponse(data,status=400)
         
-    def create_chama(self,request):
+    @staticmethod
+    def create_chama(request):
         try:
             data = json.loads(request.body)
             name = data.get('name')

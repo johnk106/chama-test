@@ -8,8 +8,8 @@ from django.core.paginator import Paginator
 
 
 class ContributionService:
-
-    def create_contribution(self,request,chama_id):
+    @staticmethod
+    def create_contribution(request,chama_id):
         name = request.POST['name']
         amount = request.POST['amount']
         start_date = request.POST['start-date']
@@ -68,7 +68,8 @@ class ContributionService:
             }
             return JsonResponse(data,status=400)
 
-    def create_contribution_record(self,request,chama_id):
+    @staticmethod
+    def create_contribution_record(request,chama_id):
         try:
             chama = Chama.objects.get(pk=chama_id)
 
@@ -154,7 +155,8 @@ class ContributionService:
 
             return JsonResponse(data, status=200)
         
-    def pay_contribution(self,request,contribution_id):
+    @staticmethod
+    def pay_contribution(request,contribution_id):
         try:
             contribution = ContributionRecord.objects.get(pk=contribution_id)
 
@@ -222,7 +224,8 @@ class ContributionService:
             }
             return JsonResponse(data, status=500)
         
-    def contribution_details(self,request,chama_id):
+    @staticmethod
+    def contribution_details(request,chama_id):
         data = json.loads(request.body)
         name = data.get('name')
         chama = Chama.objects.get(pk=chama_id)
@@ -236,7 +239,7 @@ class ContributionService:
                 'status': 'success',
                 'message': 'contribution retrieved successfully',
                 'contribution': model_to_dict(contribution, fields=['name', 'id', 'amount']),  # Adjust fields as needed
-                'records': self.serialize_paginated_records(records_page),
+                'records': ContributionService.serialize_paginated_records(records_page),
             }
 
             return JsonResponse(data, status=200)
@@ -255,8 +258,8 @@ class ContributionService:
                 'message': f'An error occurred: {e}',
             }
             return JsonResponse(data, status=500)
-        
-    def serialize_paginated_records(self,records_page):
+    @staticmethod
+    def serialize_paginated_records(records_page):
         serialized_records = [model_to_dict(record) for record in records_page]
         for record in serialized_records:
             member = ChamaMember.objects.get(pk=record['member'])

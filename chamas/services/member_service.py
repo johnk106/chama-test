@@ -7,8 +7,8 @@ from django.db import IntegrityError
 
 
 class MemberService:
-
-    def add_member_to_chama(self,request):
+    @staticmethod
+    def add_member_to_chama(request):
 
         data = json.loads(request.body)
         print(data)
@@ -69,15 +69,17 @@ class MemberService:
 
         return JsonResponse(data,status=200)
     
-    def audit_chama_members(self,chama_id):
+    @staticmethod
+    def audit_chama_members(chama_id):
         chama = Chama.objects.get(pk=chama_id)
         for member in chama.member.all():
             user = User.objects.filter(username=member.member_id).first()
             if user:
                 member.user = user
                 member.save()
-
-    def remove_member_from_chama(self,member_id,chama):
+                
+    @staticmethod
+    def remove_member_from_chama(member_id,chama):
         try:
             chama_member = ChamaMember.objects.get(group=chama, id=member_id)
             if chama_member.user == chama.created_by:

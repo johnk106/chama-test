@@ -7,8 +7,8 @@ import uuid
 
 
 class FinanceService:
-
-    def create_saving(self,request,chama_id):
+    @staticmethod
+    def create_saving(request,chama_id):
         try:
             chama = Chama.objects.get(pk=chama_id)
             data = json.loads(request.body)
@@ -53,7 +53,8 @@ class FinanceService:
             }
             return JsonResponse(data,status=200)
         
-    def create_investment(self,request,chama_id):
+    @staticmethod
+    def create_investment(request,chama_id):
         data = json.loads(request.body)
         name = data.get('name')
         amount = data.get('amount')
@@ -84,7 +85,8 @@ class FinanceService:
 
             return JsonResponse(data,status=200)
         
-    def create_income(self,request,chama_id):
+    @staticmethod
+    def create_income(request,chama_id):
         data = json.loads(request.body)
         name = data.get('name')
         owner = data.get('owner')
