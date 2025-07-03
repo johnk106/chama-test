@@ -173,13 +173,6 @@ def callback(request):
         send_mpesa_success_sms(phone_number, body)
 
 
-
-
-
-
-
-
-
     return HttpResponse("success")   
 
 @csrf_exempt

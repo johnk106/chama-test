@@ -7,6 +7,7 @@ urlpatterns=[
 path('', views.Dashboard, name='Dashboard'),
 path('Settings', views.Setting, name='Setting'),
 path('all_notifications', views.all_notifications, name='all_notifications'),
+
 path('joinchamas', views.joinchamas, name='joinchamas'),
 path('mychamas', views.mychamas, name='mychamas'),
 path('manage_chamas', views.manage_chamas, name='manage_chamas'),

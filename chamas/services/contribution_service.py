@@ -258,6 +258,7 @@ class ContributionService:
                 'message': f'An error occurred: {e}',
             }
             return JsonResponse(data, status=500)
+        
     @staticmethod
     def serialize_paginated_records(records_page):
         serialized_records = [model_to_dict(record) for record in records_page]

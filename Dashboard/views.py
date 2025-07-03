@@ -409,9 +409,6 @@ def payment_paypal(request):
 
 
 
-
-
-
 def paypal_payment_success(request):
     if request.method == 'POST':
         try:
@@ -509,9 +506,6 @@ def stats_page_2(request, category_name):
 @login_required(login_url='Login')
 def stats_page_3(request, category_name):
     user_profile = Profile.objects.get(owner=request.user)
-
-
-
     joined = Chamas.objects.filter(name=category_name, status='joined')
 
 

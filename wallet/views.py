@@ -45,9 +45,6 @@ def distribute_chama_bi_weekly(request):
 
     for i in unique_list:
 
-
-
-
     #getting the chamaname just
         try:
             list_of_active_users=Chamas.objects.filter(name=i,Awarded='No').order_by('Award_turn')
@@ -94,9 +91,6 @@ def distribute_chama_bi_weekly(request):
                                item.user_id)
 
                     break
-
-
-
         except Exception as e:
             print(e)
             return JsonResponse('No user is able to get chamabonus yet, wait few days.',safe=False)
@@ -104,6 +98,7 @@ def distribute_chama_bi_weekly(request):
 
 
     return JsonResponse('Chama bonus has been distrubuted successfully',safe=False)
+
 def distribute_chama_weekly(request):
 
     starting_wallet=Chamas.objects.filter(status='active',frequency_of_contribution='Weekly')
@@ -117,9 +112,6 @@ def distribute_chama_weekly(request):
 
     for i in unique_list:
 
-
-
-
     #getting the chamaname just
         try:
             list_of_active_users=Chamas.objects.filter(name=i,Awarded='No').order_by('Award_turn')
@@ -175,6 +167,7 @@ def distribute_chama_weekly(request):
 
 
     return JsonResponse('Chama bonus has been distrubuted successfully',safe=False)
+
 def distribute_chama_monthly(request):
 
     starting_wallet=Chamas.objects.filter(status='active',frequency_of_contribution='Monthly')
@@ -188,9 +181,6 @@ def distribute_chama_monthly(request):
 
     for i in unique_list:
 
-
-
-
     #getting the chamaname just
         try:
             list_of_active_users=Chamas.objects.filter(name=i,Awarded='No').order_by('Award_turn')
@@ -238,17 +228,11 @@ def distribute_chama_monthly(request):
                     break
 
 
-
         except Exception as e:
             print(e)
             return JsonResponse('No user is able to get chamabonus yet, wait few days.',safe=False)
 
-
-
     return JsonResponse('Chama bonus has been distrubuted successfully',safe=False)
-
-
-
 
 
 def contribution_alert_biweekly(request):
@@ -310,9 +294,8 @@ def contribution_alert_biweekly(request):
                        item.user_id)
 
 
-
-
     return JsonResponse('Contribution date reminder has been sent to all users.',safe=False)
+
 def contribution_alert_weekly(request):
 
     starting_wallet=Chamas.objects.filter(status='active',frequency_of_contribution='Weekly')
@@ -463,14 +446,6 @@ def end_chamas_life_completes(request):
     return JsonResponse('All chamas (length greater than 100)status changed to Life time expire ', safe=False)
 
 
-
-
-
-
-
-
-
-
 def goal_contribution_alert(request):
 
     starting_wallet= Goal.objects.filter(is_active = 'Yes')
@@ -508,10 +483,6 @@ def goal_contribution_alert(request):
                            None, False,
                            item.user)
                 print('Goal notification has been sent to Mr. :',item.user.username)
-
-
-
-
 
 
     return JsonResponse('Goal deposit reminder has been sent to all users.',safe=False)
