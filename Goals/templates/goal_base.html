@@ -3,13 +3,13 @@
 <html lang="en">
 
 
-   <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>ChamaSpace| User Profile</title>
+
     <!-- Simple bar CSS -->
     <link rel="stylesheet" href="{% static 'css/simplebar.css' %}">
     <!-- Fonts CSS -->
@@ -33,7 +33,12 @@
     <link rel="stylesheet" href="{% static 'css/swiper.css' %}">
     <link rel="stylesheet" href="{% static 'bootstrap/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/style-test.css' %}">
-           <link rel="stylesheet" href="{% static 'css/wallet.css' %}">
+    <link rel="stylesheet" href="{% static 'css/wallet.css' %}">
+
+    {%block title%}
+    <title>ChamaSpace| User Profile</title>
+    {%endblock%}
+    
 </head>
 
 
@@ -41,17 +46,11 @@
 
 
 
-   {% include 'goal_navbar.html' %}
+    {% include 'goal_navbar.html' %}
 
+    {% block content %}
 
-
-
-
-
-
-{% block content %}
-
-{% endblock %}
+    {% endblock %}
 
 
     <script src="{% static 'js/jquery.min.js' %}"></script>
@@ -78,14 +77,14 @@
     <script src="{% static 'js/jquery.sparkline.min.js' %}"></script>
     <script src="{% static 'js/apexcharts.min.js' %}"></script>
     <script src="{% static 'js/apexcharts.custom.js' %}"></script>
-    <script src='{% static 'js/jquery.mask.min.js' %}'></script>
-    <script src='{% static 'js/select2.min.js' %}'></script>
-    <script src='{% static 'js/jquery.steps.min.js' %}'></script>
-    <script src='{% static 'js/jquery.validate.min.js' %}'></script>
-    <script src='{% static 'js/jquery.timepicker.js' %}'></script>
-    <script src='{% static 'js/dropzone.min.js' %}'></script>
-    <script src='{% static 'js/uppy.min.js' %}'></script>
-    <script src='{% static 'js/quill.min.js' %}'></script>
+    <script src='{% static ' js/jquery.mask.min.js' %}'></script>
+    <script src='{% static ' js/select2.min.js' %}'></script>
+    <script src='{% static ' js/jquery.steps.min.js' %}'></script>
+    <script src='{% static ' js/jquery.validate.min.js' %}'></script>
+    <script src='{% static ' js/jquery.timepicker.js' %}'></script>
+    <script src='{% static ' js/dropzone.min.js' %}'></script>
+    <script src='{% static ' js/uppy.min.js' %}'></script>
+    <script src='{% static ' js/quill.min.js' %}'></script>
     <script>
         $('.select2').select2(
             {
@@ -305,5 +304,6 @@
             }
         });
     </script>
-  </body>
+</body>
+
 </html>

@@ -2,7 +2,57 @@
 
 {% load static %}
 {% block title %}
-Goal Dashboard
+
+<title>Homepage</title>
+<style rel="stylesheet">
+    /* full‐screen overlay */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.4);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* when visible */
+.modal.show {
+  display: flex;
+}
+
+/* white box */
+.modal-content {
+  background: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 90%;
+  width: 400px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* the close “×” */
+.close-btn {
+  position: absolute;
+  top: 0.5rem; right: 0.5rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* optional icon styling */
+.modal-icon img {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 1rem;
+}
+
+</style>
 {% endblock %}
 
 {% block content %}
@@ -2055,8 +2105,7 @@ Goal Dashboard
                             </a>
                         </div>
                     </div>
-                    <div class="chazem_col" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight2"
-                         aria-controls="offcanvasRight2">
+                     <div class="chazem_col coming_soon">
                         <div class="accunt_round">
                             <img src="{% static 'images/wakiza.png' %}" alt="">
                         </div>
@@ -2065,7 +2114,17 @@ Goal Dashboard
                             <p>Save towards a Goal</p>
                         </div>
                     </div>
-                    <div class="chazem_col">
+                    <!-- <div class="chazem_col" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight2"
+                         aria-controls="offcanvasRight2">
+                        <div class="accunt_round">
+                            <img src="{% static 'images/wakiza.png' %}" alt="">
+                        </div>
+                        <div class="account_content">
+                            <h5>Wekeza Goals</h5>
+                            <p>Save towards a Goal</p>
+                        </div>
+                    </div> -->
+                    <div class="chazem_col coming_soon" >
                         <div class="accunt_round">
                             <img src="{% static 'images/kopesha.png' %}" alt="">
                         </div>
@@ -2083,11 +2142,7 @@ Goal Dashboard
                 <div class="tabs_section">
                     <nav>
                         <div class="nav nav-tabs trans_section_tabs new-nack" id="nav-tab" role="tablist">
-
-
                             NOTIFICATIONS
-
-
                         </div>
                     </nav>
                 </div>
@@ -2184,6 +2239,32 @@ Goal Dashboard
 
     </main>
 </div>
+
+<!-- put this just before </body> -->
+<div id="comingSoonModal" class="modal">
+  <div class="modal-content">
+    <button class="close-btn" aria-label="Close">&times;</button>
+
+    <!-- inline SVG clock icon -->
+    <div class="modal-icon">
+      <svg xmlns="http://www.w3.org/2000/svg"
+           width="64" height="64"
+           viewBox="0 0 24 24"
+           fill="none"
+           stroke="#333"
+           stroke-width="2"
+           stroke-linecap="round"
+           stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline points="12 6 12 12 16 14"/>
+      </svg>
+    </div>
+
+    <h2>Coming Soon!</h2>
+    <p>We’re busy cooking up something great for this feature. Stay tuned!</p>
+  </div>
+</div>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
@@ -2435,6 +2516,37 @@ Goal Dashboard
         var greeting = getTimeOfDayGreeting();
         greetingContainer.innerHTML = '<h6>' + greeting + '<br><b>{{ user_profile.owner.first_name }} &nbsp; {{ user_profile.owner.last_name }}</b></h6>';
     }
+</script>
+
+
+    <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('comingSoonModal');
+    const closeBtn = modal.querySelector('.close-btn');
+
+    // Show modal helper
+    function showComingSoon() {
+      modal.classList.add('show');
+    }
+
+    // Hide modal helper
+    function hideComingSoon() {
+      modal.classList.remove('show');
+    }
+
+    // Attach click handler to each feature tile
+    document.querySelectorAll('.coming_soon').forEach(tile => {
+      tile.addEventListener('click', showComingSoon);
+    });
+
+    // Close button
+    closeBtn.addEventListener('click', hideComingSoon);
+
+    // Also close if user clicks outside the content box
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) hideComingSoon();
+    });
+  });
 </script>
 
 {% endblock %}
