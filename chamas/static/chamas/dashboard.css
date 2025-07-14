@@ -14,30 +14,37 @@ body {
 .modern-dashboard .home-section {
     margin: 0;
     padding: 0;
+    width: 100%;
 }
 
 .modern-dashboard .block-body {
     padding: 0;
     margin: 0;
+    width: 100%;
 }
 
+/* Modern Dashboard Container */
 .modern-dashboard {
+    width: 100%;
+    max-width: 100%;
     padding: 0;
     margin: 0;
     min-height: 100vh;
 }
 
 /* Header Styles */
-.mobile-header, .desktop-header {
+.mobile-header {
     background: white;
-    padding: 16px 20px;
+    padding: 16px 12px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    margin-bottom: 20px;
+    margin-bottom: 16px;
+    width: 100%;
 }
 
-.desktop-header {
-    padding: 24px 32px;
-    margin-bottom: 32px;
+@media (min-width: 768px) {
+    .mobile-header {
+        padding: 16px 16px;
+    }
 }
 
 .header-title {
@@ -87,14 +94,22 @@ body {
 
 /* Dashboard Content */
 .dashboard-content {
-    padding: 0 20px;
-    max-width: 1200px;
-    margin: 0 auto;
+    padding: 0 12px;
+    max-width: 100%;
+    margin: 0;
+    width: 100%;
 }
 
 @media (min-width: 768px) {
     .dashboard-content {
-        padding: 0 32px;
+        padding: 0 16px;
+        max-width: none;
+    }
+}
+
+@media (min-width: 1024px) {
+    .dashboard-content {
+        padding: 0 20px;
     }
 }
 
@@ -102,20 +117,21 @@ body {
 .total-cash-card {
     background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
     border-radius: 20px;
-    padding: 24px;
-    margin-bottom: 24px;
+    padding: 20px;
+    margin-bottom: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     color: white;
     position: relative;
     overflow: hidden;
+    width: 100%;
 }
 
 @media (min-width: 768px) {
     .total-cash-card {
-        padding: 32px;
-        margin-bottom: 32px;
+        padding: 28px;
+        margin-bottom: 24px;
     }
 }
 
@@ -220,12 +236,13 @@ body {
     border-radius: 16px;
     padding: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    margin-bottom: 24px;
+    margin-bottom: 20px;
+    width: 100%;
 }
 
 @media (min-width: 768px) {
     .navigation-menu {
-        margin-bottom: 32px;
+        margin-bottom: 24px;
     }
 }
 
@@ -295,8 +312,9 @@ body {
 .quick-stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
-    margin-bottom: 32px;
+    gap: 20px;
+    margin-bottom: 24px;
+    width: 100%;
 }
 
 .stat-card {
@@ -349,6 +367,7 @@ body {
     border-radius: 16px;
     padding: 24px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    width: 100%;
 }
 
 .recent-activity h3 {
@@ -411,7 +430,7 @@ body {
 /* Responsive Design */
 @media (max-width: 767px) {
     .cash-breakdown {
-        margin-top: 16px;
+        margin-top: 12px;
     }
     
     .breakdown-item {
@@ -419,7 +438,15 @@ body {
     }
     
     .chart-container {
-        margin-left: 12px;
+        margin-left: 8px;
+    }
+    
+    .dashboard-content {
+        padding: 0 8px;
+    }
+    
+    .mobile-header {
+        padding: 12px 8px;
     }
 }
 
