@@ -1,138 +1,246 @@
 {%extends 'chamas/base.html'%}
 {% load humanize %}
-{%load static%}
-
+{% load static %}
 
 {%block head%}
 <title>Expenses</title>
 <link rel="stylesheet" href="{%static 'chamas/expenses.css'%}">
-
+<link rel="stylesheet" href="{%static 'chamas/contribution.css'%}">
+<link rel="stylesheet" href="{%static 'chamas/dashboard.css'%}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 {%endblock%}
 
-
 {%block body%}
-<div class="row justify-content-center mt-3 text-capitalize">
-    <div class="body-div admin">
-        <h5 class="mx-auto">Create Expense</h5>
-        <div class="div-header">            
-            <h6><i class='bx bx-sort bx-rotate-90'></i>Define Expense</h6>
+<div class="modern-expenses">
+    <!-- Mobile View -->
+    <div class="mobile-expenses d-block d-lg-none">
+        <!-- Tabs -->
+        <div class="mobile-tabs">
+            <button class="tab-btn admin active" data-tab="create-expenses">Create Expenses</button>
+            <button class="tab-btn" data-tab="expense-history">Expense History</button>
         </div>
-        <div class="alert-box">
-
-        </div>
-         <form action="" id="create-expense" onsubmit="submitExpenseForm(); return false;" style="width: 100%;">
-            {%csrf_token%}
-            <div class="input-sect">
-                <div class="mb-3">
-                    <label for="name" class="form-label">Name</label>
-                    <input type="name" name="name" class="form-control" id="name">
-                </div>
-                <div class="mb-3">
-                    <label for="amount" class="form-label">Amount</label>
-                    <input type="number" name="amount" class="form-control" id="amount">
+        <!-- Create Expenses Tab Content -->
+        <div class="tab-content active" id="create-expenses">
+            <div class="mobile-create-form admin">
+                <div class="create-expense-card" style="margin-top: 18px;">
+                    <div class="create-expense-header">
+                        <i class='bx bx-transfer-alt'></i>
+                        <span>Create Expense</span>
+                    </div>
+                    <form id="mobile-create-expense-form" class="expense-card-form" onsubmit="submitExpenseFormMobile(); return false;">
+                        <div class="form-row form-row-split">
+                            <div class="form-group">
+                                <label for="mobile-expense-name">Name</label>
+                                <input type="text" id="mobile-expense-name" name="name" class="form-input" placeholder="Enter name">
+                            </div>
+                            <div class="form-group">
+                                <label for="mobile-expense-amount">Amount</label>
+                                <input type="number" id="mobile-expense-amount" name="amount" class="form-input" placeholder="Enter amount">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="mobile-expense-description">Description</label>
+                            <textarea id="mobile-expense-description" name="description" class="form-input" rows="2" placeholder="Enter description"></textarea>
+                        </div>
+                        <button type="submit" class="create-expense-btn beautiful-btn" id="mobile-create-expense-button">
+                            Create Expense
+                        </button>
+                    </form>
                 </div>
             </div>
-            <div class="mb-3 desc-area">
-                <label for="description" class="form-label">Description</label>
-                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+        </div>
+        <!-- Expense History Tab Content -->
+        <div class="tab-content" id="expense-history">
+            <div class="mobile-expense-history-list">
+                {% for expense in expenses %}
+                <div class="expense-history-beautiful-card">
+                    <div class="expense-history-beautiful-row">
+                        <div class="expense-history-beautiful-label">Expense ID</div>
+                        <div class="expense-history-beautiful-value">E{{expense.id|stringformat:'03d'}}</div>
+                        <div class="expense-history-beautiful-label">Date</div>
+                        <div class="expense-history-beautiful-value">{{expense.date|date:'d/m/Y'}}</div>
+                    </div>
+                    <div class="expense-history-beautiful-row">
+                        <div class="expense-history-beautiful-label">Expense Name</div>
+                        <div class="expense-history-beautiful-value">{{expense.name}}</div>
+                        <div class="expense-history-beautiful-label">Amount</div>
+                        <div class="expense-history-beautiful-value">Ksh{{expense.amount|floatformat:1}}</div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="no-expenses">
+                    <i class='bx bx-inbox'></i>
+                    <p>No expenses found</p>
+                </div>
+                {% endfor %}
             </div>
-            <button class="btn btn-primary border-0" type="submit" style="width: 100%;">Create Expense</button>
-        </form>     
+        </div>
     </div>
 
-    <div class="body-div admin member">
-        <h5 class="mx-auto">All Expenses</h5>
-        <div class="div-header">
-            <h6>All Expenses Expense</h6>
+    <!-- Desktop View -->
+    <div class="desktop-expenses d-none d-lg-block">
+        <div class="row justify-content-center mt-3 text-capitalize">
+            <div class="body-div admin">
+                <h5 class="mx-auto">Create Expense</h5>
+                <div class="div-header">            
+                    <h6><i class='bx bx-sort bx-rotate-90'></i>Define Expense</h6>
+                </div>
+                <div class="alert-box"></div>
+                <form action="" id="create-expense" onsubmit="submitExpenseForm(); return false;" style="width: 100%;">
+                    {%csrf_token%}
+                    <div class="input-sect">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="name" name="name" class="form-control" id="name">
+                        </div>
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">Amount</label>
+                            <input type="number" name="amount" class="form-control" id="amount">
+                        </div>
+                    </div>
+                    <div class="mb-3 desc-area">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    </div>
+                    <button class="btn btn-primary border-0" type="submit" style="width: 100%;">Create Expense</button>
+                </form>     
+            </div>
+            <div class="body-div admin member">
+                <h5 class="mx-auto">All Expenses</h5>
+                <div class="div-header">
+                    <h6>All Expenses Expense</h6>
+                </div>
+                {%for expense in expenses%}
+                <div class="expense-single">
+                    <div class="expense-cube">
+                        <p class="expense-title">Expense Name</p>
+                        <button class="expense-value">{{expense.name}}</button>
+                    </div>
+                    <div class="expense-cube">
+                        <p class="expense-title">Expense Amount</p>
+                        <button class="expense-value">ksh {{expense.amount | intcomma}}</button>
+                    </div>
+                    <div class="expense-cube">
+                        <p class="expense-title">description</p>
+                        <button class="expense-value">{{expense.description}}</button>
+                    </div>
+                </div>
+                {%endfor%}
+            </div>
         </div>
-        {%for expense in expenses%}
-        <div class="expense-single">
-            <div class="expense-cube">
-                <p class="expense-title">
-                    Expense Name
-                </p>
-                <button class="expense-value">{{expense.name}}</button>
-            </div>
-
-            <div class="expense-cube">
-                <p class="expense-title">
-                    Expense Amount
-                </p>
-                <button class="expense-value">ksh {{expense.amount | intcomma}}</button>
-            </div>
-            <div class="expense-cube">
-                <p class="expense-title">
-                    description
-                </p>
-                <button class="expense-value">{{expense.description}}</button>
-            </div>
-        </div>
-        {%endfor%}
-
     </div>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
-    function submitExpenseForm() {
-        var name = $('#name').val();
-        var amount = $('#amount').val();
-        var description = $('#description').val();
-        var chama_id = localStorage.getItem('groupId');
-        var csrfToken = $('[name=csrfmiddlewaretoken]').val();
+$(document).ready(function () {
+    // Mobile tab functionality
+    $('.tab-btn').click(function() {
+        const tabId = $(this).data('tab');
+        $('.tab-btn').removeClass('active');
+        $(this).addClass('active');
+        $('.tab-content').removeClass('active');
+        $('#' + tabId).addClass('active');
+    });
 
-        var formData = {
-            name: name,
-            amount: amount,
-            description: description
-        };
-
-        $.ajaxSetup({
-            headers: {
-                'X-CSRFToken': csrfToken
+    // Function to get the value of a cookie by name
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            var cookies = document.cookie.split(";");
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === name + "=") {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
             }
-        });
-
-        $.ajax({
-            type: 'POST',
-            url: '/chamas-bookeeping/create-expense/' + chama_id + '/',
-            data: JSON.stringify(formData),
-            contentType: 'application/json',
-            success: function(response) {
-                $('.alert-box').html('<div class="alert alert-success">' + response.message + '</div>');
-
-                $.ajax({
-                    type: 'GET',
-                    url: '/chamas-bookeeping/get-expense/' + response.expense.id + '/',
-                    success: function(newExpense) {
-                        $('.body-div:eq(1)').append(`
-                            <div class="expense-single">
-                                <div class="expense-cube">
-                                    <p class="expense-title">Expense Name</p>
-                                    <button class="expense-value">${newExpense.name}</button>
-                                </div>
-
-                                <div class="expense-cube">
-                                    <p class="expense-title">Expense Amount</p>
-                                    <button class="expense-value">ksh ${newExpense.amount}</button>
-                                </div>
-                                <div class="expense-cube">
-                                    <p class="expense-title">Description</p>
-                                    <button class="expense-value">${newExpense.description}</button>
-                                </div>
-                            </div>
-                        `);
-                    },
-                    error: function(error) {
-                        console.log('Error fetching new expense:', error);
-                    }
-                });
-            },
-            error: function(error) {
-                $('.alert-box').html('<div class="alert alert-danger">' + error.responseJSON.message + '</div>');
-            }
-        });
+        }
+        return cookieValue;
     }
+});
+
+// Desktop form submission (existing)
+function submitExpenseForm() {
+    var name = $('#name').val();
+    var amount = $('#amount').val();
+    var description = $('#description').val();
+    var chama_id = localStorage.getItem('groupId');
+    var csrfToken = $('[name=csrfmiddlewaretoken]').val();
+    var formData = { name: name, amount: amount, description: description };
+    $.ajaxSetup({ headers: { 'X-CSRFToken': csrfToken } });
+    $.ajax({
+        type: 'POST',
+        url: '/chamas-bookeeping/create-expense/' + chama_id + '/',
+        data: JSON.stringify(formData),
+        contentType: 'application/json',
+        success: function(response) {
+            $('.alert-box').html('<div class="alert alert-success">' + response.message + '</div>');
+            $.ajax({
+                type: 'GET',
+                url: '/chamas-bookeeping/get-expense/' + response.expense.id + '/',
+                success: function(newExpense) {
+                    $('.body-div:eq(1)').append(`
+                        <div class="expense-single">
+                            <div class="expense-cube">
+                                <p class="expense-title">Expense Name</p>
+                                <button class="expense-value">${newExpense.name}</button>
+                            </div>
+                            <div class="expense-cube">
+                                <p class="expense-title">Expense Amount</p>
+                                <button class="expense-value">ksh ${newExpense.amount}</button>
+                            </div>
+                            <div class="expense-cube">
+                                <p class="expense-title">Description</p>
+                                <button class="expense-value">${newExpense.description}</button>
+                            </div>
+                        </div>
+                    `);
+                },
+                error: function(error) {
+                    console.log('Error fetching new expense:', error);
+                }
+            });
+        },
+        error: function(error) {
+            $('.alert-box').html('<div class="alert alert-danger">' + error.responseJSON.message + '</div>');
+        }
+    });
+}
+
+// Mobile create expense (now uses same logic as desktop)
+window.submitExpenseFormMobile = function() {
+    var name = $('#mobile-expense-name').val();
+    var amount = $('#mobile-expense-amount').val();
+    var description = $('#mobile-expense-description').val();
+    var chama_id = localStorage.getItem('groupId');
+    var csrfToken = getCookie('csrftoken');
+    var formData = { name: name, amount: amount, description: description };
+    if (!chama_id) {
+        alert('Invalid chama_id');
+        return;
+    }
+    if (!csrfToken) {
+        alert('CSRF token not found');
+        return;
+    }
+    $.ajaxSetup({ headers: { 'X-CSRFToken': csrfToken } });
+    $.ajax({
+        url: '/chamas-bookeeping/create-expense/' + chama_id + '/',
+        type: 'POST',
+        data: JSON.stringify(formData),
+        contentType: 'application/json',
+        success: function(response) {
+            alert('Expense created successfully!');
+            $('#mobile-create-expense-form')[0].reset();
+            setTimeout(() => { location.reload(); }, 1000);
+        },
+        error: function(xhr) {
+            alert(xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'An error occurred. Please try again.');
+        }
+    });
+};
 </script>
-
-
 {%endblock%}
