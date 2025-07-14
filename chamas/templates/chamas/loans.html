@@ -14,7 +14,9 @@
     <!-- Tabs -->
     <div class="mobile-tabs">
       <button class="tab-btn admin active" data-tab="manage-loans">Manage Loans</button>
+      <button class="tab-btn member" data-tab="apply-loan">Apply for Loan</button>
       <button class="tab-btn member" data-tab="my-loans">My Loans</button>
+      <button class="tab-btn admin" data-tab="active-loans">Active Loans</button>
       <button class="tab-btn admin" data-tab="applications">Applications</button>
     </div>
 
@@ -121,15 +123,14 @@
             </button>
           </form>
         </div>
+              </div>
       </div>
-    </div>
 
-    <!-- My Loans Tab Content -->
-    <div class="tab-content member" id="my-loans">
-      <div class="mobile-loans-history-list">
-        <!-- Apply for Loan Section -->
-        <div class="apply-loan-card member">
-          <div class="apply-loan-header">
+    <!-- Apply for Loan Tab Content -->
+    <div class="tab-content member" id="apply-loan">
+      <div class="mobile-create-form member">
+        <div class="create-loan-card member">
+          <div class="create-loan-header">
             <i class='bx bx-wallet'></i>
             <span>Apply for Loan</span>
           </div>
@@ -160,7 +161,101 @@
             </button>
           </form>
         </div>
+      </div>
+    </div>
 
+    <!-- My Loans Tab Content -->
+    <div class="tab-content member" id="my-loans">
+      <div class="mobile-loans-history-list">
+        <!-- Completed Loans -->
+        {% if my_completed_loans %}
+        <div class="loan-status-section">
+          <div class="loan-status-header status-completed">Completed</div>
+          <div class="loan-table">
+            <div class="loan-table-header">
+              <div>Loan ID</div>
+              <div>Name</div>
+              <div>Type</div>
+              <div>Amount</div>
+            </div>
+            {% for loan in my_completed_loans %}
+            <div class="loan-table-row">
+              <div class="loan-table-cell loan-id">L{{ loan.id|stringformat:'03d' }}</div>
+              <div class="loan-table-cell loan-name">{{ loan.member.name }}</div>
+              <div class="loan-table-cell loan-type">{{ loan.type.name }}</div>
+              <div class="loan-table-cell loan-amount">Ksh{{ loan.amount|floatformat:0 }}</div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Active Loans -->
+        {% if my_active_loans %}
+        <div class="loan-status-section">
+          <div class="loan-status-header status-active">Active</div>
+          <div class="loan-table">
+            <div class="loan-table-header">
+              <div>Loan ID</div>
+              <div>Name</div>
+              <div>Type</div>
+              <div>Amount</div>
+            </div>
+            {% for loan in my_active_loans %}
+            <div class="loan-table-row">
+              <div class="loan-table-cell loan-id">L{{ loan.id|stringformat:'03d' }}</div>
+              <div class="loan-table-cell loan-name">{{ loan.member.name }}</div>
+              <div class="loan-table-cell loan-type">{{ loan.type.name }}</div>
+              <div class="loan-table-cell loan-amount">Ksh{{ loan.amount|floatformat:0 }}</div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Defaulted Loans -->
+        {% if my_defaulted_loans %}
+        <div class="loan-status-section">
+          <div class="loan-status-header status-defaulted">Defaulted</div>
+          <div class="loan-table">
+            <div class="loan-table-header">
+              <div>Loan ID</div>
+              <div>Name</div>
+              <div>Type</div>
+              <div>Amount</div>
+            </div>
+            {% for loan in my_defaulted_loans %}
+            <div class="loan-table-row">
+              <div class="loan-table-cell loan-id">L{{ loan.id|stringformat:'03d' }}</div>
+              <div class="loan-table-cell loan-name">{{ loan.member.name }}</div>
+              <div class="loan-table-cell loan-type">{{ loan.type.name }}</div>
+              <div class="loan-table-cell loan-amount">Ksh{{ loan.amount|floatformat:0 }}</div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Download Report -->
+        <div class="download-report-section">
+          <button class="download-report-btn" onclick="downloadReport()">
+            <i class='bx bx-download'></i>
+            Download My Loans Report
+          </button>
+        </div>
+
+        {% if not my_active_loans and not my_completed_loans and not my_defaulted_loans %}
+        <div class="no-loans">
+          <i class='bx bx-inbox'></i>
+          <p>You have no loans</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Active Loans Tab Content -->
+    <div class="tab-content admin" id="active-loans">
+      <div class="mobile-loans-history-list">
         <!-- Completed Loans -->
         {% if completed_loans %}
         <div class="loan-status-section">
