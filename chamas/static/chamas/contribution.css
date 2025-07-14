@@ -121,7 +121,8 @@
     background: white;
     display: flex;
     border-bottom: 1px solid #e5e7eb;
-    padding: 0 16px;
+    padding: 0;
+    margin: 0;
 }
 
 .tab-btn {
@@ -145,78 +146,51 @@
 /* Tab Content */
 .tab-content {
     display: none;
-    padding: 16px;
+    padding: 8px;
 }
 
 .tab-content.active {
     display: block;
 }
 
-/* Contribute Section */
-.contribute-section {
-    margin-bottom: 20px;
-}
-
-.contribute-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.contribute-icon {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, #06b6d4, #0891b2);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.contribute-icon i {
-    font-size: 20px;
-    color: white;
-}
-
-.contribute-text {
-    font-size: 16px;
-    font-weight: 600;
-    color: #06b6d4;
-}
-
-/* Mobile Contribution Cards */
-.mobile-contributions-list {
+/* Mobile Accordion Styles */
+.mobile-contributions-accordion {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 8px;
+    margin: 0;
 }
 
-.mobile-contribution-card {
+.mobile-accordion-item {
     background: white;
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s, box-shadow 0.2s;
+    border-radius: 12px;
+    margin: 0 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.accordion-header {
+    padding: 16px;
     cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s;
 }
 
-.mobile-contribution-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+.accordion-header:hover {
+    background-color: #f8fafc;
 }
 
-.contribution-header {
-    margin-bottom: 16px;
+.contribution-summary {
+    flex: 1;
 }
 
 .contribution-info {
     display: flex;
     justify-content: space-between;
     gap: 16px;
+    margin-bottom: 12px;
 }
 
 .contribution-type, .contribution-due {
@@ -237,7 +211,7 @@
 }
 
 .contribution-amount {
-    margin-bottom: 16px;
+    margin-bottom: 0;
 }
 
 .amount-value {
@@ -246,40 +220,23 @@
     color: #374151;
 }
 
-/* Members Contribution Section */
-.members-contribution-section {
-    border-top: 1px solid #e5e7eb;
-    padding-top: 16px;
-}
-
-.members-toggle {
-    width: 100%;
-    background: none;
-    border: none;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
-    cursor: pointer;
-    font-size: 14px;
-    color: #06b6d4;
-    font-weight: 500;
-}
-
-.toggle-icon {
-    font-size: 16px;
+.accordion-toggle {
+    font-size: 20px;
+    color: #64748b;
     transition: transform 0.2s;
 }
 
-.members-details {
-    margin-top: 16px;
+.accordion-content {
+    display: none;
+    padding: 0 16px 16px;
+    border-top: 1px solid #f1f5f9;
 }
 
 .members-table-header {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 2fr 1fr 1fr;
     gap: 12px;
-    padding: 8px 0;
+    padding: 12px 0;
     font-size: 12px;
     font-weight: 600;
     color: #64748b;
@@ -289,7 +246,7 @@
 
 .member-row {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 2fr 1fr 1fr;
     gap: 12px;
     align-items: center;
     padding: 12px 0;
@@ -303,8 +260,8 @@
 }
 
 .member-avatar {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     overflow: hidden;
 }
@@ -316,22 +273,22 @@
 }
 
 .member-name {
-    font-size: 14px;
+    font-size: 13px;
     color: #374151;
     font-weight: 500;
 }
 
 .member-balance {
-    font-size: 14px;
+    font-size: 13px;
     color: #374151;
 }
 
 .amount-input-mobile {
     width: 100%;
-    padding: 8px;
+    padding: 6px 8px;
     border: 1px solid #e5e7eb;
     border-radius: 6px;
-    font-size: 14px;
+    font-size: 12px;
     background: #f9fafb;
 }
 
@@ -356,25 +313,16 @@
 /* Mobile Create Form */
 .mobile-create-form {
     background: white;
-    border-radius: 16px;
+    border-radius: 12px;
     padding: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 16px;
+    margin: 0 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
-}
-
-.form-group.full-width {
-    grid-column: 1 / -1;
+    margin-bottom: 16px;
 }
 
 .form-group label {
@@ -385,6 +333,7 @@
 }
 
 .form-input {
+    width: 100%;
     padding: 12px;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
@@ -427,6 +376,9 @@
     text-align: center;
     padding: 40px 20px;
     color: #9ca3af;
+    margin: 0 8px;
+    background: white;
+    border-radius: 12px;
 }
 
 .no-contributions i {
@@ -443,7 +395,7 @@
 /* Desktop Styles */
 @media (min-width: 1024px) {
     .desktop-content {
-        padding: 24px 32px;
+        padding: 16px 20px;
         max-width: 1400px;
         margin: 0 auto;
     }
@@ -452,8 +404,8 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 32px;
-        padding-top: 20px;
+        margin-bottom: 24px;
+        padding-top: 15px;
     }
 
     .page-title {
@@ -503,16 +455,30 @@
         color: #06b6d4;
     }
 
-    .desktop-layout {
+    /* Desktop Layout Structure */
+    .desktop-top-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 32px;
+        gap: 24px;
+        margin-bottom: 24px;
     }
 
-    .left-panel, .right-panel {
+    .desktop-bottom-row {
         display: flex;
         flex-direction: column;
-        gap: 24px;
+    }
+
+    .create-contribution-section,
+    .contribution-list-section {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .contribution-details-section {
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
     /* Desktop Cards */
@@ -522,15 +488,16 @@
     .contribution-records-card {
         background: white;
         border-radius: 16px;
-        padding: 24px;
+        padding: 20px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        height: fit-content;
     }
 
     .card-title {
-        font-size: 20px;
+        font-size: 18px;
         font-weight: 600;
         color: #1e293b;
-        margin: 0 0 20px 0;
+        margin: 0 0 16px 0;
     }
 
     .card-subtitle {
@@ -540,15 +507,39 @@
         margin: 0 0 16px 0;
     }
 
-    .form-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-        margin-bottom: 20px;
+    /* Wide Form Inputs */
+    .form-input-wide {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        font-size: 14px;
+        background: #f9fafb;
+        transition: border-color 0.2s;
     }
 
-    .form-grid .form-group.full-width {
-        grid-column: 1 / -1;
+    .form-input-wide:focus {
+        outline: none;
+        border-color: #06b6d4;
+        background: white;
+    }
+
+    .btn-primary-wide {
+        width: 100%;
+        background: linear-gradient(135deg, #06b6d4, #0891b2);
+        color: white;
+        border: none;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-top: 12px;
+    }
+
+    .btn-primary-wide:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
     }
 
     /* Contributions Grid */
@@ -562,7 +553,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 16px;
+        padding: 14px 16px;
         border-radius: 8px;
         cursor: pointer;
         transition: all 0.2s;
@@ -591,11 +582,37 @@
     }
 
     /* Details Section */
+    .contribution-details-section {
+        width: 100%;
+    }
+
     .details-title {
-        font-size: 24px;
+        font-size: 22px;
         font-weight: 600;
         color: #1e293b;
-        margin: 0 0 24px 0;
+        margin: 0 0 20px 0;
+    }
+
+    .details-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+    }
+
+    @media (max-width: 1200px) {
+        .details-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .desktop-top-row {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .desktop-content {
+            padding: 12px 16px;
+        }
     }
 
     /* Tables */
@@ -611,7 +628,7 @@
 
     .table th,
     .table td {
-        padding: 12px;
+        padding: 10px 12px;
         text-align: left;
         border-bottom: 1px solid #e5e7eb;
     }
@@ -626,17 +643,19 @@
         color: #64748b;
     }
 
-    .amount-input {
+    .amount-input-wide {
         width: 100%;
-        padding: 8px;
+        padding: 8px 10px;
         border: 1px solid #e5e7eb;
         border-radius: 4px;
         font-size: 14px;
+        background: #f9fafb;
     }
 
-    .amount-input:focus {
+    .amount-input-wide:focus {
         outline: none;
         border-color: #06b6d4;
+        background: white;
     }
 
     /* Hide desktop create form initially */
@@ -647,11 +666,6 @@
 
 /* Responsive adjustments */
 @media (max-width: 767px) {
-    .form-row {
-        grid-template-columns: 1fr;
-        gap: 12px;
-    }
-
     .members-table-header,
     .member-row {
         grid-template-columns: 2fr 1fr 1fr;

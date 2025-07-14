@@ -21,23 +21,6 @@
 
     <!-- Mobile View -->
     <div class="mobile-contributions d-block d-lg-none">
-        <!-- Search Bar -->
-        <div class="mobile-search-header">
-            <button class="btn-back" onclick="window.history.back()">
-                <i class='bx bx-arrow-left'></i>
-            </button>
-            <div class="search-container">
-                <i class='bx bx-search search-icon'></i>
-                <input type="text" placeholder="Search Contributions" class="search-input" id="mobile-search">
-                <button class="btn-voice">
-                    <i class='bx bx-microphone'></i>
-                </button>
-                <button class="btn-filter">
-                    <i class='bx bx-filter-alt'></i>
-                </button>
-            </div>
-        </div>
-
         <!-- Tabs -->
         <div class="mobile-tabs">
             <button class="tab-btn active" data-tab="all-contributions">All Contributions</button>
@@ -46,57 +29,42 @@
 
         <!-- All Contributions Tab Content -->
         <div class="tab-content active" id="all-contributions">
-            <!-- Contribute Section -->
-            <div class="contribute-section">
-                <div class="contribute-header">
-                    <div class="contribute-icon">
-                        <i class='bx bx-bolt'></i>
-                    </div>
-                    <span class="contribute-text">Contribute</span>
-                </div>
-            </div>
-
-            <!-- Contributions List -->
-            <div class="mobile-contributions-list">
+            <!-- Contributions Accordion -->
+            <div class="mobile-contributions-accordion">
                 {%for contribution in contributions%}
-                <div class="mobile-contribution-card" data-contribution-name="{{contribution.name}}">
-                    <div class="contribution-header">
-                        <div class="contribution-info">
-                            <div class="contribution-type">
-                                <span class="type-label">Type</span>
-                                <span class="type-value">{{contribution.name}}</span>
+                <div class="mobile-accordion-item" data-contribution-name="{{contribution.name}}">
+                    <div class="accordion-header" data-contribution-id="{{contribution.id}}">
+                        <div class="contribution-summary">
+                            <div class="contribution-info">
+                                <div class="contribution-type">
+                                    <span class="type-label">Type</span>
+                                    <span class="type-value">{{contribution.name}}</span>
+                                </div>
+                                <div class="contribution-due">
+                                    <span class="due-label">Due date</span>
+                                    <span class="due-value">{{contribution.end_date|date:"d/m/Y"}}</span>
+                                </div>
                             </div>
-                            <div class="contribution-due">
-                                <span class="due-label">Due date</span>
-                                <span class="due-value">{{contribution.end_date|date:"d/m/Y"}}</span>
+                            <div class="contribution-amount">
+                                <span class="amount-label">Target Amount</span>
+                                <span class="amount-value">Ksh{{contribution.amount|intcomma}}</span>
                             </div>
                         </div>
+                        <i class='bx bx-chevron-down accordion-toggle'></i>
                     </div>
                     
-                    <div class="contribution-amount">
-                        <span class="amount-label">Target Amount</span>
-                        <span class="amount-value">Ksh{{contribution.amount|intcomma}}</span>
-                    </div>
-
-                    <div class="members-contribution-section">
-                        <button class="members-toggle" data-contribution-id="{{contribution.id}}">
-                            <span class="toggle-text">Members and contributed amount</span>
-                            <i class='bx bx-chevron-down toggle-icon'></i>
-                        </button>
-                        
-                        <div class="members-details" style="display: none;">
-                            <div class="members-table-header">
-                                <span>Members Name</span>
-                                <span>Balance</span>
-                                <span>Enter amount</span>
-                            </div>
-                            <div class="members-list" id="members-list-{{contribution.id}}">
-                                <!-- Will be populated by JavaScript -->
-                            </div>
-                            <button class="update-contribution-btn admin" data-contribution-id="{{contribution.id}}">
-                                Update contribution
-                            </button>
+                    <div class="accordion-content">
+                        <div class="members-table-header">
+                            <span>Members Name</span>
+                            <span>Balance</span>
+                            <span>Enter amount</span>
                         </div>
+                        <div class="members-list" id="members-list-{{contribution.id}}">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                        <button class="update-contribution-btn admin" data-contribution-id="{{contribution.id}}">
+                            Update contribution
+                        </button>
                     </div>
                 </div>
                 {%empty%}
@@ -110,53 +78,33 @@
 
         <!-- Create Contributions Tab Content -->
         <div class="tab-content admin" id="create-contributions">
-            <!-- Contribute Section -->
-            <div class="contribute-section">
-                <div class="contribute-header">
-                    <div class="contribute-icon">
-                        <i class='bx bx-bolt'></i>
-                    </div>
-                    <span class="contribute-text">Contribute</span>
-                </div>
-            </div>
-
             <!-- Create Contribution Form -->
             <div class="mobile-create-form">
                 <form id="mobile-create-contribution-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="mobile-contribution-name">Name</label>
-                            <input type="text" id="mobile-contribution-name" name="name" class="form-input" placeholder="Enter Contribution name">
-                        </div>
-                        <div class="form-group">
-                            <label for="mobile-target-amount">Amount</label>
-                            <input type="number" id="mobile-target-amount" name="amount" class="form-input" placeholder="Enter Amount">
-                        </div>
+                    <div class="form-group">
+                        <label for="mobile-contribution-name">Name</label>
+                        <input type="text" id="mobile-contribution-name" name="name" class="form-input" placeholder="Enter Contribution name">
                     </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="mobile-start-date">Start date</label>
-                            <input type="date" id="mobile-start-date" name="start-date" class="form-input">
-                        </div>
-                        <div class="form-group">
-                            <label for="mobile-due-date">End date</label>
-                            <input type="date" id="mobile-due-date" name="end-date" class="form-input">
-                        </div>
+                    <div class="form-group">
+                        <label for="mobile-target-amount">Amount</label>
+                        <input type="number" id="mobile-target-amount" name="amount" class="form-input" placeholder="Enter Amount">
                     </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="mobile-grace-period">Grace period</label>
-                            <input type="number" id="mobile-grace-period" name="grace-period" class="form-input" placeholder="Enter grace period">
-                        </div>
+                    <div class="form-group">
+                        <label for="mobile-start-date">Start date</label>
+                        <input type="date" id="mobile-start-date" name="start-date" class="form-input">
                     </div>
-
-                    <div class="form-group full-width">
+                    <div class="form-group">
+                        <label for="mobile-due-date">End date</label>
+                        <input type="date" id="mobile-due-date" name="end-date" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile-grace-period">Grace period</label>
+                        <input type="number" id="mobile-grace-period" name="grace-period" class="form-input" placeholder="Enter grace period">
+                    </div>
+                    <div class="form-group">
                         <label for="mobile-description">Description</label>
                         <textarea id="mobile-description" name="description" class="form-input" rows="3" placeholder="Enter description for contribution"></textarea>
                     </div>
-
                     <button type="button" class="create-contribution-btn" id="mobile-create-contribution-button">
                         Create contribution Scheme
                     </button>
@@ -183,47 +131,47 @@
                 </div>
             </div>
 
-            <div class="desktop-layout">
-                <!-- Left Panel - Create Form & Contributions List -->
-                <div class="left-panel">
-                    <!-- Create Contribution Form -->
-                    <div class="create-contribution-card admin" id="desktop-create-form">
+            <!-- Top Row - Create Form & Contributions List -->
+            <div class="desktop-top-row">
+                <!-- Create Contribution Form -->
+                <div class="create-contribution-section admin">
+                    <div class="create-contribution-card" id="desktop-create-form">
                         <h3 class="card-title">Create Contribution</h3>
                         <div class="create-contribution-alert-hub"></div>
                         <form action="" id="create-contribution-form">
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <label for="name">Name</label>
-                                    <input type="text" name="name" id="name" class="form-input" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="amount">Amount</label>
-                                    <input type="number" name="amount" id="amount" class="form-input" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="start-date">Start date</label>
-                                    <input type="date" name="start-date" id="start-date" class="form-input" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="end-date">End date</label>
-                                    <input type="date" name="end-date" id="end-date" class="form-input" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="grace-period">Grace period</label>
-                                    <input type="number" name="grace-period" id="grace-period" class="form-input" />
-                                </div>
-                                <div class="form-group full-width">
-                                    <label for="description">Description</label>
-                                    <textarea name="description" id="description" rows="3" class="form-input" placeholder="Enter contribution description"></textarea>
-                                </div>
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" name="name" id="name" class="form-input-wide" />
                             </div>
-                            <button class="btn-primary" id="create-contribution-button" type="button">
+                            <div class="form-group">
+                                <label for="amount">Amount</label>
+                                <input type="number" name="amount" id="amount" class="form-input-wide" />
+                            </div>
+                            <div class="form-group">
+                                <label for="start-date">Start date</label>
+                                <input type="date" name="start-date" id="start-date" class="form-input-wide" />
+                            </div>
+                            <div class="form-group">
+                                <label for="end-date">End date</label>
+                                <input type="date" name="end-date" id="end-date" class="form-input-wide" />
+                            </div>
+                            <div class="form-group">
+                                <label for="grace-period">Grace period</label>
+                                <input type="number" name="grace-period" id="grace-period" class="form-input-wide" />
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Description</label>
+                                <textarea name="description" id="description" rows="3" class="form-input-wide" placeholder="Enter contribution description"></textarea>
+                            </div>
+                            <button class="btn-primary-wide" id="create-contribution-button" type="button">
                                 Create Contribution
                             </button>
                         </form>
                     </div>
+                </div>
 
-                    <!-- Contributions List -->
+                <!-- Contributions List -->
+                <div class="contribution-list-section">
                     <div class="contribution-list-card">
                         <h3 class="card-title">Contribution List</h3>
                         <div class="contributions-grid">
@@ -242,17 +190,19 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Right Panel - Contribution Details -->
-                <div class="right-panel">
-                    <div class="contribution-details-section">
-                        <h3 class="details-title">
-                            Contribution Details - 
-                            <span id="contribution-details-name">Select a contribution</span>
-                        </h3>
-                        <p style="display: none" id="contribution-id"></p>
-                        <div class="contribution-details-alert-hub"></div>
+            <!-- Bottom Row - Contribution Details Full Width -->
+            <div class="desktop-bottom-row">
+                <div class="contribution-details-section">
+                    <h3 class="details-title">
+                        Contribution Details - 
+                        <span id="contribution-details-name">Select a contribution</span>
+                    </h3>
+                    <p style="display: none" id="contribution-id"></p>
+                    <div class="contribution-details-alert-hub"></div>
 
+                    <div class="details-grid">
                         <!-- Member Update Table -->
                         <div class="member-update-card admin">
                             <h4 class="card-subtitle">Update Member Contributions</h4>
@@ -273,14 +223,14 @@
                                             <td>Ksh <span class="contribution-details-amount">0</span></td>
                                             <td style="display: none" id="member-id">{{member.id}}</td>
                                             <td>
-                                                <input type="number" id="amount" name="amount" class="amount-input" placeholder="0" />
+                                                <input type="number" id="amount" name="amount" class="amount-input-wide" placeholder="0" />
                                             </td>
                                         </tr>
                                         {%endif%}
                                         {%endfor%}
                                     </tbody>
                                 </table>
-                                <button class="btn-primary" id="update-contributions">
+                                <button class="btn-primary-wide" id="update-contributions">
                                     Update Contributions
                                 </button>
                             </div>
@@ -379,17 +329,17 @@ $(document).ready(function () {
         $('#' + tabId).addClass('active');
     });
 
-    // Mobile members toggle
-    $('.members-toggle').click(function() {
+    // Mobile accordion toggle
+    $('.mobile-accordion-item .accordion-header').click(function() {
         const contributionId = $(this).data('contribution-id');
-        const membersDetails = $(this).closest('.members-contribution-section').find('.members-details');
-        const toggleIcon = $(this).find('.toggle-icon');
+        const accordionContent = $(this).closest('.mobile-accordion-item').find('.accordion-content');
+        const toggleIcon = $(this).find('.accordion-toggle');
         
-        if (membersDetails.is(':visible')) {
-            membersDetails.slideUp();
+        if (accordionContent.is(':visible')) {
+            accordionContent.slideUp();
             toggleIcon.removeClass('bx-chevron-up').addClass('bx-chevron-down');
         } else {
-            membersDetails.slideDown();
+            accordionContent.slideDown();
             toggleIcon.removeClass('bx-chevron-down').addClass('bx-chevron-up');
             loadMembersForMobile(contributionId);
         }
@@ -398,19 +348,6 @@ $(document).ready(function () {
     // Desktop create form toggle
     $('#desktop-create-toggle').click(function() {
         $('#desktop-create-form').slideToggle();
-    });
-
-    // Mobile search functionality
-    $('#mobile-search').on('input', function() {
-        const searchTerm = $(this).val().toLowerCase();
-        $('.mobile-contribution-card').each(function() {
-            const contributionName = $(this).find('.type-value').text().toLowerCase();
-            if (contributionName.includes(searchTerm)) {
-                $(this).show();
-            } else {
-                $(this).hide();
-            }
-        });
     });
 
     // Enhanced mobile navigation functions
@@ -653,10 +590,68 @@ $(document).ready(function () {
          $(this).addClass('selected');
      });
 
-    $(document).on('click', '.mobile-contribution-card', function() {
-        const contributionName = $(this).data('contribution-name');
-        fetchAndRenderContributionDetails(contributionName);
-    });
+         $(document).on('click', '.mobile-accordion-item .accordion-header', function() {
+         const contributionName = $(this).closest('.mobile-accordion-item').data('contribution-name');
+         fetchAndRenderContributionDetails(contributionName);
+     });
+
+     // Mobile update contribution button
+     $(document).on('click', '.mobile-accordion-item .update-contribution-btn', function(e) {
+         e.stopPropagation();
+         const contributionId = $(this).data('contribution-id');
+         const chamaId = localStorage.getItem("groupId");
+         const csrfToken = getCookie("csrftoken");
+
+         if (!contributionId) {
+             alert("Please select a contribution first.");
+             return;
+         }
+
+         const contributionData = [];
+         $(this).closest('.accordion-content').find('.member-row').each(function () {
+             const memberIdInput = $(this).find('.amount-input-mobile');
+             const memberId = memberIdInput.data('member-id');
+             const amount = memberIdInput.val();
+             
+             if (amount && amount > 0) {
+                 contributionData.push({
+                     member_id: memberId,
+                     amount: amount
+                 });
+             }
+         });
+
+         if (contributionData.length === 0) {
+             alert("Please enter at least one contribution amount.");
+             return;
+         }
+
+         $.ajaxSetup({
+             headers: { "X-CSRFToken": csrfToken }
+         });
+
+         $.ajax({
+             url: `/chamas-bookeeping/create-contribution-record/${chamaId}/`,
+             type: "POST",
+             data: JSON.stringify({
+                 contribution_id: contributionId,
+                 contributions: contributionData
+             }),
+             contentType: "application/json",
+             success: function (response) {
+                 if (response.status === "success") {
+                     alert("Contributions updated successfully!");
+                     // Clear input fields
+                     $(this).closest('.accordion-content').find('.amount-input-mobile').val("");
+                 } else {
+                     alert(response.message);
+                 }
+             },
+             error: function () {
+                 alert("Failed to update contributions. Please try again.");
+             }
+         });
+     });
 
     // Function to get the value of a cookie by name
     function getCookie(name) {
