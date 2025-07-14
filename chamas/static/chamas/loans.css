@@ -472,3 +472,297 @@ margin: 0;
 
     /* Add any other styles you need for the select element */
 }
+
+/* Mobile Loan Styles */
+.modern-loans {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.modern-loans * {
+    box-sizing: border-box;
+}
+
+/* Mobile Create Form */
+.mobile-create-form {
+    padding: 16px;
+    margin: 0;
+    width: 100%;
+}
+
+.create-loan-card {
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+}
+
+.create-loan-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.create-loan-header i {
+    font-size: 24px;
+    color: #06b6d4;
+}
+
+.create-loan-header span {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.loan-card-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+.form-row-split {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+}
+
+.form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 4px;
+}
+
+.form-input {
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background: white;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #06b6d4;
+    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+}
+
+.form-input::placeholder {
+    color: #9ca3af;
+}
+
+.create-loan-btn {
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 14px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+}
+
+.beautiful-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+}
+
+/* Mobile Loan History */
+.mobile-loans-history-list {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.loan-history-beautiful-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.loan-history-beautiful-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.loan-history-beautiful-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 24px;
+    margin-bottom: 8px;
+}
+
+.loan-history-beautiful-row:last-child {
+    margin-bottom: 0;
+}
+
+.loan-history-beautiful-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.loan-history-beautiful-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+/* Mobile Applications */
+.mobile-applications-list {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.application-beautiful-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.application-beautiful-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.application-beautiful-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 24px;
+    margin-bottom: 8px;
+}
+
+.application-beautiful-row:last-child {
+    margin-bottom: 16px;
+}
+
+.application-beautiful-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.application-beautiful-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.application-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.approve-btn {
+    flex: 1;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.approve-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.decline-btn {
+    flex: 1;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.decline-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+/* No Data States */
+.no-loans, .no-applications {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6b7280;
+}
+
+.no-loans i, .no-applications i {
+    font-size: 48px;
+    margin-bottom: 16px;
+    color: #d1d5db;
+}
+
+.no-loans p, .no-applications p {
+    font-size: 16px;
+    margin: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .form-row-split {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .loan-history-beautiful-row,
+    .application-beautiful-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .application-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .approve-btn, .decline-btn {
+        width: 100%;
+    }
+}
