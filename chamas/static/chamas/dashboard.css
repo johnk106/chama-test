@@ -32,73 +32,79 @@ body {
     min-height: 100vh;
 }
 
-/* Header Styles */
-.mobile-header {
-    background: white;
-    padding: 16px 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    margin-bottom: 16px;
-    width: 100%;
-}
-
-@media (min-width: 768px) {
-    .mobile-header {
-        padding: 16px 16px;
-    }
-}
-
-.header-title {
-    font-size: 28px;
-    font-weight: 600;
-    color: #1e293b;
-    margin: 0;
-}
-
-.header-spacer {
-    flex: 1;
-}
-
-.btn-hamburger, .btn-notification {
-    background: none;
+/* Floating Menu Button for Mobile */
+.floating-menu-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
     border: none;
-    padding: 8px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.btn-hamburger:hover, .btn-notification:hover {
-    background-color: #f1f5f9;
-}
-
-.btn-hamburger i, .btn-notification i {
-    font-size: 24px;
-    color: #64748b;
-}
-
-.notification-badge-container {
-    position: relative;
-}
-
-.notification-badge {
-    position: absolute;
-    top: 2px;
-    right: 2px;
-    background: #ef4444;
-    color: white;
     border-radius: 50%;
-    width: 18px;
-    height: 18px;
-    font-size: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+    z-index: 1000;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.floating-menu-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(6, 182, 212, 0.4);
+}
+
+.floating-menu-btn:active {
+    transform: scale(0.95);
+}
+
+.floating-menu-btn i {
+    font-size: 24px;
+    color: white;
+}
+
+/* Mobile Sidebar Overlay Fix */
+@media (max-width: 767px) {
+    /* Ensure main content doesn't move when sidebar opens on mobile */
+    #main {
+        margin-left: 0 !important;
+        transition: none !important;
+    }
+    
+    /* Ensure sidebar overlays on mobile */
+    #mySidenav {
+        z-index: 9999;
+        position: fixed !important;
+    }
+    
+    /* Hide floating button when sidebar is open */
+    body.sidebar-open .floating-menu-btn {
+        opacity: 0;
+        pointer-events: none;
+    }
+}
+
+/* Sidebar backdrop for mobile */
+.sidebar-backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9998;
+}
+
+.sidebar-backdrop.show {
+    display: block;
 }
 
 /* Dashboard Content */
 .dashboard-content {
-    padding: 0 12px;
+    padding: 12px 12px 0;
     max-width: 100%;
     margin: 0;
     width: 100%;
@@ -106,14 +112,14 @@ body {
 
 @media (min-width: 768px) {
     .dashboard-content {
-        padding: 0 16px;
+        padding: 16px 16px 0;
         max-width: none;
     }
 }
 
 @media (min-width: 1024px) {
     .dashboard-content {
-        padding: 0 20px;
+        padding: 20px 20px 0;
     }
 }
 
@@ -447,11 +453,7 @@ body {
     }
     
     .dashboard-content {
-        padding: 0 8px;
-    }
-    
-    .mobile-header {
-        padding: 12px 8px;
+        padding: 8px 8px 0;
     }
 }
 

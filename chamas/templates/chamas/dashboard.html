@@ -12,25 +12,13 @@
 
 {% block body %}
 <div class="modern-dashboard">
-    <!-- Mobile Header -->
-    <div class="mobile-header d-block d-md-none">
-        <div class="d-flex justify-content-between align-items-center">
-            <button class="btn-hamburger" onclick="openNav()">
-                <i class='bx bx-menu'></i>
-            </button>
-            <div class="header-spacer"></div>
-            <div class="notification-badge-container">
-                <button class="btn-notification">
-                    <i class='bx bx-bell'></i>
-                    {% if notifications.count > 0 %}
-                        <span class="notification-badge">{{ notifications.count }}</span>
-                    {% endif %}
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Desktop Header - Removed as requested -->
+    <!-- Floating Menu Button for Mobile -->
+    <button class="floating-menu-btn d-block d-md-none" onclick="openNav()">
+        <i class='bx bx-menu'></i>
+    </button>
+    
+    <!-- Sidebar Backdrop for Mobile -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeNav()"></div>
 
     <!-- Main Dashboard Content -->
     <div class="dashboard-content">
@@ -206,6 +194,38 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+});
+
+// Enhanced mobile navigation functions
+function openNav() {
+    document.getElementById("mySidenav").style.width = "250px";
+    
+    // Only show backdrop and prevent body class on mobile
+    if (window.innerWidth <= 767) {
+        document.getElementById("sidebarBackdrop").classList.add("show");
+        document.body.classList.add("sidebar-open");
+    } else {
+        document.getElementById("main").style.marginLeft = "150px";
+    }
+}
+
+function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+    document.getElementById("sidebarBackdrop").classList.remove("show");
+    document.body.classList.remove("sidebar-open");
+    
+    // Reset margin for desktop
+    if (window.innerWidth > 767) {
+        document.getElementById("main").style.marginLeft = "0";
+    }
+}
+
+// Close sidebar on window resize if moving to desktop
+window.addEventListener('resize', function() {
+    if (window.innerWidth > 767) {
+        document.getElementById("sidebarBackdrop").classList.remove("show");
+        document.body.classList.remove("sidebar-open");
+    }
 });
 </script>
 {% endblock %}
