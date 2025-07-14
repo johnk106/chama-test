@@ -18,7 +18,7 @@
             <button class="btn-hamburger" onclick="openNav()">
                 <i class='bx bx-menu'></i>
             </button>
-            <h1 class="header-title">Dashboard</h1>
+            <div class="header-spacer"></div>
             <div class="notification-badge-container">
                 <button class="btn-notification">
                     <i class='bx bx-bell'></i>
@@ -77,7 +77,7 @@
                 <i class='bx bx-chevron-right nav-arrow'></i>
             </a>
 
-            <a href="{% url 'chamas:chama-expenses' chama.id %}" class="nav-item">
+            <a href="{% url 'chamas:chama-expenses' chama.id %}" class="nav-item admin">
                 <div class="nav-icon">
                     <i class='bx bx-folder'></i>
                 </div>
@@ -85,7 +85,7 @@
                 <i class='bx bx-chevron-right nav-arrow'></i>
             </a>
 
-            <a href="{% url 'chamas:chama-fines' chama.id %}" class="nav-item">
+            <a href="{% url 'chamas:chama-fines' chama.id %}" class="nav-item admin">
                 <div class="nav-icon">
                     <i class='bx bx-file'></i>
                 </div>
@@ -101,7 +101,7 @@
                 <i class='bx bx-chevron-right nav-arrow'></i>
             </a>
 
-            <a href="{% url 'chamas:reports' chama.id %}" class="nav-item">
+            <a href="{% url 'chamas:reports' chama.id %}" class="nav-item admin">
                 <div class="nav-icon">
                     <i class='bx bxs-report'></i>
                 </div>
@@ -109,7 +109,7 @@
                 <i class='bx bx-chevron-right nav-arrow'></i>
             </a>
 
-            <a href="{% url 'chamas:notifications' chama.id %}" class="nav-item">
+            <a href="{% url 'chamas:notifications' chama.id %}" class="nav-item admin">
                 <div class="nav-icon">
                     <i class='bx bx-bell'></i>
                 </div>
@@ -129,7 +129,7 @@
                     <p>Total Members</p>
                 </div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card admin">
                 <div class="stat-icon">
                     <i class='bx bx-money'></i>
                 </div>
@@ -138,7 +138,7 @@
                     <p>Total Fines</p>
                 </div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card admin">
                 <div class="stat-icon">
                     <i class='bx bx-file'></i>
                 </div>
@@ -149,8 +149,8 @@
             </div>
         </div>
 
-        <!-- Recent Activity (Desktop) -->
-        <div class="recent-activity d-none d-lg-block">
+        <!-- Recent Activity (Desktop) - Admin Only -->
+        <div class="recent-activity d-none d-lg-block admin">
             <h3>Recent Activity</h3>
             <div class="activity-list">
                 {% for notification in notifications|slice:":5" %}
