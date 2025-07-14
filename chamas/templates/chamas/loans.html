@@ -27,8 +27,8 @@
             <i class='bx bx-money'></i>
             <span>Create Loan Type</span>
           </div>
-          <form id="mobile-create-loan-type-form" class="loan-card-form" onsubmit="submitForm(event); return false;">
-            <div class="form-row form-row-split">
+                                         <form id="mobile-create-loan-type-form" class="loan-card-form" onsubmit="submitForm(event); return false;">
+            <div class="form-row">
               <div class="form-group">
                 <label for="mobile-name">Name</label>
                 <input type="text" id="mobile-name" name="name" class="form-input" placeholder="Enter loan type name" required>
@@ -41,7 +41,7 @@
                 </select>
               </div>
             </div>
-            <div class="form-row form-row-split">
+            <div class="form-row">
               <div class="form-group">
                 <label for="mobile-max">Max Amount (KSH)</label>
                 <input type="number" id="mobile-max" name="max" class="form-input" placeholder="Enter max amount" required>
@@ -51,7 +51,7 @@
                 <input type="number" id="mobile-max-due" name="max-due" class="form-input" placeholder="Months/weeks" required>
               </div>
             </div>
-            <div class="form-row form-row-split">
+            <div class="form-row">
               <div class="form-group">
                 <label for="mobile-late-fine">Late Fine (KSH)</label>
                 <input type="number" id="mobile-late-fine" name="late_fine" class="form-input" placeholder="Enter fine amount" required>
@@ -61,13 +61,17 @@
                 <input type="text" id="mobile-grace-period" name="grace_period" class="form-input" placeholder="Enter days" required>
               </div>
             </div>
-            <div class="form-group">
-              <label for="mobile-interest-rate">Interest Rate (% annually)</label>
-              <input type="number" id="mobile-interest-rate" name="intrest_rate" class="form-input" placeholder="Enter rate" required>
+            <div class="form-row-single">
+              <div class="form-group">
+                <label for="mobile-interest-rate">Interest Rate (% annually)</label>
+                <input type="number" id="mobile-interest-rate" name="intrest_rate" class="form-input" placeholder="Enter rate" required>
+              </div>
             </div>
-            <div class="form-group">
-              <label for="mobile-description">Description</label>
-              <textarea id="mobile-description" name="description" class="form-input" rows="2" placeholder="Enter description"></textarea>
+            <div class="form-row-single">
+              <div class="form-group">
+                <label for="mobile-description">Description</label>
+                <textarea id="mobile-description" name="description" class="form-input" rows="2" placeholder="Enter description"></textarea>
+              </div>
             </div>
             <button type="submit" class="create-loan-btn beautiful-btn">
               Create Loan Type
@@ -81,8 +85,8 @@
             <i class='bx bx-transfer'></i>
             <span>Issue Loan</span>
           </div>
-          <form id="mobile-issue-loan-form" class="loan-card-form">
-            <div class="form-row form-row-split">
+                               <form id="mobile-issue-loan-form" class="loan-card-form">
+            <div class="form-row">
               <div class="form-group">
                 <label for="mobile-loan-type">Loan Type</label>
                 <select id="mobile-loan-type" name="loan_type" class="form-input" required>
@@ -102,7 +106,7 @@
                 </select>
               </div>
             </div>
-            <div class="form-row form-row-split">
+            <div class="form-row">
               <div class="form-group">
                 <label for="mobile-amount">Amount (KSH)</label>
                 <input type="number" id="mobile-amount" name="amount" class="form-input" placeholder="Enter amount" required>
@@ -123,97 +127,123 @@
     <!-- My Loans Tab Content -->
     <div class="tab-content member" id="my-loans">
       <div class="mobile-loans-history-list">
-        {% for loan in my_loans %}
-        <div class="loan-accordion-item">
-          <div class="loan-accordion-header">
-            <div class="loan-header-info">
-              {% if loan.member.profile %}
-              <div class="loan-avatar" style="background-image: url({{loan.member.profile.url}});"></div>
-              {% else %}
-              <div class="loan-avatar" style="background-image: url('data:image/png;base64,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');"></div>
-              {% endif %}
-              <div class="loan-name-info">
-                <h6>{{ loan.member.name }}</h6>
-                <p>LHY{{ loan.id|stringformat:'03d' }}</p>
-              </div>
-            </div>
-            <i class="bx bx-chevron-down loan-accordion-toggle"></i>
+        <!-- Apply for Loan Section -->
+        <div class="apply-loan-card member">
+          <div class="apply-loan-header">
+            <i class='bx bx-wallet'></i>
+            <span>Apply for Loan</span>
           </div>
-          <div class="loan-accordion-content">
-            <div class="loan-details-grid">
-              <div class="loan-detail-item">
-                <div class="loan-detail-label">Loan Amount</div>
-                <div class="loan-detail-value">Ksh{{ loan.amount|floatformat:1 }}</div>
+          <form id="mobile-apply-loan-form" class="loan-card-form" onsubmit="applyLoan(event); return false;">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="apply-loan-type">Loan Type</label>
+                <select id="apply-loan-type" name="loan_type" class="form-input" required>
+                  <option value="">Select loan type</option>
+                  {% for loan_type in loan_types %}
+                  <option value="{{ loan_type.id }}">{{ loan_type.name }} ({{ loan_type.schedule }})</option>
+                  {% endfor %}
+                </select>
               </div>
-              <div class="loan-detail-item">
-                <div class="loan-detail-label">Interest Rate</div>
-                <div class="loan-detail-value">{{ loan.intrest_rate }}%</div>
-              </div>
-              <div class="loan-detail-item">
-                <div class="loan-detail-label">Start Date</div>
-                <div class="loan-detail-value">{{ loan.start_date|date:"d/m/Y" }}</div>
-              </div>
-              <div class="loan-detail-item">
-                <div class="loan-detail-label">End Date</div>
-                <div class="loan-detail-value">{{ loan.end_date|date:"d/m/Y" }}</div>
-              </div>
-              <div class="loan-detail-item">
-                <div class="loan-detail-label">Loan Balance</div>
-                <div class="loan-detail-value">Ksh{{ loan.balance|floatformat:1 }}</div>
-              </div>
-              <div class="loan-detail-item">
-                <div class="loan-detail-label">Periodic Payment</div>
-                <div class="loan-detail-value">Ksh{{ loan.next_due_amount|floatformat:2 }}</div>
-              </div>
-              <div class="loan-detail-item">
-                <div class="loan-detail-label">Payment Due Date</div>
-                <div class="loan-detail-value">{{ loan.calc_next_date }}</div>
-              </div>
-              <div class="loan-detail-item">
-                <div class="loan-detail-label">Total Paid</div>
-                <div class="loan-detail-value">Ksh{{ loan.total_paid|floatformat:1 }}</div>
-              </div>
-              <div class="loan-detail-item">
-                <div class="loan-detail-label">Next Due Payment</div>
-                <div class="loan-detail-value">Ksh{{ loan.next_due_amount|floatformat:2 }}</div>
-              </div>
-              <div class="loan-detail-item">
-                <div class="loan-detail-label">Date of Next Due</div>
-                <div class="loan-detail-value">{{ loan.calc_next_date }}</div>
-              </div>
-              <div class="loan-detail-item">
-                <div class="loan-detail-label">Grace period</div>
-                <div class="loan-detail-value">{{ loan.type.grace_period }} Days</div>
-              </div>
-              <div class="loan-detail-item">
-                <div class="loan-detail-label">Late payment Fine</div>
-                <div class="loan-detail-value">Ksh{{ loan.type.late_fine|floatformat:1 }}</div>
+              <div class="form-group">
+                <label for="apply-amount">Amount (KSH)</label>
+                <input type="number" id="apply-amount" name="amount" class="form-input" placeholder="Enter amount" required>
               </div>
             </div>
-            <div class="loan-repayment-section">
-              <form class="repayment-form">
-                <input type="hidden" name="loan_id" value="{{ loan.id }}">
-                <div class="repayment-inputs">
-                  <div class="repayment-input-group">
-                    <label for="loan-repayment-{{ loan.id }}">Loan Repayment</label>
-                    <input type="number" name="loan-amount" class="repayment-input" id="loan-repayment-{{ loan.id }}" placeholder="Enter amount" value="0">
-                  </div>
-                  <div class="repayment-input-group">
-                    <label for="fine-repayment-{{ loan.id }}">Fine Repayment</label>
-                    <input type="number" name="fine-amount" class="repayment-input" id="fine-repayment-{{ loan.id }}" placeholder="Enter amount" value="0">
-                  </div>
-                </div>
-                <button type="submit" class="update-payments-btn">Update Payments</button>
-              </form>
+            <div class="form-row-single">
+              <div class="form-group">
+                <label for="apply-term">Repayment Term (months/weeks)</label>
+                <input type="number" id="apply-term" name="due" class="form-input" placeholder="Enter term" required>
+              </div>
             </div>
+            <button type="submit" class="create-loan-btn beautiful-btn">
+              Apply for Loan
+            </button>
+          </form>
+        </div>
+
+        <!-- Completed Loans -->
+        {% if completed_loans %}
+        <div class="loan-status-section">
+          <div class="loan-status-header status-completed">Completed</div>
+          <div class="loan-table">
+            <div class="loan-table-header">
+              <div>Loan ID</div>
+              <div>Name</div>
+              <div>Type</div>
+              <div>Amount</div>
+            </div>
+            {% for loan in completed_loans %}
+            <div class="loan-table-row">
+              <div class="loan-table-cell loan-id">L{{ loan.id|stringformat:'03d' }}</div>
+              <div class="loan-table-cell loan-name">{{ loan.member.name }}</div>
+              <div class="loan-table-cell loan-type">{{ loan.type.name }}</div>
+              <div class="loan-table-cell loan-amount">Ksh{{ loan.amount|floatformat:0 }}</div>
+            </div>
+            {% endfor %}
           </div>
         </div>
-        {% empty %}
+        {% endif %}
+
+        <!-- Active Loans -->
+        {% if active_loans %}
+        <div class="loan-status-section">
+          <div class="loan-status-header status-active">Active</div>
+          <div class="loan-table">
+            <div class="loan-table-header">
+              <div>Loan ID</div>
+              <div>Name</div>
+              <div>Type</div>
+              <div>Amount</div>
+            </div>
+            {% for loan in active_loans %}
+            <div class="loan-table-row">
+              <div class="loan-table-cell loan-id">L{{ loan.id|stringformat:'03d' }}</div>
+              <div class="loan-table-cell loan-name">{{ loan.member.name }}</div>
+              <div class="loan-table-cell loan-type">{{ loan.type.name }}</div>
+              <div class="loan-table-cell loan-amount">Ksh{{ loan.amount|floatformat:0 }}</div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Defaulted Loans -->
+        {% if defaulted_loans %}
+        <div class="loan-status-section">
+          <div class="loan-status-header status-defaulted">Defaulted</div>
+          <div class="loan-table">
+            <div class="loan-table-header">
+              <div>Loan ID</div>
+              <div>Name</div>
+              <div>Type</div>
+              <div>Amount</div>
+            </div>
+            {% for loan in defaulted_loans %}
+            <div class="loan-table-row">
+              <div class="loan-table-cell loan-id">L{{ loan.id|stringformat:'03d' }}</div>
+              <div class="loan-table-cell loan-name">{{ loan.member.name }}</div>
+              <div class="loan-table-cell loan-type">{{ loan.type.name }}</div>
+              <div class="loan-table-cell loan-amount">Ksh{{ loan.amount|floatformat:0 }}</div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Download Report -->
+        <div class="download-report-section">
+          <button class="download-report-btn" onclick="downloadReport()">
+            <i class='bx bx-download'></i>
+            Download Full Report
+          </button>
+        </div>
+
+        {% if not active_loans and not completed_loans and not defaulted_loans %}
         <div class="no-loans">
           <i class='bx bx-inbox'></i>
           <p>No loans found</p>
         </div>
-        {% endfor %}
+        {% endif %}
       </div>
     </div>
 
@@ -1113,25 +1143,12 @@
       });
     });
 
-    // Mobile accordion functionality
-    const accordionHeaders = document.querySelectorAll('.loan-accordion-header');
-    
-    accordionHeaders.forEach(header => {
-      header.addEventListener('click', function() {
-        const accordionItem = this.parentElement;
-        const isActive = accordionItem.classList.contains('active');
-        
-        // Close all accordion items
-        document.querySelectorAll('.loan-accordion-item').forEach(item => {
-          item.classList.remove('active');
-        });
-        
-        // If this item wasn't active, open it
-        if (!isActive) {
-          accordionItem.classList.add('active');
-        }
-      });
-    });
+    // Download report functionality
+    window.downloadReport = function() {
+      // Add download report logic here
+      console.log('Downloading loan report...');
+      // You can implement the actual download logic based on your backend API
+    };
 
     // Desktop loan header functionality
     const memberHeaders = document.querySelectorAll(".member-header");
