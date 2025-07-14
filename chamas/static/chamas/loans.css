@@ -528,6 +528,22 @@ margin: 0;
     width: 100%;
 }
 
+/* Bootstrap Grid Integration */
+.loan-card-form .row {
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 12px;
+}
+
+.loan-card-form .row:last-child {
+    margin-bottom: 0;
+}
+
+.loan-card-form [class*="col-"] {
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
 .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -546,6 +562,7 @@ margin: 0;
     flex-direction: column;
     gap: 4px;
     min-width: 0;
+    margin-bottom: 8px;
 }
 
 .form-group label {
@@ -892,10 +909,16 @@ margin: 0;
 }
 
 /* Responsive adjustments */
-@media (max-width: 480px) {
-    .form-row {
-        grid-template-columns: 1fr;
-        gap: 12px;
+@media (max-width: 768px) {
+    .loan-card-form .row {
+        flex-direction: column;
+    }
+    
+    .loan-card-form [class*="col-"] {
+        flex: 0 0 100%;
+        max-width: 100%;
+        padding-left: 0;
+        padding-right: 0;
     }
     
     .loan-table-header,

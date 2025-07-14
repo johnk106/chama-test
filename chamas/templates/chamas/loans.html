@@ -30,49 +30,65 @@
             <span>Create Loan Type</span>
           </div>
                                          <form id="mobile-create-loan-type-form" class="loan-card-form" onsubmit="submitForm(event); return false;">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="mobile-name">Name</label>
-                <input type="text" id="mobile-name" name="name" class="form-input" placeholder="Enter loan type name" required>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="mobile-name">Name</label>
+                  <input type="text" id="mobile-name" name="name" class="form-input" placeholder="Enter loan type name" required>
+                </div>
               </div>
-              <div class="form-group">
-                <label for="mobile-schedule">Schedule</label>
-                <select id="mobile-schedule" name="schedule" class="form-input">
-                  <option value="weekly">Weekly</option>
-                  <option value="monthly">Monthly</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="mobile-max">Max Amount (KSH)</label>
-                <input type="number" id="mobile-max" name="max" class="form-input" placeholder="Enter max amount" required>
-              </div>
-              <div class="form-group">
-                <label for="mobile-max-due">Max Term</label>
-                <input type="number" id="mobile-max-due" name="max-due" class="form-input" placeholder="Months/weeks" required>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="mobile-schedule">Schedule</label>
+                  <select id="mobile-schedule" name="schedule" class="form-input">
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                  </select>
+                </div>
               </div>
             </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="mobile-late-fine">Late Fine (KSH)</label>
-                <input type="number" id="mobile-late-fine" name="late_fine" class="form-input" placeholder="Enter fine amount" required>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="mobile-max">Max Amount (KSH)</label>
+                  <input type="number" id="mobile-max" name="max" class="form-input" placeholder="Enter max amount" required>
+                </div>
               </div>
-              <div class="form-group">
-                <label for="mobile-grace-period">Grace Period (days)</label>
-                <input type="text" id="mobile-grace-period" name="grace_period" class="form-input" placeholder="Enter days" required>
-              </div>
-            </div>
-            <div class="form-row-single">
-              <div class="form-group">
-                <label for="mobile-interest-rate">Interest Rate (% annually)</label>
-                <input type="number" id="mobile-interest-rate" name="intrest_rate" class="form-input" placeholder="Enter rate" required>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="mobile-max-due">Max Term</label>
+                  <input type="number" id="mobile-max-due" name="max-due" class="form-input" placeholder="Months/weeks" required>
+                </div>
               </div>
             </div>
-            <div class="form-row-single">
-              <div class="form-group">
-                <label for="mobile-description">Description</label>
-                <textarea id="mobile-description" name="description" class="form-input" rows="2" placeholder="Enter description"></textarea>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="mobile-late-fine">Late Fine (KSH)</label>
+                  <input type="number" id="mobile-late-fine" name="late_fine" class="form-input" placeholder="Enter fine amount" required>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="mobile-grace-period">Grace Period (days)</label>
+                  <input type="text" id="mobile-grace-period" name="grace_period" class="form-input" placeholder="Enter days" required>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="mobile-interest-rate">Interest Rate (% annually)</label>
+                  <input type="number" id="mobile-interest-rate" name="intrest_rate" class="form-input" placeholder="Enter rate" required>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="mobile-description">Description</label>
+                  <textarea id="mobile-description" name="description" class="form-input" rows="2" placeholder="Enter description"></textarea>
+                </div>
               </div>
             </div>
             <button type="submit" class="create-loan-btn beautiful-btn">
@@ -88,34 +104,42 @@
             <span>Issue Loan</span>
           </div>
                                <form id="mobile-issue-loan-form" class="loan-card-form">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="mobile-loan-type">Loan Type</label>
-                <select id="mobile-loan-type" name="loan_type" class="form-input" required>
-                  <option value="">Select loan type</option>
-                  {% for loan_type in loan_types %}
-                  <option value="{{ loan_type.id }}">{{ loan_type.name }}</option>
-                  {% endfor %}
-                </select>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="mobile-loan-type">Loan Type</label>
+                  <select id="mobile-loan-type" name="loan_type" class="form-input" required>
+                    <option value="">Select loan type</option>
+                    {% for loan_type in loan_types %}
+                    <option value="{{ loan_type.id }}">{{ loan_type.name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
               </div>
-              <div class="form-group">
-                <label for="mobile-member">Member</label>
-                <select id="mobile-member" name="member" class="form-input" required>
-                  <option value="">Select member</option>
-                  {% for member in members %}
-                  <option value="{{ member.id }}">{{ member.first_name }} {{ member.last_name }}</option>
-                  {% endfor %}
-                </select>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="mobile-member">Member</label>
+                  <select id="mobile-member" name="member" class="form-input" required>
+                    <option value="">Select member</option>
+                    {% for member in members %}
+                    <option value="{{ member.id }}">{{ member.first_name }} {{ member.last_name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
               </div>
             </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="mobile-amount">Amount (KSH)</label>
-                <input type="number" id="mobile-amount" name="amount" class="form-input" placeholder="Enter amount" required>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="mobile-amount">Amount (KSH)</label>
+                  <input type="number" id="mobile-amount" name="amount" class="form-input" placeholder="Enter amount" required>
+                </div>
               </div>
-              <div class="form-group">
-                <label for="mobile-term">Term</label>
-                <input type="number" id="mobile-term" name="term" class="form-input" placeholder="Enter term" required>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="mobile-term">Term</label>
+                  <input type="number" id="mobile-term" name="term" class="form-input" placeholder="Enter term" required>
+                </div>
               </div>
             </div>
             <button type="submit" class="create-loan-btn beautiful-btn">
@@ -134,28 +158,34 @@
             <i class='bx bx-wallet'></i>
             <span>Apply for Loan</span>
           </div>
-          <form id="mobile-apply-loan-form" class="loan-card-form" onsubmit="applyLoan(event); return false;">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="apply-loan-type">Loan Type</label>
-                <select id="apply-loan-type" name="loan_type" class="form-input" required>
-                  <option value="">Select loan type</option>
-                  {% for loan_type in loan_types %}
-                  <option value="{{ loan_type.id }}">{{ loan_type.name }} ({{ loan_type.schedule }})</option>
-                  {% endfor %}
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="apply-amount">Amount (KSH)</label>
-                <input type="number" id="apply-amount" name="amount" class="form-input" placeholder="Enter amount" required>
-              </div>
-            </div>
-            <div class="form-row-single">
-              <div class="form-group">
-                <label for="apply-term">Repayment Term (months/weeks)</label>
-                <input type="number" id="apply-term" name="due" class="form-input" placeholder="Enter term" required>
-              </div>
-            </div>
+                                           <form id="mobile-apply-loan-form" class="loan-card-form" onsubmit="applyLoan(event); return false;">
+             <div class="row">
+               <div class="col-md-6">
+                 <div class="form-group">
+                   <label for="apply-loan-type">Loan Type</label>
+                   <select id="apply-loan-type" name="loan_type" class="form-input" required>
+                     <option value="">Select loan type</option>
+                     {% for loan_type in loan_types %}
+                     <option value="{{ loan_type.id }}">{{ loan_type.name }} ({{ loan_type.schedule }})</option>
+                     {% endfor %}
+                   </select>
+                 </div>
+               </div>
+               <div class="col-md-6">
+                 <div class="form-group">
+                   <label for="apply-amount">Amount (KSH)</label>
+                   <input type="number" id="apply-amount" name="amount" class="form-input" placeholder="Enter amount" required>
+                 </div>
+               </div>
+             </div>
+             <div class="row">
+               <div class="col-md-12">
+                 <div class="form-group">
+                   <label for="apply-term">Repayment Term (months/weeks)</label>
+                   <input type="number" id="apply-term" name="due" class="form-input" placeholder="Enter term" required>
+                 </div>
+               </div>
+             </div>
             <button type="submit" class="create-loan-btn beautiful-btn">
               Apply for Loan
             </button>
