@@ -471,12 +471,18 @@
     cursor: pointer;
     transition: all 0.2s;
     white-space: nowrap;
-    min-width: fit-content;
+    min-width: 0;
+}
+
+.tab-btn:hover {
+    color: #2291A5;
+    background: rgba(34, 145, 165, 0.05);
 }
 
 .tab-btn.active {
-    color: #06b6d4;
-    border-bottom-color: #06b6d4;
+    color: #2291A5;
+    border-bottom-color: #2291A5;
+    background: rgba(34, 145, 165, 0.05);
 }
 
 /* Tab content */
@@ -833,7 +839,7 @@
     }
 }
 
-/* Override base template styles */
+/* Override base template styles - EXACT COPY FROM WORKING LOANS.CSS */
 .modern-fines .home-section {
     margin: 0 !important;
     padding: 0 !important;
@@ -846,50 +852,11 @@
     width: 100% !important;
 }
 
-/* Override Bootstrap container padding that causes margins */
+/* Override any container margins - EXACT COPY FROM WORKING LOANS.CSS */
 .modern-fines .container,
-.modern-fines .container-fluid,
-.modern-fines .container-lg,
-.modern-fines .container-md,
-.modern-fines .container-sm,
-.modern-fines .container-xl {
-    --bs-gutter-x: 0 !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-}
-
-/* Override Bootstrap column spacing */
-.modern-fines .col,
-.modern-fines .col-1,
-.modern-fines .col-2,
-.modern-fines .col-3,
-.modern-fines .col-4,
-.modern-fines .col-5,
-.modern-fines .col-6,
-.modern-fines .col-7,
-.modern-fines .col-8,
-.modern-fines .col-9,
-.modern-fines .col-10,
-.modern-fines .col-11,
-.modern-fines .col-12 {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-}
-
-/* Ensure the mobile-fines container doesn't add margins */
-.modern-fines .mobile-fines {
+.modern-fines .container-fluid {
     margin: 0 !important;
     padding: 0 !important;
     width: 100% !important;
-}
-
-/* Ensure the mobile-tabs have no parent container constraints */
-.modern-fines .mobile-fines .mobile-tabs {
-    margin-left: calc(-50vw + 50%) !important;
-    width: 100vw !important;
-    position: relative !important;
+    max-width: 100% !important;
 }

@@ -150,11 +150,19 @@
     border-bottom: 2px solid transparent;
     cursor: pointer;
     transition: all 0.2s;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+.tab-btn:hover {
+    color: #2291A5;
+    background: rgba(34, 145, 165, 0.05);
 }
 
 .tab-btn.active {
-    color: #06b6d4;
-    border-bottom-color: #06b6d4;
+    color: #2291A5;
+    border-bottom-color: #2291A5;
+    background: rgba(34, 145, 165, 0.05);
 }
 
 /* Tab Content */
@@ -708,7 +716,7 @@
     }
 }
 
-/* Override base template styles */
+/* Override base template styles - EXACT COPY FROM WORKING EXPENSES.CSS */
 .modern-contributions .home-section {
     margin: 0 !important;
     padding: 0 !important;
@@ -721,52 +729,13 @@
     width: 100% !important;
 }
 
-/* Override Bootstrap container padding that causes margins */
+/* Override any container margins - EXACT COPY FROM WORKING EXPENSES.CSS */
 .modern-contributions .container,
-.modern-contributions .container-fluid,
-.modern-contributions .container-lg,
-.modern-contributions .container-md,
-.modern-contributions .container-sm,
-.modern-contributions .container-xl {
-    --bs-gutter-x: 0 !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-}
-
-/* Override Bootstrap column spacing */
-.modern-contributions .col,
-.modern-contributions .col-1,
-.modern-contributions .col-2,
-.modern-contributions .col-3,
-.modern-contributions .col-4,
-.modern-contributions .col-5,
-.modern-contributions .col-6,
-.modern-contributions .col-7,
-.modern-contributions .col-8,
-.modern-contributions .col-9,
-.modern-contributions .col-10,
-.modern-contributions .col-11,
-.modern-contributions .col-12 {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-}
-
-/* Ensure the mobile-contributions container doesn't add margins */
-.modern-contributions .mobile-contributions {
+.modern-contributions .container-fluid {
     margin: 0 !important;
     padding: 0 !important;
     width: 100% !important;
-}
-
-/* Ensure the mobile-tabs have no parent container constraints */
-.modern-contributions .mobile-contributions .mobile-tabs {
-    margin-left: calc(-50vw + 50%) !important;
-    width: 100vw !important;
-    position: relative !important;
+    max-width: 100% !important;
 }
 
 /* Alert styles */
