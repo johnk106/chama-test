@@ -465,29 +465,22 @@
     padding: 0;
     margin: 0;
     width: 100vw;
-    margin-left: calc(-50vw + 50%);
-    position: relative;
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 10;
     overflow-x: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
 
-/* Force edge-to-edge for mobile tabs */
-.modern-fines .mobile-tabs {
-    margin-left: calc(-50vw + 50%) !important;
-    margin-right: calc(-50vw + 50%) !important;
-    width: 100vw !important;
-}
-
-/* Additional force for mobile tabs within mobile-fines */
-.mobile-fines .mobile-tabs {
-    margin-left: calc(-50vw + 50%) !important;
-    margin-right: calc(-50vw + 50%) !important;
-    width: 100vw !important;
-}
-
 .mobile-tabs::-webkit-scrollbar {
     display: none;
+}
+
+/* Add margin to tab content to account for absolute positioned tabs */
+.mobile-fines .tab-content {
+    margin-top: 60px;
 }
 
 .tab-btn {
