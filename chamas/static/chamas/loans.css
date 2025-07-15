@@ -945,3 +945,70 @@ margin: 0;
         width: 100%;
     }
 }
+
+/* Mobile tabs */
+.mobile-tabs {
+    background: white;
+    display: flex;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 0;
+    margin: 0;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    position: relative;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.mobile-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.tab-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 16px 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #9ca3af;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+.tab-btn:hover {
+    color: #2291A5;
+    background: rgba(34, 145, 165, 0.05);
+}
+
+.tab-btn.active {
+    color: #2291A5;
+    border-bottom-color: #2291A5;
+    background: rgba(34, 145, 165, 0.05);
+}
+
+/* Override base template styles */
+.modern-loans .home-section {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+}
+
+.modern-loans .block-body {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+}
+
+/* Override any container margins */
+.modern-loans .container,
+.modern-loans .container-fluid {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
