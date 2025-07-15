@@ -445,7 +445,8 @@
     border-bottom: 1px solid #e5e7eb;
     padding: 0;
     margin: 0;
-    width: 100%;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
     position: relative;
     overflow-x: auto;
     scrollbar-width: none;
@@ -828,4 +829,26 @@
     .fine-view-card {
         padding: 12px;
     }
+}
+
+/* Override base template styles */
+.modern-fines .home-section {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+}
+
+.modern-fines .block-body {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+}
+
+/* Override any container margins */
+.modern-fines .container,
+.modern-fines .container-fluid {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
 }
