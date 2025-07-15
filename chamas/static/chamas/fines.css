@@ -372,7 +372,73 @@
     overflow-x: hidden;
 }
 
-/* Mobile tabs with horizontal scrolling */
+/* Floating Menu Button for Mobile */
+.floating-menu-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+    z-index: 1000;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.floating-menu-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(6, 182, 212, 0.4);
+}
+
+.floating-menu-btn:active {
+    transform: scale(0.95);
+}
+
+.floating-menu-btn i {
+    font-size: 24px;
+    color: white;
+}
+
+/* Sidebar Backdrop for Mobile */
+.sidebar-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+    display: none;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-backdrop.show {
+    display: block;
+    opacity: 1;
+}
+
+/* Mobile Sidebar Overlay Fix */
+@media (max-width: 767px) {
+    /* Ensure main content doesn't move when sidebar opens on mobile */
+    #main {
+        margin-left: 0 !important;
+        transition: none !important;
+    }
+    
+    /* Ensure sidebar overlays on mobile */
+    #mySidenav {
+        z-index: 9999;
+        position: fixed !important;
+    }
+}
+
+/* Mobile tabs */
 .mobile-tabs {
     background: white;
     display: flex;
@@ -391,30 +457,19 @@
     display: none;
 }
 
-.scrollable-tabs {
-    overflow-x: auto;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
-    white-space: nowrap;
-}
-
-.scrollable-tabs::-webkit-scrollbar {
-    display: none; /* WebKit */
-}
-
 .tab-btn {
-    flex-shrink: 0;
+    flex: 1;
     background: none;
     border: none;
-    padding: 16px 12px;
-    font-size: 13px;
+    padding: 16px 8px;
+    font-size: 14px;
     font-weight: 500;
     color: #9ca3af;
     border-bottom: 2px solid transparent;
     cursor: pointer;
     transition: all 0.2s;
     white-space: nowrap;
-    min-width: max-content;
+    min-width: fit-content;
 }
 
 .tab-btn.active {

@@ -9,10 +9,18 @@
 {%endblock%} {%block body%}
 
 <div class="modern-fines">
-  <!-- Mobile View -->
-  <div class="mobile-fines d-block d-lg-none">
-    <!-- Tabs -->
-    <div class="mobile-tabs scrollable-tabs">
+    <!-- Floating Menu Button for Mobile -->
+    <button class="floating-menu-btn d-block d-md-none" onclick="openNav()">
+        <i class='bx bx-menu'></i>
+    </button>
+    
+    <!-- Sidebar Backdrop for Mobile -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeNav()"></div>
+
+    <!-- Mobile View -->
+    <div class="mobile-fines d-block d-lg-none">
+        <!-- Tabs -->
+        <div class="mobile-tabs">
       <button class="tab-btn admin active" data-tab="create-fine">Create Fine</button>
       <button class="tab-btn admin" data-tab="impose-fine">Impose Fine</button>
       <button class="tab-btn admin" data-tab="loan-fines">Loan Fines</button>
