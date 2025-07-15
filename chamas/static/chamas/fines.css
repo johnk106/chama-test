@@ -438,6 +438,25 @@
     }
 }
 
+/* Mobile fines container */
+.mobile-fines {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+}
+
+/* Force Bootstrap class overrides for mobile container */
+.mobile-fines.d-block.d-lg-none {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+}
+
+/* Additional overrides to ensure no margins */
+.modern-fines .mobile-fines * {
+    box-sizing: border-box;
+}
+
 /* Mobile tabs */
 .mobile-tabs {
     background: white;
@@ -451,6 +470,20 @@
     overflow-x: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
+}
+
+/* Force edge-to-edge for mobile tabs */
+.modern-fines .mobile-tabs {
+    margin-left: calc(-50vw + 50%) !important;
+    margin-right: calc(-50vw + 50%) !important;
+    width: 100vw !important;
+}
+
+/* Additional force for mobile tabs within mobile-fines */
+.mobile-fines .mobile-tabs {
+    margin-left: calc(-50vw + 50%) !important;
+    margin-right: calc(-50vw + 50%) !important;
+    width: 100vw !important;
 }
 
 .mobile-tabs::-webkit-scrollbar {

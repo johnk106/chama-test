@@ -122,9 +122,21 @@
 
 /* Mobile Contributions Container */
 .mobile-contributions {
-    margin: 0;
-    padding: 0;
-    width: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+}
+
+/* Force Bootstrap class overrides for mobile container */
+.mobile-contributions.d-block.d-lg-none {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+}
+
+/* Additional overrides to ensure no margins */
+.modern-contributions .mobile-contributions * {
+    box-sizing: border-box;
 }
 
 /* Mobile Tabs */
@@ -137,6 +149,20 @@
     width: 100vw;
     margin-left: calc(-50vw + 50%);
     position: relative;
+}
+
+/* Force edge-to-edge for mobile tabs */
+.modern-contributions .mobile-tabs {
+    margin-left: calc(-50vw + 50%) !important;
+    margin-right: calc(-50vw + 50%) !important;
+    width: 100vw !important;
+}
+
+/* Additional force for mobile tabs within mobile-contributions */
+.mobile-contributions .mobile-tabs {
+    margin-left: calc(-50vw + 50%) !important;
+    margin-right: calc(-50vw + 50%) !important;
+    width: 100vw !important;
 }
 
 .tab-btn {
