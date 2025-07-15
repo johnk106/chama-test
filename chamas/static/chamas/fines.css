@@ -846,13 +846,38 @@
     width: 100% !important;
 }
 
-/* Override any container margins */
+/* Override Bootstrap container padding that causes margins */
 .modern-fines .container,
-.modern-fines .container-fluid {
-    margin: 0 !important;
-    padding: 0 !important;
+.modern-fines .container-fluid,
+.modern-fines .container-lg,
+.modern-fines .container-md,
+.modern-fines .container-sm,
+.modern-fines .container-xl {
+    --bs-gutter-x: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
+}
+
+/* Override Bootstrap column spacing */
+.modern-fines .col,
+.modern-fines .col-1,
+.modern-fines .col-2,
+.modern-fines .col-3,
+.modern-fines .col-4,
+.modern-fines .col-5,
+.modern-fines .col-6,
+.modern-fines .col-7,
+.modern-fines .col-8,
+.modern-fines .col-9,
+.modern-fines .col-10,
+.modern-fines .col-11,
+.modern-fines .col-12 {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
 }
 
 /* Ensure the mobile-fines container doesn't add margins */

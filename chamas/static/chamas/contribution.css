@@ -721,13 +721,38 @@
     width: 100% !important;
 }
 
-/* Override any container margins */
+/* Override Bootstrap container padding that causes margins */
 .modern-contributions .container,
-.modern-contributions .container-fluid {
-    margin: 0 !important;
-    padding: 0 !important;
+.modern-contributions .container-fluid,
+.modern-contributions .container-lg,
+.modern-contributions .container-md,
+.modern-contributions .container-sm,
+.modern-contributions .container-xl {
+    --bs-gutter-x: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
+}
+
+/* Override Bootstrap column spacing */
+.modern-contributions .col,
+.modern-contributions .col-1,
+.modern-contributions .col-2,
+.modern-contributions .col-3,
+.modern-contributions .col-4,
+.modern-contributions .col-5,
+.modern-contributions .col-6,
+.modern-contributions .col-7,
+.modern-contributions .col-8,
+.modern-contributions .col-9,
+.modern-contributions .col-10,
+.modern-contributions .col-11,
+.modern-contributions .col-12 {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
 }
 
 /* Ensure the mobile-contributions container doesn't add margins */
