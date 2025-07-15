@@ -122,21 +122,9 @@
 
 /* Mobile Contributions Container */
 .mobile-contributions {
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100% !important;
-}
-
-/* Force Bootstrap class overrides for mobile container */
-.mobile-contributions.d-block.d-lg-none {
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100% !important;
-}
-
-/* Additional overrides to ensure no margins */
-.modern-contributions .mobile-contributions * {
-    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    width: 100%;
 }
 
 /* Mobile Tabs */
@@ -147,23 +135,8 @@
     padding: 0;
     margin: 0;
     width: 100vw;
-    position: absolute;
-    left: 0;
-    right: 0;
-    z-index: 10;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-
-/* Hide scrollbar */
-.mobile-tabs::-webkit-scrollbar {
-    display: none;
-}
-
-/* Add margin to tab content to account for absolute positioned tabs */
-.mobile-contributions .tab-content {
-    margin-top: 60px;
+    margin-left: calc(-50vw + 50%);
+    position: relative;
 }
 
 .tab-btn {
@@ -755,6 +728,20 @@
     padding: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
+}
+
+/* Ensure the mobile-contributions container doesn't add margins */
+.modern-contributions .mobile-contributions {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+}
+
+/* Ensure the mobile-tabs have no parent container constraints */
+.modern-contributions .mobile-contributions .mobile-tabs {
+    margin-left: calc(-50vw + 50%) !important;
+    width: 100vw !important;
+    position: relative !important;
 }
 
 /* Alert styles */
