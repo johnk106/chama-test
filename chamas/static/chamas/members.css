@@ -451,25 +451,109 @@ h4 {
     background: #f8fafc;
 }
 
-.mobile-members-header {
-    padding: 20px 16px 10px;
+/* Mobile Header */
+.mobile-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
     background: white;
     border-bottom: 1px solid #f1f5f9;
-    margin: 0;
-    width: 100%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
-.mobile-members-header h4 {
-    text-align: left;
-    margin-bottom: 10px;
-    color: var(--color-default);
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    max-width: 100%;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+.back-btn {
+    background: #f8fafc;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.back-btn:hover {
+    background: #e5e7eb;
+}
+
+.back-btn i {
+    font-size: 20px;
+    color: #374151;
+}
+
+.page-title {
+    font-size: 18px;
     font-weight: 600;
+    color: var(--color-default);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header-menu-btn {
+    background: none;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.header-menu-btn:hover {
+    background: #f8fafc;
+}
+
+.header-menu-btn i {
+    font-size: 20px;
+    color: #6b7280;
+}
+
+/* Mobile Alerts */
+.mobile-alerts {
+    padding: 0 16px;
+    background: white;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.mobile-alerts .alert {
+    margin: 0 0 10px 0;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
 }
 
 .mobile-members-list {
     padding: 16px;
     background: #f8fafc;
-    min-height: calc(100vh - 80px);
+    min-height: calc(100vh - 120px);
     margin: 0;
     width: 100%;
     box-sizing: border-box;
