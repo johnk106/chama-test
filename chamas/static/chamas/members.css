@@ -1121,3 +1121,98 @@ h4 {
     background: #ff5252;
 }
 
+/* Desktop/PC View Styling - Add proper margins and spacing */
+@media (min-width: 992px) {
+    .desktop-members {
+        padding: 20px;
+        background: #f8fafc;
+        min-height: 100vh;
+    }
+
+    .desktop-members .row {
+        margin: 0 -10px !important;
+    }
+
+    .desktop-members .col-md-6,
+    .desktop-members .col-md-5 {
+        padding: 0 10px !important;
+    }
+
+    .desktop-members .secs {
+        margin-bottom: 20px;
+        padding: 20px;
+        background-color: white;
+        box-shadow: 0px 10px 20px 0px rgba(148, 163, 184, 0.20);
+        border-radius: 10px;
+    }
+
+    .desktop-members .member-card {
+        margin: 10px 0;
+        padding: 15px;
+        border: 1px solid rgb(191, 191, 191);
+        border-radius: 10px;
+        background: white;
+        transition: all 0.2s ease;
+    }
+
+    .desktop-members .member-card:hover {
+        box-shadow: 0 4px 15px rgba(148, 163, 184, 0.25);
+        transform: translateY(-2px);
+    }
+
+    .desktop-members .add-member-button {
+        margin: 15px 0;
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid var(--color-default);
+        background: white;
+        transition: all 0.2s ease;
+    }
+
+    .desktop-members .add-member-button:hover {
+        background: #f8fafc;
+        box-shadow: 0 4px 15px rgba(33, 145, 165, 0.15);
+        transform: translateY(-1px);
+    }
+
+    /* Member details column styling */
+    .desktop-members .profile-image-parent {
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .desktop-members .name-section,
+    .desktop-members .contact-section,
+    .desktop-members .role-section,
+    .desktop-members .contribution-section,
+    .desktop-members .loan-section,
+    .desktop-members .fine-section {
+        margin: 15px 0;
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid #e5e7eb;
+        background: white;
+    }
+
+    .desktop-members .remove-user-button {
+        margin: 20px 0;
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid red;
+        background: white;
+        transition: all 0.2s ease;
+    }
+
+    .desktop-members .remove-user-button:hover {
+        background: #fef2f2;
+        transform: translateY(-1px);
+    }
+
+    /* Add spacing to the main content wrapper */
+    .desktop-members .row.justify-content-center {
+        max-width: 1200px;
+        margin: 0 auto !important;
+        padding: 0 20px;
+    }
+}
+
