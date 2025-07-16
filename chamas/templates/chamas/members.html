@@ -60,7 +60,7 @@
             </div>
             {%endfor%}
             
-            <div class="add-member-mobile-button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <div class="add-member-mobile-button admin" data-bs-toggle="modal" data-bs-target="#exampleModal">
                 <div class="add-member-content">
                     <div class="add-icon">
                         <i class="fa-solid fa-plus"></i>
@@ -647,8 +647,8 @@
                 </div>
             </div>
             
-            <div class="admin-actions admin" style="display: none;" id="adminActions">
-                <button class="remove-member-btn" id="modalRemoveMember">
+            <div class="admin-actions admin" id="adminActions">
+                <button class="remove-member-btn admin" id="modalRemoveMember">
                     <i class='bx bx-user-minus'></i>
                     Remove Member
                 </button>
@@ -662,6 +662,8 @@
 function openMemberModal(memberId) {
     const modal = document.getElementById('memberModal');
     modal.style.display = 'flex';
+    modal.classList.add('show');
+    document.body.classList.add('modal-open');
     document.body.style.overflow = 'hidden';
     
     // Fetch member details
@@ -673,18 +675,26 @@ function openMemberModal(memberId) {
                 populateMemberModal(response);
             } else {
                 console.error('Failed to fetch member details:', response.message);
+                closeMemberModal();
             }
         },
         error: function (xhr, status, error) {
             console.error('AJAX request failed:', status, error);
+            closeMemberModal();
         }
     });
 }
 
 function closeMemberModal() {
     const modal = document.getElementById('memberModal');
-    modal.style.display = 'none';
+    modal.classList.remove('show');
+    document.body.classList.remove('modal-open');
     document.body.style.overflow = 'auto';
+    
+    // Hide modal after transition
+    setTimeout(() => {
+        modal.style.display = 'none';
+    }, 300);
 }
 
 function populateMemberModal(response) {
