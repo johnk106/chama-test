@@ -43,6 +43,15 @@ body {
     width: 100% !important;
 }
 
+/* Ensure sidenav appears on top of page content */
+#mySidenav {
+    z-index: 9999 !important;
+}
+
+.sidenav {
+    z-index: 9999 !important;
+}
+
 .secs {
     background-color: white;
     padding: 10px;
@@ -486,14 +495,14 @@ h4 {
         min-height: 100vh;
     }
 
-         /* Mobile Header */
-     .mobile-header {
-         background: white;
-         border-bottom: 1px solid #f1f5f9;
-         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-         position: relative;
-         z-index: 10;
-     }
+                   /* Mobile Header */
+      .mobile-header {
+          background: white;
+          border-bottom: 1px solid #f1f5f9;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+          position: relative;
+          z-index: 100;
+      }
 
            .header-content {
           display: flex;
@@ -748,6 +757,11 @@ h4 {
         .mobile-members {
             position: relative;
             z-index: 1;
+        }
+
+        /* Ensure navbar header is below sidenav but above content */
+        .navbar-cont.header {
+            z-index: 1000 !important;
         }
        
        /* Modal body scroll when open */
