@@ -203,8 +203,10 @@
     margin-left: calc(-50vw + 50%);
     position: relative;
     overflow-x: auto;
+    overflow-y: hidden;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    scroll-behavior: smooth;
 }
 
 .mobile-tabs::-webkit-scrollbar {
@@ -212,10 +214,10 @@
 }
 
 .tab-btn {
-    flex: 1;
+    flex: 0 0 auto;
     background: none;
     border: none;
-    padding: 16px 8px;
+    padding: 16px 20px;
     font-size: 14px;
     font-weight: 500;
     color: #9ca3af;
@@ -223,7 +225,9 @@
     cursor: pointer;
     transition: all 0.2s;
     white-space: nowrap;
-    min-width: 0;
+    min-width: fit-content;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .tab-btn:hover {
@@ -436,7 +440,8 @@
     
     .tab-btn {
         font-size: 13px;
-        padding: 14px 6px;
+        padding: 14px 18px;
+        min-width: 120px;
     }
     
     .create-notification-card,
@@ -446,11 +451,21 @@
     }
 }
 
+/* Small screens */
+@media (max-width: 768px) {
+    .tab-btn {
+        font-size: 13px;
+        padding: 14px 16px;
+        min-width: 110px;
+    }
+}
+
 /* Very small screens */
 @media (max-width: 480px) {
     .tab-btn {
         font-size: 12px;
-        padding: 12px 4px;
+        padding: 12px 14px;
+        min-width: 100px;
     }
     
     .notification-history-beautiful-card {
@@ -460,5 +475,14 @@
     .notification-history-beautiful-label,
     .notification-history-beautiful-value {
         font-size: 13px;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+    .tab-btn {
+        font-size: 11px;
+        padding: 12px 12px;
+        min-width: 90px;
     }
 }
