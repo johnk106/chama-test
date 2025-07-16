@@ -13,367 +13,277 @@
     <div class="mobile-fines d-block d-lg-none">
         <!-- Tabs -->
         <div class="mobile-tabs">
-      <button class="tab-btn admin active" data-tab="create-fine">Create Fine</button>
-      <button class="tab-btn admin" data-tab="impose-fine">Impose Fine</button>
-      <button class="tab-btn admin" data-tab="loan-fines">Loan Fines</button>
-      <button class="tab-btn admin" data-tab="contribution-fines">Contribution Fines</button>
-      <button class="tab-btn member" data-tab="group-fines">Group Fines</button>
-      <button class="tab-btn member" data-tab="my-loan-fines">My Loan Fines</button>
-      <button class="tab-btn member" data-tab="my-contribution-fines">My Contribution Fines</button>
-    </div>
-
-    <!-- Create Fine Tab Content -->
-    <div class="tab-content admin active" id="create-fine">
-      <div class="mobile-create-form admin">
-        <div class="create-fine-card">
-          <div class="create-fine-header">
-            <i class='bx bx-error-circle'></i>
-            <span>Create Fine Type</span>
-          </div>
-          <form id="mobile-create-fine-form" class="fine-card-form">
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="mobile-fine-name">Name</label>
-                  <input type="text" id="mobile-fine-name" name="name" class="form-input" placeholder="Enter fine name" required>
+            <button class="tab-btn admin active" data-tab="create-fine">Create Fine</button>
+            <button class="tab-btn admin" data-tab="impose-fine">Impose Fine</button>
+            <button class="tab-btn admin" data-tab="loan-fines">Loan Fines</button>
+            <button class="tab-btn admin" data-tab="contribution-fines">Contribution Fines</button>
+            <button class="tab-btn" data-tab="group-fines">Group Fines</button>
+            <button class="tab-btn" data-tab="my-loan-fines">My Loan Fines</button>
+            <button class="tab-btn" data-tab="my-contribution-fines">My Contribution Fines</button>
+        </div>
+        
+        <!-- Create Fine Tab Content -->
+        <div class="tab-content active" id="create-fine">
+            <div class="mobile-create-form admin">
+                <div class="create-fine-card" style="margin-top: 18px;">
+                    <div class="create-fine-header">
+                        <i class='bx bx-error-circle'></i>
+                        <span>Create Fine Type</span>
+                    </div>
+                    <form id="mobile-create-fine-form" class="fine-card-form" onsubmit="submitFineFormMobile(); return false;">
+                        <div class="form-row form-row-split">
+                            <div class="form-group">
+                                <label for="mobile-fine-name">Name</label>
+                                <input type="text" id="mobile-fine-name" name="name" class="form-input" placeholder="Enter fine name">
+                            </div>
+                            <div class="form-group">
+                                <label for="mobile-fine-amount">Amount</label>
+                                <input type="number" id="mobile-fine-amount" name="amount" class="form-input" placeholder="Enter amount">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="mobile-fine-description">Description</label>
+                            <textarea id="mobile-fine-description" name="description" class="form-input" rows="2" placeholder="Enter description"></textarea>
+                        </div>
+                        <button type="submit" class="create-fine-btn beautiful-btn" id="mobile-create-fine-button">
+                            Create Fine Type
+                        </button>
+                    </form>
                 </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="mobile-fine-amount">Amount (KSH)</label>
-                  <input type="number" id="mobile-fine-amount" name="amount" class="form-input" placeholder="Enter amount" required>
+            </div>
+        </div>
+        
+        <!-- Impose Fine Tab Content -->
+        <div class="tab-content" id="impose-fine">
+            <div class="mobile-fine-history-list">
+                {% for loan in loans %}
+                <div class="fine-history-beautiful-card">
+                    <div class="fine-history-beautiful-row">
+                        <div class="fine-history-beautiful-label">Member</div>
+                        <div class="fine-history-beautiful-value">{{ loan.member.name }}</div>
+                        <div class="fine-history-beautiful-label">Loan Amount</div>
+                        <div class="fine-history-beautiful-value">Ksh{{ loan.amount|floatformat:0 }}</div>
+                    </div>
+                    <div class="fine-history-beautiful-row">
+                        <div class="fine-history-beautiful-label">Loan Balance</div>
+                        <div class="fine-history-beautiful-value">Ksh{{ loan.balance|floatformat:0 }}</div>
+                        <div class="fine-history-beautiful-label">Actions</div>
+                        <div class="fine-history-beautiful-value">
+                            <select class="form-input-small fine-type" data-loan-id="{{ loan.id }}">
+                                {% for type in fine_types %}
+                                <option value="{{ type.id }}">{{ type.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <button class="impose-fine-btn-small beautiful-btn-small" data-loan-id="{{ loan.id }}">Impose</button>
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <label for="mobile-fine-description">Description</label>
-                  <textarea id="mobile-fine-description" name="description" class="form-input" rows="3" placeholder="Enter description" required></textarea>
+                {% empty %}
+                <div class="no-fines">
+                    <i class='bx bx-inbox'></i>
+                    <p>No loans available for fines</p>
                 </div>
-              </div>
+                {% endfor %}
             </div>
-            <button type="submit" class="create-fine-btn beautiful-btn">
-              Create Fine Type
-            </button>
-          </form>
         </div>
-      </div>
-    </div>
-
-    <!-- Impose Fine Tab Content -->
-    <div class="tab-content admin" id="impose-fine">
-      <div class="mobile-fines-list">
-        {% for loan in loans %}
-        <div class="fine-member-card">
-          <div class="fine-member-header">
-            <div class="fine-member-info">
-              {% if loan.member.profile %}
-              <div class="fine-avatar" style="background-image: url({{loan.member.profile.url}});"></div>
-              {% else %}
-              <div class="fine-avatar"></div>
-              {% endif %}
-              <div class="fine-member-details">
-                <h6>{{ loan.member.name }}</h6>
-                <p>Loan: Ksh{{ loan.amount|floatformat:0 }} | Balance: Ksh{{ loan.balance|floatformat:0 }}</p>
-              </div>
-            </div>
-            <i class="bx bx-chevron-down fine-toggle"></i>
-          </div>
-          <div class="fine-member-content">
-            <form class="impose-fine-form">
-              <input type="hidden" class="loan-id" value="{{ loan.id }}">
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="form-group">
-                    <label for="fine-type-{{ loan.id }}">Fine Type</label>
-                    <select name="fine-type" class="form-input fine-type" id="fine-type-{{ loan.id }}">
-                      {% for type in fine_types %}
-                      <option value="{{ type.id }}">{{ type.name }}</option>
-                      {% endfor %}
-                    </select>
-                  </div>
+        
+        <!-- Loan Fines Tab Content -->
+        <div class="tab-content" id="loan-fines">
+            <div class="mobile-fine-history-list">
+                {% for fine in fines %}
+                <div class="fine-history-beautiful-card">
+                    <div class="fine-history-beautiful-row">
+                        <div class="fine-history-beautiful-label">Member</div>
+                        <div class="fine-history-beautiful-value">{{ fine.member.name }}</div>
+                        <div class="fine-history-beautiful-label">Loan Amount</div>
+                        <div class="fine-history-beautiful-value">Ksh{{ fine.loan_amount|floatformat:0 }}</div>
+                    </div>
+                    <div class="fine-history-beautiful-row">
+                        <div class="fine-history-beautiful-label">Fine Amount</div>
+                        <div class="fine-history-beautiful-value">Ksh{{ fine.fine_amount|floatformat:0 }}</div>
+                        <div class="fine-history-beautiful-label">Fine Balance</div>
+                        <div class="fine-history-beautiful-value">Ksh{{ fine.fine_balance|floatformat:0 }}</div>
+                    </div>
+                    <div class="fine-history-beautiful-row">
+                        <div class="fine-history-beautiful-label">Payment</div>
+                        <div class="fine-history-beautiful-value">
+                            <input type="number" class="form-input-small" placeholder="Amount" data-fine-id="{{ fine.id }}">
+                            <button class="update-fine-btn-small beautiful-btn-small" data-fine-id="{{ fine.id }}">Pay</button>
+                        </div>
+                    </div>
                 </div>
-              </div>
-              <button type="button" class="impose-fine-btn beautiful-btn impose-fine-button">
-                Impose Fine
-              </button>
-            </form>
-          </div>
-        </div>
-        {% empty %}
-        <div class="no-fines">
-          <i class='bx bx-inbox'></i>
-          <p>No loans available for fines</p>
-        </div>
-        {% endfor %}
-      </div>
-    </div>
-
-    <!-- Loan Fines Tab Content -->
-    <div class="tab-content admin" id="loan-fines">
-      <div class="mobile-fines-list">
-        {% for fine in fines %}
-        <div class="fine-payment-card">
-          <div class="fine-payment-header">
-            <div class="fine-member-info">
-              {% if fine.member.profile %}
-              <div class="fine-avatar" style="background-image: url({{fine.member.profile.url}});"></div>
-              {% else %}
-              <div class="fine-avatar"></div>
-              {% endif %}
-              <div class="fine-member-details">
-                <h6>{{ fine.member.name }}</h6>
-                <p>Fine: Ksh{{ fine.fine_amount|floatformat:0 }} | Balance: Ksh{{ fine.fine_balance|floatformat:0 }}</p>
-              </div>
-            </div>
-            <i class="bx bx-chevron-down fine-toggle"></i>
-          </div>
-          <div class="fine-payment-content">
-            <div class="fine-details-grid">
-              <div class="fine-detail-item">
-                <div class="fine-detail-label">Loan Amount</div>
-                <div class="fine-detail-value">Ksh{{ fine.loan_amount|floatformat:0 }}</div>
-              </div>
-              <div class="fine-detail-item">
-                <div class="fine-detail-label">Loan Balance</div>
-                <div class="fine-detail-value">Ksh{{ fine.loan_balance|floatformat:0 }}</div>
-              </div>
-              <div class="fine-detail-item">
-                <div class="fine-detail-label">Fine Amount</div>
-                <div class="fine-detail-value">Ksh{{ fine.fine_amount|floatformat:0 }}</div>
-              </div>
-              <div class="fine-detail-item">
-                <div class="fine-detail-label">Fine Balance</div>
-                <div class="fine-detail-value">Ksh{{ fine.fine_balance|floatformat:0 }}</div>
-              </div>
-            </div>
-            <form class="update-fine-form">
-              <input type="hidden" id="fine-id" value="{{ fine.id }}">
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="form-group">
-                    <label for="fine-payment-{{ fine.id }}">Fine Payment</label>
-                    <input type="number" name="fine-amount" class="form-input" id="fine-payment-{{ fine.id }}" placeholder="Enter payment amount">
-                  </div>
+                {% empty %}
+                <div class="no-fines">
+                    <i class='bx bx-inbox'></i>
+                    <p>No active loan fines</p>
                 </div>
-              </div>
-              <button type="button" class="update-fine-btn beautiful-btn update-fine-button">
-                Update Payment
-              </button>
-            </form>
-          </div>
-        </div>
-        {% empty %}
-        <div class="no-fines">
-          <i class='bx bx-inbox'></i>
-          <p>No active loan fines</p>
-        </div>
-        {% endfor %}
-      </div>
-    </div>
-
-    <!-- Contribution Fines Tab Content -->
-    <div class="tab-content admin" id="contribution-fines">
-      <div class="mobile-fines-list">
-        {% for fine in contribution_fines %}
-        <div class="fine-payment-card">
-          <div class="fine-payment-header">
-            <div class="fine-member-info">
-              {% if fine.member.profile %}
-              <div class="fine-avatar" style="background-image: url({{fine.member.profile.url}});"></div>
-              {% else %}
-              <div class="fine-avatar"></div>
-              {% endif %}
-              <div class="fine-member-details">
-                <h6>{{ fine.member.name }}</h6>
-                <p>{{ fine.contribution.name }} - Ksh{{ fine.fine_amount|floatformat:0 }}</p>
-              </div>
+                {% endfor %}
             </div>
-            <i class="bx bx-chevron-down fine-toggle"></i>
-          </div>
-          <div class="fine-payment-content">
-            <div class="fine-details-grid">
-              <div class="fine-detail-item">
-                <div class="fine-detail-label">Contribution Name</div>
-                <div class="fine-detail-value">{{ fine.contribution.name }}</div>
-              </div>
-              <div class="fine-detail-item">
-                <div class="fine-detail-label">Contribution Amount</div>
-                <div class="fine-detail-value">Ksh{{ fine.contribution.amount|floatformat:0 }}</div>
-              </div>
-              <div class="fine-detail-item">
-                <div class="fine-detail-label">Contribution Balance</div>
-                <div class="fine-detail-value">Ksh{{ fine.contribution_balance|floatformat:0 }}</div>
-              </div>
-              <div class="fine-detail-item">
-                <div class="fine-detail-label">Fine Amount</div>
-                <div class="fine-detail-value">Ksh{{ fine.fine_amount|floatformat:0 }}</div>
-              </div>
-              <div class="fine-detail-item">
-                <div class="fine-detail-label">Fine Balance</div>
-                <div class="fine-detail-value">Ksh{{ fine.fine_balance|floatformat:0 }}</div>
-              </div>
-            </div>
-            <form class="update-fine-form">
-              <input type="hidden" id="fine-id" value="{{ fine.id }}">
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="form-group">
-                    <label for="contribution-fine-payment-{{ fine.id }}">Fine Payment</label>
-                    <input type="number" name="fine-amount" class="form-input" id="contribution-fine-payment-{{ fine.id }}" placeholder="Enter payment amount">
-                  </div>
+        </div>
+        
+        <!-- Contribution Fines Tab Content -->
+        <div class="tab-content" id="contribution-fines">
+            <div class="mobile-fine-history-list">
+                {% for fine in contribution_fines %}
+                <div class="fine-history-beautiful-card">
+                    <div class="fine-history-beautiful-row">
+                        <div class="fine-history-beautiful-label">Member</div>
+                        <div class="fine-history-beautiful-value">{{ fine.member.name }}</div>
+                        <div class="fine-history-beautiful-label">Contribution</div>
+                        <div class="fine-history-beautiful-value">{{ fine.contribution.name }}</div>
+                    </div>
+                    <div class="fine-history-beautiful-row">
+                        <div class="fine-history-beautiful-label">Fine Amount</div>
+                        <div class="fine-history-beautiful-value">Ksh{{ fine.fine_amount|floatformat:0 }}</div>
+                        <div class="fine-history-beautiful-label">Fine Balance</div>
+                        <div class="fine-history-beautiful-value">Ksh{{ fine.fine_balance|floatformat:0 }}</div>
+                    </div>
+                    <div class="fine-history-beautiful-row">
+                        <div class="fine-history-beautiful-label">Payment</div>
+                        <div class="fine-history-beautiful-value">
+                            <input type="number" class="form-input-small" placeholder="Amount" data-fine-id="{{ fine.id }}">
+                            <button class="update-contribution-fine-btn-small beautiful-btn-small" data-fine-id="{{ fine.id }}">Pay</button>
+                        </div>
+                    </div>
                 </div>
-              </div>
-              <button type="button" class="update-fine-btn beautiful-btn update-fine-button">
-                Update Payment
-              </button>
-            </form>
-          </div>
+                {% empty %}
+                <div class="no-fines">
+                    <i class='bx bx-inbox'></i>
+                    <p>No active contribution fines</p>
+                </div>
+                {% endfor %}
+            </div>
         </div>
-        {% empty %}
-        <div class="no-fines">
-          <i class='bx bx-inbox'></i>
-          <p>No active contribution fines</p>
+        
+        <!-- Group Fines Tab Content -->
+        <div class="tab-content" id="group-fines">
+            <div class="mobile-fine-history-list">
+                {% for fine in fines %}
+                <div class="fine-history-beautiful-card">
+                    <div class="fine-history-beautiful-row">
+                        <div class="fine-history-beautiful-label">Member</div>
+                        <div class="fine-history-beautiful-value">{{ fine.member.name }}</div>
+                        <div class="fine-history-beautiful-label">Type</div>
+                        <div class="fine-history-beautiful-value">{{ fine.fine_type.name }}</div>
+                    </div>
+                    <div class="fine-history-beautiful-row">
+                        <div class="fine-history-beautiful-label">Amount</div>
+                        <div class="fine-history-beautiful-value">Ksh{{ fine.fine_amount|floatformat:0 }}</div>
+                        <div class="fine-history-beautiful-label">Balance</div>
+                        <div class="fine-history-beautiful-value">Ksh{{ fine.fine_balance|floatformat:0 }}</div>
+                    </div>
+                    <div class="fine-history-beautiful-row">
+                        <div class="fine-history-beautiful-label">Status</div>
+                        <div class="fine-history-beautiful-value">{{ fine.status }}</div>
+                        <div class="fine-history-beautiful-label">Date</div>
+                        <div class="fine-history-beautiful-value">{{ fine.created|date:"d/m/Y" }}</div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="no-fines">
+                    <i class='bx bx-inbox'></i>
+                    <p>No loan fines</p>
+                </div>
+                {% endfor %}
+                
+                {% for fine in contribution_fines %}
+                <div class="fine-history-beautiful-card">
+                    <div class="fine-history-beautiful-row">
+                        <div class="fine-history-beautiful-label">Member</div>
+                        <div class="fine-history-beautiful-value">{{ fine.member.name }}</div>
+                        <div class="fine-history-beautiful-label">Type</div>
+                        <div class="fine-history-beautiful-value">{{ fine.fine_type.name }}</div>
+                    </div>
+                    <div class="fine-history-beautiful-row">
+                        <div class="fine-history-beautiful-label">Amount</div>
+                        <div class="fine-history-beautiful-value">Ksh{{ fine.fine_amount|floatformat:0 }}</div>
+                        <div class="fine-history-beautiful-label">Balance</div>
+                        <div class="fine-history-beautiful-value">Ksh{{ fine.fine_balance|floatformat:0 }}</div>
+                    </div>
+                    <div class="fine-history-beautiful-row">
+                        <div class="fine-history-beautiful-label">Status</div>
+                        <div class="fine-history-beautiful-value">{{ fine.status }}</div>
+                        <div class="fine-history-beautiful-label">Date</div>
+                        <div class="fine-history-beautiful-value">{{ fine.created|date:"d/m/Y" }}</div>
+                    </div>
+                </div>
+                {% empty %}
+                {% if not fines %}
+                <div class="no-fines">
+                    <i class='bx bx-inbox'></i>
+                    <p>No contribution fines</p>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
         </div>
-        {% endfor %}
-      </div>
+        
+        <!-- My Loan Fines Tab Content -->
+        <div class="tab-content" id="my-loan-fines">
+            <div class="mobile-fine-history-list">
+                {% for fine in my_loan_fines %}
+                <div class="fine-history-beautiful-card">
+                    <div class="fine-history-beautiful-row">
+                        <div class="fine-history-beautiful-label">Type</div>
+                        <div class="fine-history-beautiful-value">{{ fine.fine_type.name }}</div>
+                        <div class="fine-history-beautiful-label">Amount</div>
+                        <div class="fine-history-beautiful-value">Ksh{{ fine.fine_amount|floatformat:0 }}</div>
+                    </div>
+                    <div class="fine-history-beautiful-row">
+                        <div class="fine-history-beautiful-label">Paid</div>
+                        <div class="fine-history-beautiful-value">Ksh{{ fine.paid_fine_amount|floatformat:0 }}</div>
+                        <div class="fine-history-beautiful-label">Balance</div>
+                        <div class="fine-history-beautiful-value">Ksh{{ fine.fine_balance|floatformat:0 }}</div>
+                    </div>
+                    <div class="fine-history-beautiful-row">
+                        <div class="fine-history-beautiful-label">Status</div>
+                        <div class="fine-history-beautiful-value">{{ fine.status }}</div>
+                        <div class="fine-history-beautiful-label">Date</div>
+                        <div class="fine-history-beautiful-value">{{ fine.created|date:"d/m/Y" }}</div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="no-fines">
+                    <i class='bx bx-inbox'></i>
+                    <p>You have no loan fines</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- My Contribution Fines Tab Content -->
+        <div class="tab-content" id="my-contribution-fines">
+            <div class="mobile-fine-history-list">
+                {% for fine in my_contribution_fines %}
+                <div class="fine-history-beautiful-card">
+                    <div class="fine-history-beautiful-row">
+                        <div class="fine-history-beautiful-label">Type</div>
+                        <div class="fine-history-beautiful-value">{{ fine.fine_type.name }}</div>
+                        <div class="fine-history-beautiful-label">Amount</div>
+                        <div class="fine-history-beautiful-value">Ksh{{ fine.fine_amount|floatformat:0 }}</div>
+                    </div>
+                    <div class="fine-history-beautiful-row">
+                        <div class="fine-history-beautiful-label">Paid</div>
+                        <div class="fine-history-beautiful-value">Ksh{{ fine.paid_fine_amount|floatformat:0 }}</div>
+                        <div class="fine-history-beautiful-label">Balance</div>
+                        <div class="fine-history-beautiful-value">Ksh{{ fine.fine_balance|floatformat:0 }}</div>
+                    </div>
+                    <div class="fine-history-beautiful-row">
+                        <div class="fine-history-beautiful-label">Status</div>
+                        <div class="fine-history-beautiful-value">{{ fine.status }}</div>
+                        <div class="fine-history-beautiful-label">Date</div>
+                        <div class="fine-history-beautiful-value">{{ fine.created|date:"d/m/Y" }}</div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="no-fines">
+                    <i class='bx bx-inbox'></i>
+                    <p>You have no contribution fines</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
-
-    <!-- Group Fines Tab Content -->
-    <div class="tab-content member" id="group-fines">
-      <div class="mobile-fines-list">
-        <div class="fine-section-header">
-          <h6>Loan Fines</h6>
-        </div>
-        {% for fine in fines %}
-        <div class="fine-view-card">
-          <div class="fine-view-row">
-            <div class="fine-view-label">Member</div>
-            <div class="fine-view-value">{{ fine.member.name }}</div>
-            <div class="fine-view-label">Type</div>
-            <div class="fine-view-value">{{ fine.fine_type.name }}</div>
-          </div>
-          <div class="fine-view-row">
-            <div class="fine-view-label">Amount</div>
-            <div class="fine-view-value">Ksh{{ fine.fine_amount|floatformat:0 }}</div>
-            <div class="fine-view-label">Balance</div>
-            <div class="fine-view-value">Ksh{{ fine.fine_balance|floatformat:0 }}</div>
-          </div>
-          <div class="fine-view-row">
-            <div class="fine-view-label">Status</div>
-            <div class="fine-view-value">{{ fine.status }}</div>
-            <div class="fine-view-label">Date</div>
-            <div class="fine-view-value">{{ fine.created|date:"d/m/Y" }}</div>
-          </div>
-        </div>
-        {% empty %}
-        <div class="no-fines">
-          <i class='bx bx-inbox'></i>
-          <p>No loan fines</p>
-        </div>
-        {% endfor %}
-
-        <div class="fine-section-header">
-          <h6>Contribution Fines</h6>
-        </div>
-        {% for fine in contribution_fines %}
-        <div class="fine-view-card">
-          <div class="fine-view-row">
-            <div class="fine-view-label">Member</div>
-            <div class="fine-view-value">{{ fine.member.name }}</div>
-            <div class="fine-view-label">Type</div>
-            <div class="fine-view-value">{{ fine.fine_type.name }}</div>
-          </div>
-          <div class="fine-view-row">
-            <div class="fine-view-label">Amount</div>
-            <div class="fine-view-value">Ksh{{ fine.fine_amount|floatformat:0 }}</div>
-            <div class="fine-view-label">Balance</div>
-            <div class="fine-view-value">Ksh{{ fine.fine_balance|floatformat:0 }}</div>
-          </div>
-          <div class="fine-view-row">
-            <div class="fine-view-label">Status</div>
-            <div class="fine-view-value">{{ fine.status }}</div>
-            <div class="fine-view-label">Date</div>
-            <div class="fine-view-value">{{ fine.created|date:"d/m/Y" }}</div>
-          </div>
-        </div>
-        {% empty %}
-        <div class="no-fines">
-          <i class='bx bx-inbox'></i>
-          <p>No contribution fines</p>
-        </div>
-        {% endfor %}
-      </div>
-    </div>
-
-    <!-- My Loan Fines Tab Content -->
-    <div class="tab-content member" id="my-loan-fines">
-      <div class="mobile-fines-list">
-        {% for fine in my_loan_fines %}
-        <div class="fine-view-card">
-          <div class="fine-view-row">
-            <div class="fine-view-label">Type</div>
-            <div class="fine-view-value">{{ fine.fine_type.name }}</div>
-            <div class="fine-view-label">Amount</div>
-            <div class="fine-view-value">Ksh{{ fine.fine_amount|floatformat:0 }}</div>
-          </div>
-          <div class="fine-view-row">
-            <div class="fine-view-label">Paid</div>
-            <div class="fine-view-value">Ksh{{ fine.paid_fine_amount|floatformat:0 }}</div>
-            <div class="fine-view-label">Balance</div>
-            <div class="fine-view-value">Ksh{{ fine.fine_balance|floatformat:0 }}</div>
-          </div>
-          <div class="fine-view-row">
-            <div class="fine-view-label">Status</div>
-            <div class="fine-view-value">{{ fine.status }}</div>
-            <div class="fine-view-label">Date</div>
-            <div class="fine-view-value">{{ fine.created|date:"d/m/Y" }}</div>
-          </div>
-        </div>
-        {% empty %}
-        <div class="no-fines">
-          <i class='bx bx-inbox'></i>
-          <p>You have no loan fines</p>
-        </div>
-        {% endfor %}
-      </div>
-    </div>
-
-    <!-- My Contribution Fines Tab Content -->
-    <div class="tab-content member" id="my-contribution-fines">
-      <div class="mobile-fines-list">
-        {% for fine in my_contribution_fines %}
-        <div class="fine-view-card">
-          <div class="fine-view-row">
-            <div class="fine-view-label">Type</div>
-            <div class="fine-view-value">{{ fine.fine_type.name }}</div>
-            <div class="fine-view-label">Amount</div>
-            <div class="fine-view-value">Ksh{{ fine.fine_amount|floatformat:0 }}</div>
-          </div>
-          <div class="fine-view-row">
-            <div class="fine-view-label">Paid</div>
-            <div class="fine-view-value">Ksh{{ fine.paid_fine_amount|floatformat:0 }}</div>
-            <div class="fine-view-label">Balance</div>
-            <div class="fine-view-value">Ksh{{ fine.fine_balance|floatformat:0 }}</div>
-          </div>
-          <div class="fine-view-row">
-            <div class="fine-view-label">Status</div>
-            <div class="fine-view-value">{{ fine.status }}</div>
-            <div class="fine-view-label">Date</div>
-            <div class="fine-view-value">{{ fine.created|date:"d/m/Y" }}</div>
-          </div>
-        </div>
-        {% empty %}
-        <div class="no-fines">
-          <i class='bx bx-inbox'></i>
-          <p>You have no contribution fines</p>
-        </div>
-        {% endfor %}
-      </div>
-    </div>
-
-  </div>
 
   <!-- Desktop View -->
   <div class="desktop-fines d-none d-lg-block">

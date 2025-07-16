@@ -491,19 +491,196 @@
 
 /* Tab content */
 .tab-content {
-    display: none !important;
-    padding: 0;
-    margin: 0;
+    display: none;
+    padding: 20px 16px;
     width: 100%;
 }
 
 .tab-content.active {
-    display: block !important;
+    display: block;
 }
 
 /* Mobile forms */
+.create-fine-card {
+    margin-top: 24px;
+}
+
+.create-fine-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.create-fine-header i {
+    font-size: 20px;
+    color: #2291A5;
+}
+
+.create-fine-header span {
+    font-size: 18px;
+    font-weight: 600;
+    color: #222b45;
+}
+
+.fine-card-form {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(44, 62, 80, 0.07);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.form-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.form-row-split {
+    display: flex;
+    gap: 12px;
+}
+
+.form-row-split .form-group {
+    flex: 1;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #2291A5;
+    margin-bottom: 6px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #222b45;
+    background: #fff;
+    transition: border-color 0.2s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #2291A5;
+    box-shadow: 0 0 0 3px rgba(34, 145, 165, 0.1);
+}
+
+.form-input::placeholder {
+    color: #9ca3af;
+    font-weight: 400;
+}
+
+.form-input-small {
+    width: 100px;
+    padding: 6px 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 12px;
+    margin-right: 8px;
+}
+
+.beautiful-btn {
+    width: 100%;
+    padding: 14px 20px;
+    background: #2291A5;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.beautiful-btn:hover {
+    background: #1e7a8c;
+}
+
+.beautiful-btn:active {
+    transform: translateY(1px);
+}
+
+.beautiful-btn-small {
+    padding: 6px 12px;
+    background: #2291A5;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.beautiful-btn-small:hover {
+    background: #1e7a8c;
+}
+
+/* Fine History Beautiful Card Styles */
+.fine-history-beautiful-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(44, 62, 80, 0.07);
+    padding: 18px 14px;
+    margin-bottom: 14px;
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.fine-history-beautiful-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.fine-history-beautiful-label {
+    font-size: 13px;
+    color: #7b8a99;
+    font-weight: 500;
+    min-width: 90px;
+    margin-right: 8px;
+    margin-bottom: 4px;
+    flex: 1 1 40%;
+}
+
+.fine-history-beautiful-value {
+    font-size: 15px;
+    color: #222b45;
+    font-weight: 600;
+    margin-bottom: 4px;
+    flex: 1 1 50%;
+    text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.mobile-fine-history-list {
+    padding: 0 4px;
+}
+
 .mobile-create-form {
-    padding: 16px;
+    padding: 0;
     margin: 0;
 }
 
@@ -787,21 +964,25 @@
 
 /* No fines state */
 .no-fines {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
     text-align: center;
-    padding: 48px 16px;
-    color: #64748b;
 }
 
 .no-fines i {
     font-size: 48px;
-    margin-bottom: 12px;
-    opacity: 0.5;
+    color: #9ca3af;
+    margin-bottom: 16px;
 }
 
 .no-fines p {
-    margin: 0;
-    font-size: 14px;
+    font-size: 16px;
+    color: #6b7280;
     font-weight: 500;
+    margin: 0;
 }
 
 /* Bootstrap grid support */
