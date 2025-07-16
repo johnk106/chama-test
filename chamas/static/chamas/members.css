@@ -6,6 +6,43 @@
     --color-light: #e0e0e0;
 }
 
+/* Reset default margins and paddings for full-width layout */
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.container-fluid {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.container {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.row {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+}
+
+[class*="col-"] {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+#main {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+}
+
 .secs {
     background-color: white;
     padding: 10px;
