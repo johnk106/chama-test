@@ -1121,64 +1121,67 @@ h4 {
     background: #ff5252;
 }
 
-/* Desktop/PC View Styling - Add proper margins and spacing */
+/* Desktop/PC View Styling - Clean and organized layout */
 @media (min-width: 992px) {
     .desktop-members {
-        padding: 20px;
         background: #f8fafc;
         min-height: 100vh;
+        padding: 20px 0;
     }
 
-    .desktop-members .row {
-        margin: 0 -10px !important;
+    .desktop-members .row.justify-content-center {
+        max-width: 1200px;
+        margin: 0 auto !important;
+        padding: 0 15px;
     }
 
     .desktop-members .col-md-6,
     .desktop-members .col-md-5 {
-        padding: 0 10px !important;
+        padding: 0 15px !important;
     }
 
     .desktop-members .secs {
-        margin-bottom: 20px;
-        padding: 20px;
         background-color: white;
+        padding: 20px;
         box-shadow: 0px 10px 20px 0px rgba(148, 163, 184, 0.20);
         border-radius: 10px;
+        margin-bottom: 20px;
     }
 
     .desktop-members .member-card {
-        margin: 10px 0;
-        padding: 15px;
+        padding: 12px;
         border: 1px solid rgb(191, 191, 191);
         border-radius: 10px;
+        margin: 8px 0;
         background: white;
         transition: all 0.2s ease;
     }
 
     .desktop-members .member-card:hover {
-        box-shadow: 0 4px 15px rgba(148, 163, 184, 0.25);
-        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(148, 163, 184, 0.15);
+        transform: translateY(-1px);
     }
 
     .desktop-members .add-member-button {
-        margin: 15px 0;
-        padding: 15px;
+        width: 100%;
+        padding: 12px;
+        margin: 8px 0;
         border-radius: 10px;
         border: 1px solid var(--color-default);
         background: white;
+        cursor: pointer;
         transition: all 0.2s ease;
     }
 
     .desktop-members .add-member-button:hover {
-        background: #f8fafc;
-        box-shadow: 0 4px 15px rgba(33, 145, 165, 0.15);
-        transform: translateY(-1px);
+        background: #f0f9ff;
+        box-shadow: 0 2px 8px rgba(33, 145, 165, 0.15);
     }
 
-    /* Member details column styling */
+    /* Member details column - keep original styling */
     .desktop-members .profile-image-parent {
-        padding: 20px;
-        margin-bottom: 20px;
+        padding: 15px;
+        margin-bottom: 10px;
     }
 
     .desktop-members .name-section,
@@ -1187,32 +1190,25 @@ h4 {
     .desktop-members .contribution-section,
     .desktop-members .loan-section,
     .desktop-members .fine-section {
-        margin: 15px 0;
-        padding: 15px;
+        margin: 8px 0;
+        padding: 12px;
         border-radius: 10px;
-        border: 1px solid #e5e7eb;
+        border: 1px solid grey;
         background: white;
     }
 
     .desktop-members .remove-user-button {
-        margin: 20px 0;
-        padding: 15px;
+        margin: 8px 0;
+        padding: 12px;
         border-radius: 10px;
         border: 1px solid red;
         background: white;
+        cursor: pointer;
         transition: all 0.2s ease;
     }
 
     .desktop-members .remove-user-button:hover {
         background: #fef2f2;
-        transform: translateY(-1px);
-    }
-
-    /* Add spacing to the main content wrapper */
-    .desktop-members .row.justify-content-center {
-        max-width: 1200px;
-        margin: 0 auto !important;
-        padding: 0 20px;
     }
 }
 
