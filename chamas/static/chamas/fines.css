@@ -451,10 +451,8 @@
     margin-left: calc(-50vw + 50%);
     position: relative;
     overflow-x: auto;
-    overflow-y: hidden;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    scroll-behavior: smooth;
 }
 
 .mobile-tabs::-webkit-scrollbar {
@@ -462,10 +460,10 @@
 }
 
 .tab-btn {
-    flex: 0 0 auto;
+    flex: 1;
     background: none;
     border: none;
-    padding: 16px 20px;
+    padding: 16px 8px;
     font-size: 14px;
     font-weight: 500;
     color: #9ca3af;
@@ -473,9 +471,7 @@
     cursor: pointer;
     transition: all 0.2s;
     white-space: nowrap;
-    min-width: fit-content;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    min-width: 0;
 }
 
 .tab-btn:hover {
@@ -491,198 +487,17 @@
 
 /* Tab content */
 .tab-content {
-    display: none;
-    padding: 20px 16px;
+    display: none !important;
+    padding: 0;
+    margin: 0;
     width: 100%;
 }
 
 .tab-content.active {
-    display: block;
+    display: block !important;
 }
 
 /* Mobile forms */
-.create-fine-card {
-    margin-top: 24px;
-}
-
-.create-fine-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #f1f5f9;
-}
-
-.create-fine-header i {
-    font-size: 20px;
-    color: #2291A5;
-}
-
-.create-fine-header span {
-    font-size: 18px;
-    font-weight: 600;
-    color: #222b45;
-}
-
-.fine-card-form {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 12px rgba(44, 62, 80, 0.07);
-    padding: 20px;
-    margin-bottom: 20px;
-}
-
-.form-row {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 16px;
-}
-
-.form-row-split {
-    display: flex;
-    gap: 12px;
-}
-
-.form-row-split .form-group {
-    flex: 1;
-}
-
-.form-group {
-    margin-bottom: 16px;
-}
-
-.form-group label {
-    display: block;
-    font-size: 14px;
-    font-weight: 500;
-    color: #2291A5;
-    margin-bottom: 6px;
-}
-
-.form-input {
-    width: 100%;
-    padding: 12px 16px;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    color: #222b45;
-    background: #fff;
-    transition: border-color 0.2s;
-}
-
-.form-input:focus {
-    outline: none;
-    border-color: #2291A5;
-    box-shadow: 0 0 0 3px rgba(34, 145, 165, 0.1);
-}
-
-.form-input::placeholder {
-    color: #9ca3af;
-    font-weight: 400;
-}
-
-.form-input-small {
-    width: 100px;
-    padding: 6px 10px;
-    border: 1px solid #e5e7eb;
-    border-radius: 6px;
-    font-size: 12px;
-    margin-right: 8px;
-}
-
-.beautiful-btn {
-    width: 100%;
-    padding: 14px 20px;
-    background: #2291A5;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.beautiful-btn:hover {
-    background: #1e7a8c;
-}
-
-.beautiful-btn:active {
-    transform: translateY(1px);
-}
-
-.beautiful-btn-small {
-    padding: 6px 12px;
-    background: #2291A5;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.beautiful-btn-small:hover {
-    background: #1e7a8c;
-}
-
-/* Fine History Beautiful Card Styles */
-.fine-history-beautiful-card {
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 12px rgba(44, 62, 80, 0.07);
-    padding: 18px 14px;
-    margin-bottom: 14px;
-    width: 100%;
-    max-width: 100%;
-    margin-left: 0;
-    margin-right: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.fine-history-beautiful-row {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    margin-bottom: 6px;
-}
-
-.fine-history-beautiful-label {
-    font-size: 13px;
-    color: #7b8a99;
-    font-weight: 500;
-    min-width: 90px;
-    margin-right: 8px;
-    margin-bottom: 4px;
-    flex: 1 1 40%;
-}
-
-.fine-history-beautiful-value {
-    font-size: 15px;
-    color: #222b45;
-    font-weight: 600;
-    margin-bottom: 4px;
-    flex: 1 1 50%;
-    text-align: right;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 8px;
-}
-
-.mobile-fine-history-list {
-    padding: 0 4px;
-}
-
-.mobile-create-form {
-    padding: 0;
-    margin: 0;
-}
 
 .create-fine-card {
     background: white;
@@ -964,25 +779,21 @@
 
 /* No fines state */
 .no-fines {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
     text-align: center;
+    padding: 48px 16px;
+    color: #64748b;
 }
 
 .no-fines i {
     font-size: 48px;
-    color: #9ca3af;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
+    opacity: 0.5;
 }
 
 .no-fines p {
-    font-size: 16px;
-    color: #6b7280;
-    font-weight: 500;
     margin: 0;
+    font-size: 14px;
+    font-weight: 500;
 }
 
 /* Bootstrap grid support */
@@ -998,23 +809,8 @@
     }
 }
 
-/* Mobile tab responsive design */
-@media (max-width: 991.98px) {
-    .tab-btn {
-        font-size: 13px;
-        padding: 14px 18px;
-        min-width: 120px;
-    }
-}
-
-/* Small screens */
+/* Responsive design */
 @media (max-width: 768px) {
-    .tab-btn {
-        font-size: 13px;
-        padding: 14px 16px;
-        min-width: 110px;
-    }
-    
     .mobile-create-form {
         padding: 12px;
     }
@@ -1036,24 +832,6 @@
     
     .fine-view-card {
         padding: 12px;
-    }
-}
-
-/* Very small screens */
-@media (max-width: 480px) {
-    .tab-btn {
-        font-size: 12px;
-        padding: 12px 14px;
-        min-width: 100px;
-    }
-}
-
-/* Extra small screens */
-@media (max-width: 360px) {
-    .tab-btn {
-        font-size: 11px;
-        padding: 12px 12px;
-        min-width: 90px;
     }
 }
 
