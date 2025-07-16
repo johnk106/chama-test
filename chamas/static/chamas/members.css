@@ -1121,51 +1121,80 @@ h4 {
     background: #ff5252;
 }
 
-/* Desktop/PC View Styling - Clean and organized layout */
+/* Desktop/PC View Styling - Wider layout matching screenshot */
 @media (min-width: 992px) {
     .desktop-members {
         background: #f8fafc;
         min-height: 100vh;
-        padding: 20px 0;
+        padding: 30px 40px;
     }
 
     .desktop-members .row.justify-content-center {
-        max-width: 1200px;
+        max-width: 1400px;
         margin: 0 auto !important;
-        padding: 0 15px;
+        padding: 0;
     }
 
-    .desktop-members .col-md-6,
+    .desktop-members .col-md-6 {
+        flex: 0 0 60%;
+        max-width: 60%;
+        padding: 0 15px !important;
+    }
+
     .desktop-members .col-md-5 {
+        flex: 0 0 40%;
+        max-width: 40%;
         padding: 0 15px !important;
     }
 
     .desktop-members .secs {
         background-color: white;
-        padding: 20px;
+        padding: 30px;
         box-shadow: 0px 10px 20px 0px rgba(148, 163, 184, 0.20);
         border-radius: 10px;
-        margin-bottom: 20px;
+        margin-bottom: 0;
     }
 
     .desktop-members .member-card {
-        padding: 12px;
+        padding: 18px;
         border: 1px solid rgb(191, 191, 191);
         border-radius: 10px;
-        margin: 8px 0;
+        margin: 12px 0;
         background: white;
         transition: all 0.2s ease;
     }
 
     .desktop-members .member-card:hover {
-        box-shadow: 0 2px 8px rgba(148, 163, 184, 0.15);
+        box-shadow: 0 4px 12px rgba(148, 163, 184, 0.15);
         transform: translateY(-1px);
+    }
+
+    /* Smaller profile images in member list */
+    .desktop-members .dp {
+        height: 60px;
+        width: 60px;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+
+    .desktop-members .member-card .col-lg-2 {
+        flex: 0 0 auto;
+        max-width: none;
+        width: auto;
+        margin-right: 15px;
+    }
+
+    .desktop-members .member-card .col-lg-5,
+    .desktop-members .member-card .col-lg-4 {
+        flex: 1;
+        max-width: none;
+        padding: 0 10px;
     }
 
     .desktop-members .add-member-button {
         width: 100%;
-        padding: 12px;
-        margin: 8px 0;
+        padding: 18px;
+        margin: 12px 0;
         border-radius: 10px;
         border: 1px solid var(--color-default);
         background: white;
@@ -1175,13 +1204,18 @@ h4 {
 
     .desktop-members .add-member-button:hover {
         background: #f0f9ff;
-        box-shadow: 0 2px 8px rgba(33, 145, 165, 0.15);
+        box-shadow: 0 4px 12px rgba(33, 145, 165, 0.15);
     }
 
-    /* Member details column - keep original styling */
+    /* Member details column - wider and more spacious */
     .desktop-members .profile-image-parent {
-        padding: 15px;
-        margin-bottom: 10px;
+        padding: 20px;
+        margin-bottom: 15px;
+    }
+
+    .desktop-members .circular-image {
+        width: 120px;
+        height: 120px;
     }
 
     .desktop-members .name-section,
@@ -1190,16 +1224,16 @@ h4 {
     .desktop-members .contribution-section,
     .desktop-members .loan-section,
     .desktop-members .fine-section {
-        margin: 8px 0;
-        padding: 12px;
+        margin: 12px 0;
+        padding: 18px;
         border-radius: 10px;
         border: 1px solid grey;
         background: white;
     }
 
     .desktop-members .remove-user-button {
-        margin: 8px 0;
-        padding: 12px;
+        margin: 12px 0;
+        padding: 18px;
         border-radius: 10px;
         border: 1px solid red;
         background: white;
@@ -1209,6 +1243,21 @@ h4 {
 
     .desktop-members .remove-user-button:hover {
         background: #fef2f2;
+    }
+
+    /* Better spacing for member card text */
+    .desktop-members .member-card p {
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+
+    .desktop-members .member-card .fw-semibold {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    .desktop-members .member-card .d-flex {
+        margin-bottom: 8px;
     }
 }
 
