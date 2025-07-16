@@ -1156,10 +1156,10 @@ h4 {
     }
 
     .desktop-members .member-card {
-        padding: 18px;
+        padding: 24px;
         border: 1px solid rgb(191, 191, 191);
         border-radius: 10px;
-        margin: 12px 0;
+        margin: 18px 0;
         background: white;
         transition: all 0.2s ease;
     }
@@ -1167,6 +1167,26 @@ h4 {
     .desktop-members .member-card:hover {
         box-shadow: 0 4px 12px rgba(148, 163, 184, 0.15);
         transform: translateY(-1px);
+    }
+
+    /* Enhanced spacing within member cards */
+    .desktop-members .member-card .row {
+        margin: 0 -8px;
+        align-items: center;
+    }
+
+    .desktop-members .member-card .col-lg-2,
+    .desktop-members .member-card .col-lg-5,
+    .desktop-members .member-card .col-lg-4 {
+        padding: 0 8px;
+    }
+
+    .desktop-members .member-card .col-lg-5 {
+        padding-right: 20px;
+    }
+
+    .desktop-members .member-card .col-lg-4 {
+        padding-left: 20px;
     }
 
     /* Smaller profile images in member list */
@@ -1193,8 +1213,8 @@ h4 {
 
     .desktop-members .add-member-button {
         width: 100%;
-        padding: 18px;
-        margin: 12px 0;
+        padding: 24px;
+        margin: 18px 0;
         border-radius: 10px;
         border: 1px solid var(--color-default);
         background: white;
@@ -1247,17 +1267,29 @@ h4 {
 
     /* Better spacing for member card text */
     .desktop-members .member-card p {
-        margin-bottom: 8px;
+        margin-bottom: 12px;
         font-size: 14px;
+        line-height: 1.5;
     }
 
     .desktop-members .member-card .fw-semibold {
         font-size: 16px;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
+        font-weight: 600;
     }
 
     .desktop-members .member-card .d-flex {
-        margin-bottom: 8px;
+        margin-bottom: 12px;
+    }
+
+    .desktop-members .member-card .d-flex i {
+        margin-right: 8px;
+        font-size: 16px;
+    }
+
+    .desktop-members .member-card .contribution-amount {
+        font-weight: 600;
+        color: var(--color-default);
     }
 }
 
