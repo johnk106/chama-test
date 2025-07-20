@@ -3,6 +3,7 @@
 
 {%block head%}
 <title>Dashboard</title>
+<link rel="stylesheet" href="{%static 'chamas/brand-colors.css'%}">
 <link rel="stylesheet" href="{%static 'chamas/members.css'%}">
 <link rel="stylesheet" href="{%static 'chamas/dashboard.css'%}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,7 +12,7 @@
 {%endblock%}
 
 {% block body %}
-<div class="modern-dashboard">
+<div class="modern-dashboard container-fluid-no-padding">
     <!-- Floating Menu Button for Mobile -->
     <button class="floating-menu-btn d-block d-md-none" onclick="openNav()">
         <i class='bx bx-menu'></i>
@@ -22,33 +23,33 @@
 
     <!-- Main Dashboard Content -->
     <div class="dashboard-content">
-        <!-- Total Cash Card -->
-        <div class="total-cash-card">
-            <div class="cash-info">
-                <p class="cash-label">Total Cash</p>
-                <h1 class="cash-amount">Ksh {{total_savings|intcomma}}</h1>
-                <div class="growth-indicator">
-                    <i class='bx bx-trending-up'></i>
-                    <span>15%</span>
+        <!-- Mobile View: Navigation Menu -->
+        <div class="navigation-menu d-block d-lg-none">
+            <!-- Total Cash Card -->
+            <div class="total-cash-card brand-card">
+                <div class="cash-info">
+                    <p class="cash-label">Total Cash</p>
+                    <h1 class="cash-amount text-brand-primary">Ksh {{total_savings|intcomma}}</h1>
+                    <div class="growth-indicator">
+                        <i class='bx bx-trending-up'></i>
+                        <span>15%</span>
+                    </div>
+                    <div class="cash-breakdown">
+                        <div class="breakdown-item">
+                            <span class="breakdown-label">Total contribution:</span>
+                            <span class="breakdown-value">Ksh{{total_contributions|intcomma}}</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span class="breakdown-label">Total Loan:</span>
+                            <span class="breakdown-value">Ksh{{total_loans|intcomma}}</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="cash-breakdown">
-                    <div class="breakdown-item">
-                        <span class="breakdown-label">Total contribution:</span>
-                        <span class="breakdown-value">Ksh{{total_contributions|intcomma}}</span>
-                    </div>
-                    <div class="breakdown-item">
-                        <span class="breakdown-label">Total Loan:</span>
-                        <span class="breakdown-value">Ksh{{total_loans|intcomma}}</span>
-                    </div>
+                <div class="chart-container">
+                    <canvas id="doughnutChartMobile" width="120" height="120"></canvas>
                 </div>
             </div>
-            <div class="chart-container">
-                <canvas id="doughnutChart" width="120" height="120"></canvas>
-            </div>
-        </div>
 
-        <!-- Navigation Menu -->
-        <div class="navigation-menu">
             <a href="{% url 'chamas:contributions' chama.id %}" class="nav-item">
                 <div class="nav-icon">
                     <i class='bx bx-sort bx-rotate-90'></i>
@@ -106,58 +107,255 @@
             </a>
         </div>
 
-        <!-- Quick Stats (Desktop Only) -->
-        <div class="quick-stats d-none d-lg-block">
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class='bx bx-group'></i>
+        <!-- Desktop View: Dashboard Stats and Charts -->
+        <div class="desktop-dashboard d-none d-lg-block">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <div class="header-content">
+                    <h1 class="dashboard-title text-brand-primary">Dashboard Overview</h1>
+                    <p class="dashboard-subtitle">Monitor your chama's financial health and performance</p>
                 </div>
-                <div class="stat-info">
-                    <h3>{{chama.member.count}}</h3>
-                    <p>Total Members</p>
-                </div>
-            </div>
-            <div class="stat-card admin">
-                <div class="stat-icon">
-                    <i class='bx bx-money'></i>
-                </div>
-                <div class="stat-info">
-                    <h3>Ksh {{total_fines|intcomma}}</h3>
-                    <p>Total Fines</p>
+                <div class="header-actions">
+                    <button class="btn btn-primary">
+                        <i class='bx bx-download'></i>
+                        Export Report
+                    </button>
                 </div>
             </div>
-            <div class="stat-card admin">
-                <div class="stat-icon">
-                    <i class='bx bx-file'></i>
-                </div>
-                <div class="stat-info">
-                    <h3>{{documents.count}}</h3>
-                    <p>Documents</p>
-                </div>
-            </div>
-        </div>
 
-        <!-- Recent Activity (Desktop) - Admin Only -->
-        <div class="recent-activity d-none d-lg-block admin">
-            <h3>Recent Activity</h3>
-            <div class="activity-list">
-                {% for notification in notifications|slice:":5" %}
-                <div class="activity-item">
-                    <div class="activity-icon">
-                        <i class='bx bx-bell'></i>
+            <!-- Key Metrics Cards -->
+            <div class="metrics-grid">
+                <div class="metric-card brand-card">
+                    <div class="metric-header">
+                        <div class="metric-icon bg-brand-primary">
+                            <i class='bx bx-wallet'></i>
+                        </div>
+                        <div class="metric-trend positive">
+                            <i class='bx bx-trending-up'></i>
+                            <span>15%</span>
+                        </div>
                     </div>
-                    <div class="activity-content">
-                        <p class="activity-message">{{notification.message}}</p>
-                        <span class="activity-time">{{notification.date|date:"M d, Y"}}</span>
-                    </div>
-                </div>
-                {% empty %}
-                <div class="activity-item">
-                    <div class="activity-content">
-                        <p class="activity-message">No recent activity</p>
+                    <div class="metric-content">
+                        <h3 class="metric-value text-brand-primary">Ksh {{total_savings|intcomma}}</h3>
+                        <p class="metric-label">Total Cash</p>
+                        <p class="metric-description">Available group funds</p>
                     </div>
                 </div>
-                {% endfor %}
+
+                <div class="metric-card brand-card">
+                    <div class="metric-header">
+                        <div class="metric-icon" style="background-color: #10b981;">
+                            <i class='bx bx-group'></i>
+                        </div>
+                        <div class="metric-trend positive">
+                            <i class='bx bx-trending-up'></i>
+                            <span>5%</span>
+                        </div>
+                    </div>
+                    <div class="metric-content">
+                        <h3 class="metric-value">{{chama.member.count}}</h3>
+                        <p class="metric-label">Active Members</p>
+                        <p class="metric-description">Total group membership</p>
+                    </div>
+                </div>
+
+                <div class="metric-card brand-card">
+                    <div class="metric-header">
+                        <div class="metric-icon" style="background-color: #f59e0b;">
+                            <i class='bx bx-credit-card'></i>
+                        </div>
+                        <div class="metric-trend neutral">
+                            <i class='bx bx-minus'></i>
+                            <span>0%</span>
+                        </div>
+                    </div>
+                    <div class="metric-content">
+                        <h3 class="metric-value">Ksh {{total_loans|intcomma}}</h3>
+                        <p class="metric-label">Total Loans</p>
+                        <p class="metric-description">Outstanding loan amount</p>
+                    </div>
+                </div>
+
+                <div class="metric-card brand-card admin">
+                    <div class="metric-header">
+                        <div class="metric-icon" style="background-color: #ef4444;">
+                            <i class='bx bx-receipt'></i>
+                        </div>
+                        <div class="metric-trend negative">
+                            <i class='bx bx-trending-down'></i>
+                            <span>-2%</span>
+                        </div>
+                    </div>
+                    <div class="metric-content">
+                        <h3 class="metric-value">Ksh {{total_fines|intcomma}}</h3>
+                        <p class="metric-label">Total Fines</p>
+                        <p class="metric-description">Collected penalties</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-section">
+                <div class="chart-grid">
+                    <!-- Financial Overview Chart -->
+                    <div class="chart-card brand-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title text-brand-primary">Financial Overview</h3>
+                            <p class="chart-subtitle">Distribution of group funds</p>
+                        </div>
+                        <div class="chart-content">
+                            <canvas id="financialOverviewChart" width="300" height="300"></canvas>
+                        </div>
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <span class="legend-color" style="background-color: var(--brand-primary);"></span>
+                                <span class="legend-label">Contributions</span>
+                                <span class="legend-value">Ksh {{total_contributions|intcomma}}</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color" style="background-color: #10b981;"></span>
+                                <span class="legend-label">Available Cash</span>
+                                <span class="legend-value">Ksh {{available_cash|default:"0"|intcomma}}</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color" style="background-color: #f59e0b;"></span>
+                                <span class="legend-label">Loans</span>
+                                <span class="legend-value">Ksh {{total_loans|intcomma}}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Monthly Trends Chart -->
+                    <div class="chart-card brand-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title text-brand-primary">Monthly Trends</h3>
+                            <p class="chart-subtitle">Last 6 months performance</p>
+                        </div>
+                        <div class="chart-content">
+                            <canvas id="monthlyTrendsChart" width="400" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Tables -->
+            <div class="tables-section">
+                <div class="tables-grid">
+                    <!-- Recent Transactions -->
+                    <div class="table-card brand-card">
+                        <div class="table-header">
+                            <h3 class="table-title text-brand-primary">Recent Transactions</h3>
+                            <a href="{% url 'chamas:contributions' chama.id %}" class="table-action text-brand-primary">View All</a>
+                        </div>
+                        <div class="table-content">
+                            <div class="brand-table-responsive">
+                                <table class="brand-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Member</th>
+                                            <th>Type</th>
+                                            <th>Amount</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for transaction in recent_transactions|slice:":5" %}
+                                        <tr>
+                                            <td>{{transaction.member}}</td>
+                                            <td><span class="transaction-type">{{transaction.type}}</span></td>
+                                            <td class="text-brand-primary">Ksh {{transaction.amount|intcomma}}</td>
+                                            <td>{{transaction.date|date:"M d"}}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="4">
+                                                <div class="empty-state">
+                                                    <i class="bx bx-receipt empty-state-icon"></i>
+                                                    <p class="empty-state-message">Nothing to show</p>
+                                                    <p class="empty-state-description">No recent transactions available</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Member Performance -->
+                    <div class="table-card brand-card admin">
+                        <div class="table-header">
+                            <h3 class="table-title text-brand-primary">Member Performance</h3>
+                            <a href="{% url 'chamas:members' chama.id %}" class="table-action text-brand-primary">View All</a>
+                        </div>
+                        <div class="table-content">
+                            <div class="brand-table-responsive">
+                                <table class="brand-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Member</th>
+                                            <th>Contributions</th>
+                                            <th>Loans</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for member_stat in member_stats|slice:":5" %}
+                                        <tr>
+                                            <td>{{member_stat.name}}</td>
+                                            <td class="text-brand-primary">Ksh {{member_stat.contributions|intcomma}}</td>
+                                            <td>Ksh {{member_stat.loans|intcomma}}</td>
+                                            <td><span class="status-badge {{member_stat.status}}">{{member_stat.status}}</span></td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="4">
+                                                <div class="empty-state">
+                                                    <i class="bx bx-user empty-state-icon"></i>
+                                                    <p class="empty-state-message">Nothing to show</p>
+                                                    <p class="empty-state-description">No member performance data available</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity (Admin Only) -->
+            <div class="activity-section admin">
+                <div class="activity-card brand-card">
+                    <div class="activity-header">
+                        <h3 class="activity-title text-brand-primary">Recent Activity</h3>
+                        <a href="{% url 'chamas:notifications' chama.id %}" class="activity-action text-brand-primary">Manage</a>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-list">
+                            {% for notification in notifications|slice:":6" %}
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class='bx bx-bell'></i>
+                                </div>
+                                <div class="activity-details">
+                                    <p class="activity-message">{{notification.message}}</p>
+                                    <span class="activity-time">{{notification.date|date:"M d, Y"}}</span>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <div class="empty-state">
+                                <i class="bx bx-bell empty-state-icon"></i>
+                                <p class="empty-state-message">Nothing to show</p>
+                                <p class="empty-state-description">No recent activity</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -167,40 +365,137 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Doughnut Chart
-    const ctx = document.getElementById('doughnutChart').getContext('2d');
+    // Data from Django context
     const totalContributions = {{ total_contributions|default:0 }};
     const totalLoans = {{ total_loans|default:0 }};
     const totalSavings = {{ total_savings|default:0 }};
+    const availableCash = Math.max(0, totalSavings - totalContributions - totalLoans);
     
-    new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Contributions', 'Loans', 'Available'],
-            datasets: [{
-                data: [totalContributions, totalLoans, Math.max(0, totalSavings - totalContributions - totalLoans)],
-                backgroundColor: ['#059669', '#dc2626', '#06b6d4'],
-                borderWidth: 0,
-                cutout: '70%'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
+    // Brand colors
+    const brandPrimary = '#2191a5';
+    const brandSuccess = '#10b981';
+    const brandWarning = '#f59e0b';
+    const brandError = '#ef4444';
+
+    // Mobile Doughnut Chart
+    const ctxMobile = document.getElementById('doughnutChartMobile');
+    if (ctxMobile) {
+        new Chart(ctxMobile, {
+            type: 'doughnut',
+            data: {
+                labels: ['Contributions', 'Loans', 'Available'],
+                datasets: [{
+                    data: [totalContributions, totalLoans, availableCash],
+                    backgroundColor: [brandPrimary, brandWarning, brandSuccess],
+                    borderWidth: 0,
+                    cutout: '70%'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
                 }
             }
-        }
-    });
+        });
+    }
+
+    // Desktop Financial Overview Chart
+    const ctxFinancial = document.getElementById('financialOverviewChart');
+    if (ctxFinancial) {
+        new Chart(ctxFinancial, {
+            type: 'doughnut',
+            data: {
+                labels: ['Contributions', 'Available Cash', 'Loans'],
+                datasets: [{
+                    data: [totalContributions, availableCash, totalLoans],
+                    backgroundColor: [brandPrimary, brandSuccess, brandWarning],
+                    borderWidth: 2,
+                    borderColor: '#ffffff',
+                    cutout: '60%'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    }
+
+    // Desktop Monthly Trends Chart
+    const ctxTrends = document.getElementById('monthlyTrendsChart');
+    if (ctxTrends) {
+        new Chart(ctxTrends, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [
+                    {
+                        label: 'Contributions',
+                        data: [12000, 15000, 18000, 16000, 20000, 22000],
+                        borderColor: brandPrimary,
+                        backgroundColor: brandPrimary + '20',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Loans',
+                        data: [8000, 10000, 12000, 11000, 13000, 14000],
+                        borderColor: brandWarning,
+                        backgroundColor: brandWarning + '20',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return 'Ksh ' + value.toLocaleString();
+                            }
+                        }
+                    }
+                },
+                elements: {
+                    point: {
+                        radius: 4,
+                        hoverRadius: 8
+                    }
+                }
+            }
+        });
+    }
 });
 
 // Enhanced mobile navigation functions
 function openNav() {
     document.getElementById("mySidenav").style.width = "250px";
     
-    // Only show backdrop and prevent body class on mobile
+    // Only show backdrop and prevent body scroll on mobile
     if (window.innerWidth <= 767) {
         document.getElementById("sidebarBackdrop").classList.add("show");
         document.body.classList.add("sidebar-open");

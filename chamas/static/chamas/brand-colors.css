@@ -1,0 +1,344 @@
+/* ================================
+   CHAMAS BRAND COLOR SYSTEM
+   ================================ */
+
+:root {
+    /* Primary Brand Colors */
+    --brand-primary: #2191a5;
+    --brand-primary-light: #2ba6bd;
+    --brand-primary-dark: #1a7589;
+    --brand-primary-hover: #1e8396;
+    
+    /* Secondary Colors */
+    --brand-white: #ffffff;
+    --brand-gray-50: #f9fafb;
+    --brand-gray-100: #f3f4f6;
+    --brand-gray-200: #e5e7eb;
+    --brand-gray-300: #d1d5db;
+    --brand-gray-400: #9ca3af;
+    --brand-gray-500: #6b7280;
+    --brand-gray-600: #4b5563;
+    --brand-gray-700: #374151;
+    --brand-gray-800: #1f2937;
+    --brand-gray-900: #111827;
+    
+    /* Status Colors */
+    --brand-success: #10b981;
+    --brand-warning: #f59e0b;
+    --brand-error: #ef4444;
+    --brand-info: #3b82f6;
+    
+    /* Common UI Properties */
+    --brand-border-radius: 8px;
+    --brand-border-radius-sm: 6px;
+    --brand-border-radius-lg: 12px;
+    --brand-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --brand-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --brand-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    
+    /* Spacing System */
+    --brand-space-xs: 4px;
+    --brand-space-sm: 8px;
+    --brand-space-md: 16px;
+    --brand-space-lg: 24px;
+    --brand-space-xl: 32px;
+    --brand-space-2xl: 48px;
+}
+
+/* ================================
+   GLOBAL BRAND COLOR OVERRIDES
+   ================================ */
+
+/* Primary Buttons */
+.btn-primary,
+.btn.btn-primary,
+button.btn-primary {
+    background-color: var(--brand-primary) !important;
+    border-color: var(--brand-primary) !important;
+    color: var(--brand-white) !important;
+}
+
+.btn-primary:hover,
+.btn.btn-primary:hover,
+button.btn-primary:hover {
+    background-color: var(--brand-primary-hover) !important;
+    border-color: var(--brand-primary-hover) !important;
+    color: var(--brand-white) !important;
+}
+
+/* Modal Headers */
+.modal-header {
+    background-color: var(--brand-primary) !important;
+    color: var(--brand-white) !important;
+    border-bottom: none !important;
+}
+
+.modal-header .modal-title {
+    color: var(--brand-white) !important;
+}
+
+.modal-header .btn-close {
+    filter: invert(1) !important;
+}
+
+/* Modal Footers */
+.modal-footer .btn-primary,
+.modal-footer button[type="submit"] {
+    background-color: var(--brand-primary) !important;
+    border-color: var(--brand-primary) !important;
+    color: var(--brand-white) !important;
+}
+
+.modal-footer .btn-primary:hover,
+.modal-footer button[type="submit"]:hover {
+    background-color: var(--brand-primary-hover) !important;
+    border-color: var(--brand-primary-hover) !important;
+}
+
+/* Page Headers */
+.page-header,
+.dashboard-header,
+.section-header {
+    color: var(--brand-primary) !important;
+}
+
+/* Navigation Active States */
+.nav-link.active,
+.nav-tabs .nav-link.active {
+    color: var(--brand-primary) !important;
+    border-bottom-color: var(--brand-primary) !important;
+}
+
+.nav-link:hover,
+.nav-tabs .nav-link:hover {
+    color: var(--brand-primary) !important;
+}
+
+/* Form Focus States */
+.form-control:focus,
+.form-select:focus,
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--brand-primary) !important;
+    box-shadow: 0 0 0 0.2rem rgba(33, 145, 165, 0.25) !important;
+}
+
+/* Links */
+a {
+    color: var(--brand-primary) !important;
+}
+
+a:hover {
+    color: var(--brand-primary-hover) !important;
+}
+
+/* Action Buttons */
+.action-btn,
+.create-btn,
+.add-btn,
+.edit-btn,
+.submit-btn {
+    background-color: var(--brand-primary) !important;
+    border-color: var(--brand-primary) !important;
+    color: var(--brand-white) !important;
+}
+
+.action-btn:hover,
+.create-btn:hover,
+.add-btn:hover,
+.edit-btn:hover,
+.submit-btn:hover {
+    background-color: var(--brand-primary-hover) !important;
+    border-color: var(--brand-primary-hover) !important;
+}
+
+/* Status Indicators */
+.badge-primary,
+.status-primary {
+    background-color: var(--brand-primary) !important;
+    color: var(--brand-white) !important;
+}
+
+/* Cards with Primary Accents */
+.card-primary .card-header {
+    background-color: var(--brand-primary) !important;
+    color: var(--brand-white) !important;
+}
+
+/* ================================
+   CONSISTENT SPACING UTILITIES
+   ================================ */
+
+/* Remove Excessive Margins/Padding */
+.no-excess-space {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.container-fluid-no-padding {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.full-width {
+    width: 100% !important;
+}
+
+.full-height {
+    height: 100vh !important;
+}
+
+/* Consistent Card Spacing */
+.brand-card {
+    border-radius: var(--brand-border-radius) !important;
+    box-shadow: var(--brand-shadow) !important;
+    margin-bottom: var(--brand-space-lg) !important;
+}
+
+.brand-card-header {
+    padding: var(--brand-space-lg) !important;
+    background-color: var(--brand-gray-50) !important;
+    border-bottom: 1px solid var(--brand-gray-200) !important;
+}
+
+.brand-card-body {
+    padding: var(--brand-space-lg) !important;
+}
+
+/* ================================
+   EMPTY STATE STYLES
+   ================================ */
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--brand-space-2xl) var(--brand-space-lg) !important;
+    text-align: center;
+    color: var(--brand-gray-500) !important;
+    background-color: var(--brand-gray-50) !important;
+    border-radius: var(--brand-border-radius) !important;
+    border: 2px dashed var(--brand-gray-300) !important;
+    margin: var(--brand-space-lg) 0 !important;
+}
+
+.empty-state-icon {
+    font-size: 3rem !important;
+    color: var(--brand-gray-400) !important;
+    margin-bottom: var(--brand-space-md) !important;
+}
+
+.empty-state-message {
+    font-size: 1.125rem !important;
+    font-weight: 600 !important;
+    color: var(--brand-gray-600) !important;
+    margin-bottom: var(--brand-space-sm) !important;
+}
+
+.empty-state-description {
+    font-size: 0.875rem !important;
+    color: var(--brand-gray-500) !important;
+    margin: 0 !important;
+}
+
+/* ================================
+   RESPONSIVE TABLE LAYOUTS
+   ================================ */
+
+.brand-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    background-color: var(--brand-white) !important;
+    border-radius: var(--brand-border-radius) !important;
+    overflow: hidden !important;
+    box-shadow: var(--brand-shadow) !important;
+}
+
+.brand-table thead th {
+    background-color: var(--brand-gray-50) !important;
+    color: var(--brand-gray-700) !important;
+    font-weight: 600 !important;
+    padding: var(--brand-space-md) var(--brand-space-sm) !important;
+    text-align: left !important;
+    border-bottom: 1px solid var(--brand-gray-200) !important;
+}
+
+.brand-table tbody td {
+    padding: var(--brand-space-md) var(--brand-space-sm) !important;
+    border-bottom: 1px solid var(--brand-gray-100) !important;
+    color: var(--brand-gray-700) !important;
+}
+
+.brand-table tbody tr:hover {
+    background-color: var(--brand-gray-50) !important;
+}
+
+/* Mobile Table Responsiveness */
+@media (max-width: 768px) {
+    .brand-table-responsive {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    
+    .brand-table {
+        min-width: 600px !important;
+    }
+}
+
+/* ================================
+   MOBILE OPTIMIZATIONS
+   ================================ */
+
+@media (max-width: 768px) {
+    /* Reduce excessive padding on mobile */
+    .container,
+    .container-fluid {
+        padding-left: var(--brand-space-sm) !important;
+        padding-right: var(--brand-space-sm) !important;
+    }
+    
+    /* Card spacing on mobile */
+    .brand-card {
+        margin-bottom: var(--brand-space-md) !important;
+    }
+    
+    .brand-card-header,
+    .brand-card-body {
+        padding: var(--brand-space-md) !important;
+    }
+    
+    /* Modal optimizations */
+    .modal-dialog {
+        margin: var(--brand-space-sm) !important;
+    }
+    
+    .modal-body {
+        padding: var(--brand-space-md) !important;
+    }
+}
+
+/* ================================
+   UTILITY CLASSES
+   ================================ */
+
+.text-brand-primary {
+    color: var(--brand-primary) !important;
+}
+
+.bg-brand-primary {
+    background-color: var(--brand-primary) !important;
+}
+
+.border-brand-primary {
+    border-color: var(--brand-primary) !important;
+}
+
+.shadow-brand {
+    box-shadow: var(--brand-shadow) !important;
+}
+
+.rounded-brand {
+    border-radius: var(--brand-border-radius) !important;
+}

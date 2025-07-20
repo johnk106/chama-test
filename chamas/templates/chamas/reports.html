@@ -5,39 +5,24 @@
 
 {%block head%}
 <title>Reports</title>
+<link rel="stylesheet" href="{%static 'chamas/brand-colors.css'%}" />
 <link rel="stylesheet" href="{%static 'chamas/reports.css'%}" />
 {%endblock%}
 
 {%block body%}
-<div class="reports-container">
+<div class="reports-container full-width">
     <!-- Page Header -->
     <div class="reports-header">
         <div class="reports-header-content">
-            <h1 class="reports-title">Financial Reports</h1>
+            <h1 class="reports-title text-brand-primary">Financial Reports</h1>
             <p class="reports-subtitle">Generate, view, and download comprehensive financial reports</p>
-        </div>
-        
-        <!-- Desktop Toolbar -->
-        <div class="reports-toolbar">
-            <button type="button" class="btn-action btn-create-report admin" id="createReportBtn">
-                <i class='bx bx-file-plus'></i>
-                Create Report
-            </button>
-            <button type="button" class="btn-action btn-filter-reports admin member" id="filterReportsBtn">
-                <i class='bx bx-filter'></i>
-                Filter Reports
-            </button>
-            <button type="button" class="btn-action btn-download-reports admin member" id="downloadReportsBtn">
-                <i class='bx bx-download'></i>
-                Download Reports
-            </button>
         </div>
     </div>
 
     <!-- Filter Panel -->
     <div class="filter-panel" id="filterPanel">
         <div class="filter-panel-header">
-            <h3>Filter Reports</h3>
+            <h3 class="text-brand-primary">Filter Reports</h3>
             <button type="button" class="btn-close-filter" id="closeFilterBtn">
                 <i class='bx bx-x'></i>
             </button>
@@ -137,19 +122,22 @@
             <div class="tab-pane active" id="tab-cashflow" role="tabpanel">
                 <div class="reports-grid">
                     <!-- Cashflow Report Card -->
-                    <div class="report-card admin member">
-                        <div class="report-card-header">
+                    <div class="report-card brand-card admin member">
+                        <div class="report-card-header brand-card-header">
                             <div class="report-header-info">
-                                <h3 class="report-title">Cashflow Report</h3>
+                                <h3 class="report-title text-brand-primary">Cashflow Report</h3>
                                 <p class="report-description">Overview of all cash inflows and outflows</p>
                             </div>
                             <div class="report-actions">
-                                <button class="btn-download-individual" id="download-chama-cashflow-report">
+                                <button class="btn-download-individual bg-brand-primary" id="download-chama-cashflow-report">
                                     <i class="bx bx-download"></i>
+                                </button>
+                                <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('cashflow-report')">
+                                    <i class="bx bx-filter"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="report-filters">
+                        <div class="report-filters" id="cashflow-report-filters">
                             <div class="filter-row">
                                 <div class="filter-field">
                                     <label for="cashflow-report-start" class="field-label">Start Date</label>
@@ -161,27 +149,36 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="report-data">
-                            <div id="cashflow-report-items" class="data-container"></div>
+                        <div class="report-data brand-card-body">
+                            <div id="cashflow-report-items" class="data-container">
+                                <div class="empty-state">
+                                    <i class="bx bx-file-blank empty-state-icon"></i>
+                                    <p class="empty-state-message">Nothing to show</p>
+                                    <p class="empty-state-description">No cashflow data available for the selected period</p>
+                                </div>
+                            </div>
                             <div id="cashflow-report-totals-cont" class="summary-cards"></div>
                             <div id="cashflow-report-net-cont" class="net-summary"></div>
                         </div>
                     </div>
 
                     <!-- Member Cashflow Report Card (Admin Only) -->
-                    <div class="report-card admin">
-                        <div class="report-card-header">
+                    <div class="report-card brand-card admin">
+                        <div class="report-card-header brand-card-header">
                             <div class="report-header-info">
-                                <h3 class="report-title">Member Cashflow Report</h3>
+                                <h3 class="report-title text-brand-primary">Member Cashflow Report</h3>
                                 <p class="report-description">Individual member cashflow analysis</p>
                             </div>
                             <div class="report-actions">
-                                <button class="btn-download-individual" id="download-member-cashflow-report">
+                                <button class="btn-download-individual bg-brand-primary" id="download-member-cashflow-report">
                                     <i class="bx bx-download"></i>
+                                </button>
+                                <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('member-cashflow-report')">
+                                    <i class="bx bx-filter"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="report-filters">
+                        <div class="report-filters" id="member-cashflow-report-filters">
                             <div class="filter-row">
                                 <div class="filter-field">
                                     <label for="member-cashflow-owner" class="field-label">Select Member</label>
@@ -202,16 +199,22 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="report-data">
-                            <div id="member-cashflow-items" class="data-container"></div>
+                        <div class="report-data brand-card-body">
+                            <div id="member-cashflow-items" class="data-container">
+                                <div class="empty-state">
+                                    <i class="bx bx-file-blank empty-state-icon"></i>
+                                    <p class="empty-state-message">Nothing to show</p>
+                                    <p class="empty-state-description">Please select a member to view their cashflow data</p>
+                                </div>
+                            </div>
                             <div id="member-cashflow-totals-cont" class="summary-cards">
                                 <div class="summary-card">
                                     <h4 class="summary-title">Total Contributions</h4>
-                                    <p class="summary-amount">ksh {{total_contributions | intcomma}}</p>
+                                    <p class="summary-amount text-brand-primary">ksh {{total_contributions | intcomma}}</p>
                                 </div>
                                 <div class="summary-card">
                                     <h4 class="summary-title">Total Loan Disbursement</h4>
-                                    <p class="summary-amount">ksh {{total_loan_disbursment | intcomma}}</p>
+                                    <p class="summary-amount text-brand-primary">ksh {{total_loan_disbursment | intcomma}}</p>
                                 </div>
                             </div>
                             <div id='member-cashflow-net-cont' class="net-summary"></div>
@@ -219,19 +222,22 @@
                     </div>
 
                     <!-- My Cashflow Report Card (Member Only) -->
-                    <div class="report-card member">
-                        <div class="report-card-header">
+                    <div class="report-card brand-card member">
+                        <div class="report-card-header brand-card-header">
                             <div class="report-header-info">
-                                <h3 class="report-title">My Cashflow Report</h3>
+                                <h3 class="report-title text-brand-primary">My Cashflow Report</h3>
                                 <p class="report-description">Your personal cashflow analysis</p>
                             </div>
                             <div class="report-actions">
-                                <button class="btn-download-individual" id="download-my-cashflow-report">
+                                <button class="btn-download-individual bg-brand-primary" id="download-my-cashflow-report">
                                     <i class="bx bx-download"></i>
+                                </button>
+                                <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('my-cashflow-report')">
+                                    <i class="bx bx-filter"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="report-filters">
+                        <div class="report-filters" id="my-cashflow-report-filters">
                             <div class="filter-row">
                                 <div class="filter-field">
                                     <label for="my-reports-start" class="field-label">Start Date</label>
@@ -243,8 +249,14 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="report-data">
-                            <div id="my-report-items" class="data-container"></div>
+                        <div class="report-data brand-card-body">
+                            <div id="my-report-items" class="data-container">
+                                <div class="empty-state">
+                                    <i class="bx bx-file-blank empty-state-icon"></i>
+                                    <p class="empty-state-message">Nothing to show</p>
+                                    <p class="empty-state-description">No personal cashflow data available for the selected period</p>
+                                </div>
+                            </div>
                             <div id="my-cashflow-report-totals-cont" class="summary-cards"></div>
                             <div id='my-cashflow-report-net-cont' class="net-summary"></div>
                         </div>
@@ -256,21 +268,21 @@
             <div class="tab-pane" id="tab-loans" role="tabpanel">
                 <div class="reports-grid">
                     <!-- Loan Report Card -->
-                    <div class="report-card admin member">
-                        <div class="report-card-header">
+                    <div class="report-card brand-card admin member">
+                        <div class="report-card-header brand-card-header">
                             <div class="report-header-info">
-                                <h3 class="report-title">Loan Report</h3>
+                                <h3 class="report-title text-brand-primary">Loan Report</h3>
                                 <p class="report-description">Comprehensive loan status overview</p>
                             </div>
                             <div class="report-actions">
-                                <button class="btn-download-individual" id="download-full-loan-report">
+                                <button class="btn-download-individual bg-brand-primary" id="download-full-loan-report">
                                     <i class="bx bx-download"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="report-data">
-                            <div class="data-table-wrapper">
-                                <table class="data-table">
+                        <div class="report-data brand-card-body">
+                            <div class="brand-table-responsive">
+                                <table class="brand-table">
                                     <thead>
                                         <tr>
                                             <th>Status</th>
@@ -285,11 +297,17 @@
                                             <td><span class="status-badge {{loan.status}}">{{loan.status}}</span></td>
                                             <td>{{loan.type.name}}</td>
                                             <td>{{loan.member.name}}</td>
-                                            <td class="amount-cell">ksh {{loan.amount | intcomma}}</td>
+                                            <td class="text-brand-primary">ksh {{loan.amount | intcomma}}</td>
                                         </tr>
                                         {%empty%}
                                         <tr>
-                                            <td colspan="4" class="empty-state">No loans found</td>
+                                            <td colspan="4">
+                                                <div class="empty-state">
+                                                    <i class="bx bx-file-blank empty-state-icon"></i>
+                                                    <p class="empty-state-message">Nothing to show</p>
+                                                    <p class="empty-state-description">No loans found</p>
+                                                </div>
+                                            </td>
                                         </tr>
                                         {%endfor%}
                                     </tbody>
@@ -299,19 +317,22 @@
                     </div>
 
                     <!-- Repayment Schedule Card -->
-                    <div class="report-card admin member">
-                        <div class="report-card-header">
+                    <div class="report-card brand-card admin member">
+                        <div class="report-card-header brand-card-header">
                             <div class="report-header-info">
-                                <h3 class="report-title">Repayment Schedule</h3>
+                                <h3 class="report-title text-brand-primary">Repayment Schedule</h3>
                                 <p class="report-description">Track loan repayment schedules and due dates</p>
                             </div>
                             <div class="report-actions">
-                                <button class="btn-download-individual" id="download-repayment-schedule">
+                                <button class="btn-download-individual bg-brand-primary" id="download-repayment-schedule">
                                     <i class="bx bx-download"></i>
+                                </button>
+                                <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('repayment-schedule')">
+                                    <i class="bx bx-filter"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="report-filters">
+                        <div class="report-filters" id="repayment-schedule-filters">
                             <div class="filter-row">
                                 <div class="filter-field">
                                     <label for="repayment-owner" class="field-label">Select Member</label>
@@ -324,8 +345,14 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="report-data">
-                            <div id="repayment-schedule-items" class="data-container"></div>
+                        <div class="report-data brand-card-body">
+                            <div id="repayment-schedule-items" class="data-container">
+                                <div class="empty-state">
+                                    <i class="bx bx-file-blank empty-state-icon"></i>
+                                    <p class="empty-state-message">Nothing to show</p>
+                                    <p class="empty-state-description">Please select a member to view their repayment schedule</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -335,19 +362,22 @@
             <div class="tab-pane" id="tab-investments" role="tabpanel">
                 <div class="reports-grid">
                     <!-- Group Investment Income Card -->
-                    <div class="report-card admin member">
-                        <div class="report-card-header">
+                    <div class="report-card brand-card admin member">
+                        <div class="report-card-header brand-card-header">
                             <div class="report-header-info">
-                                <h3 class="report-title">Group Investment Income</h3>
+                                <h3 class="report-title text-brand-primary">Group Investment Income</h3>
                                 <p class="report-description">Total investment returns for the group</p>
                             </div>
                             <div class="report-actions">
-                                <button class="btn-download-individual" id="download-group-investment-income">
+                                <button class="btn-download-individual bg-brand-primary" id="download-group-investment-income">
                                     <i class="bx bx-download"></i>
+                                </button>
+                                <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('group-investment-income')">
+                                    <i class="bx bx-filter"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="report-filters">
+                        <div class="report-filters" id="group-investment-income-filters">
                             <div class="filter-row">
                                 <div class="filter-field">
                                     <label for="group-investment-incomes-start" class="field-label">Start Date</label>
@@ -359,26 +389,35 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="report-data">
-                            <div id="group-investment-incomes-items" class="data-container"></div>
+                        <div class="report-data brand-card-body">
+                            <div id="group-investment-incomes-items" class="data-container">
+                                <div class="empty-state">
+                                    <i class="bx bx-file-blank empty-state-icon"></i>
+                                    <p class="empty-state-message">Nothing to show</p>
+                                    <p class="empty-state-description">No group investment income data available for the selected period</p>
+                                </div>
+                            </div>
                             <div id="group-investment-incomes-total" class="summary-cards"></div>
                         </div>
                     </div>
 
                     <!-- Member Investment Income Card (Admin Only) -->
-                    <div class="report-card admin">
-                        <div class="report-card-header">
+                    <div class="report-card brand-card admin">
+                        <div class="report-card-header brand-card-header">
                             <div class="report-header-info">
-                                <h3 class="report-title">Member Investment Income</h3>
+                                <h3 class="report-title text-brand-primary">Member Investment Income</h3>
                                 <p class="report-description">Individual member investment returns</p>
                             </div>
                             <div class="report-actions">
-                                <button class="btn-download-individual" id="download-member-investment-income">
+                                <button class="btn-download-individual bg-brand-primary" id="download-member-investment-income">
                                     <i class="bx bx-download"></i>
+                                </button>
+                                <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('member-investment-income')">
+                                    <i class="bx bx-filter"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="report-filters">
+                        <div class="report-filters" id="member-investment-income-filters">
                             <div class="filter-row">
                                 <div class="filter-field">
                                     <label for="investment-owner" class="field-label">Select Member</label>
@@ -399,25 +438,34 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="report-data">
-                            <div id="member-investment-income-items" class="data-container"></div>
+                        <div class="report-data brand-card-body">
+                            <div id="member-investment-income-items" class="data-container">
+                                <div class="empty-state">
+                                    <i class="bx bx-file-blank empty-state-icon"></i>
+                                    <p class="empty-state-message">Nothing to show</p>
+                                    <p class="empty-state-description">Please select a member to view their investment income data</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- My Investment Income Card (Member Only) -->
-                    <div class="report-card member">
-                        <div class="report-card-header">
+                    <div class="report-card brand-card member">
+                        <div class="report-card-header brand-card-header">
                             <div class="report-header-info">
-                                <h3 class="report-title">My Investment Income</h3>
+                                <h3 class="report-title text-brand-primary">My Investment Income</h3>
                                 <p class="report-description">Your personal investment returns</p>
                             </div>
                             <div class="report-actions">
-                                <button class="btn-download-individual" id="download-my-investment-income">
+                                <button class="btn-download-individual bg-brand-primary" id="download-my-investment-income">
                                     <i class="bx bx-download"></i>
+                                </button>
+                                <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('my-investment-income')">
+                                    <i class="bx bx-filter"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="report-filters">
+                        <div class="report-filters" id="my-investment-income-filters">
                             <div class="filter-row">
                                 <div class="filter-field">
                                     <label for="my-incomes-start" class="field-label">Start Date</label>
@@ -429,8 +477,14 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="report-data">
-                            <div id="my-income-items" class="data-container"></div>
+                        <div class="report-data brand-card-body">
+                            <div id="my-income-items" class="data-container">
+                                <div class="empty-state">
+                                    <i class="bx bx-file-blank empty-state-icon"></i>
+                                    <p class="empty-state-message">Nothing to show</p>
+                                    <p class="empty-state-description">No personal investment income data available for the selected period</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -440,19 +494,22 @@
             <div class="tab-pane" id="tab-savings" role="tabpanel">
                 <div class="reports-grid">
                     <!-- Individual Savings Report Card -->
-                    <div class="report-card member admin">
-                        <div class="report-card-header">
+                    <div class="report-card brand-card member admin">
+                        <div class="report-card-header brand-card-header">
                             <div class="report-header-info">
-                                <h3 class="report-title">Individual Savings Report</h3>
+                                <h3 class="report-title text-brand-primary">Individual Savings Report</h3>
                                 <p class="report-description">Personal savings tracking and analysis</p>
                             </div>
                             <div class="report-actions">
-                                <button class="btn-download-individual" id="download-individual-saving-report">
+                                <button class="btn-download-individual bg-brand-primary" id="download-individual-saving-report">
                                     <i class="bx bx-download"></i>
+                                </button>
+                                <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('individual-saving-report')">
+                                    <i class="bx bx-filter"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="report-filters">
+                        <div class="report-filters" id="individual-saving-report-filters">
                             <div class="filter-row">
                                 <div class="filter-field admin">
                                     <label for="saving-owner" class="field-label">Select Member</label>
@@ -473,25 +530,34 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="report-data">
-                            <div id="individual-saving-items" class="data-container"></div>
+                        <div class="report-data brand-card-body">
+                            <div id="individual-saving-items" class="data-container">
+                                <div class="empty-state">
+                                    <i class="bx bx-file-blank empty-state-icon"></i>
+                                    <p class="empty-state-message">Nothing to show</p>
+                                    <p class="empty-state-description">Please select a member to view their savings data</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Group Savings Report Card -->
-                    <div class="report-card admin member">
-                        <div class="report-card-header">
+                    <div class="report-card brand-card admin member">
+                        <div class="report-card-header brand-card-header">
                             <div class="report-header-info">
-                                <h3 class="report-title">Group Savings Report</h3>
+                                <h3 class="report-title text-brand-primary">Group Savings Report</h3>
                                 <p class="report-description">Combined group savings overview</p>
                             </div>
                             <div class="report-actions">
-                                <button class="btn-download-individual" id="download-group-saving-report">
+                                <button class="btn-download-individual bg-brand-primary" id="download-group-saving-report">
                                     <i class="bx bx-download"></i>
+                                </button>
+                                <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('group-saving-report')">
+                                    <i class="bx bx-filter"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="report-filters">
+                        <div class="report-filters" id="group-saving-report-filters">
                             <div class="filter-row">
                                 <div class="filter-field">
                                     <label for="group-saving-start" class="field-label">Start Date</label>
@@ -503,8 +569,14 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="report-data">
-                            <div id="group-saving-items" class="data-container"></div>
+                        <div class="report-data brand-card-body">
+                            <div id="group-saving-items" class="data-container">
+                                <div class="empty-state">
+                                    <i class="bx bx-file-blank empty-state-icon"></i>
+                                    <p class="empty-state-message">Nothing to show</p>
+                                    <p class="empty-state-description">No group savings data available for the selected period</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -514,19 +586,22 @@
             <div class="tab-pane" id="tab-contributions" role="tabpanel">
                 <div class="reports-grid">
                     <!-- Group Contributions Card -->
-                    <div class="report-card member admin">
-                        <div class="report-card-header">
+                    <div class="report-card brand-card member admin">
+                        <div class="report-card-header brand-card-header">
                             <div class="report-header-info">
-                                <h3 class="report-title">Group Contributions</h3>
+                                <h3 class="report-title text-brand-primary">Group Contributions</h3>
                                 <p class="report-description">Member contribution tracking and analytics</p>
                             </div>
                             <div class="report-actions">
-                                <button class="btn-download-individual" id="download-group-contributions-report">
+                                <button class="btn-download-individual bg-brand-primary" id="download-group-contributions-report">
                                     <i class="bx bx-download"></i>
+                                </button>
+                                <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('group-contributions-report')">
+                                    <i class="bx bx-filter"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="report-filters">
+                        <div class="report-filters" id="group-contributions-report-filters">
                             <div class="filter-row">
                                 <div class="filter-field">
                                     <label for="group-contributions-start" class="field-label">Start Date</label>
@@ -556,25 +631,34 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="report-data">
-                            <div id="group-contributions-items" class="data-container"></div>
+                        <div class="report-data brand-card-body">
+                            <div id="group-contributions-items" class="data-container">
+                                <div class="empty-state">
+                                    <i class="bx bx-file-blank empty-state-icon"></i>
+                                    <p class="empty-state-message">Nothing to show</p>
+                                    <p class="empty-state-description">No group contributions data available for the selected period</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- My Contributions Card (Member Only) -->
-                    <div class="report-card member">
-                        <div class="report-card-header">
+                    <div class="report-card brand-card member">
+                        <div class="report-card-header brand-card-header">
                             <div class="report-header-info">
-                                <h3 class="report-title">My Contributions</h3>
+                                <h3 class="report-title text-brand-primary">My Contributions</h3>
                                 <p class="report-description">Your personal contribution history</p>
                             </div>
                             <div class="report-actions">
-                                <button class="btn-download-individual" id="download-my-contributions-report">
+                                <button class="btn-download-individual bg-brand-primary" id="download-my-contributions-report">
                                     <i class="bx bx-download"></i>
+                                </button>
+                                <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('my-contributions-report')">
+                                    <i class="bx bx-filter"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="report-filters">
+                        <div class="report-filters" id="my-contributions-report-filters">
                             <div class="filter-row">
                                 <div class="filter-field">
                                     <label for="my-contributions-start" class="field-label">Start Date</label>
@@ -586,25 +670,34 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="report-data">
-                            <div id="my-contributions-items" class="data-container"></div>
+                        <div class="report-data brand-card-body">
+                            <div id="my-contributions-items" class="data-container">
+                                <div class="empty-state">
+                                    <i class="bx bx-file-blank empty-state-icon"></i>
+                                    <p class="empty-state-message">Nothing to show</p>
+                                    <p class="empty-state-description">No personal contribution history available for the selected period</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Member Contributions Card (Admin Only) -->
-                    <div class="report-card admin">
-                        <div class="report-card-header">
+                    <div class="report-card brand-card admin">
+                        <div class="report-card-header brand-card-header">
                             <div class="report-header-info">
-                                <h3 class="report-title">Member Contributions</h3>
+                                <h3 class="report-title text-brand-primary">Member Contributions</h3>
                                 <p class="report-description">Individual member contribution details</p>
                             </div>
                             <div class="report-actions">
-                                <button class="btn-download-individual" id="download-member-contributions-report">
+                                <button class="btn-download-individual bg-brand-primary" id="download-member-contributions-report">
                                     <i class="bx bx-download"></i>
+                                </button>
+                                <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('member-contributions-report')">
+                                    <i class="bx bx-filter"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="report-filters">
+                        <div class="report-filters" id="member-contributions-report-filters">
                             <div class="filter-row">
                                 <div class="filter-field">
                                     <label for="member-contribution-owner" class="field-label">Select Member</label>
@@ -625,8 +718,14 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="report-data">
-                            <div id="member-contributions-items" class="data-container"></div>
+                        <div class="report-data brand-card-body">
+                            <div id="member-contributions-items" class="data-container">
+                                <div class="empty-state">
+                                    <i class="bx bx-file-blank empty-state-icon"></i>
+                                    <p class="empty-state-message">Nothing to show</p>
+                                    <p class="empty-state-description">No member contribution details available for the selected period</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -636,19 +735,22 @@
             <div class="tab-pane" id="tab-fines" role="tabpanel">
                 <div class="reports-grid">
                     <!-- Collected Fines Card -->
-                    <div class="report-card member admin">
-                        <div class="report-card-header">
+                    <div class="report-card brand-card member admin">
+                        <div class="report-card-header brand-card-header">
                             <div class="report-header-info">
-                                <h3 class="report-title">Collected Fines</h3>
+                                <h3 class="report-title text-brand-primary">Collected Fines</h3>
                                 <p class="report-description">Successfully collected fines and penalties</p>
                             </div>
                             <div class="report-actions">
-                                <button class="btn-download-individual" id="download-collected-fines-report">
+                                <button class="btn-download-individual bg-brand-primary" id="download-collected-fines-report">
                                     <i class="bx bx-download"></i>
+                                </button>
+                                <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('collected-fines-report')">
+                                    <i class="bx bx-filter"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="report-filters">
+                        <div class="report-filters" id="collected-fines-report-filters">
                             <div class="filter-row">
                                 <div class="filter-field">
                                     <label for="collected-fines-start" class="field-label">Start Date</label>
@@ -660,25 +762,34 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="report-data">
-                            <div id="collected-fines-items" class="data-container"></div>
+                        <div class="report-data brand-card-body">
+                            <div id="collected-fines-items" class="data-container">
+                                <div class="empty-state">
+                                    <i class="bx bx-file-blank empty-state-icon"></i>
+                                    <p class="empty-state-message">Nothing to show</p>
+                                    <p class="empty-state-description">No collected fines data available for the selected period</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Unpaid Fines Card -->
-                    <div class="report-card admin member">
-                        <div class="report-card-header">
+                    <div class="report-card brand-card admin member">
+                        <div class="report-card-header brand-card-header">
                             <div class="report-header-info">
-                                <h3 class="report-title">Unpaid Fines</h3>
+                                <h3 class="report-title text-brand-primary">Unpaid Fines</h3>
                                 <p class="report-description">Outstanding fines and penalties</p>
                             </div>
                             <div class="report-actions">
-                                <button class="btn-download-individual" id="download-unpaid-fines-report">
+                                <button class="btn-download-individual bg-brand-primary" id="download-unpaid-fines-report">
                                     <i class="bx bx-download"></i>
+                                </button>
+                                <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('unpaid-fines-report')">
+                                    <i class="bx bx-filter"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="report-filters">
+                        <div class="report-filters" id="unpaid-fines-report-filters">
                             <div class="filter-row">
                                 <div class="filter-field">
                                     <label for="unpaid-fines-start" class="field-label">Start Date</label>
@@ -690,8 +801,14 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="report-data">
-                            <div id="unpaid-fines-items" class="data-container"></div>
+                        <div class="report-data brand-card-body">
+                            <div id="unpaid-fines-items" class="data-container">
+                                <div class="empty-state">
+                                    <i class="bx bx-file-blank empty-state-icon"></i>
+                                    <p class="empty-state-message">Nothing to show</p>
+                                    <p class="empty-state-description">No unpaid fines data available for the selected period</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -701,19 +818,22 @@
             <div class="tab-pane" id="tab-expenses" role="tabpanel">
                 <div class="reports-grid">
                     <!-- Expenses Card -->
-                    <div class="report-card admin member">
-                        <div class="report-card-header">
+                    <div class="report-card brand-card admin member">
+                        <div class="report-card-header brand-card-header">
                             <div class="report-header-info">
-                                <h3 class="report-title">Expenses Report</h3>
+                                <h3 class="report-title text-brand-primary">Expenses Report</h3>
                                 <p class="report-description">Organizational expenses and expenditure tracking</p>
                             </div>
                             <div class="report-actions">
-                                <button class="btn-download-individual" id="download-expenses-report">
+                                <button class="btn-download-individual bg-brand-primary" id="download-expenses-report">
                                     <i class="bx bx-download"></i>
+                                </button>
+                                <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('expenses-report')">
+                                    <i class="bx bx-filter"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="report-filters">
+                        <div class="report-filters" id="expenses-report-filters">
                             <div class="filter-row">
                                 <div class="filter-field">
                                     <label for="expenses-start" class="field-label">Start Date</label>
@@ -725,106 +845,17 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="report-data">
-                            <div id="expenses-items" class="data-container"></div>
+                        <div class="report-data brand-card-body">
+                            <div id="expenses-items" class="data-container">
+                                <div class="empty-state">
+                                    <i class="bx bx-file-blank empty-state-icon"></i>
+                                    <p class="empty-state-message">Nothing to show</p>
+                                    <p class="empty-state-description">No expenses data available for the selected period</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Create Report Modal -->
-<div class="modal fade reports-modal" id="createReportModal" tabindex="-1" aria-labelledby="createReportModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="createReportModalLabel">
-                    <i class='bx bx-file-plus'></i>
-                    Create New Report
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="createReportForm">
-                    <div class="modal-form-grid">
-                        <div class="form-field">
-                            <label for="reportType" class="form-label">Report Type</label>
-                            <select class="form-control" id="reportType" required>
-                                <option value="">Select Report Type</option>
-                                <option value="cashflow">Cashflow Report</option>
-                                <option value="loans">Loan Report</option>
-                                <option value="investments">Investment Report</option>
-                                <option value="savings">Savings Report</option>
-                                <option value="contributions">Contributions Report</option>
-                                <option value="fines">Fines Report</option>
-                                <option value="expenses">Expenses Report</option>
-                            </select>
-                        </div>
-                        <div class="form-field">
-                            <label for="reportName" class="form-label">Report Name</label>
-                            <input type="text" class="form-control" id="reportName" required>
-                        </div>
-                        <div class="form-field full-width">
-                            <label for="reportDescription" class="form-label">Description</label>
-                            <textarea class="form-control" id="reportDescription" rows="3"></textarea>
-                        </div>
-                        <div class="form-field">
-                            <label for="reportStartDate" class="form-label">Start Date</label>
-                            <input type="date" class="form-control" id="reportStartDate" required>
-                        </div>
-                        <div class="form-field">
-                            <label for="reportEndDate" class="form-label">End Date</label>
-                            <input type="date" class="form-control" id="reportEndDate" required>
-                        </div>
-                    </div>
-                    <div class="modal-actions">
-                        <button type="submit" class="btn btn-primary">Create Report</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Download Modal -->
-<div class="modal fade reports-modal" id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="downloadModalLabel">
-                    <i class='bx bx-download'></i>
-                    Download Reports
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="downloadForm">
-                    <div class="modal-form-grid">
-                        <div class="form-field">
-                            <label for="downloadFormat" class="form-label">Format</label>
-                            <select class="form-control" id="downloadFormat" required>
-                                <option value="pdf">PDF</option>
-                                <option value="excel">Excel</option>
-                                <option value="csv">CSV</option>
-                            </select>
-                        </div>
-                        <div class="form-field">
-                            <label for="downloadReportType" class="form-label">Report Type</label>
-                            <select class="form-control" id="downloadReportType" required>
-                                <option value="current">Current View</option>
-                                <option value="all">All Reports</option>
-                                <option value="filtered">Filtered Data</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-actions">
-                        <button type="submit" class="btn btn-primary">Download</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
@@ -838,426 +869,81 @@ document.addEventListener('DOMContentLoaded', function () {
         return new bootstrap.Tab(tabTriggerEl);
     });
 
-    // Filter panel functionality
-    const filterReportsBtn = document.getElementById('filterReportsBtn');
-    const filterPanel = document.getElementById('filterPanel');
-    const closeFilterBtn = document.getElementById('closeFilterBtn');
+    // Individual report filter toggle
+    window.toggleReportFilter = function(reportId) {
+        const filterElement = document.getElementById(reportId + '-filters');
+        if (filterElement) {
+            filterElement.style.display = filterElement.style.display === 'none' ? 'block' : 'none';
+        }
+    };
 
-    function toggleFilterPanel() {
-        filterPanel.classList.toggle('active');
-    }
-
-    if (filterReportsBtn) {
-        filterReportsBtn.addEventListener('click', toggleFilterPanel);
-    }
-    if (closeFilterBtn) {
-        closeFilterBtn.addEventListener('click', toggleFilterPanel);
-    }
-
-    // Modal functionality
-    const createReportBtn = document.getElementById('createReportBtn');
-    const downloadReportsBtn = document.getElementById('downloadReportsBtn');
-
-    if (createReportBtn) {
-        createReportBtn.addEventListener('click', function() {
-            const modal = new bootstrap.Modal(document.getElementById('createReportModal'));
-            modal.show();
-        });
-    }
-
-    if (downloadReportsBtn) {
-        downloadReportsBtn.addEventListener('click', function() {
-            const modal = new bootstrap.Modal(document.getElementById('downloadModal'));
-            modal.show();
+    // Global filter functionality
+    const globalFilterBtn = document.querySelector('.btn-filter-global');
+    if (globalFilterBtn) {
+        globalFilterBtn.addEventListener('click', function() {
+            const filterPanel = document.getElementById('filterPanel');
+            filterPanel.classList.toggle('active');
         });
     }
 
     // Keep all existing download functionality
-    document.querySelector('#download-full-loan-report').addEventListener('click', function () {
-        var chama_id = localStorage.getItem('groupId');
-        fetch(`/chamas-bookeeping/download-full-loan-report/${chama_id}/`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            }
-        })
-        .then(response => {
-            if (!response.ok) throw new Error('Network response was not ok');
-            return response.blob();
-        })
-        .then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = 'full_loan_report.pdf';
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-        })
-        .catch(error => console.error('Error:', error));
-    });
+    const downloadButtons = {
+        '#download-full-loan-report': '/chamas-bookeeping/download-full-loan-report/',
+        '#download-repayment-schedule': '/chamas-bookeeping/download-loan-repayment-schedule/',
+        '#download-group-investment-income': '/chamas-bookeeping/download-group-investment-income/',
+        '#download-member-investment-income': '/chamas-bookeeping/download-member-investment-income/',
+        '#download-individual-saving-report': '/chamas-bookeeping/download-individual-saving-report/',
+        '#download-group-saving-report': '/chamas-bookeeping/download-group-saving-report/',
+        '#download-group-contributions-report': '/chamas-bookeeping/download-group-contributions-report/',
+        '#download-expenses-report': '/chamas-bookeeping/download-expense-report/',
+        '#download-member-contributions-report': '/chamas-bookeeping/download-member-contributions-report/',
+        '#download-collected-fines-report': '/chamas-bookeeping/download-collected-fines-report/',
+        '#download-unpaid-fines-report': '/chamas-bookeeping/download-uncollected-fines-report/',
+        '#download-chama-cashflow-report': '/chamas-bookeeping/download-chama-cashflow-report/',
+        '#download-member-cashflow-report': '/chamas-bookeeping/download-member-cashflow-report/',
+        '#download-my-cashflow-report': '/chamas-bookeeping/download-my-cashflow-report/'
+    };
 
-    document.querySelector('#download-repayment-schedule').addEventListener('click', function () {
-        var chama_id = localStorage.getItem('groupId');
-        fetch(`/chamas-bookeeping/download-loan-repayment-schedule/${chama_id}/`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            }
-        })
-        .then(response => {
-            if (!response.ok) throw new Error('Network response was not ok');
-            return response.blob();
-        })
-        .then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = 'loan_repayment_schedule.pdf';
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-        })
-        .catch(error => console.error('Error:', error));
-    });
+    // Add download event listeners
+    Object.entries(downloadButtons).forEach(([selector, baseUrl]) => {
+        const button = document.querySelector(selector);
+        if (button) {
+            button.addEventListener('click', function () {
+                const chama_id = localStorage.getItem('groupId');
+                let url = `${baseUrl}${chama_id}/`;
+                
+                // Add member ID for specific reports
+                if (selector.includes('member-') && !selector.includes('my-')) {
+                    const memberSelect = document.querySelector('#member-cashflow-owner, #investment-owner, #saving-owner, #member-contribution-owner');
+                    if (memberSelect && memberSelect.value) {
+                        url += `?member-id=${memberSelect.value}`;
+                    }
+                }
 
-    document.querySelector('#download-group-investment-income').addEventListener('click', function () {
-        var chama_id = localStorage.getItem('groupId');
-        fetch(`/chamas-bookeeping/download-group-investment-income/${chama_id}/`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            }
-        })
-        .then(response => {
-            if (!response.ok) throw new Error('Network response was not ok');
-            return response.blob();
-        })
-        .then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = 'group_investment_income.pdf';
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-        })
-        .catch(error => console.error('Error:', error));
-    });
-
-    document.querySelector('#download-member-investment-income').addEventListener('click', function () {
-        var chama_id = localStorage.getItem('groupId');
-        var selectedOwnerId = document.getElementById("investment-owner").value;
-
-        if (selectedOwnerId == '...') {
-            var link = `/chamas-bookeeping/download-member-investment-income/${chama_id}/`;
-        } else {
-            var link = `/chamas-bookeeping/download-member-investment-income/${chama_id}/?member-id=${selectedOwnerId}`;
+                fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.blob();
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = `${selector.replace('#download-', '').replace('-', '_')}.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => console.error('Error:', error));
+            });
         }
-
-        fetch(link, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            }
-        })
-        .then(response => {
-            if (!response.ok) throw new Error('Network response was not ok');
-            return response.blob();
-        })
-        .then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = 'member_investment_income.pdf';
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-        })
-        .catch(error => console.error('Error:', error));
-    });
-
-    document.querySelector('#download-individual-saving-report').addEventListener('click', function () {
-        var chama_id = localStorage.getItem('groupId');
-        var selectedOwnerId = document.getElementById("saving-owner").value;
-
-        if (selectedOwnerId == '...') {
-            var link = `/chamas-bookeeping/download-individual-saving-report/${chama_id}/`;
-        } else {
-            var link = `/chamas-bookeeping/download-individual-saving-report/${chama_id}/?member-id=${selectedOwnerId}`;
-        }
-
-        fetch(link, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            }
-        })
-        .then(response => {
-            if (!response.ok) throw new Error('Network response was not ok');
-            return response.blob();
-        })
-        .then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = 'individual_savings_report.pdf';
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-        })
-        .catch(error => console.error('Error:', error));
-    });
-
-    document.querySelector('#download-group-saving-report').addEventListener('click', function () {
-        var chama_id = localStorage.getItem('groupId');
-        fetch(`/chamas-bookeeping/download-group-saving-report/${chama_id}/`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            }
-        })
-        .then(response => {
-            if (!response.ok) throw new Error('Network response was not ok');
-            return response.blob();
-        })
-        .then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = 'group_savings_report.pdf';
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-        })
-        .catch(error => console.error('Error:', error));
-    });
-
-    document.querySelector('#download-group-contributions-report').addEventListener('click', function () {
-        var chama_id = localStorage.getItem('groupId');
-        const schemeId = document.getElementById('member-contribution-scheme').value;
-
-        fetch(`/chamas-bookeeping/download-group-contributions-report/${chama_id}/${schemeId}/`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            }
-        })
-        .then(response => {
-            if (!response.ok) throw new Error('Network response was not ok');
-            return response.blob();
-        })
-        .then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = 'group_contributions_report.pdf';
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-        })
-        .catch(error => console.error('Error:', error));
-    });
-
-    document.querySelector('#download-expenses-report').addEventListener('click', function () {
-        var chama_id = localStorage.getItem('groupId');
-        fetch(`/chamas-bookeeping/download-expense-report/${chama_id}/`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            }
-        })
-        .then(response => {
-            if (!response.ok) throw new Error('Network response was not ok');
-            return response.blob();
-        })
-        .then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = 'expense_report.pdf';
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-        })
-        .catch(error => console.error('Error:', error));
-    });
-
-    document.querySelector('#download-member-contributions-report').addEventListener('click', function () {
-        var chama_id = localStorage.getItem('groupId');
-        var member_id = document.getElementById('member-contribution-owner').value;
-        const selectedSchemeId = document.getElementById('member-contribution-scheme').value;
-
-        fetch(`/chamas-bookeeping/download-member-contributions-report/${chama_id}/${member_id}/${selectedSchemeId}/`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            }
-        })
-        .then(response => {
-            if (!response.ok) throw new Error('Network response was not ok');
-            return response.blob();
-        })
-        .then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = 'member_contribution_report.pdf';
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-        })
-        .catch(error => console.error('Error:', error));
-    });
-
-    document.querySelector('#download-collected-fines-report').addEventListener('click', function () {
-        var chama_id = localStorage.getItem('groupId');
-        fetch(`/chamas-bookeeping/download-collected-fines-report/${chama_id}/`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            }
-        })
-        .then(response => {
-            if (!response.ok) throw new Error('Network response was not ok');
-            return response.blob();
-        })
-        .then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = 'collected_fines_report.pdf';
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-        })
-        .catch(error => console.error('Error:', error));
-    });
-
-    document.querySelector('#download-unpaid-fines-report').addEventListener('click', function () {
-        var chama_id = localStorage.getItem('groupId');
-        fetch(`/chamas-bookeeping/download-uncollected-fines-report/${chama_id}/`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            }
-        })
-        .then(response => {
-            if (!response.ok) throw new Error('Network response was not ok');
-            return response.blob();
-        })
-        .then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = 'uncollected_fines_report.pdf';
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-        })
-        .catch(error => console.error('Error:', error));
-    });
-
-    document.querySelector('#download-chama-cashflow-report').addEventListener('click', function () {
-        var chama_id = localStorage.getItem('groupId');
-        fetch(`/chamas-bookeeping/download-chama-cashflow-report/${chama_id}/`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            }
-        })
-        .then(response => {
-            if (!response.ok) throw new Error('Network response was not ok');
-            return response.blob();
-        })
-        .then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = 'chama_cashflow_report.pdf';
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-        })
-        .catch(error => console.error('Error:', error));
-    });
-
-    document.querySelector('#download-member-cashflow-report').addEventListener('click', function () {
-        var chama_id = localStorage.getItem('groupId');
-        var member_id = document.getElementById('member-cashflow-owner').value;
-
-        fetch(`/chamas-bookeeping/download-member-cashflow-report/${chama_id}/${member_id}/`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            }
-        })
-        .then(response => {
-            if (!response.ok) throw new Error('Network response was not ok');
-            return response.blob();
-        })
-        .then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = 'member_cashflow_report.pdf';
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-        })
-        .catch(error => console.error('Error:', error));
-    });
-
-    document.querySelector('#download-my-cashflow-report').addEventListener('click', function () {
-        var chama_id = localStorage.getItem('groupId');
-        fetch(`/chamas-bookeeping/download-my-cashflow-report/${chama_id}/`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            }
-        })
-        .then(response => {
-            if (!response.ok) throw new Error('Network response was not ok');
-            return response.blob();
-        })
-        .then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = 'my_cashflow_report.pdf';
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-        })
-        .catch(error => console.error('Error:', error));
     });
 });
 
@@ -1276,131 +962,5 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-
-// Keep all the existing data rendering functions
-function renderCashflowReports(reports) {
-    const reportContainer = document.getElementById('cashflow-report-items');
-    const cashflowReportTotals = document.getElementById('cashflow-report-totals-cont')
-    const cashflowReportNet = document.getElementById('cashflow-report-net-cont')
-
-    reportContainer.innerHTML = '';
-    cashflowReportTotals.innerHTML = '';
-    cashflowReportNet.innerHTML = '';
-
-    const totals = {};
-
-    reports.forEach(report => {
-        const reportDiv = document.createElement('div');
-        reportDiv.classList.add('data-row');
-
-        reportDiv.innerHTML = `
-            <div class="data-cell">
-                <span class="cell-label">Member</span>
-                <span class="cell-value">${report.member_id}</span>
-            </div>
-            <div class="data-cell">
-                <span class="cell-label">Type</span>
-                <span class="cell-value">${report.type}</span>
-            </div>
-            <div class="data-cell">
-                <span class="cell-label">Amount</span>
-                <span class="cell-value amount">Ksh ${report.amount.toLocaleString()}</span>
-            </div>
-            <div class="data-cell">
-                <span class="cell-label">Date</span>
-                <span class="cell-value">${report.object_date}</span>
-            </div>
-        `;
-
-        reportContainer.appendChild(reportDiv);
-
-        if (!totals[report.type]) {
-            totals[report.type] = 0;
-        }
-        totals[report.type] += report.amount;
-    });
-
-    for (const type in totals) {
-        const totalDiv = document.createElement('div');
-        totalDiv.className = 'summary-card';
-        totalDiv.innerHTML = `
-            <h4 class="summary-title">Total ${type}</h4>
-            <p class="summary-amount">Ksh ${totals[type].toLocaleString()}</p>
-        `;
-        cashflowReportTotals.appendChild(totalDiv);
-    }
-
-    let netTotal = 0;
-    for (const type in totals) {
-        netTotal += totals[type];
-    }
-    const netTotalDiv = document.createElement('div');
-    netTotalDiv.className = 'net-total-card';
-    netTotalDiv.innerHTML = `
-        <h3 class="net-title">Net Cashflow</h3>
-        <p class="net-amount">Ksh ${netTotal.toLocaleString()}</p>
-    `;
-    cashflowReportNet.appendChild(netTotalDiv);
-}
-
-// Initialize data if available
-if (typeof chamaCashflowReports !== 'undefined') {
-    renderCashflowReports(chamaCashflowReports);
-}
-
-// Add filter functionality
-function filterReports() {
-    const startDate = document.getElementById('cashflow-report-start').value;
-    const endDate = document.getElementById('cashflow-report-end').value;
-
-    if (typeof chamaCashflowReports !== 'undefined') {
-        const filteredReports = chamaCashflowReports.filter(report => {
-            const reportDate = new Date(report.object_date);
-            return reportDate >= new Date(startDate) && reportDate <= new Date(endDate);
-        });
-        renderCashflowReports(filteredReports);
-    }
-}
-
-document.getElementById('cashflow-report-start').addEventListener('change', filterReports);
-document.getElementById('cashflow-report-end').addEventListener('change', filterReports);
-
-// Additional rendering functions for other report types would be added here
-// For brevity, I'm including the core structure. The full implementation would include:
-// - renderExpenseReports()
-// - renderMemberCashflowReports()
-// - renderGroupinvestmentIncomes()
-// - renderIndividualinvestmentIncomes()
-// - renderIndividualSavings()
-// - renderGroupSavings()
-// - renderCollectedFines()
-// - renderUnpaidFines()
-// - renderMyReports()
-// - renderMyInvestmentIncomes()
-// - renderGroupContributions()
-// - renderMemberContributions()
-// - renderRepaymentSchedule()
-
-// Initialize data rendering on page load
-document.addEventListener('DOMContentLoaded', function() {
-    // Fetch data from the context passed by Django view and render all reports
-    const chamaCashflowReports = {{ chama_cashflow_reports | safe }};
-    const chamaExpenseReports = {{ chama_expense_reports | safe }};
-    const repaymentSchedule = {{ unpaid_loans | safe }};
-    const groupInvestmentIncomes = {{ group_investment_incomes | safe }};
-    const individualInvestmentIncomes = {{ member_investment_income | safe }};
-    const individualSavings = {{ individual_saving_report | safe }};
-    const groupSavings = {{ group_saving_report | safe }};
-    const collectedFines = {{ collected_fines | safe }};
-    const UnpaidFines = {{ unpaid_fines | safe }};
-    const myReports = {{ my_reports | safe }};
-    const myInvestmentIncomes = {{ my_investment_incomes | safe }};
-    const groupContributions = {{ group_contributions | safe }};
-
-    // Initial rendering
-    if (chamaCashflowReports) renderCashflowReports(chamaCashflowReports);
-    
-    // Add other initialization calls here for each report type
-});
 </script>
 {%endblock%}
