@@ -167,141 +167,17 @@ a:hover {
 }
 
 /* ================================
-   SIDEBAR NAVIGATION FIXES
+   SIDEBAR NAVIGATION COLOR FIXES
    ================================ */
 
-/* Ensure sidebar is visible and functional */
-.sidenav,
-.desktop-sidenav {
-    z-index: 9999 !important;
-    visibility: visible !important;
-    display: block !important;
-}
-
-.sidenav ul.nav-list,
-.desktop-sidenav ul.nav-list {
-    list-style: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    visibility: visible !important;
-    display: block !important;
-}
-
-.sidenav ul.nav-list li,
-.desktop-sidenav ul.nav-list li {
-    list-style: none !important;
-    margin: 0 !important;
-    padding: 8px 0 !important;
-    visibility: visible !important;
-    display: block !important;
-}
-
-.sidenav ul.nav-list li a,
-.desktop-sidenav ul.nav-list li a {
-    display: flex !important;
-    align-items: center !important;
-    padding: 12px 20px !important;
-    color: #ffffff !important;
-    text-decoration: none !important;
-    font-size: 0.875rem !important;
-    font-weight: 500 !important;
-    transition: all 0.2s ease !important;
-    border-radius: 8px !important;
-    margin: 0 8px !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
-
-.sidenav ul.nav-list li a:hover,
-.desktop-sidenav ul.nav-list li a:hover {
-    background-color: rgba(255, 255, 255, 0.1) !important;
-    color: #ffffff !important;
-    text-decoration: none !important;
-    transform: translateX(4px) !important;
-}
-
-.sidenav ul.nav-list li a i,
-.desktop-sidenav ul.nav-list li a i {
-    margin-right: 12px !important;
-    font-size: 1.125rem !important;
-    width: 20px !important;
-    text-align: center !important;
-    color: #ffffff !important;
-}
-
-.sidenav ul.nav-list li a .link_name,
-.desktop-sidenav ul.nav-list li a .link_name {
-    font-size: 0.875rem !important;
-    font-weight: 500 !important;
-    color: #ffffff !important;
-}
-
-/* Force visibility for admin/member classes */
-.sidenav ul.nav-list li.admin,
-.desktop-sidenav ul.nav-list li.admin {
-    display: block !important;
-    visibility: visible !important;
-}
-
-.sidenav ul.nav-list li.member,
-.desktop-sidenav ul.nav-list li.member {
-    display: block !important;
-    visibility: visible !important;
-}
-
-/* Logo styling in sidebar */
-.sidenav .logo_details,
-.desktop-sidenav .logo_details {
-    padding: 20px !important;
-    text-align: center !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-    margin-bottom: 20px !important;
-}
-
-.sidenav .logo_details img,
-.desktop-sidenav .logo_details img {
-    max-width: 120px !important;
-    height: auto !important;
-    filter: brightness(0) invert(1) !important;
-}
-
-/* Additional navigation visibility fixes */
-.sidenav a,
-.desktop-sidenav a {
-    color: #ffffff !important;
-    text-decoration: none !important;
-}
-
-.sidenav li,
-.desktop-sidenav li {
+/* Simple navigation color fixes - preserve original layout and behavior */
+.sidenav li a,
+.desktop-sidenav li a {
     color: #ffffff !important;
 }
 
 .sidenav .closebtn {
     color: #ffffff !important;
-}
-
-/* Mobile sidebar improvements */
-@media (max-width: 768px) {
-    .sidenav {
-        padding-top: 60px !important;
-    }
-    
-    .sidenav ul.nav-list li a {
-        padding: 16px 20px !important;
-        font-size: 1rem !important;
-        color: #ffffff !important;
-    }
-    
-    .sidenav ul.nav-list li a i {
-        font-size: 1.25rem !important;
-        margin-right: 16px !important;
-        color: #ffffff !important;
-    }
-    
-    .sidenav ul.nav-list li a .link_name {
-        color: #ffffff !important;
-    }
 }
 
 /* ================================
