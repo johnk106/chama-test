@@ -9,6 +9,18 @@ body {
     height: 100%;
 }
 
+/* Global container overrides for edge-to-edge content */
+html, body,
+.chamas-container, 
+.chamas-wrapper,
+.container,
+.container-fluid,
+.main-content,
+.content-wrapper {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
 #main-row {
     height: 100%;
 }
