@@ -243,7 +243,7 @@
    MODAL STYLES
    ================================ */
 .finance-modal .modal-header {
-    background: linear-gradient(135deg, var(--color-default) 0%, var(--color-second) 100%);
+    background: #1F8A70;
     color: white;
     border: none;
     padding: 20px 24px;
@@ -390,8 +390,8 @@ select {
 
 .btn-primary {
     border-radius: 8px;
-    background: #2291A5;
-    background-color: #2291A5;
+    background: #1F8A70;
+    background-color: #1F8A70;
     display: flex;
     padding: 12px 16px;
     flex-direction: column;
@@ -399,8 +399,9 @@ select {
     align-items: center;
     gap: 10px;
     align-self: stretch;
-    color: var(--White, #FFF);
+    color: #ffffff;
     text-align: center;
+    border-color: #1F8A70;
 
     /* Public Sans/Text sm/Semibold */
     font-family: sans-serif;
@@ -412,9 +413,9 @@ select {
 }
 
 .btn-primary:hover {
-    background: var(--Primary-500, #2291A5);
-
-
+    background: #1a7560;
+    background-color: #1a7560;
+    border-color: #1a7560;
 }
 
 .saving-single {
@@ -557,6 +558,100 @@ select {
 /* ================================
    RESPONSIVE DESIGN
    ================================ */
+
+/* ================================
+   DESKTOP STYLES (min-width: 768px)
+   ================================ */
+@media (min-width: 768px) {
+    /* Hide FAB completely on desktop */
+    .fab-create,
+    .mini-fab-savings,
+    .mini-fab-investment,
+    .mini-fab-income,
+    .fab-container,
+    .fab-backdrop {
+        display: none !important;
+    }
+
+    /* Brand teal color for all desktop modal elements */
+    .modal-header,
+    .modal-footer .btn,
+    .modal-footer .btn-primary {
+        background-color: #1F8A70 !important;
+        color: #ffffff !important;
+        border-color: #1F8A70 !important;
+    }
+
+    /* Brand teal for desktop action buttons */
+    .finance-action-row button,
+    .finance-create-savings,
+    .finance-create-investment,
+    .finance-create-income {
+        background-color: #1F8A70 !important;
+        color: #ffffff !important;
+        border-color: #1F8A70 !important;
+    }
+
+    /* Brand teal for desktop action buttons hover states */
+    .finance-action-row button:hover,
+    .finance-create-savings:hover,
+    .finance-create-investment:hover,
+    .finance-create-income:hover {
+        background-color: #1a7560 !important;
+        border-color: #1a7560 !important;
+    }
+
+    /* Brand teal for tab navigation active states */
+    .finance-tabs .nav-link.active {
+        color: #1F8A70 !important;
+        border-bottom-color: #1F8A70 !important;
+    }
+
+    .finance-tabs .nav-link:hover {
+        color: #1F8A70 !important;
+    }
+
+    /* Brand teal for primary buttons in modals */
+    .modal-body .btn-primary,
+    .finance-modal .btn-primary {
+        background-color: #1F8A70 !important;
+        border-color: #1F8A70 !important;
+        color: #ffffff !important;
+    }
+
+    .modal-body .btn-primary:hover,
+    .finance-modal .btn-primary:hover {
+        background-color: #1a7560 !important;
+        border-color: #1a7560 !important;
+    }
+
+    /* Ensure modal close button is properly styled */
+    .modal-header .btn-close {
+        filter: invert(1);
+        opacity: 0.8;
+    }
+
+    .modal-header .btn-close:hover {
+        opacity: 1;
+    }
+
+    /* Comprehensive modal button styling */
+    .modal .btn,
+    .modal button[type="submit"],
+    .modal input[type="submit"] {
+        background-color: #1F8A70 !important;
+        border-color: #1F8A70 !important;
+        color: #ffffff !important;
+    }
+
+    .modal .btn:hover,
+    .modal button[type="submit"]:hover,
+    .modal input[type="submit"]:hover {
+        background-color: #1a7560 !important;
+        border-color: #1a7560 !important;
+    }
+}
+
 @media (max-width: 767px) {
     /* Hide Desktop Action Row on Mobile */
     .finance-action-row {
