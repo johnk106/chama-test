@@ -167,6 +167,187 @@ a:hover {
 }
 
 /* ================================
+   SIDEBAR NAVIGATION FIXES
+   ================================ */
+
+/* Ensure sidebar is visible and functional */
+.sidenav,
+.desktop-sidenav {
+    z-index: 9999 !important;
+    visibility: visible !important;
+    display: block !important;
+}
+
+.sidenav ul.nav-list,
+.desktop-sidenav ul.nav-list {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    visibility: visible !important;
+    display: block !important;
+}
+
+.sidenav ul.nav-list li,
+.desktop-sidenav ul.nav-list li {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 8px 0 !important;
+    visibility: visible !important;
+    display: block !important;
+}
+
+.sidenav ul.nav-list li a,
+.desktop-sidenav ul.nav-list li a {
+    display: flex !important;
+    align-items: center !important;
+    padding: 12px 20px !important;
+    color: var(--brand-white) !important;
+    text-decoration: none !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease !important;
+    border-radius: 8px !important;
+    margin: 0 8px !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.sidenav ul.nav-list li a:hover,
+.desktop-sidenav ul.nav-list li a:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: var(--brand-white) !important;
+    text-decoration: none !important;
+    transform: translateX(4px) !important;
+}
+
+.sidenav ul.nav-list li a i,
+.desktop-sidenav ul.nav-list li a i {
+    margin-right: 12px !important;
+    font-size: 1.125rem !important;
+    width: 20px !important;
+    text-align: center !important;
+}
+
+.sidenav ul.nav-list li a .link_name,
+.desktop-sidenav ul.nav-list li a .link_name {
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    color: inherit !important;
+}
+
+/* Force visibility for admin/member classes */
+.sidenav ul.nav-list li.admin,
+.desktop-sidenav ul.nav-list li.admin {
+    display: block !important;
+    visibility: visible !important;
+}
+
+.sidenav ul.nav-list li.member,
+.desktop-sidenav ul.nav-list li.member {
+    display: block !important;
+    visibility: visible !important;
+}
+
+/* Logo styling in sidebar */
+.sidenav .logo_details,
+.desktop-sidenav .logo_details {
+    padding: 20px !important;
+    text-align: center !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    margin-bottom: 20px !important;
+}
+
+.sidenav .logo_details img,
+.desktop-sidenav .logo_details img {
+    max-width: 120px !important;
+    height: auto !important;
+    filter: brightness(0) invert(1) !important;
+}
+
+/* Mobile sidebar improvements */
+@media (max-width: 768px) {
+    .sidenav {
+        padding-top: 60px !important;
+    }
+    
+    .sidenav ul.nav-list li a {
+        padding: 16px 20px !important;
+        font-size: 1rem !important;
+    }
+    
+    .sidenav ul.nav-list li a i {
+        font-size: 1.25rem !important;
+        margin-right: 16px !important;
+    }
+}
+
+/* ================================
+   LAYOUT IMPROVEMENTS
+   ================================ */
+
+/* Remove excessive margins from main content area */
+.container-fluid {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+}
+
+/* Ensure main content uses full width */
+#main {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.home-section {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+}
+
+.block-body {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+}
+
+/* Fix row and column layout */
+.row {
+    margin: 0 !important;
+    width: 100% !important;
+}
+
+.col-lg-10, .col-md-9, .col-sm-11, .col-11 {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+}
+
+.col-lg-2, .col-md-3 {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Header improvements */
+.desktop-header {
+    margin: 0 !important;
+    padding: 16px 20px !important;
+    background: var(--brand-white) !important;
+    border-bottom: 1px solid var(--brand-gray-200) !important;
+    box-shadow: var(--brand-shadow) !important;
+}
+
+.navbar-cont.header {
+    margin: 0 !important;
+    padding: 12px 16px !important;
+    background: var(--brand-white) !important;
+    border-bottom: 1px solid var(--brand-gray-200) !important;
+}
+
+/* ================================
    CONSISTENT SPACING UTILITIES
    ================================ */
 
@@ -183,6 +364,7 @@ a:hover {
 
 .full-width {
     width: 100% !important;
+    max-width: 100% !important;
 }
 
 .full-height {
@@ -316,6 +498,27 @@ a:hover {
     
     .modal-body {
         padding: var(--brand-space-md) !important;
+    }
+    
+    /* Hide desktop sidebar on mobile */
+    .desktop-sidenav {
+        display: none !important;
+    }
+    
+    /* Ensure mobile sidebar works */
+    .sidenav {
+        display: block !important;
+    }
+}
+
+/* Desktop view - hide mobile sidebar */
+@media (min-width: 769px) {
+    .sidenav {
+        display: none !important;
+    }
+    
+    .desktop-sidenav {
+        display: block !important;
     }
 }
 

@@ -32,11 +32,19 @@
     min-height: 100vh;
     background-color: var(--color-gray-50);
     padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.modern-dashboard.full-width {
+    max-width: 100%;
+    width: 100%;
 }
 
 .dashboard-content {
     width: 100%;
-    padding: 16px;
+    padding: 8px;
+    margin: 0;
 }
 
 /* ================================
@@ -89,16 +97,17 @@
    MOBILE NAVIGATION MENU
    ================================ */
 .navigation-menu {
-    max-width: 600px;
-    margin: 0 auto;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 .total-cash-card {
     background: linear-gradient(135deg, var(--color-primary) 0%, #2ba6bd 100%);
     color: var(--color-white);
     border-radius: var(--border-radius);
-    padding: 24px;
-    margin-bottom: 24px;
+    padding: 20px;
+    margin-bottom: 16px;
     box-shadow: var(--shadow-lg);
     display: flex;
     justify-content: space-between;
@@ -117,7 +126,7 @@
 }
 
 .cash-amount {
-    font-size: 2rem;
+    font-size: 1.75rem;
     font-weight: 700;
     margin: 0 0 12px 0;
     line-height: 1.2;
@@ -161,10 +170,10 @@
 .nav-item {
     display: flex;
     align-items: center;
-    padding: 16px 20px;
+    padding: 14px 16px;
     background: var(--color-white);
     border-radius: var(--border-radius);
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     text-decoration: none;
     color: var(--color-gray-700);
     box-shadow: var(--shadow);
@@ -179,15 +188,15 @@
 }
 
 .nav-icon {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     background: var(--color-gray-100);
     border-radius: var(--border-radius);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 16px;
-    font-size: 1.25rem;
+    margin-right: 12px;
+    font-size: 1.125rem;
     color: var(--color-primary);
     transition: all 0.2s ease;
 }
@@ -200,7 +209,7 @@
 .nav-label {
     flex: 1;
     font-weight: 500;
-    font-size: 1rem;
+    font-size: 0.875rem;
 }
 
 .nav-arrow {
@@ -218,9 +227,10 @@
    DESKTOP DASHBOARD
    ================================ */
 .desktop-dashboard {
-    max-width: 1200px;
-    margin: 0 auto;
+    max-width: 100%;
+    margin: 0;
     padding: 0;
+    width: 100%;
 }
 
 /* Dashboard Header */
@@ -228,12 +238,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 32px;
-    padding: 0 8px;
+    margin-bottom: 24px;
+    padding: 0;
 }
 
 .header-content h1.dashboard-title {
-    font-size: 2.25rem;
+    font-size: 2rem;
     font-weight: 700;
     color: var(--color-primary);
     margin: 0 0 8px 0;
@@ -241,7 +251,7 @@
 }
 
 .header-content p.dashboard-subtitle {
-    font-size: 1rem;
+    font-size: 0.875rem;
     color: var(--color-gray-600);
     margin: 0;
 }
@@ -250,7 +260,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 12px 20px;
+    padding: 10px 16px;
     background: var(--color-primary);
     color: var(--color-white);
     border: none;
@@ -258,6 +268,7 @@
     font-weight: 600;
     text-decoration: none;
     transition: all 0.2s ease;
+    font-size: 0.875rem;
 }
 
 .header-actions .btn:hover {
@@ -269,15 +280,15 @@
 /* Metrics Grid */
 .metrics-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
-    margin-bottom: 32px;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
 }
 
 .metric-card {
     background: var(--color-white);
     border-radius: var(--border-radius);
-    padding: 24px;
+    padding: 20px;
     box-shadow: var(--shadow);
     transition: all 0.2s ease;
 }
@@ -331,76 +342,76 @@
 }
 
 .metric-content h3.metric-value {
-    font-size: 1.875rem;
+    font-size: 1.5rem;
     font-weight: 700;
     margin: 0 0 4px 0;
     color: var(--color-gray-900);
 }
 
 .metric-content p.metric-label {
-    font-size: 1rem;
+    font-size: 0.875rem;
     font-weight: 600;
     color: var(--color-gray-700);
     margin: 0 0 4px 0;
 }
 
 .metric-content p.metric-description {
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     color: var(--color-gray-500);
     margin: 0;
 }
 
 /* Charts Section */
 .charts-section {
-    margin-bottom: 32px;
+    margin-bottom: 24px;
 }
 
 .chart-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 24px;
+    gap: 16px;
 }
 
 .chart-card {
     background: var(--color-white);
     border-radius: var(--border-radius);
-    padding: 24px;
+    padding: 20px;
     box-shadow: var(--shadow);
 }
 
 .chart-header {
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
 .chart-header h3.chart-title {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     font-weight: 600;
     color: var(--color-primary);
     margin: 0 0 4px 0;
 }
 
 .chart-header p.chart-subtitle {
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     color: var(--color-gray-600);
     margin: 0;
 }
 
 .chart-content {
     position: relative;
-    height: 300px;
-    margin-bottom: 20px;
+    height: 250px;
+    margin-bottom: 16px;
 }
 
 .chart-legend {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
 }
 
 .legend-item {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
 }
 
 .legend-color {
@@ -411,52 +422,46 @@
 
 .legend-label {
     flex: 1;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     color: var(--color-gray-700);
     font-weight: 500;
 }
 
 .legend-value {
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     color: var(--color-primary);
     font-weight: 600;
 }
 
-/* Tables Section */
-.tables-section {
-    margin-bottom: 32px;
+/* Documents Section */
+.documents-section {
+    margin-bottom: 24px;
 }
 
-.tables-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-}
-
-.table-card {
+.documents-card {
     background: var(--color-white);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
     overflow: hidden;
 }
 
-.table-header {
+.documents-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 24px;
+    padding: 16px 20px;
     border-bottom: 1px solid var(--color-gray-200);
     background: var(--color-gray-50);
 }
 
-.table-header h3.table-title {
+.documents-header h3.documents-title {
     font-size: 1.125rem;
     font-weight: 600;
     color: var(--color-primary);
     margin: 0;
 }
 
-.table-header .table-action {
+.documents-header .documents-action {
     font-size: 0.875rem;
     font-weight: 600;
     color: var(--color-primary);
@@ -464,28 +469,97 @@
     transition: all 0.2s ease;
 }
 
-.table-header .table-action:hover {
+.documents-header .documents-action:hover {
     color: #1e8396;
 }
 
-.table-content {
-    padding: 0;
+.documents-content {
+    padding: 20px;
 }
 
-.transaction-type {
-    display: inline-block;
-    padding: 4px 8px;
+.documents-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.document-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: var(--color-gray-50);
+    border-radius: var(--border-radius);
+    transition: all 0.2s ease;
+}
+
+.document-item:hover {
     background: var(--color-gray-100);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.document-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--color-primary);
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-white);
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.document-info {
+    flex: 1;
+}
+
+.document-name {
+    font-size: 0.875rem;
+    font-weight: 600;
     color: var(--color-gray-700);
-    border-radius: 12px;
+    margin: 0 0 4px 0;
+}
+
+.document-date {
     font-size: 0.75rem;
-    font-weight: 500;
-    text-transform: capitalize;
+    color: var(--color-gray-500);
+    margin: 0;
+}
+
+.document-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-document-view,
+.btn-document-download {
+    width: 32px;
+    height: 32px;
+    background: var(--color-gray-200);
+    border: none;
+    border-radius: var(--border-radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-gray-600);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+}
+
+.btn-document-view:hover,
+.btn-document-download:hover {
+    background: var(--color-primary);
+    color: var(--color-white);
+    transform: scale(1.05);
 }
 
 /* Activity Section */
 .activity-section {
-    margin-bottom: 32px;
+    margin-bottom: 24px;
 }
 
 .activity-card {
@@ -499,7 +573,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 24px;
+    padding: 16px 20px;
     border-bottom: 1px solid var(--color-gray-200);
     background: var(--color-gray-50);
 }
@@ -524,13 +598,13 @@
 }
 
 .activity-content {
-    padding: 24px;
+    padding: 20px;
 }
 
 .activity-list {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
 }
 
 .activity-item {
@@ -540,15 +614,15 @@
 }
 
 .activity-icon {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     background: var(--color-gray-100);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--color-primary);
-    font-size: 1rem;
+    font-size: 0.875rem;
     flex-shrink: 0;
 }
 
@@ -572,47 +646,50 @@
    RESPONSIVE DESIGN
    ================================ */
 @media (max-width: 1024px) {
-    .chart-grid,
-    .tables-grid {
+    .chart-grid {
         grid-template-columns: 1fr;
     }
     
     .metrics-grid {
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+    }
+    
+    .dashboard-content {
+        padding: 12px;
     }
 }
 
 @media (max-width: 768px) {
     .dashboard-content {
-        padding: 12px;
+        padding: 8px;
     }
     
     .total-cash-card {
         flex-direction: column;
-        gap: 20px;
-        padding: 20px;
-        margin-bottom: 20px;
+        gap: 16px;
+        padding: 16px;
+        margin-bottom: 12px;
     }
     
     .cash-amount {
-        font-size: 1.75rem;
+        font-size: 1.5rem;
     }
     
     .nav-item {
-        padding: 14px 16px;
-        margin-bottom: 8px;
+        padding: 12px;
+        margin-bottom: 6px;
     }
     
     .nav-icon {
-        width: 40px;
-        height: 40px;
-        margin-right: 12px;
-        font-size: 1.125rem;
+        width: 36px;
+        height: 36px;
+        margin-right: 10px;
+        font-size: 1rem;
     }
     
     .nav-label {
-        font-size: 0.875rem;
+        font-size: 0.8125rem;
     }
     
     /* Hide desktop dashboard on mobile */
@@ -623,25 +700,25 @@
 
 @media (max-width: 480px) {
     .dashboard-content {
-        padding: 8px;
+        padding: 6px;
     }
     
     .total-cash-card {
-        padding: 16px;
-        margin-bottom: 16px;
+        padding: 12px;
+        margin-bottom: 10px;
     }
     
     .cash-amount {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
     }
     
     .breakdown-item {
-        font-size: 0.8125rem;
+        font-size: 0.75rem;
     }
     
     .nav-item {
-        padding: 12px;
-        margin-bottom: 6px;
+        padding: 10px;
+        margin-bottom: 4px;
     }
     
     .floating-menu-btn {
@@ -703,7 +780,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 32px 16px;
+    padding: 24px 16px;
     text-align: center;
     color: var(--color-gray-500);
     background-color: var(--color-gray-50);
@@ -711,20 +788,20 @@
 }
 
 .empty-state-icon {
-    font-size: 2.5rem;
+    font-size: 2rem;
     color: var(--color-gray-400);
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .empty-state-message {
-    font-size: 1rem;
+    font-size: 0.875rem;
     font-weight: 600;
     color: var(--color-gray-600);
     margin-bottom: 4px;
 }
 
 .empty-state-description {
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     color: var(--color-gray-500);
     margin: 0;
 }

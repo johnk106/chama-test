@@ -12,7 +12,7 @@
 {%endblock%}
 
 {% block body %}
-<div class="modern-dashboard container-fluid-no-padding">
+<div class="modern-dashboard full-width">
     <!-- Floating Menu Button for Mobile -->
     <button class="floating-menu-btn d-block d-md-none" onclick="openNav()">
         <i class='bx bx-menu'></i>
@@ -215,7 +215,7 @@
                             <div class="legend-item">
                                 <span class="legend-color" style="background-color: #10b981;"></span>
                                 <span class="legend-label">Available Cash</span>
-                                <span class="legend-value">Ksh {{available_cash|default:"0"|intcomma}}</span>
+                                <span class="legend-value">Ksh {{total_savings|intcomma}}</span>
                             </div>
                             <div class="legend-item">
                                 <span class="legend-color" style="background-color: #f59e0b;"></span>
@@ -229,7 +229,7 @@
                     <div class="chart-card brand-card">
                         <div class="chart-header">
                             <h3 class="chart-title text-brand-primary">Monthly Trends</h3>
-                            <p class="chart-subtitle">Last 6 months performance</p>
+                            <p class="chart-subtitle">Contributions and loans over time</p>
                         </div>
                         <div class="chart-content">
                             <canvas id="monthlyTrendsChart" width="400" height="300"></canvas>
@@ -238,90 +238,40 @@
                 </div>
             </div>
 
-            <!-- Summary Tables -->
-            <div class="tables-section">
-                <div class="tables-grid">
-                    <!-- Recent Transactions -->
-                    <div class="table-card brand-card">
-                        <div class="table-header">
-                            <h3 class="table-title text-brand-primary">Recent Transactions</h3>
-                            <a href="{% url 'chamas:contributions' chama.id %}" class="table-action text-brand-primary">View All</a>
-                        </div>
-                        <div class="table-content">
-                            <div class="brand-table-responsive">
-                                <table class="brand-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Member</th>
-                                            <th>Type</th>
-                                            <th>Amount</th>
-                                            <th>Date</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for transaction in recent_transactions|slice:":5" %}
-                                        <tr>
-                                            <td>{{transaction.member}}</td>
-                                            <td><span class="transaction-type">{{transaction.type}}</span></td>
-                                            <td class="text-brand-primary">Ksh {{transaction.amount|intcomma}}</td>
-                                            <td>{{transaction.date|date:"M d"}}</td>
-                                        </tr>
-                                        {% empty %}
-                                        <tr>
-                                            <td colspan="4">
-                                                <div class="empty-state">
-                                                    <i class="bx bx-receipt empty-state-icon"></i>
-                                                    <p class="empty-state-message">Nothing to show</p>
-                                                    <p class="empty-state-description">No recent transactions available</p>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+            <!-- Documents Section -->
+            <div class="documents-section">
+                <div class="documents-card brand-card">
+                    <div class="documents-header">
+                        <h3 class="documents-title text-brand-primary">Recent Documents</h3>
+                        <a href="#" class="documents-action text-brand-primary">View All</a>
                     </div>
-
-                    <!-- Member Performance -->
-                    <div class="table-card brand-card admin">
-                        <div class="table-header">
-                            <h3 class="table-title text-brand-primary">Member Performance</h3>
-                            <a href="{% url 'chamas:members' chama.id %}" class="table-action text-brand-primary">View All</a>
-                        </div>
-                        <div class="table-content">
-                            <div class="brand-table-responsive">
-                                <table class="brand-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Member</th>
-                                            <th>Contributions</th>
-                                            <th>Loans</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for member_stat in member_stats|slice:":5" %}
-                                        <tr>
-                                            <td>{{member_stat.name}}</td>
-                                            <td class="text-brand-primary">Ksh {{member_stat.contributions|intcomma}}</td>
-                                            <td>Ksh {{member_stat.loans|intcomma}}</td>
-                                            <td><span class="status-badge {{member_stat.status}}">{{member_stat.status}}</span></td>
-                                        </tr>
-                                        {% empty %}
-                                        <tr>
-                                            <td colspan="4">
-                                                <div class="empty-state">
-                                                    <i class="bx bx-user empty-state-icon"></i>
-                                                    <p class="empty-state-message">Nothing to show</p>
-                                                    <p class="empty-state-description">No member performance data available</p>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
+                    <div class="documents-content">
+                        <div class="documents-grid">
+                            {% for document in documents %}
+                            <div class="document-item">
+                                <div class="document-icon">
+                                    <i class='bx bx-file-blank'></i>
+                                </div>
+                                <div class="document-info">
+                                    <h4 class="document-name">{{document.title}}</h4>
+                                    <p class="document-date">{{document.upload_date|date:"M d, Y"}}</p>
+                                </div>
+                                <div class="document-actions">
+                                    <a href="{{document.file.url}}" target="_blank" class="btn-document-view">
+                                        <i class='bx bx-show'></i>
+                                    </a>
+                                    <a href="{{document.file.url}}" download class="btn-document-download">
+                                        <i class='bx bx-download'></i>
+                                    </a>
+                                </div>
                             </div>
+                            {% empty %}
+                            <div class="empty-state">
+                                <i class="bx bx-file-blank empty-state-icon"></i>
+                                <p class="empty-state-message">Nothing to show</p>
+                                <p class="empty-state-description">No documents uploaded yet</p>
+                            </div>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
@@ -336,7 +286,7 @@
                     </div>
                     <div class="activity-content">
                         <div class="activity-list">
-                            {% for notification in notifications|slice:":6" %}
+                            {% for notification in notifications %}
                             <div class="activity-item">
                                 <div class="activity-icon">
                                     <i class='bx bx-bell'></i>
@@ -369,7 +319,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const totalContributions = {{ total_contributions|default:0 }};
     const totalLoans = {{ total_loans|default:0 }};
     const totalSavings = {{ total_savings|default:0 }};
-    const availableCash = Math.max(0, totalSavings - totalContributions - totalLoans);
+    const availableCash = Math.max(0, totalSavings - totalLoans);
+    
+    // Monthly data from Django
+    const contributionsData = {{ contributions_data|safe }};
+    const loansData = {{ loans_data|safe }};
     
     // Brand colors
     const brandPrimary = '#2191a5';
@@ -430,17 +384,21 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Desktop Monthly Trends Chart
+    // Desktop Monthly Trends Chart with real data
     const ctxTrends = document.getElementById('monthlyTrendsChart');
     if (ctxTrends) {
+        const months = Object.keys(contributionsData);
+        const contributionValues = Object.values(contributionsData);
+        const loanValues = Object.values(loansData);
+        
         new Chart(ctxTrends, {
             type: 'line',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                labels: months,
                 datasets: [
                     {
                         label: 'Contributions',
-                        data: [12000, 15000, 18000, 16000, 20000, 22000],
+                        data: contributionValues,
                         borderColor: brandPrimary,
                         backgroundColor: brandPrimary + '20',
                         borderWidth: 3,
@@ -449,7 +407,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     {
                         label: 'Loans',
-                        data: [8000, 10000, 12000, 11000, 13000, 14000],
+                        data: loanValues,
                         borderColor: brandWarning,
                         backgroundColor: brandWarning + '20',
                         borderWidth: 3,

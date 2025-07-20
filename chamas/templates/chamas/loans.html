@@ -1,5 +1,6 @@
-{%extends 'chamas/base.html'%} {% load humanize %} {%load static%} {%block head%}
+{%extends 'chamas/base.html'%} {% load humanize %} {%load static%} {% load custom_filters %} {%block head%}
 <title>Loans</title>
+<link rel="stylesheet" href="{%static 'chamas/brand-colors.css'%}" />
 <link rel="stylesheet" href="{%static 'chamas/loans.css'%}" />
 <link rel="stylesheet" href="{%static 'chamas/contribution.css'%}" />
 <link rel="stylesheet" href="{%static 'chamas/dashboard.css'%}" />
