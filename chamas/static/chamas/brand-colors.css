@@ -201,7 +201,7 @@ a:hover {
     display: flex !important;
     align-items: center !important;
     padding: 12px 20px !important;
-    color: var(--brand-white) !important;
+    color: #ffffff !important;
     text-decoration: none !important;
     font-size: 0.875rem !important;
     font-weight: 500 !important;
@@ -215,7 +215,7 @@ a:hover {
 .sidenav ul.nav-list li a:hover,
 .desktop-sidenav ul.nav-list li a:hover {
     background-color: rgba(255, 255, 255, 0.1) !important;
-    color: var(--brand-white) !important;
+    color: #ffffff !important;
     text-decoration: none !important;
     transform: translateX(4px) !important;
 }
@@ -226,13 +226,14 @@ a:hover {
     font-size: 1.125rem !important;
     width: 20px !important;
     text-align: center !important;
+    color: #ffffff !important;
 }
 
 .sidenav ul.nav-list li a .link_name,
 .desktop-sidenav ul.nav-list li a .link_name {
     font-size: 0.875rem !important;
     font-weight: 500 !important;
-    color: inherit !important;
+    color: #ffffff !important;
 }
 
 /* Force visibility for admin/member classes */
@@ -264,6 +265,22 @@ a:hover {
     filter: brightness(0) invert(1) !important;
 }
 
+/* Additional navigation visibility fixes */
+.sidenav a,
+.desktop-sidenav a {
+    color: #ffffff !important;
+    text-decoration: none !important;
+}
+
+.sidenav li,
+.desktop-sidenav li {
+    color: #ffffff !important;
+}
+
+.sidenav .closebtn {
+    color: #ffffff !important;
+}
+
 /* Mobile sidebar improvements */
 @media (max-width: 768px) {
     .sidenav {
@@ -273,11 +290,17 @@ a:hover {
     .sidenav ul.nav-list li a {
         padding: 16px 20px !important;
         font-size: 1rem !important;
+        color: #ffffff !important;
     }
     
     .sidenav ul.nav-list li a i {
         font-size: 1.25rem !important;
         margin-right: 16px !important;
+        color: #ffffff !important;
+    }
+    
+    .sidenav ul.nav-list li a .link_name {
+        color: #ffffff !important;
     }
 }
 
