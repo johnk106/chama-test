@@ -251,6 +251,14 @@ body {
     justify-content: space-between !important;
     align-items: center !important;
     margin: var(--brand-space-md) !important;
+    width: calc(100% - 32px) !important;
+    position: relative !important;
+    z-index: 100 !important;
+}
+
+.mobile-nav-toggle {
+    display: flex !important;
+    align-items: center !important;
 }
 
 .mobile-nav-toggle .menu-btn {
@@ -258,6 +266,24 @@ body {
     color: var(--brand-primary) !important;
     cursor: pointer !important;
     padding: var(--brand-space-sm) !important;
+    background: none !important;
+    border: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    transition: background-color 0.2s ease !important;
+}
+
+.mobile-nav-toggle .menu-btn:hover {
+    background-color: rgba(33, 145, 165, 0.1) !important;
+}
+
+.mobile-nav-toggle .menu-btn i {
+    font-size: 24px !important;
+    color: var(--brand-primary) !important;
 }
 
 .mobile-actions {
