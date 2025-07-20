@@ -4,24 +4,202 @@
 {% block head %}
 <title>Bot Records</title>
 <link rel="stylesheet" href="{% static 'chamas/contribution.css' %}">
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 {% endblock %}
 
 {% block body %}
-<div class="text-capitalize">
-  <div class="row contribution-details">
-    <h4 class="sect-title">Bot Records</h4>
+<div class="modern-bot-records">
+  <!-- Mobile View -->
+  <div class="mobile-bot-records d-block d-lg-none">
+    <h4 class="mobile-sect-title">Bot Records</h4>
     <div id="alert-success" class="alert alert-success d-none" role="alert"></div>
-    <div id="alert-danger" class="alert alert-danger  d-none" role="alert"></div>
+    <div id="alert-danger" class="alert alert-danger d-none" role="alert"></div>
 
-    <!-- Button group to switch tables -->
-    <div class="btn-group mb-3" role="group" aria-label="Record types">
-      <button type="button" class="btn" id="btn-contributions"
-        style="background-color:#2191a5; color:white;">Contributions</button>
-      <button type="button" class="btn" id="btn-fines" style="background-color:#2191a5; color:white;">Fines</button>
-      <button type="button" class="btn" id="btn-loans" style="background-color:#2191a5; color:white;">Loans</button>
-      <button type="button" class="btn" id="btn-members" style="background-color:#2191a5; color:white;">Members</button>
-
+    <!-- Mobile Tabs -->
+    <div class="mobile-tabs">
+      <button class="tab-btn active" data-tab="contributions">Contributions</button>
+      <button class="tab-btn" data-tab="fines">Fines</button>
+      <button class="tab-btn" data-tab="loans">Loans</button>
+      <button class="tab-btn" data-tab="members">Members</button>
     </div>
+
+    <!-- Contributions Tab Content -->
+    <div class="tab-content active" id="tab-contributions">
+      <div class="mobile-records-list">
+        {% for contribution in contributions %}
+        <div class="record-beautiful-card">
+          <div class="record-beautiful-row">
+            <div class="record-beautiful-label">Date</div>
+            <div class="record-beautiful-value">{{ contribution.date_created|date:'d/m/Y' }}</div>
+            <div class="record-beautiful-label">Member</div>
+            <div class="record-beautiful-value">{{ contribution.submitted_member }}</div>
+          </div>
+          <div class="record-beautiful-row">
+            <div class="record-beautiful-label">Contribution Name</div>
+            <div class="record-beautiful-value">{{ contribution.retrieved_contribution.name }}</div>
+            <div class="record-beautiful-label">Amount</div>
+            <div class="record-beautiful-value">Ksh {{ contribution.amount_paid|intcomma }}</div>
+          </div>
+          <div class="record-actions">
+            <button class="btn btn-sm record-view-btn" data-bs-toggle="modal"
+              data-bs-target="#modal-contribution" data-id="{{ contribution.id }}"
+              data-date="{{ contribution.date_created }}" data-member="{{ contribution.submitted_member }}"
+              data-name="{{ contribution.retrieved_contribution.name }}" data-amount="{{ contribution.amount_paid }}">
+              View Details
+            </button>
+          </div>
+        </div>
+        {% empty %}
+        <div class="no-records">
+          <i class='bx bx-inbox'></i>
+          <p>No contributions found</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Fines Tab Content -->
+    <div class="tab-content" id="tab-fines">
+      <div class="mobile-records-list">
+        {% for fine in fines %}
+        <div class="record-beautiful-card">
+          <div class="record-beautiful-row">
+            <div class="record-beautiful-label">Date</div>
+            <div class="record-beautiful-value">{{ fine.date_created|date:'d/m/Y' }}</div>
+            <div class="record-beautiful-label">Member</div>
+            <div class="record-beautiful-value">{{ fine.member }}</div>
+          </div>
+          <div class="record-beautiful-row">
+            <div class="record-beautiful-label">Fine Type</div>
+            <div class="record-beautiful-value">{{ fine.edited_fine.fine_type.name }}</div>
+            <div class="record-beautiful-label">Amount Paid</div>
+            <div class="record-beautiful-value">Ksh {{ fine.amount_paid|intcomma }}</div>
+          </div>
+          <div class="record-beautiful-row">
+            <div class="record-beautiful-label">Balance</div>
+            <div class="record-beautiful-value">Ksh {{ fine.edited_fine.fine_balance|intcomma }}</div>
+            <div class="record-beautiful-label"></div>
+            <div class="record-beautiful-value"></div>
+          </div>
+          <div class="record-actions">
+            <button class="btn btn-sm record-view-btn" data-bs-toggle="modal"
+              data-bs-target="#modal-fine" data-id="{{ fine.id }}" data-date="{{ fine.date_created }}"
+              data-member="{{ fine.member }}" data-type="{{ fine.edited_fine.fine_type.name }}"
+              data-paid="{{ fine.amount_paid }}" data-balance="{{ fine.edited_fine.fine_balance }}">
+              View Details
+            </button>
+          </div>
+        </div>
+        {% empty %}
+        <div class="no-records">
+          <i class='bx bx-inbox'></i>
+          <p>No fines found</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Loans Tab Content -->
+    <div class="tab-content" id="tab-loans">
+      <div class="mobile-records-list">
+        {% for loan in loans %}
+        <div class="record-beautiful-card">
+          <div class="record-beautiful-row">
+            <div class="record-beautiful-label">Date</div>
+            <div class="record-beautiful-value">{{ loan.date_created|date:'d/m/Y' }}</div>
+            <div class="record-beautiful-label">Member</div>
+            <div class="record-beautiful-value">{{ loan.member }}</div>
+          </div>
+          <div class="record-beautiful-row">
+            <div class="record-beautiful-label">Loan Type</div>
+            <div class="record-beautiful-value">{{ loan.updated_loan.type.name }}</div>
+            <div class="record-beautiful-label">Amount Paid</div>
+            <div class="record-beautiful-value">Ksh {{ loan.amount_paid|intcomma }}</div>
+          </div>
+          <div class="record-beautiful-row">
+            <div class="record-beautiful-label">Balance</div>
+            <div class="record-beautiful-value">Ksh {{ loan.updated_loan.balance|intcomma }}</div>
+            <div class="record-beautiful-label"></div>
+            <div class="record-beautiful-value"></div>
+          </div>
+          <div class="record-actions">
+            <button class="btn btn-sm record-view-btn" data-bs-toggle="modal"
+              data-bs-target="#modal-loan" data-id="{{ loan.id }}" data-date="{{ loan.date_created }}"
+              data-member="{{ loan.member }}" data-type="{{ loan.updated_loan.type.name }}"
+              data-paid="{{ loan.amount_paid }}" data-balance="{{ loan.updated_loan.balance }}">
+              View Details
+            </button>
+          </div>
+        </div>
+        {% empty %}
+        <div class="no-records">
+          <i class='bx bx-inbox'></i>
+          <p>No loans found</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Members Tab Content -->
+    <div class="tab-content" id="tab-members">
+      <div class="mobile-records-list">
+        {% for member in members %}
+        <div class="record-beautiful-card">
+          <div class="record-beautiful-row">
+            <div class="record-beautiful-label">Date</div>
+            <div class="record-beautiful-value">{{ member.date_created|date:'d/m/Y' }}</div>
+            <div class="record-beautiful-label">Name</div>
+            <div class="record-beautiful-value">{{ member.name }}</div>
+          </div>
+          <div class="record-beautiful-row">
+            <div class="record-beautiful-label">ID</div>
+            <div class="record-beautiful-value">{{ member.id_number }}</div>
+            <div class="record-beautiful-label">Chama</div>
+            <div class="record-beautiful-value">{{ member.chama_name }}</div>
+          </div>
+          <div class="record-beautiful-row">
+            <div class="record-beautiful-label">Role</div>
+            <div class="record-beautiful-value">{{ member.role }}</div>
+            <div class="record-beautiful-label"></div>
+            <div class="record-beautiful-value"></div>
+          </div>
+          <div class="record-actions">
+            <button class="btn btn-sm record-view-btn" data-bs-toggle="modal"
+              data-bs-target="#modal-member" data-id="{{ member.id }}" 
+              data-name="{{ member.name }}" data-idnum="{{ member.id_number }}">
+              View Details
+            </button>
+          </div>
+        </div>
+        {% empty %}
+        <div class="no-records">
+          <i class='bx bx-inbox'></i>
+          <p>No members found</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Desktop View -->
+  <div class="desktop-bot-records d-none d-lg-block">
+    <div class="text-capitalize">
+      <div class="row contribution-details">
+        <h4 class="sect-title">Bot Records</h4>
+        <div id="alert-success-desktop" class="alert alert-success d-none" role="alert"></div>
+        <div id="alert-danger-desktop" class="alert alert-danger d-none" role="alert"></div>
+
+        <!-- Button group to switch tables -->
+        <div class="btn-group mb-3" role="group" aria-label="Record types">
+          <button type="button" class="btn" id="btn-contributions"
+            style="background-color:#2191a5; color:white;">Contributions</button>
+          <button type="button" class="btn" id="btn-fines" style="background-color:#2191a5; color:white;">Fines</button>
+          <button type="button" class="btn" id="btn-loans" style="background-color:#2191a5; color:white;">Loans</button>
+          <button type="button" class="btn" id="btn-members" style="background-color:#2191a5; color:white;">Members</button>
+        </div>
 
     <!-- Contributions Table -->
     <div class="table-responsive" id="table-contributions">
@@ -159,6 +337,8 @@
       </table>
     </div>
 
+      </div>
+    </div>
   </div>
 </div>
 
@@ -319,6 +499,7 @@
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
   $(document).ready(function () {
+    // Desktop table switching
     function showTable(type) {
       $('#table-contributions, #table-fines, #table-loans, #table-members').addClass('d-none');
       $('#btn-contributions, #btn-fines, #btn-loans, #btn-members').css({ 'opacity': '0.6' });
@@ -331,6 +512,19 @@
     $('#btn-loans').click(() => showTable('loans'));
     $('#btn-members').click(() => showTable('members'));
     showTable('contributions');
+
+    // Mobile tab switching
+    function showMobileTab(tabName) {
+      $('.tab-content').removeClass('active');
+      $('.tab-btn').removeClass('active');
+      $('#tab-' + tabName).addClass('active');
+      $('[data-tab="' + tabName + '"]').addClass('active');
+    }
+
+    $('.tab-btn').click(function() {
+      const tabName = $(this).data('tab');
+      showMobileTab(tabName);
+    });
 
     function populateModal(modalId, dataMap) {
       const modal = $(modalId);
