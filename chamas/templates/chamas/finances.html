@@ -20,6 +20,29 @@
         </button>
     </div>
 
+    <!-- Mobile FAB Container -->
+    <div class="fab-backdrop" id="fabBackdrop"></div>
+    <div class="fab-container admin">
+        <button class="fab-create admin" id="fabCreate">
+            <i class='bx bx-plus'></i>
+        </button>
+        
+        <button class="mini-fab mini-fab-savings admin" data-bs-toggle="modal" data-bs-target="#createSavingModal">
+            <i class='bx bx-wallet'></i>
+            <span class="fab-label">Create Savings</span>
+        </button>
+        
+        <button class="mini-fab mini-fab-investment admin" data-bs-toggle="modal" data-bs-target="#createInvestmentModal">
+            <i class='bx bx-trending-up'></i>
+            <span class="fab-label">Create Investment</span>
+        </button>
+        
+        <button class="mini-fab mini-fab-income admin" data-bs-toggle="modal" data-bs-target="#createIncomeModal">
+            <i class='bx bx-money'></i>
+            <span class="fab-label">Create Income</span>
+        </button>
+    </div>
+
     <!-- Finance Tabs Navigation -->
     <ul class="finance-tabs" role="tablist">
         <li class="nav-item">
@@ -1513,6 +1536,92 @@
                 });
             });
         }
+    });
+</script>
+
+<!-- FAB Functionality Script -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const fabCreate = document.getElementById('fabCreate');
+        const fabBackdrop = document.getElementById('fabBackdrop');
+        const miniFabs = document.querySelectorAll('.mini-fab');
+        const fabContainer = document.querySelector('.fab-container');
+        let isExpanded = false;
+
+        function expandFAB() {
+            isExpanded = true;
+            fabCreate.classList.add('active');
+            fabBackdrop.classList.add('active');
+            miniFabs.forEach(function(fab) {
+                fab.classList.add('show');
+            });
+            document.body.style.overflow = 'hidden'; // Prevent scroll when menu is open
+        }
+
+        function collapseFAB() {
+            isExpanded = false;
+            fabCreate.classList.remove('active');
+            fabBackdrop.classList.remove('active');
+            miniFabs.forEach(function(fab) {
+                fab.classList.remove('show');
+            });
+            document.body.style.overflow = ''; // Restore scroll
+        }
+
+        function toggleFAB() {
+            if (isExpanded) {
+                collapseFAB();
+            } else {
+                expandFAB();
+            }
+        }
+
+        // FAB click handler
+        if (fabCreate) {
+            fabCreate.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleFAB();
+            });
+        }
+
+        // Backdrop click handler
+        if (fabBackdrop) {
+            fabBackdrop.addEventListener('click', function() {
+                collapseFAB();
+            });
+        }
+
+        // Mini-FAB click handlers (close menu when action is taken)
+        miniFabs.forEach(function(fab) {
+            fab.addEventListener('click', function(e) {
+                // Don't prevent default as we want the modal to open
+                setTimeout(function() {
+                    collapseFAB();
+                }, 100); // Small delay to allow modal to trigger
+            });
+        });
+
+        // Close FAB when modal is opened
+        const modals = document.querySelectorAll('.modal');
+        modals.forEach(function(modal) {
+            modal.addEventListener('show.bs.modal', function() {
+                collapseFAB();
+            });
+        });
+
+        // Handle escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && isExpanded) {
+                collapseFAB();
+            }
+        });
+
+        // Handle window resize - collapse FAB if screen becomes desktop size
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 767 && isExpanded) {
+                collapseFAB();
+            }
+        });
     });
 </script>
 

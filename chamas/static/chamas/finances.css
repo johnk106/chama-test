@@ -547,18 +547,216 @@ select {
 }
 
 /* ================================
+   FAB - HIDDEN ON DESKTOP
+   ================================ */
+.fab-container,
+.fab-backdrop {
+    display: none;
+}
+
+/* ================================
    RESPONSIVE DESIGN
    ================================ */
 @media (max-width: 767px) {
-    /* Mobile Finance Action Row */
+    /* Hide Desktop Action Row on Mobile */
     .finance-action-row {
-        flex-direction: column;
-        gap: 12px;
+        display: none;
     }
 
-    .finance-action-row button {
-        flex: none;
-        min-width: 100%;
+    /* ================================
+       FLOATING ACTION BUTTON (FAB)
+       ================================ */
+    .fab-container {
+        display: block;
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        z-index: 1000;
+    }
+
+    .fab-backdrop {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .fab-backdrop.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .fab-create {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        border: none;
+        background: #1F8A70;
+        color: white;
+        box-shadow: 0 4px 16px rgba(31, 138, 112, 0.4);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 1001;
+    }
+
+    .fab-create:hover {
+        background: #1a7560;
+        transform: scale(1.1);
+        box-shadow: 0 6px 20px rgba(31, 138, 112, 0.6);
+    }
+
+    .fab-create.active {
+        transform: rotate(45deg);
+        background: #1a7560;
+    }
+
+    /* Mini FABs */
+    .mini-fab {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        border: none;
+        background: #1F8A70;
+        color: white;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        box-shadow: 0 3px 12px rgba(31, 138, 112, 0.4);
+        opacity: 0;
+        visibility: hidden;
+        transform: scale(0.3) translateY(0);
+        transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .mini-fab.show {
+        opacity: 1;
+        visibility: visible;
+        transform: scale(1);
+    }
+
+    .mini-fab-savings.show {
+        transform: scale(1) translateY(-80px);
+        transition-delay: 0.1s;
+    }
+
+    .mini-fab-investment.show {
+        transform: scale(1) translateY(-140px);
+        transition-delay: 0.15s;
+    }
+
+    .mini-fab-income.show {
+        transform: scale(1) translateY(-200px);
+        transition-delay: 0.2s;
+    }
+
+    .mini-fab:hover {
+        background: #1a7560;
+        transform: scale(1.1) translateY(var(--translate-y));
+    }
+
+    .mini-fab-savings:hover {
+        --translate-y: -80px;
+    }
+
+    .mini-fab-investment:hover {
+        --translate-y: -140px;
+    }
+
+    .mini-fab-income:hover {
+        --translate-y: -200px;
+    }
+
+    /* FAB Labels */
+    .fab-label {
+        position: absolute;
+        right: 60px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        pointer-events: none;
+    }
+
+    .mini-fab:hover .fab-label {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(-50%) translateX(-8px);
+    }
+
+    /* Brand Color Overrides for Mobile */
+    .fab-create.admin,
+    .mini-fab.admin,
+    .mini-fab.member {
+        background: #1F8A70 !important;
+        color: white !important;
+    }
+
+    .fab-create.admin:hover,
+    .mini-fab.admin:hover,
+    .mini-fab.member:hover {
+        background: #1a7560 !important;
+    }
+
+    /* Touch and Active States */
+    .fab-create:active,
+    .mini-fab:active {
+        transform: scale(0.95);
+    }
+
+    .fab-create.active:active {
+        transform: rotate(45deg) scale(0.95);
+    }
+
+    /* Prevent text selection on FAB */
+    .fab-create,
+    .mini-fab,
+    .fab-label {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Ensure FAB stays above other content */
+    .fab-container {
+        pointer-events: none;
+    }
+
+    .fab-create,
+    .mini-fab {
+        pointer-events: all;
+    }
+
+    /* Improved label positioning for longer text */
+    .fab-label {
+        min-width: max-content;
+        max-width: 120px;
     }
 
     /* Mobile Tabs - Horizontal Scroll */
