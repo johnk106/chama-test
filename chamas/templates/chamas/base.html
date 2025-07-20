@@ -104,267 +104,244 @@
   <title>Chamaspace</title>
   {%endblock%}
 </head>
-<body class="container-fluid">
-    <!-- The sidebar for Mobile Menu -->
-      <div id="mySidenav" class="sidenav text-start">
-        <a href="javascript:void(0)" class="closebtn d-inline" onclick="closeNav()">&times;</a>
+<body>
+  <!-- Main Layout Container -->
+  <div class="app-layout">
+    
+    <!-- Mobile Sidebar (Hidden by default, shown on mobile when menu is clicked) -->
+    <div id="mySidenav" class="sidenav">
+      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+      <div class="logo_details">
+        <img src="{%static 'chamas/logo.png'%}" alt="Logo" />
+      </div>
+      <ul class="nav-list">
+        <li>
+          <a href="#" class="dashboard-link">
+            <i class='bx bx-bolt-circle'></i>
+            <span class="link_name">Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="finances-link">
+            <i class="bx bx-wallet"></i>
+            <span class="link_name">Finances Page</span>
+          </a>
+        </li>
+        <li>
+          <a class="contribution-link" href="#">
+            <i class='bx bx-sort bx-rotate-90'></i>
+            <span class="link_name">Contributions</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="loans-link">
+            <i class='bx bxs-donate-heart'></i>
+            <span class="link_name">Loans</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="expenses-link">
+            <i class="bx bx-folder"></i>
+            <span class="link_name">Expenses</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="fines-link">
+            <i class="bx bx-file"></i>
+            <span class="link_name">Fines</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="reports-link">
+            <i class='bx bxs-report'></i>
+            <span class="link_name">Reports</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="members-link">
+            <i class="bx bx-user"></i>
+            <span class="link_name">Members</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="notifications-link">
+            <i class="bx bx-bell"></i>
+            <span class="link_name">Notifications</span>
+          </a>
+        </li>
+        <li class="admin">
+          <a href="#" class="bot-link">
+            <i class="bx bx-cog"></i>
+            <span class="link_name">Bot Control</span>
+          </a>
+        </li>
+        <li>
+          <a href="{%url 'chamas:chamas'%}">
+            <i class="bx bx-arrow-back"></i>
+            <span class="link_name">Back</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- Desktop Sidebar (Always visible on desktop) -->
+    <aside class="desktop-sidebar">
+      <div class="sidebar-header">
         <div class="logo_details">
-          <img src="{%static 'chamas/logo.png'%}" class="h-50 w-50 d-inline" />
+          <img src="{%static 'chamas/logo.png'%}" alt="Logo" />
         </div>
+      </div>
+      <nav class="sidebar-nav">
         <ul class="nav-list">
           <li>
             <a href="#" class="dashboard-link">
-              <i class='bx bx-bolt-circle'  style="font-size: 24px"></i>
+              <i class='bx bx-bolt-circle'></i>
               <span class="link_name">Dashboard</span>
             </a>
           </li>
           <li>
             <a href="#" class="finances-link">
-              <i class="bx bx-user"  style="font-size: 24px"></i>
+              <i class="bx bx-wallet"></i>
               <span class="link_name">Finances Page</span>
             </a>
           </li>
           <li>
-            <a class="contribution-link" href="" onlclick()>
-              <i class='bx bx-sort bx-rotate-90'  style="font-size: 24px"></i>
+            <a class="contribution-link" href="#">
+              <i class='bx bx-sort bx-rotate-90'></i>
               <span class="link_name">Contributions</span>
             </a>
           </li>
           <li>
-            <a href="#" class="loans-link" >
-              <i class='bx bxs-donate-heart'  style="font-size: 24px"></i>
+            <a href="#" class="loans-link">
+              <i class='bx bxs-donate-heart'></i>
               <span class="link_name">Loans</span>
             </a>
           </li>
           <li>
             <a href="#" class="expenses-link">
-              <i class="bx bx-folder"  style="font-size: 24px"></i></i>
+              <i class="bx bx-folder"></i>
               <span class="link_name">Expenses</span>
             </a>
           </li>
           <li>
             <a href="#" class="fines-link">
-              <i class="bx bx-file"  style="font-size: 24px"></i></i>
+              <i class="bx bx-file"></i>
               <span class="link_name">Fines</span>
             </a>
           </li>
           <li>
             <a href="#" class="reports-link">
-              <i class='bx bxs-report'  style="font-size: 24px"></i>
+              <i class='bx bxs-report'></i>
               <span class="link_name">Reports</span>
             </a>
           </li>
           <li>
             <a href="#" class="members-link">
-              <i class="bx bx-user" style="font-size: 24px"></i>
+              <i class="bx bx-user"></i>
               <span class="link_name">Members</span>
             </a>
           </li>
           <li>
             <a href="#" class="notifications-link">
-              <i class="bx bx-bell" style="font-size: 24px"></i>
+              <i class="bx bx-bell"></i>
               <span class="link_name">Notifications</span>
             </a>
           </li>
           <li class="admin">
             <a href="#" class="bot-link">
-              <i class="bx bx-cog" style="font-size: 24px"></i>
-              <span class="link_name">Bot Controll</span>
+              <i class="bx bx-cog"></i>
+              <span class="link_name">Bot Control</span>
             </a>
           </li>
-          <!-- <li>
-            <a href="#" class="chat-link">
-              <i class='bx bx-message-rounded-detail' style="font-size: 24px"></i>
-              <span class="link_name">Chat</span>
-            </a>
-          </li> -->
           <li>
             <a href="{%url 'chamas:chamas'%}">
-              <i class="bx bx-arrow-back" style="font-size: 24px"></i>
+              <i class="bx bx-arrow-back"></i>
               <span class="link_name">Back</span>
             </a>
           </li>
         </ul>
-      </div>
-      
-      <div class="p-2 navbar-cont header d-flex d-sm-block d-md-none justify-content-between align-items-center">
-        <span onclick="openNav()" class="fw-bolder nav-open"><i class='bx bx-menu-alt-right bx-md'></i></span>
-      
-        <div class="d-flex justify-content-center align-items-center">
-          {% comment %} <i class='bx bxs-sun bx-sm pe-0 p-2' style='color:#2191a5;'></i>
-          <i class='bx bxs-toggle-left bx-sm pt-2' style='color:#2191a5;'  ></i>
-          <i class='bx bxs-moon bx-sm p-2' style='color:#141414;'  ></i> {% endcomment %}
-          <i class='bx bx-message-rounded-detail bx-sm p-2 d-none d-md-block' style='color:#2191a5;'></i>
-          {% comment %} <i class='bx bxs-diamond bx-sm p-2' style='color:#2191a5;'></i> {% endcomment %}
-          <a
-          style="cursor: pointer;"
-          onclick="handleDiamondClick()"> 
-            <i class='bx bxs-diamond bx-md p-2' style='color:#2191a5; cursor: pointer;'></i>
-          </a>
+      </nav>
+    </aside>
 
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Mobile Header -->
+      <header class="mobile-header">
+        <div class="mobile-nav-toggle">
+          <span onclick="openNav()" class="menu-btn">
+            <i class='bx bx-menu-alt-right'></i>
+          </span>
+        </div>
         
-          <div class="profile d-flex align-content-center h-75 w-100 align-items-center">
-            <div class="avatar text-center">
+        <div class="mobile-actions">
+          <a onclick="handleDiamondClick()"> 
+            <i class='bx bxs-diamond' style='color:#2191a5; cursor: pointer;'></i>
+          </a>
+          <div class="profile">
+            <div class="avatar">
               {% if request.user.profile.picture %}
-                        <img src="{{ request.user.profile.picture.url }}" class="h-100 w-100" />
+                <img src="{{ request.user.profile.picture.url }}" alt="Profile" />
               {% else %}
-                        <i class='bx bxs-user bx-md text-center text-white pt-2' ></i>
+                <i class='bx bxs-user'></i>
               {% endif %}
             </div>
-            <p class="ps-2 pt-2 pe-1 text-nowrap">{{ user.first_name }} {{ user.last_name }}</p>
+            <span class="profile-name">{{ user.first_name }} {{ user.last_name }}</span>
             <i class='bx bx-chevron-down' data-bs-toggle="dropdown" aria-expanded="false"></i>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="{% url 'Setting' %}">My Profile</a></li>
-                <li class="view-option" data-view="member">Viewing as member</li>
-                <li class="view-option" data-view="admin" style="display: none;">Viewing as admin</li>
-                <li><a class="dropdown-item" href="#">My Groups</a></li>
-              </ul>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{% url 'Setting' %}">My Profile</a></li>
+              <li class="view-option" data-view="member">Viewing as member</li>
+              <li class="view-option" data-view="admin" style="display: none;">Viewing as admin</li>
+              <li><a class="dropdown-item" href="#">My Groups</a></li>
+            </ul>
           </div>
-
         </div>
-      </div>
-    <!-- end of mobile sidebar -->
+      </header>
 
-    <div id="main">
-      <div class="row d-md-flex justify-content-center">
-
-          <!-- The sidebar for Desktop Menu Hidden on small and xs -->
-          <div class="col-lg-2 col-md-3 d-none d-md-block">
-            <div class="desktop-sidenav text-start">
-              
-              <div class="logo_details w-50">
-                <img src="{%static 'chamas/logo.png'%}" class="ps-3 img-fluid" />
-              </div>
-              <ul class="nav-list">
-                <li>
-                  <a href="#" class="dashboard-link">
-                    <i class='bx bx-bolt-circle'  style="font-size: 24px"></i>
-                    <span class="link_name">Dashboard</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="#" class="finances-link">
-                    <i class="bx bx-user"  style="font-size: 24px"></i>
-                    <span class="link_name">Finances Page</span>
-                  </a>
-                </li>
-                <li>
-                  <a class="contribution-link" href="" onlclick()>
-                    <i class='bx bx-sort bx-rotate-90'  style="font-size: 24px"></i>
-                    <span class="link_name">Contributions</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="#" class="loans-link" >
-                    <i class='bx bxs-donate-heart'  style="font-size: 24px"></i>
-                    <span class="link_name">Loans</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="#" class="expenses-link">
-                    <i class="bx bx-folder"  style="font-size: 24px"></i></i>
-                    <span class="link_name">Expenses</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="#" class="fines-link">
-                    <i class="bx bx-file"  style="font-size: 24px"></i></i>
-                    <span class="link_name">Fines</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="#" class="reports-link">
-                    <i class='bx bxs-report'  style="font-size: 24px"></i>
-                    <span class="link_name">Reports</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="#" class="members-link">
-                    <i class="bx bx-user" style="font-size: 24px"></i>
-                    <span class="link_name">Members</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="#" class="notifications-link">
-                    <i class="bx bx-bell" style="font-size: 24px"></i>
-                    <span class="link_name">Notifications</span>
-                  </a>
-                </li>
-                <li class="admin">
-                  <a href="#" class="bot-link">
-                    <i class="bx bx-cog" style="font-size: 24px"></i>
-                    <span class="link_name">Bot Controll</span>
-                  </a>
-                </li>
-                {% comment %} <li>
-                  <a href="#" class="chat-link">
-                    <i class='bx bx-message-rounded-detail' style="font-size: 24px"></i>
-                    <span class="link_name">Chat</span>
-                  </a>
-                </li> {% endcomment %}
-                <li>
-                  <a href="{%url 'chamas:chamas'%}">
-                    <i class="bx bx-arrow-back" style="font-size: 24px"></i>
-                    <span class="link_name">Back</span>
-                  </a>
-                </li>
-              </ul>
-            </div>
+      <!-- Desktop Header -->
+      <header class="desktop-header">
+        <div class="header-actions">
+          <input type="text" placeholder="Search ...." class="search-input" />
+          <div class="action-icons">
+            <i class='bx bxs-sun' style='color:#2191a5;'></i>
+            <i class='bx bxs-toggle-left' style='color:#2191a5;'></i>
+            <i class='bx bxs-moon' style='color:#141414;'></i>
+            <i class='bx bx-message-rounded-detail' style='color:#2191a5;'></i>
+            <a onclick="handleDiamondClick()"> 
+              <i class='bx bxs-diamond' style='color:#2191a5; cursor: pointer;'></i>
+            </a>
           </div>
-          <!-- end of desktop sidebar -->
-
-          <div class="col-lg-10 col-md-9 col-sm-11 col-11">
-            <!-- The topbar for Desktop Menu Hidden on small and xs -->
-            <div class="p-3 navbar-cont desktop-header d-none d-md-block">
-             
-              <div class="d-flex justify-content-end w-auto">
-                <input type="text" placeholder="Search ...." class="d-none d-lg-block" />
-                <i class='bx bxs-sun bx-md p-2' style='color:#2191a5;'></i>
-                <i class='bx bxs-toggle-left bx-md pt-2' style='color:#2191a5;'  ></i>
-                <i class='bx bxs-moon bx-md p-2' style='color:#141414;'  ></i>
-                <i class='bx bx-message-rounded-detail bx-md p-2' style='color:#2191a5;'></i>
-                {% comment %} <i class='bx bxs-diamond bx-md p-2' style='color:#2191a5;'></i> {% endcomment %}
-                <a
-                style="cursor: pointer;"
-                onclick="handleDiamondClick()"> 
-                  <i class='bx bxs-diamond bx-md p-2' style='color:#2191a5; cursor: pointer;'></i>
-                </a>
-
-                 <div class="profile d-flex align-content-start">
-                  <div class="avatar">
-                    {% if request.user.profile.picture %}
-                        <img src="{{ request.user.profile.picture.url }}" class="h-100 w-100" />
-                      {% else %}
-                        <i class='bx bxs-user bx-md text-center text-white p-1' ></i>
-                      {% endif %}
-                  </div>
-                  <p class="ps-2 pt-2 pe-1 text-nowrap">{{ request.user.first_name }} {{ request.user.last_name }}</p>
-                  <i class='bx bx-chevron-down' data-bs-toggle="dropdown" aria-expanded="false"></i>
-                    <ul class="dropdown-menu">
-                      <li><a class="dropdown-item" href="{% url 'Setting' %}">My Profile</a></li>
-                      <li class="view-option" data-view="member">View as member</li>
-                      <li class="view-option" data-view="admin">View as admin</li>
-                      <li><a class="dropdown-item" href="#">My Groups</a></li>
-                    </ul>
-                </div>
-        
-              </div>
+          <div class="profile">
+            <div class="avatar">
+              {% if request.user.profile.picture %}
+                <img src="{{ request.user.profile.picture.url }}" alt="Profile" />
+              {% else %}
+                <i class='bx bxs-user'></i>
+              {% endif %}
             </div>
-             <!-- end of desktop topbar -->
-              <section class="home-section">
-                <div class="block-body">
-                      {%block body%}
-
-
-
-                      {%endblock%}
-                </div>
-                  
-                </section>
+            <span class="profile-name">{{ request.user.first_name }} {{ request.user.last_name }}</span>
+            <i class='bx bx-chevron-down' data-bs-toggle="dropdown" aria-expanded="false"></i>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{% url 'Setting' %}">My Profile</a></li>
+              <li class="view-option" data-view="member">View as member</li>
+              <li class="view-option" data-view="admin">View as admin</li>
+              <li><a class="dropdown-item" href="#">My Groups</a></li>
+            </ul>
           </div>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <div class="page-content">
+        {%block body%}
+        {%endblock%}
       </div>
-    </div>
-      <!-- modals  -->
+    </main>
+  </div>
+
+  <!-- Mobile Overlay -->
+  <div class="mobile-overlay" onclick="closeNav()"></div>
+
+  <!-- modals  -->
 
   <!-- add member to group modal-->
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -441,17 +418,19 @@
   <!-- Add this script tag at the end of your HTML body section -->
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
   <script>
-    /* Set the width of the side navigation to 250px and the left margin of the page content to 250px */
-  function openNav() {
-    document.getElementById("mySidenav").style.width = "250px";
-    document.getElementById("main").style.marginLeft = "150px";
-  }
+    /* Open mobile navigation */
+    function openNav() {
+      document.getElementById("mySidenav").style.width = "260px";
+      document.querySelector(".mobile-overlay").style.display = "block";
+      document.querySelector(".mobile-overlay").classList.add("show");
+    }
 
-  /* Set the width of the side navigation to 0 and the left margin of the page content to 0 */
-  function closeNav() {
-    document.getElementById("mySidenav").style.width = "0";
-    document.getElementById("main").style.marginLeft = "0";
-  }
+    /* Close mobile navigation */
+    function closeNav() {
+      document.getElementById("mySidenav").style.width = "0";
+      document.querySelector(".mobile-overlay").style.display = "none";
+      document.querySelector(".mobile-overlay").classList.remove("show");
+    }
 
   function getGroupId() {
     return localStorage.getItem('groupId');

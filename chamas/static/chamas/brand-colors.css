@@ -181,23 +181,376 @@ a:hover {
 }
 
 /* ================================
-   LAYOUT IMPROVEMENTS
+   MODERN FLEXBOX LAYOUT SYSTEM
    ================================ */
 
-/* Remove excessive margins from main content area */
-.container-fluid {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    margin: 0 !important;
-    max-width: 100% !important;
-    width: 100% !important;
+/* Reset and Base Layout */
+* {
+    box-sizing: border-box;
 }
 
-/* Ensure main content uses full width */
-#main {
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #e4e9f7;
+    overflow-x: hidden;
+}
+
+/* Main App Layout Container */
+.app-layout {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* ================================
+   DESKTOP SIDEBAR
+   ================================ */
+
+.desktop-sidebar {
+    width: 260px;
+    background-color: #2191a5;
+    color: white;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    z-index: 1000;
+    overflow-y: auto;
+    transition: all 0.3s ease;
+}
+
+.sidebar-header {
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-header .logo_details img {
+    max-width: 120px;
+    height: auto;
+    filter: brightness(0) invert(1);
+}
+
+.sidebar-nav {
+    padding: 20px 0;
+}
+
+.sidebar-nav .nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-nav .nav-list li {
+    margin-bottom: 8px;
+}
+
+.sidebar-nav .nav-list li a {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border-radius: 8px;
+    margin: 0 8px;
+}
+
+.sidebar-nav .nav-list li a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    text-decoration: none;
+    transform: translateX(4px);
+}
+
+.sidebar-nav .nav-list li a i {
+    margin-right: 12px;
+    font-size: 18px;
+    width: 20px;
+    text-align: center;
+    color: white;
+}
+
+.sidebar-nav .nav-list li a .link_name {
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+}
+
+/* ================================
+   MAIN CONTENT AREA
+   ================================ */
+
+.main-content {
+    flex: 1;
+    margin-left: 260px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Desktop Header */
+.desktop-header {
+    background: white;
+    border-radius: 0 0 20px 20px;
+    border-bottom: 1px solid #e0e4e8;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 16px 24px;
+    display: none;
+}
+
+.header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.search-input {
+    width: 300px;
+    height: 40px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid #e0e4e8;
+    background: #f8fafc;
+    font-size: 14px;
+}
+
+.action-icons {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.action-icons i {
+    font-size: 20px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+}
+
+.action-icons i:hover {
+    background-color: rgba(33, 145, 165, 0.1);
+}
+
+/* Mobile Header */
+.mobile-header {
+    background: white;
+    border-radius: 20px;
+    border-bottom: 1px solid #e0e4e8;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 16px;
+    display: none;
+}
+
+.mobile-nav-toggle .menu-btn {
+    font-size: 24px;
+    color: #2191a5;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.mobile-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Profile Section */
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #2191a5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar i {
+    color: white;
+    font-size: 18px;
+}
+
+.profile-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+}
+
+/* Page Content */
+.page-content {
+    flex: 1;
+    padding: 24px;
+    background: #e4e9f7;
+}
+
+/* ================================
+   MOBILE SIDEBAR
+   ================================ */
+
+.sidenav {
+    height: 100vh;
+    width: 0;
+    position: fixed;
+    z-index: 2000;
+    top: 0;
+    left: 0;
+    background-color: #2191a5;
+    overflow-x: hidden;
+    padding-top: 20px;
+    transition: 0.3s;
+    text-align: left;
+}
+
+.sidenav.open {
+    width: 260px;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.sidenav .logo_details {
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 20px;
+}
+
+.sidenav .logo_details img {
+    max-width: 120px;
+    height: auto;
+    filter: brightness(0) invert(1);
+}
+
+.sidenav .nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidenav .nav-list li {
+    margin-bottom: 8px;
+}
+
+.sidenav .nav-list li a {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border-radius: 8px;
+    margin: 0 8px;
+}
+
+.sidenav .nav-list li a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    text-decoration: none;
+    transform: translateX(4px);
+}
+
+.sidenav .nav-list li a i {
+    margin-right: 16px;
+    font-size: 20px;
+    width: 20px;
+    text-align: center;
+    color: white;
+}
+
+.sidenav .nav-list li a .link_name {
+    color: white;
+}
+
+/* Mobile Overlay */
+.mobile-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1500;
+    display: none;
+}
+
+.mobile-overlay.show {
+    display: block;
+}
+
+/* ================================
+   RESPONSIVE DESIGN
+   ================================ */
+
+@media (max-width: 768px) {
+    /* Hide desktop sidebar */
+    .desktop-sidebar {
+        display: none;
+    }
+    
+    /* Adjust main content for mobile */
+    .main-content {
+        margin-left: 0;
+    }
+    
+    /* Show mobile header */
+    .mobile-header {
+        display: flex;
+    }
+    
+    /* Hide desktop header */
+    .desktop-header {
+        display: none;
+    }
+    
+    /* Adjust page content padding */
+    .page-content {
+        padding: 16px;
+    }
+}
+
+@media (min-width: 769px) {
+    /* Show desktop header */
+    .desktop-header {
+        display: block;
+    }
+    
+    /* Hide mobile header */
+    .mobile-header {
+        display: none;
+    }
 }
 
 .home-section {

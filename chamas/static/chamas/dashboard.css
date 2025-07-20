@@ -29,69 +29,17 @@
    GENERAL STYLES
    ================================ */
 .modern-dashboard {
-    min-height: 100vh;
-    background-color: var(--color-gray-50);
-    padding: 0;
-    margin: 0;
     width: 100%;
-}
-
-.modern-dashboard.full-width {
-    max-width: 100%;
-    width: 100%;
+    height: 100%;
 }
 
 .dashboard-content {
     width: 100%;
-    padding: 8px;
+    padding: 0;
     margin: 0;
 }
 
-/* ================================
-   MOBILE FLOATING MENU BUTTON
-   ================================ */
-.floating-menu-btn {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    z-index: 1000;
-    width: 48px;
-    height: 48px;
-    background: var(--color-primary);
-    color: var(--color-white);
-    border: none;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    box-shadow: var(--shadow-lg);
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.floating-menu-btn:hover {
-    background: #1e8396;
-    transform: scale(1.1);
-}
-
-.sidebar-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-}
-
-.sidebar-backdrop.show {
-    opacity: 1;
-    visibility: visible;
-}
+/* Removed floating menu and backdrop styles - now handled by base layout */
 
 /* ================================
    MOBILE NAVIGATION MENU
