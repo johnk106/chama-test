@@ -6,6 +6,279 @@
     --color-light: #e0e0e0;
 }
 
+/* ================================
+   FINANCE ACTION BUTTON ROW
+   ================================ */
+.finance-action-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding: 16px;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    flex-wrap: wrap;
+}
+
+.finance-action-row button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex: 1;
+    min-width: 160px;
+    justify-content: center;
+}
+
+.finance-create-savings.admin {
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    color: white;
+}
+
+.finance-create-investment.admin {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+}
+
+.finance-create-income.admin {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: white;
+}
+
+.finance-action-row button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* ================================
+   FINANCE TABS
+   ================================ */
+.finance-tabs {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    overflow-x: auto;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.finance-tabs .nav-item {
+    flex-shrink: 0;
+}
+
+.finance-tabs .nav-link {
+    display: block;
+    padding: 16px 20px;
+    color: #64748b;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    border-radius: 0;
+}
+
+.finance-tabs .nav-link:hover {
+    color: var(--color-default);
+    background: #f1f5f9;
+}
+
+.finance-tabs .nav-link.active {
+    color: var(--color-default);
+    background: #f0f9ff;
+    border-bottom: 3px solid var(--color-default);
+    font-weight: 600;
+}
+
+/* ================================
+   TAB CONTENT
+   ================================ */
+.finance-tab-content {
+    padding: 0;
+}
+
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+/* ================================
+   FINANCE CARDS
+   ================================ */
+.finance-card {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.finance-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+    border-bottom: 1px solid #f1f5f9;
+    background: #fafbfc;
+}
+
+.finance-card-header .header-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-default);
+    color: white;
+    border-radius: 8px;
+    font-size: 20px;
+}
+
+.finance-card-header .header-text p {
+    color: var(--color-default);
+    font-family: sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* ================================
+   FILTER SECTION
+   ================================ */
+.filter-section {
+    padding: 20px;
+    border-bottom: 1px solid #f1f5f9;
+    background: #fafbfc;
+}
+
+.filter-inputs {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.filter-inputs .mb-3 {
+    flex: 1;
+    min-width: 200px;
+}
+
+/* ================================
+   RESPONSIVE TABLES
+   ================================ */
+.desktop-view {
+    display: block;
+}
+
+.mobile-cards {
+    display: none;
+}
+
+.table-responsive {
+    padding: 20px;
+    overflow-x: auto;
+}
+
+.finance-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 14px;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.finance-table thead th {
+    background: #f8fafc;
+    color: #374151;
+    font-weight: 600;
+    padding: 16px 12px;
+    text-align: left;
+    border-bottom: 2px solid #e5e7eb;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.finance-table tbody tr {
+    transition: all 0.2s ease;
+}
+
+.finance-table tbody tr:nth-child(even) {
+    background: #f9fafb;
+}
+
+.finance-table tbody tr:hover {
+    background: #f0f9ff;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.finance-table tbody td {
+    padding: 14px 12px;
+    color: #64748b;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+/* ================================
+   MODAL STYLES
+   ================================ */
+.finance-modal .modal-header {
+    background: linear-gradient(135deg, var(--color-default) 0%, var(--color-second) 100%);
+    color: white;
+    border: none;
+    padding: 20px 24px;
+}
+
+.finance-modal .modal-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.finance-modal .modal-header .btn-close {
+    filter: invert(1);
+    opacity: 0.8;
+}
+
+.finance-modal .modal-header .btn-close:hover {
+    opacity: 1;
+}
+
+.finance-modal .modal-body {
+    padding: 24px;
+}
+
+.finance-modal .modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+/* ================================
+   ORIGINAL STYLES (PRESERVED)
+   ================================ */
 .body-div {
     margin-bottom: 12px;
     border-radius: 12px;
@@ -235,6 +508,7 @@ select {
     align-items: flex-start;
     gap: 12px;
     align-self: stretch;
+    margin-top: 16px;
 }
 
 .summary-section-inner {
@@ -270,4 +544,221 @@ select {
     line-height: 18px;
     /* 150% */
 
+}
+
+/* ================================
+   RESPONSIVE DESIGN
+   ================================ */
+@media (max-width: 767px) {
+    /* Mobile Finance Action Row */
+    .finance-action-row {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .finance-action-row button {
+        flex: none;
+        min-width: 100%;
+    }
+
+    /* Mobile Tabs - Horizontal Scroll */
+    .finance-tabs {
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        padding: 4px;
+    }
+
+    .finance-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .finance-tabs .nav-link {
+        padding: 12px 16px;
+        font-size: 13px;
+        min-width: 140px;
+        text-align: center;
+    }
+
+    /* Mobile Cards - Hide Desktop Tables */
+    .desktop-view {
+        display: none;
+    }
+
+    .mobile-cards {
+        display: block;
+        padding: 16px;
+    }
+
+    .mobile-cards .finance-card {
+        margin-bottom: 12px;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+        background: white;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .mobile-cards .saving-details-row {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .mobile-cards .saving-cube {
+        width: calc(50% - 8px);
+        margin: 4px;
+        min-width: 120px;
+    }
+
+    .mobile-cards .saving-cube h6 {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--color-default);
+    }
+
+    .mobile-cards .amount-section {
+        padding: 6px 8px;
+        border-radius: 6px;
+        background: #f8fafc;
+    }
+
+    .mobile-cards .amount {
+        font-size: 12px;
+        font-weight: 500;
+        opacity: 0.8;
+    }
+
+    /* Filter Section Mobile */
+    .filter-inputs {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .filter-inputs .mb-3 {
+        min-width: 100%;
+    }
+
+    /* Modal Mobile Adjustments */
+    .finance-modal .modal-dialog {
+        margin: 16px;
+        max-width: calc(100vw - 32px);
+    }
+
+    .finance-modal .modal-body {
+        padding: 20px;
+    }
+
+    .finance-modal .input-sect {
+        flex-direction: column;
+        gap: 0;
+    }
+}
+
+/* ================================
+   SWIPE GESTURES (FOR MOBILE TABS)
+   ================================ */
+@media (max-width: 767px) {
+    .finance-tab-content {
+        touch-action: pan-x;
+    }
+
+    .tab-pane {
+        transform: translateX(0);
+        transition: transform 0.3s ease;
+    }
+
+    /* Tab swipe indicators */
+    .finance-tabs::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent 0%, var(--color-default) 50%, transparent 100%);
+        opacity: 0.3;
+    }
+}
+
+/* ================================
+   ROLE-BASED VISIBILITY (PRESERVED)
+   ================================ */
+.admin {
+    /* Admin styles preserved as-is */
+}
+
+.member {
+    /* Member styles preserved as-is */
+}
+
+/* Admin specific button styling */
+.admin .finance-create-savings,
+.admin .finance-create-investment,
+.admin .finance-create-income {
+    /* Enhanced admin button styles already defined above */
+}
+
+/* Member specific adjustments */
+.member .finance-card-header .header-icon {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+/* ================================
+   ACCESSIBILITY & FOCUS STATES
+   ================================ */
+.finance-tabs .nav-link:focus,
+.finance-action-row button:focus {
+    outline: 2px solid var(--color-default);
+    outline-offset: 2px;
+}
+
+.finance-table tbody tr:focus-within {
+    background: #f0f9ff;
+    outline: 2px solid var(--color-default);
+    outline-offset: -2px;
+}
+
+/* ================================
+   SMOOTH ANIMATIONS
+   ================================ */
+* {
+    scroll-behavior: smooth;
+}
+
+.tab-pane {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.finance-action-row button {
+    transform: translateY(0);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.finance-table tbody tr {
+    transition: all 0.2s ease;
+}
+
+/* ================================
+   LOADING STATES & EMPTY STATES
+   ================================ */
+.finance-card .text-center {
+    padding: 40px 20px;
+    color: #64748b;
+    font-style: italic;
+}
+
+.finance-table .text-center {
+    padding: 40px;
+    color: #64748b;
+    font-style: italic;
 }
