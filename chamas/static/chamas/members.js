@@ -430,209 +430,277 @@ function openMemberModal(memberId) {
 function loadMemberDetails(memberId) {
     try {
         const modalBody = document.getElementById('adminMemberModalBody');
-        const memberCard = document.querySelector(`[data-member-id="${memberId}"]`);
         
-        if (!modalBody || !memberCard) {
-            throw new Error('Required elements not found');
+        if (!modalBody) {
+            throw new Error('Modal body not found');
         }
         
-        // Extract member data from card
-        const name = memberCard.querySelector('.admin-member-name')?.textContent || 'Unknown';
-        const role = memberCard.querySelector('.admin-member-role')?.textContent || 'Member';
-        const avatar = memberCard.querySelector('.admin-member-avatar img')?.src || '';
-        const contributions = memberCard.querySelector('.admin-stat-value')?.textContent || 'KSh 0';
-        const loans = memberCard.querySelectorAll('.admin-stat-value')[1]?.textContent || '0';
-        const memberSince = memberCard.querySelectorAll('.admin-stat-value')[2]?.textContent || 'Unknown';
+        console.log(`[DEBUG] Loading member details for ID: ${memberId}`);
         
-        // In a real application, you would fetch detailed data via AJAX
-        // For now, we'll use the available data and simulate additional details
+        // Get chama_id from URL or global variable
+        const chamaId = getChamaIdFromUrl();
         
-        modalBody.innerHTML = `
-            <div class="admin-member-details">
-                <div class="admin-member-profile">
-                    <div class="admin-member-avatar">
-                        <img src="${avatar}" alt="${name}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjYwIiBjeT0iNjAiIHI9IjYwIiBmaWxsPSIjRjNGNEY2Ii8+CjxjaXJjbGUgY3g9IjYwIiBjeT0iNDQiIHI9IjIwIiBmaWxsPSIjOUNBM0FGIi8+CjxwYXRoIGQ9Ik0yMCAxMDBDMjAgODAuNjcxOCAzNC4zMjY2IDY1IDUyIDY1SDY4Qzg1LjY3MzQgNjUgMTAwIDgwLjY3MTggMTAwIDEwMFYxMDBIMjBWMTAwWiIgZmlsbD0iIzlDQTNBRiIvPgo8L3N2Zz4K'">
-                    </div>
-                    <h3>${name}</h3>
-                    <span class="admin-member-role ${role.toLowerCase()}-bulb">${role}</span>
-                </div>
-                <div class="admin-contact-info">
-                    <h4>Contact Information</h4>
-                    <div class="admin-contact-item">
-                        <i class="fas fa-envelope admin-contact-icon"></i>
-                        <span id="member-email">Loading...</span>
-                    </div>
-                    <div class="admin-contact-item">
-                        <i class="fas fa-phone admin-contact-icon"></i>
-                        <span id="member-phone">Loading...</span>
-                    </div>
-                    <div class="admin-contact-item">
-                        <i class="fas fa-calendar admin-contact-icon"></i>
-                        <span>Member since: ${memberSince}</span>
-                    </div>
-                    <div class="admin-contact-item">
-                        <i class="fas fa-user-shield admin-contact-icon"></i>
-                        <span>Role: ${role}</span>
-                    </div>
-                </div>
-            </div>
+        // Make AJAX call to get member details
+        fetch(`/chamas/member-detail/${memberId}/${chamaId}/`, {
+            method: 'GET',
+            headers: {
+                'X-CSRFToken': getCsrfToken(),
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => {
+            console.log(`[DEBUG] Member details response status: ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            console.log('[DEBUG] Member details data:', data);
             
-            <div class="admin-records-section">
-                <div class="admin-records-tabs" role="tablist">
-                    <button class="admin-tab-button active" onclick="switchTab('contributions')" role="tab" aria-selected="true" aria-controls="contributions-tab" id="contributions-tab-btn">
-                        Contributions
-                    </button>
-                    <button class="admin-tab-button" onclick="switchTab('loans')" role="tab" aria-selected="false" aria-controls="loans-tab" id="loans-tab-btn">
-                        Loans
-                    </button>
+            if (data.status === 'success') {
+                renderMemberDetails(data);
+            } else {
+                throw new Error(data.message || 'Failed to load member details');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching member details:', error);
+            modalBody.innerHTML = `
+                <div class="admin-empty-state">
+                    <div class="admin-empty-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3>Error Loading Details</h3>
+                    <p>${error.message || 'Unable to load member details. Please try again.'}</p>
                 </div>
-                
-                <div id="contributions-tab" class="admin-tab-content active" role="tabpanel" aria-labelledby="contributions-tab-btn">
-                    <table class="admin-records-table">
-                        <thead>
-                            <tr>
-                                <th scope="col">Date</th>
-                                <th scope="col">Type</th>
-                                <th scope="col">Amount</th>
-                                <th scope="col">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="contributions-tbody">
-                            <tr>
-                                <td colspan="4" style="text-align: center; padding: 2rem; color: var(--admin-gray-500);">
-                                    <i class="fas fa-spinner fa-spin" style="margin-right: 0.5rem;"></i>
-                                    Loading contribution records...
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div id="loans-tab" class="admin-tab-content" role="tabpanel" aria-labelledby="loans-tab-btn">
-                    <table class="admin-records-table">
-                        <thead>
-                            <tr>
-                                <th scope="col">Date</th>
-                                <th scope="col">Amount</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Balance</th>
-                            </tr>
-                        </thead>
-                        <tbody id="loans-tbody">
-                            <tr>
-                                <td colspan="4" style="text-align: center; padding: 2rem; color: var(--admin-gray-500);">
-                                    <i class="fas fa-spinner fa-spin" style="margin-right: 0.5rem;"></i>
-                                    Loading loan records...
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        `;
-        
-        // Simulate loading member details with AJAX
-        setTimeout(() => {
-            loadMemberContactDetails(memberId);
-            loadMemberContributions(memberId);
-            loadMemberLoans(memberId);
-        }, 1000);
+            `;
+        });
         
     } catch (error) {
         console.error('Error loading member details:', error);
-        modalBody.innerHTML = `
-            <div class="admin-empty-state">
-                <div class="admin-empty-icon">
-                    <i class="fas fa-exclamation-triangle"></i>
+        const modalBody = document.getElementById('adminMemberModalBody');
+        if (modalBody) {
+            modalBody.innerHTML = `
+                <div class="admin-empty-state">
+                    <div class="admin-empty-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3>Error Loading Details</h3>
+                    <p>Unable to load member details. Please try again.</p>
                 </div>
-                <h3>Error Loading Details</h3>
-                <p>Unable to load member details. Please try again.</p>
-            </div>
-        `;
+            `;
+        }
     }
 }
 
 /**
- * Simulate loading contact details
+ * Render member details in modal
  */
-function loadMemberContactDetails(memberId) {
-    // In a real app, this would be an AJAX call
-    setTimeout(() => {
-        const emailElement = document.getElementById('member-email');
-        const phoneElement = document.getElementById('member-phone');
+function renderMemberDetails(data) {
+    const modalBody = document.getElementById('adminMemberModalBody');
+    const member = data.member;
+    
+    const defaultAvatar = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjYwIiBjeT0iNjAiIHI9IjYwIiBmaWxsPSIjRjNGNEY2Ii8+CjxjaXJjbGUgY3g9IjYwIiBjeT0iNDQiIHI9IjIwIiBmaWxsPSIjOUNBM0FGIi8+CjxwYXRoIGQ9Ik0yMCAxMDBDMjAgODAuNjcxOCAzNC4zMjY2IDY1IDUyIDY1SDY4Qzg1LjY3MzQgNjUgMTAwIDgwLjY3MTggMTAwIDEwMFYxMDBIMjBWMTAwWiIgZmlsbD0iIzlDQTNBRiIvPgo8L3N2Zz4K';
+    
+    modalBody.innerHTML = `
+        <div class="admin-member-details">
+            <div class="admin-member-profile">
+                <div class="admin-member-avatar">
+                    <img src="${member.profile || defaultAvatar}" alt="${member.name}" onerror="this.src='${defaultAvatar}'">
+                </div>
+                <h3>${member.name}</h3>
+                <span class="admin-member-role ${member.role.toLowerCase()}-bulb">${member.role}</span>
+            </div>
+            <div class="admin-contact-info">
+                <h4>Contact Information</h4>
+                <div class="admin-contact-item">
+                    <i class="fas fa-envelope admin-contact-icon"></i>
+                    <span>${member.email}</span>
+                </div>
+                <div class="admin-contact-item">
+                    <i class="fas fa-phone admin-contact-icon"></i>
+                    <span>${member.mobile}</span>
+                </div>
+                <div class="admin-contact-item">
+                    <i class="fas fa-calendar admin-contact-icon"></i>
+                    <span>Member since: ${member.member_since}</span>
+                </div>
+                <div class="admin-contact-item">
+                    <i class="fas fa-user-shield admin-contact-icon"></i>
+                    <span>Role: ${member.role}</span>
+                </div>
+                ${member.member_id ? `
+                <div class="admin-contact-item">
+                    <i class="fas fa-id-card admin-contact-icon"></i>
+                    <span>ID: ${member.member_id}</span>
+                </div>
+                ` : ''}
+            </div>
+        </div>
         
-        if (emailElement) {
-            emailElement.textContent = 'member@example.com'; // Replace with actual data
-        }
-        if (phoneElement) {
-            phoneElement.textContent = '+254 700 000 000'; // Replace with actual data
-        }
-    }, 500);
+        <div class="admin-records-section">
+            <div class="admin-records-tabs" role="tablist">
+                <button class="admin-tab-button active" onclick="switchTab('contributions')" role="tab" aria-selected="true" aria-controls="contributions-tab" id="contributions-tab-btn">
+                    Contributions (${data.contributions.length})
+                </button>
+                <button class="admin-tab-button" onclick="switchTab('loans')" role="tab" aria-selected="false" aria-controls="loans-tab" id="loans-tab-btn">
+                    Loans (${data.loans.length})
+                </button>
+                <button class="admin-tab-button" onclick="switchTab('fines')" role="tab" aria-selected="false" aria-controls="fines-tab" id="fines-tab-btn">
+                    Fines (${data.fines.length})
+                </button>
+            </div>
+            
+            <div id="contributions-tab" class="admin-tab-content active" role="tabpanel" aria-labelledby="contributions-tab-btn">
+                ${renderContributionsTable(data.contributions)}
+            </div>
+            
+            <div id="loans-tab" class="admin-tab-content" role="tabpanel" aria-labelledby="loans-tab-btn">
+                ${renderLoansTable(data.loans)}
+            </div>
+            
+            <div id="fines-tab" class="admin-tab-content" role="tabpanel" aria-labelledby="fines-tab-btn">
+                ${renderFinesTable(data.fines)}
+            </div>
+        </div>
+    `;
 }
 
 /**
- * Simulate loading contributions
+ * Render contributions table
  */
-function loadMemberContributions(memberId) {
-    setTimeout(() => {
-        const tbody = document.getElementById('contributions-tbody');
-        if (tbody) {
-            // In a real app, fetch actual contribution data
-            tbody.innerHTML = `
+function renderContributionsTable(contributions) {
+    if (!contributions || contributions.length === 0) {
+        return `
+            <div class="admin-empty-state">
+                <div class="admin-empty-icon">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <h3>No Contributions</h3>
+                <p>This member has no contribution records yet.</p>
+            </div>
+        `;
+    }
+    
+    const rows = contributions.map(contribution => `
+        <tr>
+            <td>${contribution.date_created}</td>
+            <td>${contribution.contribution_name}</td>
+            <td>KSh ${formatCurrency(contribution.amount_paid)}</td>
+            <td><span class="status-badge status-${contribution.status.toLowerCase()}">${contribution.status}</span></td>
+        </tr>
+    `).join('');
+    
+    return `
+        <table class="admin-records-table">
+            <thead>
                 <tr>
-                    <td>Dec 15, 2023</td>
-                    <td>Monthly Contribution</td>
-                    <td>KSh 5,000</td>
-                    <td><span style="color: var(--admin-success); font-weight: 600;">Paid</span></td>
+                    <th scope="col">Date</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Amount Paid</th>
+                    <th scope="col">Status</th>
                 </tr>
-                <tr>
-                    <td>Nov 15, 2023</td>
-                    <td>Monthly Contribution</td>
-                    <td>KSh 5,000</td>
-                    <td><span style="color: var(--admin-success); font-weight: 600;">Paid</span></td>
-                </tr>
-                <tr>
-                    <td>Oct 15, 2023</td>
-                    <td>Monthly Contribution</td>
-                    <td>KSh 5,000</td>
-                    <td><span style="color: var(--admin-warning); font-weight: 600;">Partial</span></td>
-                </tr>
-            `;
-        }
-    }, 800);
+            </thead>
+            <tbody>
+                ${rows}
+            </tbody>
+        </table>
+    `;
 }
 
 /**
- * Simulate loading loans
+ * Render loans table
  */
-function loadMemberLoans(memberId) {
-    setTimeout(() => {
-        const tbody = document.getElementById('loans-tbody');
-        if (tbody) {
-            // In a real app, fetch actual loan data
-            tbody.innerHTML = `
+function renderLoansTable(loans) {
+    if (!loans || loans.length === 0) {
+        return `
+            <div class="admin-empty-state">
+                <div class="admin-empty-icon">
+                    <i class="fas fa-hand-holding-usd"></i>
+                </div>
+                <h3>No Loans</h3>
+                <p>This member has no loan records yet.</p>
+            </div>
+        `;
+    }
+    
+    const rows = loans.map(loan => `
+        <tr>
+            <td>${loan.start_date}</td>
+            <td>KSh ${formatCurrency(loan.amount)}</td>
+            <td><span class="status-badge status-${loan.status.toLowerCase()}">${loan.status}</span></td>
+            <td>KSh ${formatCurrency(loan.balance)}</td>
+        </tr>
+    `).join('');
+    
+    return `
+        <table class="admin-records-table">
+            <thead>
                 <tr>
-                    <td>Nov 01, 2023</td>
-                    <td>KSh 50,000</td>
-                    <td><span style="color: var(--admin-warning); font-weight: 600;">Active</span></td>
-                    <td>KSh 25,000</td>
+                    <th scope="col">Date</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Balance</th>
                 </tr>
-                <tr>
-                    <td>Aug 15, 2023</td>
-                    <td>KSh 30,000</td>
-                    <td><span style="color: var(--admin-success); font-weight: 600;">Paid</span></td>
-                    <td>KSh 0</td>
-                </tr>
-            `;
-        }
-    }, 1200);
+            </thead>
+            <tbody>
+                ${rows}
+            </tbody>
+        </table>
+    `;
 }
+
+/**
+ * Render fines table
+ */
+function renderFinesTable(fines) {
+    if (!fines || fines.length === 0) {
+        return `
+            <div class="admin-empty-state">
+                <div class="admin-empty-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3>No Fines</h3>
+                <p>This member has no fine records.</p>
+            </div>
+        `;
+    }
+    
+    const rows = fines.map(fine => `
+        <tr>
+            <td>${fine.created}</td>
+            <td>${fine.fine_type}</td>
+            <td>KSh ${formatCurrency(fine.fine_amount)}</td>
+            <td>KSh ${formatCurrency(fine.fine_balance)}</td>
+            <td><span class="status-badge status-${fine.status.toLowerCase()}">${fine.status}</span></td>
+        </tr>
+    `).join('');
+    
+    return `
+        <table class="admin-records-table">
+            <thead>
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Balance</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${rows}
+            </tbody>
+        </table>
+    `;
+}
+
+
 
 /**
  * Switch between tabs in modal
  */
 function switchTab(tabName) {
     try {
+        console.log(`[DEBUG] Switching to tab: ${tabName}`);
+        
         // Remove active class from all tabs and contents
         document.querySelectorAll('.admin-tab-button').forEach(btn => {
             btn.classList.remove('active');
@@ -767,6 +835,8 @@ function submitAddMember(event) {
         const formData = new FormData(form);
         const memberData = Object.fromEntries(formData.entries());
         
+        console.log('[DEBUG] Submitting member data:', memberData);
+        
         // Validate form data
         if (!validateMemberForm(memberData)) {
             return;
@@ -781,28 +851,49 @@ function submitAddMember(event) {
         // Add loading spinner
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
         
-        // Simulate API call
-        setTimeout(() => {
-            // In real app, make AJAX call to add member
-            const success = Math.random() > 0.2; // 80% success rate for demo
+        // Add chama_id to the data
+        const chamaId = getChamaIdFromUrl();
+        memberData.chama_id = chamaId;
+        
+        // Make AJAX call to add member
+        fetch('/chamas/add-member/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCsrfToken(),
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(memberData)
+        })
+        .then(response => {
+            console.log(`[DEBUG] Add member response status: ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            console.log('[DEBUG] Add member response:', data);
             
-            if (success) {
-                showAlert('Member added successfully!', 'success');
+            if (data.status === 'success') {
+                showAlert(data.message, 'success');
                 closeAddMemberModal();
                 
-                // In a real app, you would refresh the member list or add the new member to the DOM
-                announceToScreenReader('New member added successfully');
+                // Add the new member to the DOM or reload the page
+                setTimeout(() => {
+                    location.reload(); // Refresh to show new member
+                }, 1000);
                 
-                // Optionally reload the page to show the new member
-                // location.reload();
+                announceToScreenReader('New member added successfully');
             } else {
-                showAlert('Failed to add member. Please try again.', 'error');
+                showAlert(data.message || 'Failed to add member. Please try again.', 'error');
             }
-            
+        })
+        .catch(error => {
+            console.error('Error adding member:', error);
+            showAlert('Error adding member. Please try again.', 'error');
+        })
+        .finally(() => {
             // Reset button state
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
-        }, 2000);
+        });
         
     } catch (error) {
         console.error('Error submitting add member form:', error);
@@ -913,6 +1004,8 @@ function removeMember(memberId) {
         const memberCard = document.querySelector(`[data-member-id="${memberId}"]`);
         const memberName = memberCard?.querySelector('.admin-member-name')?.textContent || 'Member';
         
+        console.log(`[DEBUG] Removing member ID: ${memberId}, Name: ${memberName}`);
+        
         if (memberCard) {
             // Show loading state
             memberCard.style.opacity = '0.5';
@@ -937,12 +1030,26 @@ function removeMember(memberId) {
             memberCard.appendChild(loadingOverlay);
         }
         
-        // Simulate API call
-        setTimeout(() => {
-            const success = Math.random() > 0.1; // 90% success rate for demo
+        // Get chama_id from URL
+        const chamaId = getChamaIdFromUrl();
+        
+        // Make AJAX call to remove member
+        fetch(`/chamas/remove-member-from-chama/${memberId}/${chamaId}/`, {
+            method: 'GET', // The existing endpoint uses GET method
+            headers: {
+                'X-CSRFToken': getCsrfToken(),
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => {
+            console.log(`[DEBUG] Remove member response status: ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            console.log('[DEBUG] Remove member response:', data);
             
-            if (success) {
-                showAlert(`${memberName} has been removed from the chama.`, 'warning');
+            if (data.status === 'success') {
+                showAlert(data.message || `${memberName} has been removed from the chama.`, 'success');
                 
                 if (memberCard) {
                     // Animate removal
@@ -963,7 +1070,7 @@ function removeMember(memberId) {
                     }, 300);
                 }
             } else {
-                showAlert('Failed to remove member. Please try again.', 'error');
+                showAlert(data.message || 'Failed to remove member. Please try again.', 'error');
                 
                 if (memberCard) {
                     // Restore card state
@@ -976,7 +1083,22 @@ function removeMember(memberId) {
                     }
                 }
             }
-        }, 1500);
+        })
+        .catch(error => {
+            console.error('Error removing member:', error);
+            showAlert('Error removing member. Please try again.', 'error');
+            
+            if (memberCard) {
+                // Restore card state
+                memberCard.style.opacity = '1';
+                memberCard.style.pointerEvents = 'auto';
+                
+                const overlay = memberCard.querySelector('.loading-overlay');
+                if (overlay) {
+                    overlay.remove();
+                }
+            }
+        });
         
     } catch (error) {
         console.error('Error removing member:', error);
@@ -1078,6 +1200,33 @@ function getCsrfToken() {
 }
 
 /**
+ * Get chama ID from URL
+ */
+function getChamaIdFromUrl() {
+    try {
+        const pathSegments = window.location.pathname.split('/');
+        const membersIndex = pathSegments.indexOf('members');
+        if (membersIndex !== -1 && pathSegments[membersIndex + 1]) {
+            const chamaId = parseInt(pathSegments[membersIndex + 1]);
+            console.log(`[DEBUG] Extracted chama ID from URL: ${chamaId}`);
+            return chamaId;
+        }
+        
+        // Fallback: try to get from any data attribute or global variable
+        const container = document.querySelector('.admin-members-container');
+        if (container && container.dataset.chamaId) {
+            return parseInt(container.dataset.chamaId);
+        }
+        
+        console.error('Could not extract chama ID from URL');
+        return null;
+    } catch (error) {
+        console.error('Error getting chama ID from URL:', error);
+        return null;
+    }
+}
+
+/**
  * Debounce function to limit function calls
  */
 function debounce(func, wait) {
@@ -1097,14 +1246,16 @@ function debounce(func, wait) {
  */
 function formatCurrency(amount) {
     try {
-        return new Intl.NumberFormat('en-KE', {
-            style: 'currency',
-            currency: 'KES',
+        // Convert to number if it's a string
+        const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
+        if (isNaN(numAmount)) return '0';
+        
+        return numAmount.toLocaleString('en-US', {
             minimumFractionDigits: 0,
             maximumFractionDigits: 0
-        }).format(amount);
+        });
     } catch (error) {
-        return `KSh ${amount.toLocaleString()}`;
+        return amount ? amount.toString() : '0';
     }
 }
 

@@ -14,6 +14,7 @@ import calendar
 from django.http import FileResponse
 import os
 from django.core.serializers.json import DjangoJSONEncoder
+from django.db import models
 
 
 from .services.download_service import DownloadService
@@ -240,17 +241,66 @@ def remove_member_from_chama(request, member_id, chama_id):
 
 @login_required(login_url='/user/Login')
 def members(request,chama_id):
+    try:
+        chama = Chama.objects.get(pk=chama_id)
+        
+        # Optimized query with prefetch_related for better performance
+        members = ChamaMember.objects.filter(
+            active=True, 
+            group=chama
+        ).select_related(
+            'role', 'user'
+        ).prefetch_related(
+            'member_records',
+            'loans', 
+            'fines'
+        ).annotate(
+            total_contributions_amount=models.Sum('member_records__amount_paid'),
+            total_loans_count=models.Count('loans', distinct=True),
+            total_fines_amount=models.Sum('fines__fine_amount')
+        ).order_by('name')
+        
+        MemberService.audit_chama_members(chama.id)
 
-    chama = Chama.objects.get(pk=chama_id)
-    members = ChamaMember.objects.filter(active=True,group=chama).all()
-    MemberService.audit_chama_members(chama.id)
+        # Add debug logging
+        print(f"[DEBUG] Loading members for chama: {chama.name}, Member count: {members.count()}")
+        
+        # Prepare member data with calculated totals
+        members_data = []
+        for member in members:
+            member_data = {
+                'id': member.id,
+                'name': member.name,
+                'email': member.email,
+                'mobile': member.mobile,
+                'role': member.role,
+                'profile': member.profile,
+                'member_since': member.member_since,
+                'total_contributions': member.total_contributions_amount or 0,
+                'total_loans': member.total_loans_count or 0,
+                'total_fines': member.total_fines_amount or 0,
+                'user': member.user
+            }
+            members_data.append(member_data)
+            
+        print(f"[DEBUG] Prepared {len(members_data)} members with calculated totals")
 
-    if chama:
-        print(chama.name.__str__(),chama.member.count())
-        return render(request,'chamas/members.html',{
-            'group':chama,
-            'members':members,
-            'roles':Role.objects.all()
+        context = {
+            'group': chama,
+            'members': members_data,
+            'members_count': len(members_data),
+            'roles': Role.objects.all(),
+            'chama_id': chama_id
+        }
+        
+        return render(request, 'chamas/members.html', context)
+        
+    except Chama.DoesNotExist:
+        print(f"[ERROR] Chama with id {chama_id} not found")
+        return render(request, 'chamas/members.html', {
+            'error': 'Chama not found',
+            'members': [],
+            'roles': Role.objects.all()
         })
 
 
@@ -260,38 +310,79 @@ def member_details(request, chama_member_id, group):
         chama = get_object_or_404(Chama, pk=group)
         member = get_object_or_404(ChamaMember, group=chama, id=chama_member_id)
         
-        # Retrieve last 4 contributions
-        contributions = ContributionRecord.objects.filter(member=member).order_by('-date_created')[:4]
-        contribution_dicts = [model_to_dict(contribution) for contribution in contributions]
-        for contribution in contribution_dicts:
-            type = Contribution.objects.get(pk=contribution['contribution'])
-            contribution['contribution'] = type.name
+        print(f"[DEBUG] Loading details for member: {member.name} (ID: {chama_member_id})")
+        
+        # Retrieve contributions with related data
+        contributions = ContributionRecord.objects.filter(
+            member=member
+        ).select_related('contribution').order_by('-date_created')[:10]
+        
+        contribution_dicts = []
+        for contribution in contributions:
+            contrib_data = {
+                'id': contribution.id,
+                'contribution_name': contribution.contribution.name if contribution.contribution else 'Unknown',
+                'date_created': contribution.date_created.strftime('%d/%m/%Y'),
+                'amount_expected': float(contribution.amount_expected),
+                'amount_paid': float(contribution.amount_paid),
+                'balance': float(contribution.balance),
+                'status': 'Paid' if contribution.balance == 0 else ('Partial' if contribution.amount_paid > 0 else 'Pending')
+            }
+            contribution_dicts.append(contrib_data)
 
-        # Retrieve last 4 loans
-        loans = LoanItem.objects.filter(member=member).order_by('-start_date')[:4]
-        loan_dicts = [model_to_dict(loan) for loan in loans]
-        for loan in loan_dicts:
-            if loan['start_date']:
-                loan['start_date'] = loan['start_date'].strftime('%d/%m/%Y %H:%M:%S')
-            if loan['end_date']:
-                loan['end_date'] = loan['end_date'].strftime('%d/%m/%Y %H:%M:%S')
+        # Retrieve loans with better formatting
+        loans = LoanItem.objects.filter(member=member).select_related('type').order_by('-start_date')[:10]
+        loan_dicts = []
+        for loan in loans:
+            loan_data = {
+                'id': loan.id,
+                'amount': float(loan.amount),
+                'total_amount_to_be_paid': float(loan.total_amount_to_be_paid or 0),
+                'balance': float(loan.balance or 0),
+                'total_paid': float(loan.total_paid or 0),
+                'status': loan.status.title(),
+                'start_date': loan.start_date.strftime('%d/%m/%Y') if loan.start_date else 'N/A',
+                'end_date': loan.end_date.strftime('%d/%m/%Y') if loan.end_date else 'N/A',
+                'loan_type': loan.type.name if loan.type else 'Unknown',
+                'interest_rate': loan.intrest_rate or 0
+            }
+            loan_dicts.append(loan_data)
 
+        # Retrieve fines with better formatting
+        fines = FineItem.objects.filter(member=member).select_related('fine_type').order_by('-created')[:10]
+        fine_dicts = []
+        for fine in fines:
+            fine_data = {
+                'id': fine.id,
+                'fine_type': fine.fine_type.name if fine.fine_type else 'Unknown',
+                'fine_amount': float(fine.fine_amount),
+                'paid_fine_amount': float(fine.paid_fine_amount),
+                'fine_balance': float(fine.fine_balance),
+                'status': fine.status.title(),
+                'created': fine.created.strftime('%d/%m/%Y'),
+                'last_updated': fine.last_updated.strftime('%d/%m/%Y'),
+                'for_loan': fine.forLoan,
+                'for_contribution': fine.forContribution
+            }
+            fine_dicts.append(fine_data)
 
-        # Retrieve last 4 fines
-        fines = FineItem.objects.filter(member=member).order_by('-created')[:4]
-        fine_dicts = [model_to_dict(fine) for fine in fines]
-        for fine in fine_dicts:
-            type = FineType.objects.get(pk=fine['fine_type'])
-            fine['fine_type'] = type.name
-            fine['last_updated'] = loan['last_updated'].strftime('%d/%m/%Y %H:%M:%S')
+        # Serialize member data
+        member_dict = {
+            'id': member.id,
+            'name': member.name,
+            'email': member.email,
+            'mobile': member.mobile,
+            'member_id': member.member_id,
+            'role': member.role.name if member.role else 'Member',
+            'member_since': member.member_since.strftime('%d/%m/%Y'),
+            'active': member.active,
+            'profile': member.profile.url if member.profile else None,
+            'total_contributions': sum(c['amount_paid'] for c in contribution_dicts),
+            'total_loans': len(loan_dicts),
+            'total_fines': sum(f['fine_balance'] for f in fine_dicts)
+        }
 
-        # Serialize member and related objects to dictionary
-        member_dict = model_to_dict(member)
-        member_dict['role'] = member.role.name
-        if member.profile:  # Check if profile exists before accessing its URL
-            member_dict['profile'] = member.profile.url
-        else:
-            member_dict['profile'] = None
+        print(f"[DEBUG] Member details loaded: {len(contribution_dicts)} contributions, {len(loan_dicts)} loans, {len(fine_dicts)} fines")
 
         data = {
             'status': 'success',
@@ -302,12 +393,20 @@ def member_details(request, chama_member_id, group):
         }
         return JsonResponse(data, status=200)
     
-    except (Chama.DoesNotExist, ChamaMember.DoesNotExist):
+    except (Chama.DoesNotExist, ChamaMember.DoesNotExist) as e:
+        print(f"[ERROR] Member details error: {str(e)}")
         data = {
             'status': 'failed',
             'message': 'Chama or member could not be found.'
         }
         return JsonResponse(data, status=404)
+    except Exception as e:
+        print(f"[ERROR] Unexpected error in member_details: {str(e)}")
+        data = {
+            'status': 'failed',
+            'message': 'An error occurred while loading member details.'
+        }
+        return JsonResponse(data, status=500)
 
 def ascertain_member_role(request,chama_id):
     user = request.user

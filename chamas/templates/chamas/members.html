@@ -505,16 +505,62 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+/* Status Badges */
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.status-paid {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-partial {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-pending {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.status-active {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.status-application {
+    background: #f3e8ff;
+    color: #7c3aed;
+}
 </style>
 {% endblock %}
 
 {% block body %}
-<div class="admin-members-container">
+<!-- Debug Information -->
+{% if debug %}
+<div style="background: #f0f0f0; padding: 10px; margin: 10px; border-radius: 5px; font-family: monospace;">
+    <strong>DEBUG:</strong> Chama: {{ group.name }}, Members: {{ members_count }}, Roles: {{ roles.count }}
+</div>
+{% endif %}
+
+<!-- CSRF Token for AJAX calls -->
+{% csrf_token %}
+
+<div class="admin-members-container" data-chama-id="{{ chama_id }}">
     <!-- Header Section -->
     <div class="admin-members-header">
         <h1 class="admin-members-title">
             <i class="fas fa-users"></i>
-            Members ({{ members.count }})
+            Members ({{ members_count|default:0 }})
         </h1>
         <button class="admin admin-add-member" onclick="openAddMemberModal()">
             <i class="fas fa-plus"></i>
@@ -544,11 +590,16 @@
     <!-- Members Grid -->
     <div class="admin-members-grid" id="adminMembersGrid">
         {% for member in members %}
-        <div class="admin-member-card" data-member-id="{{ member.id }}" onclick="openMemberModal({{ member.id }})">
+        <div class="admin-member-card" 
+             data-member-id="{{ member.id }}" 
+             data-member-name="{{ member.name }}"
+             data-member-email="{{ member.email }}"
+             data-member-mobile="{{ member.mobile }}"
+             onclick="openMemberModal({{ member.id }})">
             <div class="admin-member-header">
                 <div class="admin-member-avatar">
                     {% if member.profile %}
-                        <img src="{{ member.profile.url }}" alt="{{ member.name }}" loading="lazy">
+                        <img src="{{ member.profile }}" alt="{{ member.name }}" loading="lazy">
                     {% else %}
                         <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMzAiIGZpbGw9IiNGM0Y0RjYiLz4KPGNpcmNsZSBjeD0iMzAiIGN5PSIyMiIgcj0iMTAiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0iTTEwIDUwQzEwIDQwLjMzNTkgMTcuMTYzNCAzMi41IDI2IDMyLjVIMzRDNDIuODM2NiAzMi41IDUwIDQwLjMzNTkgNTAgNTBWNTBIMTBWNTBaIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo=" alt="Default Avatar">
                     {% endif %}
@@ -560,7 +611,10 @@
                     </span>
                 </div>
                 <div class="admin-member-actions">
-                    <button class="admin admin-remove-member" onclick="event.stopPropagation(); confirmRemoveMember({{ member.id }}, '{{ member.name|escapejs }}')" title="Remove Member">
+                    <button class="admin admin-remove-member" 
+                            onclick="event.stopPropagation(); confirmRemoveMember({{ member.id }}, '{{ member.name|escapejs }}')" 
+                            title="Remove Member"
+                            {% if member.user and member.user == group.created_by %}disabled style="opacity: 0.3; cursor: not-allowed;"{% endif %}>
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
@@ -568,11 +622,11 @@
             <div class="admin-member-stats">
                 <div class="admin-stat-item">
                     <span class="admin-stat-label">Contributions</span>
-                    <span class="admin-stat-value">KSh {{ member.total_contributions|floatformat:0|intcomma }}</span>
+                    <span class="admin-stat-value">KSh {{ member.total_contributions|floatformat:0|intcomma|default:"0" }}</span>
                 </div>
                 <div class="admin-stat-item">
                     <span class="admin-stat-label">Loans</span>
-                    <span class="admin-stat-value">{{ member.total_loans }}</span>
+                    <span class="admin-stat-value">{{ member.total_loans|default:"0" }}</span>
                 </div>
                 <div class="admin-stat-item">
                     <span class="admin-stat-label">Since</span>
