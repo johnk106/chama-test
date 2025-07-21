@@ -180,17 +180,54 @@
     font-size: 0.875rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    opacity: 0;
-    transform: scale(0.8);
+    opacity: 0.7;
+    transform: scale(0.9);
+    min-width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .admin-member-card:hover .admin-remove-member {
     opacity: 1;
     transform: scale(1);
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
 }
 
 .admin-remove-member:hover {
     background: #dc2626;
+    transform: scale(1.05);
+}
+
+.admin-remove-member:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+    opacity: 0.3;
+}
+
+.admin-remove-member:disabled:hover {
+    background: #9ca3af;
+    transform: scale(0.9);
+    box-shadow: none;
+}
+
+/* Add visual indication for creator protection */
+.admin-member-card[data-is-creator="true"] .admin-remove-member {
+    background: #9ca3af;
+    cursor: not-allowed;
+    opacity: 0.3;
+}
+
+.admin-member-card[data-is-creator="true"] .admin-remove-member::after {
+    content: "Creator";
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.6rem;
+    color: #6b7280;
+    white-space: nowrap;
 }
 
 .admin-member-stats {
@@ -579,6 +616,7 @@
         <strong>Debug Mode:</strong>
         <button onclick="testUrlRouting()" style="margin-left: 10px; padding: 5px 10px;">Test URL Routing</button>
         <button onclick="testAddMember()" style="margin-left: 10px; padding: 5px 10px;">Test Add Member</button>
+        <button onclick="testRemoveMember()" style="margin-left: 10px; padding: 5px 10px; background: #dc2626; color: white;">Test Remove Member</button>
         <button onclick="console.log('Chama ID:', document.querySelector('.admin-members-container').dataset.chamaId)" style="margin-left: 10px; padding: 5px 10px;">Log Chama ID</button>
     </div>
     {% endif %}
@@ -605,6 +643,7 @@
              data-member-name="{{ member.name }}"
              data-member-email="{{ member.email }}"
              data-member-mobile="{{ member.mobile }}"
+             data-is-creator="{% if member.user and member.user == group.created_by %}true{% else %}false{% endif %}"
              onclick="openMemberModal({{ member.id }})">
             <div class="admin-member-header">
                 <div class="admin-member-avatar">
@@ -623,7 +662,7 @@
                 <div class="admin-member-actions">
                     <button class="admin admin-remove-member" 
                             onclick="event.stopPropagation(); confirmRemoveMember({{ member.id }}, '{{ member.name|escapejs }}')" 
-                            title="Remove Member"
+                            title="{% if member.user and member.user == group.created_by %}Cannot remove chama creator{% else %}Remove {{ member.name }} from chama{% endif %}"
                             {% if member.user and member.user == group.created_by %}disabled style="opacity: 0.3; cursor: not-allowed;"{% endif %}>
                         <i class="fas fa-trash"></i>
                     </button>
@@ -1253,28 +1292,50 @@ function submitAddMember(event) {
 }
 
 function confirmRemoveMember(memberId, memberName) {
-    if (confirm(`Are you sure you want to remove ${memberName} from this chama? This action cannot be undone.`)) {
-        removeMember(memberId);
+    // Enhanced confirmation dialog with more information
+    const confirmMessage = `⚠️ Remove Member Confirmation\n\n` +
+                          `Member: ${memberName}\n` +
+                          `Action: Remove from chama\n\n` +
+                          `This will:\n` +
+                          `• Deactivate the member's account\n` +
+                          `• Preserve their transaction history\n` +
+                          `• Prevent them from accessing the chama\n\n` +
+                          `This action cannot be undone.\n\n` +
+                          `Are you sure you want to proceed?`;
+    
+    if (confirm(confirmMessage)) {
+        console.log(`[DEBUG] User confirmed removal of member ${memberId} (${memberName})`);
+        removeMember(memberId, memberName);
+    } else {
+        console.log(`[DEBUG] User cancelled removal of member ${memberId} (${memberName})`);
     }
 }
 
-function removeMember(memberId) {
+function removeMember(memberId, memberName = 'Unknown Member') {
     const memberCard = document.querySelector(`[data-member-id="${memberId}"]`);
     const chamaId = document.querySelector('.admin-members-container').dataset.chamaId;
     
-    console.log(`[DEBUG] Removing member ID: ${memberId}, Chama ID: ${chamaId}`);
+    console.log(`[DEBUG] Removing member ID: ${memberId} (${memberName}), Chama ID: ${chamaId}`);
     
     // Validate required parameters
     if (!memberId || !chamaId) {
         console.error('[ERROR] Missing required parameters for member removal');
-        showAlert('Missing required parameters', 'error');
+        showAlert('Missing required parameters for member removal', 'error');
         return;
     }
     
-    // Show loading state on the member card
+    // Show loading state on the member card and button
     if (memberCard) {
-        memberCard.style.opacity = '0.5';
+        memberCard.style.opacity = '0.7';
         memberCard.style.pointerEvents = 'none';
+        
+        // Update remove button to show loading state
+        const removeBtn = memberCard.querySelector('.admin-remove-member');
+        if (removeBtn) {
+            removeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            removeBtn.style.background = '#f59e0b';
+            removeBtn.disabled = true;
+        }
     }
     
     const url = `/chamas-bookeeping/remove-member-from-chama/${memberId}/${chamaId}/`;
@@ -1298,15 +1359,35 @@ function removeMember(memberId) {
     .then(data => {
         console.log('[DEBUG] Response data:', data);
         if (data.status === 'success') {
-            console.log('[DEBUG] Member removed successfully');
-            showAlert(data.message, 'warning');
+            console.log(`[DEBUG] Member ${memberName} removed successfully`);
+            showAlert(`${memberName} has been removed from the chama`, 'warning');
             if (memberCard) {
+                // Add a "removing" indicator
+                const removeBtn = memberCard.querySelector('.admin-remove-member');
+                if (removeBtn) {
+                    removeBtn.innerHTML = '<i class="fas fa-check"></i>';
+                    removeBtn.style.background = '#10b981';
+                }
+                
                 // Animate the removal
                 memberCard.style.transform = 'scale(0.8)';
                 memberCard.style.opacity = '0';
+                memberCard.style.filter = 'grayscale(100%)';
+                
                 setTimeout(() => {
                     memberCard.remove();
                     initializeMembers(); // Refresh pagination
+                    
+                    // Update member count if displayed
+                    const memberCountElements = document.querySelectorAll('.admin-members-title');
+                    memberCountElements.forEach(el => {
+                        const currentText = el.textContent;
+                        const match = currentText.match(/Members \((\d+)\)/);
+                        if (match) {
+                            const newCount = parseInt(match[1]) - 1;
+                            el.textContent = currentText.replace(/\(\d+\)/, `(${newCount})`);
+                        }
+                    });
                 }, 300);
             }
         } else {
@@ -1314,13 +1395,22 @@ function removeMember(memberId) {
         }
     })
     .catch(error => {
-        console.error('[ERROR] Failed to remove member:', error);
-        showAlert(error.message, 'error');
+        console.error(`[ERROR] Failed to remove member ${memberName}:`, error);
+        showAlert(`Failed to remove ${memberName}: ${error.message}`, 'error');
         
         // Restore member card state
         if (memberCard) {
             memberCard.style.opacity = '1';
             memberCard.style.pointerEvents = 'auto';
+            memberCard.style.transform = 'scale(1)';
+            memberCard.style.filter = 'none';
+            
+            // Restore remove button
+            const removeBtn = memberCard.querySelector('.admin-remove-member');
+            if (removeBtn) {
+                removeBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                removeBtn.style.background = 'var(--brand-error)';
+            }
         }
     });
 }
@@ -1461,6 +1551,40 @@ function testAddMember() {
         console.error('[ERROR] Test add member failed:', error);
         showAlert('Test add member error: ' + error.message, 'error');
     });
+}
+
+// Test function to debug remove member functionality
+function testRemoveMember() {
+    const memberCards = document.querySelectorAll('.admin-member-card');
+    
+    if (memberCards.length === 0) {
+        showAlert('No members available to test removal', 'warning');
+        return;
+    }
+    
+    // Find a member that is not the chama creator
+    let testMember = null;
+    for (let card of memberCards) {
+        const removeBtn = card.querySelector('.admin-remove-member');
+        if (removeBtn && !removeBtn.disabled) {
+            testMember = {
+                id: card.dataset.memberId,
+                name: card.dataset.memberName || card.querySelector('.admin-member-name').textContent
+            };
+            break;
+        }
+    }
+    
+    if (!testMember) {
+        showAlert('No removable members found (all may be chama creators)', 'warning');
+        return;
+    }
+    
+    console.log('[DEBUG] Testing remove member functionality with:', testMember);
+    
+    if (confirm(`This is a test of the remove member functionality.\n\nTest member: ${testMember.name}\n\nProceed with test removal?`)) {
+        removeMember(testMember.id, testMember.name);
+    }
 }
 
 // Initialize on page load

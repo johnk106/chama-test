@@ -211,32 +211,61 @@ class MemberService:
                 member.save()
                 
     @staticmethod
-    def remove_member_from_chama(member_id,chama):
+    def remove_member_from_chama(member_id, chama):
+        print(f"[DEBUG] Attempting to remove member ID: {member_id} from chama: {chama.name}")
+        
         try:
-            chama_member = ChamaMember.objects.get(group=chama, id=member_id)
+            chama_member = ChamaMember.objects.get(group=chama, id=member_id, active=True)
+            print(f"[DEBUG] Found member: {chama_member.name} ({chama_member.email})")
+            
+            # Check if member is the chama creator
             if chama_member.user == chama.created_by:
-                data = {
-                    'status':'failed',
-                    'message':'Sorry you can not remove a group creator!'
-                        }
-                return JsonResponse(data,status=200)
+                print(f"[WARNING] Attempt to remove chama creator: {chama_member.name}")
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': f'Cannot remove {chama_member.name} - they are the chama creator!'
+                }, status=400)
+            
+            # Check if member has outstanding loans or contributions
+            outstanding_loans = chama_member.loans.filter(balance__gt=0).count()
+            if outstanding_loans > 0:
+                print(f"[WARNING] Member {chama_member.name} has {outstanding_loans} outstanding loans")
+                # You might want to add a warning but still allow removal
+            
             try:
+                # Soft delete - set member as inactive
                 chama_member.active = False
                 chama_member.save()
+                print(f"[SUCCESS] Member {chama_member.name} marked as inactive")
+                
+                return JsonResponse({
+                    'status': 'success',
+                    'message': f'{chama_member.name} has been successfully removed from {chama.name}',
+                    'member_id': member_id,
+                    'member_name': chama_member.name
+                }, status=200)
+                
             except Exception as e:
-                print(e)
-            data = {
-                'status':'success',
-                'message':'User succesfully removed from chama',
-                'member_id':member_id
-            }
-            return JsonResponse(data,status=200)
+                print(f"[ERROR] Failed to deactivate member: {str(e)}")
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': 'Failed to remove member due to a database error'
+                }, status=500)
+                
         except ChamaMember.DoesNotExist:
-            data = {
-                'status':'failed',
-                'message':'Member is not group of this chama'
-            }
-            return JsonResponse(data,status=400)
+            print(f"[ERROR] Member with ID {member_id} not found in chama {chama.name}")
+            return JsonResponse({
+                'status': 'failed',
+                'message': 'Member not found in this chama or already removed'
+            }, status=404)
+        except Exception as e:
+            print(f"[ERROR] Unexpected error removing member: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            return JsonResponse({
+                'status': 'failed',
+                'message': 'An unexpected error occurred while removing the member'
+            }, status=500)
         
         
 
