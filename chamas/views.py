@@ -287,7 +287,7 @@ def members(request,chama_id):
         
         return render(request, 'chamas/members.html', context)
         
-            except Chama.DoesNotExist:
+    except Chama.DoesNotExist:
         return render(request, 'chamas/members.html', {
             'error': 'Chama not found',
             'members': [],
