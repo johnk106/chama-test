@@ -610,16 +610,7 @@
         <!-- Alerts will be dynamically inserted here -->
     </div>
     
-    <!-- Debug Section (remove in production) -->
-    {% if debug %}
-    <div style="background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 5px;">
-        <strong>Debug Mode:</strong>
-        <button onclick="testUrlRouting()" style="margin-left: 10px; padding: 5px 10px;">Test URL Routing</button>
-        <button onclick="testAddMember()" style="margin-left: 10px; padding: 5px 10px;">Test Add Member</button>
-        <button onclick="testRemoveMember()" style="margin-left: 10px; padding: 5px 10px; background: #dc2626; color: white;">Test Remove Member</button>
-        <button onclick="console.log('Chama ID:', document.querySelector('.admin-members-container').dataset.chamaId)" style="margin-left: 10px; padding: 5px 10px;">Log Chama ID</button>
-    </div>
-    {% endif %}
+
 
     <!-- Search Section -->
     <div class="admin-search-container">
@@ -906,11 +897,8 @@ function loadMemberDetails(memberId) {
     const modalBody = document.getElementById('adminMemberModalBody');
     const chamaId = document.querySelector('.admin-members-container').dataset.chamaId;
     
-    console.log(`[DEBUG] Loading member details for ID: ${memberId}, Chama ID: ${chamaId}`);
-    
     // Validate required parameters
     if (!memberId || !chamaId) {
-        console.error('[ERROR] Missing required parameters - memberId:', memberId, 'chamaId:', chamaId);
         modalBody.innerHTML = `
             <div class="admin-empty-state">
                 <div class="admin-empty-icon">
@@ -924,7 +912,6 @@ function loadMemberDetails(memberId) {
     }
     
     const url = `/chamas-bookeeping/member-detail/${memberId}/${chamaId}/`;
-    console.log(`[DEBUG] Making request to: ${url}`);
     
     // Make AJAX call to get detailed member data
     fetch(url, {
@@ -935,23 +922,20 @@ function loadMemberDetails(memberId) {
         }
     })
     .then(response => {
-        console.log(`[DEBUG] Response status: ${response.status}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         return response.json();
     })
     .then(data => {
-        console.log('[DEBUG] Response data:', data);
         if (data.status === 'success') {
-            console.log('[DEBUG] Member details loaded successfully:', data.member);
             renderMemberDetails(data);
         } else {
             throw new Error(data.message || 'Failed to load member details');
         }
     })
     .catch(error => {
-        console.error('[ERROR] Failed to load member details:', error);
+        console.error('Failed to load member details:', error);
         modalBody.innerHTML = `
             <div class="admin-empty-state">
                 <div class="admin-empty-icon">
@@ -1218,9 +1202,7 @@ function submitAddMember(event) {
     submitBtn.textContent = 'Adding...';
     submitBtn.disabled = true;
     
-    console.log('[DEBUG] Adding member:', memberData);
-    console.log('[DEBUG] Chama ID:', chamaId);
-    console.log('[DEBUG] Form data entries:', Object.entries(memberData));
+
     
     // Validate required fields
     if (!memberData.name || !memberData.email || !memberData.mobile || !memberData.role || !chamaId) {
@@ -1238,7 +1220,6 @@ function submitAddMember(event) {
     }
     
     const url = '/chamas-bookeeping/add-member/';
-    console.log(`[DEBUG] Making request to: ${url}`);
     
     // Make AJAX call to add member
     fetch(url, {
@@ -1250,15 +1231,9 @@ function submitAddMember(event) {
         }
     })
     .then(response => {
-        console.log(`[DEBUG] Response status: ${response.status}`);
-        console.log(`[DEBUG] Response headers:`, response.headers);
-        
         // Handle both success and error responses
         return response.json().then(data => {
-            console.log('[DEBUG] Response data:', data);
-            
             if (response.ok && data.status === 'success') {
-                console.log('[DEBUG] Member added successfully:', data.member);
                 showAlert(data.message, 'success');
                 closeAddMemberModal();
                 
@@ -1274,7 +1249,7 @@ function submitAddMember(event) {
         });
     })
     .catch(error => {
-        console.error('[ERROR] Failed to add member:', error);
+        console.error('Failed to add member:', error);
         
         // Show more specific error message
         let errorMessage = error.message;
@@ -1304,10 +1279,7 @@ function confirmRemoveMember(memberId, memberName) {
                           `Are you sure you want to proceed?`;
     
     if (confirm(confirmMessage)) {
-        console.log(`[DEBUG] User confirmed removal of member ${memberId} (${memberName})`);
         removeMember(memberId, memberName);
-    } else {
-        console.log(`[DEBUG] User cancelled removal of member ${memberId} (${memberName})`);
     }
 }
 
@@ -1315,11 +1287,9 @@ function removeMember(memberId, memberName = 'Unknown Member') {
     const memberCard = document.querySelector(`[data-member-id="${memberId}"]`);
     const chamaId = document.querySelector('.admin-members-container').dataset.chamaId;
     
-    console.log(`[DEBUG] Removing member ID: ${memberId} (${memberName}), Chama ID: ${chamaId}`);
-    
     // Validate required parameters
     if (!memberId || !chamaId) {
-        console.error('[ERROR] Missing required parameters for member removal');
+        console.error('Missing required parameters for member removal');
         showAlert('Missing required parameters for member removal', 'error');
         return;
     }
@@ -1339,7 +1309,6 @@ function removeMember(memberId, memberName = 'Unknown Member') {
     }
     
     const url = `/chamas-bookeeping/remove-member-from-chama/${memberId}/${chamaId}/`;
-    console.log(`[DEBUG] Making request to: ${url}`);
     
     // Make AJAX call to remove member
     fetch(url, {
@@ -1350,16 +1319,13 @@ function removeMember(memberId, memberName = 'Unknown Member') {
         }
     })
     .then(response => {
-        console.log(`[DEBUG] Response status: ${response.status}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         return response.json();
     })
     .then(data => {
-        console.log('[DEBUG] Response data:', data);
         if (data.status === 'success') {
-            console.log(`[DEBUG] Member ${memberName} removed successfully`);
             showAlert(`${memberName} has been removed from the chama`, 'warning');
             if (memberCard) {
                 // Add a "removing" indicator
@@ -1395,7 +1361,7 @@ function removeMember(memberId, memberName = 'Unknown Member') {
         }
     })
     .catch(error => {
-        console.error(`[ERROR] Failed to remove member ${memberName}:`, error);
+        console.error(`Failed to remove member ${memberName}:`, error);
         showAlert(`Failed to remove ${memberName}: ${error.message}`, 'error');
         
         // Restore member card state
@@ -1449,10 +1415,9 @@ function closeAlert(alertId) {
 function getCsrfToken() {
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
     if (!csrfToken) {
-        console.error('[ERROR] CSRF token not found');
+        console.error('CSRF token not found');
         return '';
     }
-    console.log('[DEBUG] CSRF token found:', csrfToken.value.substring(0, 10) + '...');
     return csrfToken.value;
 }
 
@@ -1469,133 +1434,15 @@ function getDefaultAvatar() {
     return "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMzAiIGZpbGw9IiNGM0Y0RjYiLz4KPGNpcmNsZSBjeD0iMzAiIGN5PSIyMiIgcj0iMTAiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0iTTEwIDUwQzEwIDQwLjMzNTkgMTcuMTYzNCAzMi41IDI2IDMyLjVIMzRDNDIuODM2NiAzMi41IDUwIDQwLjMzNTkgNTAgNTBWNTBIMTBWNTBaIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo=";
 }
 
-// Test function to verify URL routing
-function testUrlRouting() {
-    console.log('[DEBUG] Testing URL routing...');
-    
-    fetch('/chamas-bookeeping/debug-test/', {
-        method: 'GET',
-        headers: {
-            'X-CSRFToken': getCsrfToken(),
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => {
-        console.log(`[DEBUG] Test response status: ${response.status}`);
-        return response.json();
-    })
-    .then(data => {
-        console.log('[DEBUG] Test response data:', data);
-        if (data.status === 'success') {
-            showAlert('URL routing is working correctly!', 'success');
-        }
-    })
-    .catch(error => {
-        console.error('[ERROR] URL routing test failed:', error);
-        showAlert('URL routing test failed: ' + error.message, 'error');
-    });
-}
 
-// Test function to debug add member with sample data
-function testAddMember() {
-    const chamaId = document.querySelector('.admin-members-container').dataset.chamaId;
-    
-    // First get available roles
-    fetch('/chamas-bookeeping/debug-test/', {
-        method: 'GET',
-        headers: {
-            'X-CSRFToken': getCsrfToken(),
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => response.json())
-    .then(debugData => {
-        console.log('[DEBUG] Available roles:', debugData.available_roles);
-        
-        // Use the first available role
-        const firstRole = debugData.available_roles && debugData.available_roles.length > 0 
-            ? debugData.available_roles[0].id 
-            : '1';
-        
-        const testMemberData = {
-            name: 'Test Member',
-            email: 'test@example.com',
-            mobile: '0712345678',
-            role: firstRole.toString(),
-            chama_id: chamaId
-        };
-        
-        console.log('[DEBUG] Testing add member with data:', testMemberData);
-        
-        return fetch('/chamas-bookeeping/add-member/', {
-            method: 'POST',
-            body: JSON.stringify(testMemberData),
-            headers: {
-                'X-CSRFToken': getCsrfToken(),
-                'Content-Type': 'application/json'
-            }
-        });
-    })
-    .then(response => {
-        console.log(`[DEBUG] Test add member response status: ${response.status}`);
-        return response.json().then(data => {
-            console.log('[DEBUG] Test add member response data:', data);
-            if (response.ok && data.status === 'success') {
-                showAlert('Test member added successfully!', 'success');
-            } else {
-                showAlert('Test add member failed: ' + (data.message || 'Unknown error'), 'error');
-            }
-        });
-    })
-    .catch(error => {
-        console.error('[ERROR] Test add member failed:', error);
-        showAlert('Test add member error: ' + error.message, 'error');
-    });
-}
 
-// Test function to debug remove member functionality
-function testRemoveMember() {
-    const memberCards = document.querySelectorAll('.admin-member-card');
-    
-    if (memberCards.length === 0) {
-        showAlert('No members available to test removal', 'warning');
-        return;
-    }
-    
-    // Find a member that is not the chama creator
-    let testMember = null;
-    for (let card of memberCards) {
-        const removeBtn = card.querySelector('.admin-remove-member');
-        if (removeBtn && !removeBtn.disabled) {
-            testMember = {
-                id: card.dataset.memberId,
-                name: card.dataset.memberName || card.querySelector('.admin-member-name').textContent
-            };
-            break;
-        }
-    }
-    
-    if (!testMember) {
-        showAlert('No removable members found (all may be chama creators)', 'warning');
-        return;
-    }
-    
-    console.log('[DEBUG] Testing remove member functionality with:', testMember);
-    
-    if (confirm(`This is a test of the remove member functionality.\n\nTest member: ${testMember.name}\n\nProceed with test removal?`)) {
-        removeMember(testMember.id, testMember.name);
-    }
-}
+
+
+
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
     initializeMembers();
-    console.log('[DEBUG] Members page initialized');
-    
-    // Test URL routing on page load
-    setTimeout(() => {
-        testUrlRouting();
-    }, 1000);
 });
 </script>
 {% endblock %}

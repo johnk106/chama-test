@@ -211,11 +211,6 @@ def create_chama(request):
 
 @login_required(login_url='/user/Login')
 def add_member_to_chama(request):
-    print(f"[DEBUG] add_member_to_chama called")
-    print(f"[DEBUG] Request method: {request.method}")
-    print(f"[DEBUG] Request path: {request.path}")
-    print(f"[DEBUG] User authenticated: {request.user.is_authenticated}")
-    
     if request.method == 'POST':
         return MemberService.add_member_to_chama(request)
   
@@ -264,9 +259,6 @@ def members(request,chama_id):
         
         MemberService.audit_chama_members(chama.id)
 
-        # Add debug logging
-        print(f"[DEBUG] Loading members for chama: {chama.name}, Member count: {members.count()}")
-        
         # Prepare member data with calculated totals
         members_data = []
         for member in members:
@@ -284,22 +276,18 @@ def members(request,chama_id):
                 'user': member.user
             }
             members_data.append(member_data)
-            
-        print(f"[DEBUG] Prepared {len(members_data)} members with calculated totals")
 
         context = {
             'group': chama,
             'members': members_data,
             'members_count': len(members_data),
             'roles': Role.objects.all(),
-            'chama_id': chama_id,
-            'debug': True  # Enable debug mode for logging
+            'chama_id': chama_id
         }
         
         return render(request, 'chamas/members.html', context)
         
-    except Chama.DoesNotExist:
-        print(f"[ERROR] Chama with id {chama_id} not found")
+            except Chama.DoesNotExist:
         return render(request, 'chamas/members.html', {
             'error': 'Chama not found',
             'members': [],
@@ -310,17 +298,9 @@ def members(request,chama_id):
 
 @login_required(login_url='/user/Login')
 def member_details(request, chama_member_id, group):
-    print(f"[DEBUG] member_details called with chama_member_id={chama_member_id}, group={group}")
-    print(f"[DEBUG] Request method: {request.method}")
-    print(f"[DEBUG] Request path: {request.path}")
-    print(f"[DEBUG] User authenticated: {request.user.is_authenticated}")
-    
     try:
         chama = get_object_or_404(Chama, pk=group)
-        print(f"[DEBUG] Found chama: {chama.name}")
-        
         member = get_object_or_404(ChamaMember, group=chama, id=chama_member_id)
-        print(f"[DEBUG] Loading details for member: {member.name} (ID: {chama_member_id})")
         
         # Retrieve contributions with related data - optimized query
         contributions = ContributionRecord.objects.filter(
@@ -396,7 +376,7 @@ def member_details(request, chama_member_id, group):
             'total_fines': total_outstanding_fines
         }
 
-        print(f"[DEBUG] Member details loaded: {len(contribution_dicts)} contributions, {len(loan_dicts)} loans, {len(fine_dicts)} fines")
+
 
         data = {
             'status': 'success',
@@ -1380,20 +1360,6 @@ def create_notif(request,chama_id):
         return JsonResponse(data,status=405)
 
 
-def debug_test(request):
-    """Simple debug view to test URL routing"""
-    from chamas.models import Role
-    
-    # Get available roles for debugging
-    roles = list(Role.objects.values('id', 'name'))
-    
-    return JsonResponse({
-        'status': 'success',
-        'message': 'URL routing is working',
-        'method': request.method,
-        'path': request.path,
-        'user_authenticated': request.user.is_authenticated,
-        'available_roles': roles
-    })
+
 
 

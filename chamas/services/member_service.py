@@ -11,9 +11,6 @@ class MemberService:
     @staticmethod
     def add_member_to_chama(request):
         try:
-            print(f"[DEBUG] Request body: {request.body}")
-            print(f"[DEBUG] Request content type: {request.content_type}")
-            
             if not request.body:
                 return JsonResponse({
                     'status': 'failed',
@@ -23,15 +20,10 @@ class MemberService:
             try:
                 data = json.loads(request.body)
             except json.JSONDecodeError as e:
-                print(f"[ERROR] JSON decode error: {str(e)}")
                 return JsonResponse({
                     'status': 'failed',
                     'message': f'Invalid JSON data: {str(e)}'
                 }, status=400)
-                
-            print(f"[DEBUG] Parsed data: {data}")
-            print(f"[DEBUG] Data keys: {list(data.keys())}")
-            print(f"[DEBUG] Data type: {type(data)}")
         
             name = data.get('name', '').strip()
             email = data.get('email', '').strip()
@@ -39,8 +31,6 @@ class MemberService:
             role_id = data.get('role')
             group_id = data.get('group') or data.get('chama_id')
             id_number = data.get('id_number') or data.get('member_id')
-            
-            print(f"[DEBUG] Extracted values - name: '{name}', email: '{email}', mobile: '{mobile}', role_id: '{role_id}', group_id: '{group_id}'")
             
             # Validate required fields
             if not all([name, email, mobile, role_id, group_id]):
@@ -67,15 +57,12 @@ class MemberService:
             
             try:
                 group = Chama.objects.get(pk=int(group_id))
-                print(f"[DEBUG] Found chama: {group.name}")
             except Chama.DoesNotExist:
-                print(f"[ERROR] Chama with ID {group_id} not found")
                 return JsonResponse({
                     'status': 'failed',
                     'message': f'Chama with ID {group_id} not found'
                 }, status=400)
             except ValueError as e:
-                print(f"[ERROR] Invalid chama ID: {group_id}")
                 return JsonResponse({
                     'status': 'failed',
                     'message': f'Invalid chama ID: {group_id}'
@@ -83,15 +70,12 @@ class MemberService:
             
             try:
                 role = Role.objects.get(pk=int(role_id))
-                print(f"[DEBUG] Found role: {role.name}")
             except Role.DoesNotExist:
-                print(f"[ERROR] Role with ID {role_id} not found")
                 return JsonResponse({
                     'status': 'failed',
                     'message': f'Role with ID {role_id} not found'
                 }, status=400)
             except ValueError as e:
-                print(f"[ERROR] Invalid role ID: {role_id}")
                 return JsonResponse({
                     'status': 'failed',
                     'message': f'Invalid role ID: {role_id}'
@@ -127,8 +111,6 @@ class MemberService:
             if not user:
                 user = User.objects.filter(email__iexact=email).first()
             
-            print(f'[DEBUG] Found existing user: {user}')
-            
             # Create member
             if user:
                 try:
@@ -161,7 +143,7 @@ class MemberService:
                     member_id=id_number
                 )
             
-            print(f"[DEBUG] Successfully created member: {new_member.name}")
+
             
             # Return member data for frontend
             member_data = {
@@ -181,21 +163,16 @@ class MemberService:
             }, status=200)
             
         except IntegrityError as e:
-            print(f"[ERROR] IntegrityError adding member: {str(e)}")
             return JsonResponse({
                 'status': 'failed',
                 'message': 'A member with this information already exists in the chama'
             }, status=400)
         except (Chama.DoesNotExist, Role.DoesNotExist) as e:
-            print(f"[ERROR] Invalid chama or role: {str(e)}")
             return JsonResponse({
                 'status': 'failed',
                 'message': 'Invalid chama or role specified'
             }, status=400)
         except Exception as e:
-            print(f"[ERROR] Unexpected error adding member: {str(e)}")
-            import traceback
-            traceback.print_exc()
             return JsonResponse({
                 'status': 'failed',
                 'message': 'An error occurred while adding the member'
@@ -212,31 +189,20 @@ class MemberService:
                 
     @staticmethod
     def remove_member_from_chama(member_id, chama):
-        print(f"[DEBUG] Attempting to remove member ID: {member_id} from chama: {chama.name}")
-        
         try:
             chama_member = ChamaMember.objects.get(group=chama, id=member_id, active=True)
-            print(f"[DEBUG] Found member: {chama_member.name} ({chama_member.email})")
             
             # Check if member is the chama creator
             if chama_member.user == chama.created_by:
-                print(f"[WARNING] Attempt to remove chama creator: {chama_member.name}")
                 return JsonResponse({
                     'status': 'failed',
                     'message': f'Cannot remove {chama_member.name} - they are the chama creator!'
                 }, status=400)
             
-            # Check if member has outstanding loans or contributions
-            outstanding_loans = chama_member.loans.filter(balance__gt=0).count()
-            if outstanding_loans > 0:
-                print(f"[WARNING] Member {chama_member.name} has {outstanding_loans} outstanding loans")
-                # You might want to add a warning but still allow removal
-            
             try:
                 # Soft delete - set member as inactive
                 chama_member.active = False
                 chama_member.save()
-                print(f"[SUCCESS] Member {chama_member.name} marked as inactive")
                 
                 return JsonResponse({
                     'status': 'success',
@@ -246,22 +212,17 @@ class MemberService:
                 }, status=200)
                 
             except Exception as e:
-                print(f"[ERROR] Failed to deactivate member: {str(e)}")
                 return JsonResponse({
                     'status': 'failed',
                     'message': 'Failed to remove member due to a database error'
                 }, status=500)
                 
         except ChamaMember.DoesNotExist:
-            print(f"[ERROR] Member with ID {member_id} not found in chama {chama.name}")
             return JsonResponse({
                 'status': 'failed',
                 'message': 'Member not found in this chama or already removed'
             }, status=404)
         except Exception as e:
-            print(f"[ERROR] Unexpected error removing member: {str(e)}")
-            import traceback
-            traceback.print_exc()
             return JsonResponse({
                 'status': 'failed',
                 'message': 'An unexpected error occurred while removing the member'
