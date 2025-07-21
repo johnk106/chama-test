@@ -1382,11 +1382,18 @@ def create_notif(request,chama_id):
 
 def debug_test(request):
     """Simple debug view to test URL routing"""
+    from chamas.models import Role
+    
+    # Get available roles for debugging
+    roles = list(Role.objects.values('id', 'name'))
+    
     return JsonResponse({
         'status': 'success',
         'message': 'URL routing is working',
         'method': request.method,
-        'path': request.path
+        'path': request.path,
+        'user_authenticated': request.user.is_authenticated,
+        'available_roles': roles
     })
 
 

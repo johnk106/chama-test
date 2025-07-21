@@ -11,8 +11,27 @@ class MemberService:
     @staticmethod
     def add_member_to_chama(request):
         try:
-            data = json.loads(request.body)
-            print(f"[DEBUG] Adding member with data: {data}")
+            print(f"[DEBUG] Request body: {request.body}")
+            print(f"[DEBUG] Request content type: {request.content_type}")
+            
+            if not request.body:
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': 'Empty request body'
+                }, status=400)
+            
+            try:
+                data = json.loads(request.body)
+            except json.JSONDecodeError as e:
+                print(f"[ERROR] JSON decode error: {str(e)}")
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': f'Invalid JSON data: {str(e)}'
+                }, status=400)
+                
+            print(f"[DEBUG] Parsed data: {data}")
+            print(f"[DEBUG] Data keys: {list(data.keys())}")
+            print(f"[DEBUG] Data type: {type(data)}")
         
             name = data.get('name', '').strip()
             email = data.get('email', '').strip()
@@ -20,6 +39,8 @@ class MemberService:
             role_id = data.get('role')
             group_id = data.get('group') or data.get('chama_id')
             id_number = data.get('id_number') or data.get('member_id')
+            
+            print(f"[DEBUG] Extracted values - name: '{name}', email: '{email}', mobile: '{mobile}', role_id: '{role_id}', group_id: '{group_id}'")
             
             # Validate required fields
             if not all([name, email, mobile, role_id, group_id]):
@@ -44,8 +65,37 @@ class MemberService:
                     'message': 'Please enter a valid email address'
                 }, status=400)
             
-            group = Chama.objects.get(pk=int(group_id))
-            role = Role.objects.get(pk=int(role_id))
+            try:
+                group = Chama.objects.get(pk=int(group_id))
+                print(f"[DEBUG] Found chama: {group.name}")
+            except Chama.DoesNotExist:
+                print(f"[ERROR] Chama with ID {group_id} not found")
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': f'Chama with ID {group_id} not found'
+                }, status=400)
+            except ValueError as e:
+                print(f"[ERROR] Invalid chama ID: {group_id}")
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': f'Invalid chama ID: {group_id}'
+                }, status=400)
+            
+            try:
+                role = Role.objects.get(pk=int(role_id))
+                print(f"[DEBUG] Found role: {role.name}")
+            except Role.DoesNotExist:
+                print(f"[ERROR] Role with ID {role_id} not found")
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': f'Role with ID {role_id} not found'
+                }, status=400)
+            except ValueError as e:
+                print(f"[ERROR] Invalid role ID: {role_id}")
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': f'Invalid role ID: {role_id}'
+                }, status=400)
             
             # Format phone number if needed
             if mobile and not mobile.startswith('+'):

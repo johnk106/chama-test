@@ -578,6 +578,7 @@
     <div style="background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 5px;">
         <strong>Debug Mode:</strong>
         <button onclick="testUrlRouting()" style="margin-left: 10px; padding: 5px 10px;">Test URL Routing</button>
+        <button onclick="testAddMember()" style="margin-left: 10px; padding: 5px 10px;">Test Add Member</button>
         <button onclick="console.log('Chama ID:', document.querySelector('.admin-members-container').dataset.chamaId)" style="margin-left: 10px; padding: 5px 10px;">Log Chama ID</button>
     </div>
     {% endif %}
@@ -1180,6 +1181,7 @@ function submitAddMember(event) {
     
     console.log('[DEBUG] Adding member:', memberData);
     console.log('[DEBUG] Chama ID:', chamaId);
+    console.log('[DEBUG] Form data entries:', Object.entries(memberData));
     
     // Validate required fields
     if (!memberData.name || !memberData.email || !memberData.mobile || !memberData.role || !chamaId) {
@@ -1210,29 +1212,38 @@ function submitAddMember(event) {
     })
     .then(response => {
         console.log(`[DEBUG] Response status: ${response.status}`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log('[DEBUG] Response data:', data);
-        if (data.status === 'success') {
-            console.log('[DEBUG] Member added successfully:', data.member);
-            showAlert(data.message, 'success');
-            closeAddMemberModal();
+        console.log(`[DEBUG] Response headers:`, response.headers);
+        
+        // Handle both success and error responses
+        return response.json().then(data => {
+            console.log('[DEBUG] Response data:', data);
             
-            // Refresh the page to show the new member
-            setTimeout(() => {
-                location.reload();
-            }, 1500);
-        } else {
-            throw new Error(data.message || 'Failed to add member');
-        }
+            if (response.ok && data.status === 'success') {
+                console.log('[DEBUG] Member added successfully:', data.member);
+                showAlert(data.message, 'success');
+                closeAddMemberModal();
+                
+                // Refresh the page to show the new member
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+            } else {
+                // Handle error responses (400, 500, etc.)
+                const errorMessage = data.message || `Server error: ${response.status}`;
+                throw new Error(errorMessage);
+            }
+        });
     })
     .catch(error => {
         console.error('[ERROR] Failed to add member:', error);
-        showAlert(error.message, 'error');
+        
+        // Show more specific error message
+        let errorMessage = error.message;
+        if (errorMessage.includes('Failed to fetch')) {
+            errorMessage = 'Network error: Could not connect to server';
+        }
+        
+        showAlert(errorMessage, 'error');
     })
     .finally(() => {
         // Reset button state
@@ -1392,6 +1403,63 @@ function testUrlRouting() {
     .catch(error => {
         console.error('[ERROR] URL routing test failed:', error);
         showAlert('URL routing test failed: ' + error.message, 'error');
+    });
+}
+
+// Test function to debug add member with sample data
+function testAddMember() {
+    const chamaId = document.querySelector('.admin-members-container').dataset.chamaId;
+    
+    // First get available roles
+    fetch('/chamas-bookeeping/debug-test/', {
+        method: 'GET',
+        headers: {
+            'X-CSRFToken': getCsrfToken(),
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(debugData => {
+        console.log('[DEBUG] Available roles:', debugData.available_roles);
+        
+        // Use the first available role
+        const firstRole = debugData.available_roles && debugData.available_roles.length > 0 
+            ? debugData.available_roles[0].id 
+            : '1';
+        
+        const testMemberData = {
+            name: 'Test Member',
+            email: 'test@example.com',
+            mobile: '0712345678',
+            role: firstRole.toString(),
+            chama_id: chamaId
+        };
+        
+        console.log('[DEBUG] Testing add member with data:', testMemberData);
+        
+        return fetch('/chamas-bookeeping/add-member/', {
+            method: 'POST',
+            body: JSON.stringify(testMemberData),
+            headers: {
+                'X-CSRFToken': getCsrfToken(),
+                'Content-Type': 'application/json'
+            }
+        });
+    })
+    .then(response => {
+        console.log(`[DEBUG] Test add member response status: ${response.status}`);
+        return response.json().then(data => {
+            console.log('[DEBUG] Test add member response data:', data);
+            if (response.ok && data.status === 'success') {
+                showAlert('Test member added successfully!', 'success');
+            } else {
+                showAlert('Test add member failed: ' + (data.message || 'Unknown error'), 'error');
+            }
+        });
+    })
+    .catch(error => {
+        console.error('[ERROR] Test add member failed:', error);
+        showAlert('Test add member error: ' + error.message, 'error');
     });
 }
 
