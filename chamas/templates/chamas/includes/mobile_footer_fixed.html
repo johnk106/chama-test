@@ -1,0 +1,74 @@
+{% load static %}
+
+<!-- Mobile Footer Navigation (Goals Style) -->
+<footer class="mbl_footer">
+    <div class="container">
+        <div class="footer_row d-flex flex-row justify-content-between align-items-center">
+            <button class="footer_button btn" onclick="navigateToHome()" aria-label="Home">
+                <img class="homer_white" src="{% static 'images/Home_duotone.png' %}" alt="">
+                <p>Home</p>
+            </button>
+            <button class="footer_button btn" onclick="navigateToFeatures()" aria-label="Features">
+                <img src="{% static 'images/filter.png' %}" alt="">
+                <p>Features</p>
+            </button>
+            <button class="footer_button btn active" onclick="navigateToChamas()" aria-label="Chamas">
+                <img src="{% static 'images/wallet_alt_fill.png' %}" alt="">
+                <p>Chamas</p>
+            </button>
+            <button class="footer_button btn" onclick="navigateToSettings()" aria-label="Settings">
+                <img src="{% static 'images/setting.png' %}" alt="">
+                <p>Settings</p>
+            </button>
+        </div>
+    </div>
+</footer>
+
+<script>
+// Mobile Footer Navigation Functions
+function navigateToHome() {
+    window.location.href = '{% url "goals_dashboard" %}';
+}
+
+function navigateToFeatures() {
+    // Add features navigation logic
+    console.log('Features clicked');
+}
+
+function navigateToChamas() {
+    // Stay on current chamas page or navigate to chamas list
+    var groupId = localStorage.getItem('groupId');
+    if (groupId) {
+        window.location.href = `/chamas-bookeeping/chama-dashboard/${groupId}/`;
+    } else {
+        window.location.href = '{% url "chamas:chamas" %}';
+    }
+}
+
+function navigateToSettings() {
+    window.location.href = '{% url "Setting" %}';
+}
+
+// Update active state based on current page
+document.addEventListener('DOMContentLoaded', function() {
+    var currentPath = window.location.pathname;
+    var footerButtons = document.querySelectorAll('.footer_button');
+    
+    // Remove active class from all buttons
+    footerButtons.forEach(function(button) {
+        button.classList.remove('active');
+    });
+    
+    // Add active class based on current page
+    if (currentPath.includes('/goals/') || currentPath === '/') {
+        var homeButton = document.querySelector('.footer_button[onclick="navigateToHome()"]');
+        if (homeButton) homeButton.classList.add('active');
+    } else if (currentPath.includes('/chamas-bookeeping/')) {
+        var chamasButton = document.querySelector('.footer_button[onclick="navigateToChamas()"]');
+        if (chamasButton) chamasButton.classList.add('active');
+    } else if (currentPath.includes('/settings/')) {
+        var settingsButton = document.querySelector('.footer_button[onclick="navigateToSettings()"]');
+        if (settingsButton) settingsButton.classList.add('active');
+    }
+});
+</script>

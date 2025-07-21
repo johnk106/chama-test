@@ -1,0 +1,444 @@
+/* Mobile Layout Fixed - Complete CSS Reset and Integration */
+
+/* =================================================================
+   MOBILE HEADER STYLES (from Goals page - exact replica)
+   ================================================================= */
+
+/* Container and basic layout */
+.page_header {
+    background-image: url(../../../static/images/header_back.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    z-index: 10;
+}
+
+/* Mobile navigation bar */
+.mob_nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 0px;
+}
+
+.nav-list {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.nav-list li {
+    list-style: none;
+}
+
+/* Brand logo */
+.brand img {
+    max-height: 40px;
+    width: auto;
+}
+
+/* Navigation buttons */
+.collapseSidebar {
+    background: transparent;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.collapseSidebar img {
+    width: 24px;
+    height: 24px;
+}
+
+/* Company/User profile section */
+.company_box {
+    display: flex;
+    gap: 24px;
+    margin: 29px 0px 23px 0px;
+    align-items: center;
+}
+
+.company_image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.company_image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.company_content h6 {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+    font-family: 'Lusitana', serif;
+    margin: 0;
+    color: white;
+}
+
+.company_content b {
+    font-weight: 600;
+}
+
+/* Mobile View Toggle */
+.mobile-view-toggle {
+    padding: 10px 0;
+    margin: 10px 0 20px 0;
+}
+
+.view-toggle-container {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.view-option {
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    white-space: nowrap;
+    min-width: 120px;
+    display: inline-block;
+}
+
+.view-option:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.view-option.active {
+    background: rgba(39, 37, 86, 0.9);
+    border-color: rgba(39, 37, 86, 1);
+}
+
+/* =================================================================
+   MOBILE FOOTER STYLES (from Goals page - exact replica)
+   ================================================================= */
+
+.mbl_footer {
+    background: #2291A5;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 0;
+}
+
+.footer_row {
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer_button {
+    background: transparent;
+    border: none;
+    padding: 8px 12px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    cursor: pointer;
+    flex: 1;
+    max-width: 80px;
+}
+
+.footer_button img {
+    width: 24px;
+    height: 24px;
+    filter: brightness(0) invert(1);
+    transition: filter 0.3s ease;
+}
+
+.footer_button p {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 15px;
+    letter-spacing: 0em;
+    text-align: center;
+    margin: 0;
+    color: #fff;
+    transition: color 0.3s ease;
+}
+
+.footer_button.active {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+}
+
+.footer_button.active p {
+    color: rgba(39, 37, 86, 1);
+    font-weight: 600;
+}
+
+.footer_button.active img {
+    filter: none;
+}
+
+.footer_button:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* =================================================================
+   RESPONSIVE BREAKPOINTS AND VISIBILITY
+   ================================================================= */
+
+/* Mobile-only elements */
+.show_on_mobile {
+    display: block;
+}
+
+.hide_on_mobile {
+    display: none;
+}
+
+/* Desktop breakpoint (≥992px) - Hide mobile elements */
+@media screen and (min-width: 992px) {
+    .mbl_footer {
+        display: none !important;
+    }
+    
+    .show_on_mobile {
+        display: none !important;
+    }
+    
+    .hide_on_mobile {
+        display: flex !important;
+    }
+    
+    .mobile-view-toggle {
+        display: none !important;
+    }
+}
+
+/* Mobile breakpoint (<992px) - Show mobile elements */
+@media screen and (max-width: 991px) {
+    .mbl_footer {
+        display: block !important;
+    }
+    
+    .show_on_mobile {
+        display: block !important;
+    }
+    
+    .hide_on_mobile {
+        display: none !important;
+    }
+    
+    .mobile-view-toggle {
+        display: block !important;
+    }
+    
+    /* Add padding to body to account for fixed footer */
+    body {
+        padding-bottom: 80px !important;
+    }
+    
+    .page-content {
+        padding-bottom: 80px !important;
+    }
+    
+    .main-content {
+        padding-bottom: 80px !important;
+    }
+    
+    /* Ensure mobile header is properly positioned */
+    .page_header {
+        position: relative;
+        z-index: 10;
+    }
+}
+
+/* =================================================================
+   Z-INDEX MANAGEMENT AND LAYERING
+   ================================================================= */
+
+/* Layer hierarchy (highest to lowest) */
+.sidenav {
+    z-index: 2001 !important;
+}
+
+.mobile-overlay {
+    z-index: 2000 !important;
+}
+
+.mbl_footer {
+    z-index: 1000 !important;
+}
+
+.page_header {
+    z-index: 10 !important;
+}
+
+.desktop-header {
+    z-index: 9 !important;
+}
+
+.main-content {
+    z-index: 1 !important;
+}
+
+/* =================================================================
+   LAYOUT FIXES AND OVERRIDES
+   ================================================================= */
+
+/* Prevent conflicts with existing chamas styles */
+.app-layout {
+    position: relative;
+    min-height: 100vh;
+}
+
+/* Ensure proper container behavior */
+.container {
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Fix any Bootstrap conflicts */
+.btn {
+    border: none;
+    background: transparent;
+    padding: 0.375rem 0.75rem;
+}
+
+.btn:focus,
+.btn:active {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Ensure proper text styling */
+.page_header * {
+    color: white;
+}
+
+.page_header h6 {
+    color: white !important;
+}
+
+/* =================================================================
+   MOBILE SIDEBAR INTEGRATION
+   ================================================================= */
+
+/* Ensure sidebar works properly with new header */
+@media screen and (max-width: 991px) {
+    .sidenav {
+        padding-top: 60px;
+    }
+    
+    .sidenav .closebtn {
+        top: 15px;
+        right: 25px;
+        font-size: 36px;
+        color: white;
+        text-decoration: none;
+    }
+}
+
+/* =================================================================
+   ACCESSIBILITY AND FOCUS STATES
+   ================================================================= */
+
+/* Focus states for keyboard navigation */
+.footer_button:focus,
+.view-option:focus,
+.collapseSidebar:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.8);
+    outline-offset: 2px;
+}
+
+/* Ensure proper contrast */
+.footer_button:focus p,
+.view-option:focus {
+    color: white;
+}
+
+/* =================================================================
+   ANIMATION AND TRANSITIONS
+   ================================================================= */
+
+/* Smooth transitions for all interactive elements */
+.footer_button,
+.view-option,
+.collapseSidebar {
+    transition: all 0.3s ease;
+}
+
+/* Hover effects */
+.footer_button:hover {
+    transform: translateY(-1px);
+}
+
+.view-option:hover {
+    transform: translateY(-1px);
+}
+
+/* =================================================================
+   UTILITY CLASSES
+   ================================================================= */
+
+/* Text utilities */
+.text-white {
+    color: white !important;
+}
+
+/* Spacing utilities */
+.pt-3 {
+    padding-top: 1rem !important;
+}
+
+.mt-0 {
+    margin-top: 0 !important;
+}
+
+.pt-0 {
+    padding-top: 0 !important;
+}
+
+/* =================================================================
+   DEBUGGING AND DEVELOPMENT
+   ================================================================= */
+
+/* Uncomment for debugging layout issues */
+/*
+.page_header {
+    border: 2px solid red !important;
+}
+
+.mbl_footer {
+    border: 2px solid blue !important;
+}
+
+.main-content {
+    border: 2px solid green !important;
+}
+*/
