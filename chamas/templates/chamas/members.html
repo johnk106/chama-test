@@ -757,9 +757,12 @@ function filterMembers() {
     
     filteredMembers = allMembers.filter(card => {
         const name = card.querySelector('.admin-member-name').textContent.toLowerCase();
-        const memberData = card.dataset;
+        const email = card.dataset.memberEmail ? card.dataset.memberEmail.toLowerCase() : '';
+        const mobile = card.dataset.memberMobile ? card.dataset.memberMobile.toLowerCase() : '';
         
-        return name.includes(searchTerm);
+        return name.includes(searchTerm) || 
+               email.includes(searchTerm) || 
+               mobile.includes(searchTerm);
     });
     
     currentPage = 1;
@@ -851,99 +854,245 @@ function openMemberModal(memberId) {
 }
 
 function loadMemberDetails(memberId) {
-    // In a real application, this would be an AJAX call
-    // For now, we'll simulate with the data we have
     const modalBody = document.getElementById('adminMemberModalBody');
+    const chamaId = document.querySelector('.admin-members-container').dataset.chamaId;
     
-    // Find member data from the card
-    const memberCard = document.querySelector(`[data-member-id="${memberId}"]`);
-    if (!memberCard) return;
+    console.log(`[DEBUG] Loading member details for ID: ${memberId}`);
     
-    const name = memberCard.querySelector('.admin-member-name').textContent;
-    const role = memberCard.querySelector('.admin-member-role').textContent;
-    const avatar = memberCard.querySelector('.admin-member-avatar img').src;
-    const contributions = memberCard.querySelector('.admin-stat-value').textContent;
+    // Make AJAX call to get detailed member data
+    fetch(`/chamas/member-detail/${memberId}/${chamaId}/`, {
+        method: 'GET',
+        headers: {
+            'X-CSRFToken': getCsrfToken(),
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.status === 'success') {
+            console.log('[DEBUG] Member details loaded successfully:', data.member);
+            renderMemberDetails(data);
+        } else {
+            throw new Error(data.message || 'Failed to load member details');
+        }
+    })
+    .catch(error => {
+        console.error('[ERROR] Failed to load member details:', error);
+        modalBody.innerHTML = `
+            <div class="admin-empty-state">
+                <div class="admin-empty-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3>Error Loading Member Details</h3>
+                <p>${error.message}</p>
+                <button onclick="loadMemberDetails(${memberId})" class="admin-add-member" style="margin-top: 1rem;">
+                    <i class="fas fa-retry"></i> Try Again
+                </button>
+            </div>
+        `;
+    });
+}
+
+function renderMemberDetails(data) {
+    const modalBody = document.getElementById('adminMemberModalBody');
+    const member = data.member;
+    
+    // Update modal title
+    document.getElementById('memberModalTitle').textContent = `${member.name} - Member Details`;
     
     modalBody.innerHTML = `
         <div class="admin-member-details">
             <div class="admin-member-profile">
                 <div class="admin-member-avatar">
-                    <img src="${avatar}" alt="${name}">
+                    <img src="${member.profile || getDefaultAvatar()}" alt="${member.name}">
                 </div>
-                <h3>${name}</h3>
-                <span class="admin-member-role ${role.toLowerCase()}-bulb">${role}</span>
+                <h3>${member.name}</h3>
+                <span class="admin-member-role ${member.role.toLowerCase()}-bulb">${member.role}</span>
+                <p style="margin-top: 0.5rem; color: var(--brand-gray-600);">
+                    ${member.member_id ? `ID: ${member.member_id}` : 'No ID assigned'}
+                </p>
             </div>
             <div class="admin-contact-info">
                 <h4 style="margin-bottom: 1rem;">Contact Information</h4>
                 <div class="admin-contact-item">
                     <i class="fas fa-envelope admin-contact-icon"></i>
-                    <span>Loading...</span>
+                    <span>${member.email}</span>
                 </div>
                 <div class="admin-contact-item">
                     <i class="fas fa-phone admin-contact-icon"></i>
-                    <span>Loading...</span>
+                    <span>${member.mobile}</span>
                 </div>
                 <div class="admin-contact-item">
                     <i class="fas fa-calendar admin-contact-icon"></i>
-                    <span>Member since: Loading...</span>
+                    <span>Member since: ${member.member_since}</span>
+                </div>
+                <div class="admin-contact-item">
+                    <i class="fas fa-chart-line admin-contact-icon"></i>
+                    <span>Total Contributions: KSh ${formatCurrency(member.total_contributions)}</span>
+                </div>
+                <div class="admin-contact-item">
+                    <i class="fas fa-hand-holding-usd admin-contact-icon"></i>
+                    <span>Active Loans: ${member.total_loans}</span>
+                </div>
+                <div class="admin-contact-item">
+                    <i class="fas fa-exclamation-triangle admin-contact-icon"></i>
+                    <span>Outstanding Fines: KSh ${formatCurrency(member.total_fines)}</span>
                 </div>
             </div>
         </div>
         
         <div class="admin-records-section">
             <div class="admin-records-tabs">
-                <button class="admin-tab-button active" onclick="switchTab('contributions')">Contributions</button>
-                <button class="admin-tab-button" onclick="switchTab('loans')">Loans</button>
+                <button class="admin-tab-button active" onclick="switchTab('contributions')">
+                    Contributions (${data.contributions.length})
+                </button>
+                <button class="admin-tab-button" onclick="switchTab('loans')">
+                    Loans (${data.loans.length})
+                </button>
+                <button class="admin-tab-button" onclick="switchTab('fines')">
+                    Fines (${data.fines.length})
+                </button>
             </div>
             
             <div id="contributions-tab" class="admin-tab-content active">
-                <table class="admin-records-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Type</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="4" style="text-align: center; padding: 2rem; color: var(--brand-gray-500);">
-                                Loading contribution records...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                ${renderContributionsTable(data.contributions)}
             </div>
             
             <div id="loans-tab" class="admin-tab-content">
-                <table class="admin-records-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Balance</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="4" style="text-align: center; padding: 2rem; color: var(--brand-gray-500);">
-                                Loading loan records...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                ${renderLoansTable(data.loans)}
+            </div>
+            
+            <div id="fines-tab" class="admin-tab-content">
+                ${renderFinesTable(data.fines)}
             </div>
         </div>
     `;
+}
+
+function renderContributionsTable(contributions) {
+    if (contributions.length === 0) {
+        return `
+            <div class="admin-empty-state">
+                <div class="admin-empty-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>No Contribution Records</h3>
+                <p>This member has no contribution records yet.</p>
+            </div>
+        `;
+    }
     
-    // In a real app, make AJAX call to get detailed member data
-    // fetch(`/chamas/member-details/${memberId}/`)
-    //     .then(response => response.json())
-    //     .then(data => {
-    //         // Update the modal with real data
-    //     });
+    const rows = contributions.map(contrib => `
+        <tr>
+            <td>${contrib.date_created}</td>
+            <td>${contrib.contribution_name}</td>
+            <td>KSh ${formatCurrency(contrib.amount_paid)} / KSh ${formatCurrency(contrib.amount_expected)}</td>
+            <td><span class="status-badge status-${contrib.status.toLowerCase()}">${contrib.status}</span></td>
+        </tr>
+    `).join('');
+    
+    return `
+        <table class="admin-records-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Contribution Type</th>
+                    <th>Amount (Paid/Expected)</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${rows}
+            </tbody>
+        </table>
+    `;
+}
+
+function renderLoansTable(loans) {
+    if (loans.length === 0) {
+        return `
+            <div class="admin-empty-state">
+                <div class="admin-empty-icon">
+                    <i class="fas fa-hand-holding-usd"></i>
+                </div>
+                <h3>No Loan Records</h3>
+                <p>This member has no loan records yet.</p>
+            </div>
+        `;
+    }
+    
+    const rows = loans.map(loan => `
+        <tr>
+            <td>${loan.start_date}</td>
+            <td>${loan.loan_type}</td>
+            <td>KSh ${formatCurrency(loan.amount)}</td>
+            <td>KSh ${formatCurrency(loan.balance)}</td>
+            <td><span class="status-badge status-${loan.status.toLowerCase()}">${loan.status}</span></td>
+        </tr>
+    `).join('');
+    
+    return `
+        <table class="admin-records-table">
+            <thead>
+                <tr>
+                    <th>Start Date</th>
+                    <th>Loan Type</th>
+                    <th>Amount</th>
+                    <th>Balance</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${rows}
+            </tbody>
+        </table>
+    `;
+}
+
+function renderFinesTable(fines) {
+    if (fines.length === 0) {
+        return `
+            <div class="admin-empty-state">
+                <div class="admin-empty-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3>No Fine Records</h3>
+                <p>This member has no fine records.</p>
+            </div>
+        `;
+    }
+    
+    const rows = fines.map(fine => `
+        <tr>
+            <td>${fine.created}</td>
+            <td>${fine.fine_type}</td>
+            <td>KSh ${formatCurrency(fine.fine_amount)}</td>
+            <td>KSh ${formatCurrency(fine.fine_balance)}</td>
+            <td><span class="status-badge status-${fine.status.toLowerCase()}">${fine.status}</span></td>
+        </tr>
+    `).join('');
+    
+    return `
+        <table class="admin-records-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Fine Type</th>
+                    <th>Amount</th>
+                    <th>Balance</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${rows}
+            </tbody>
+        </table>
+    `;
 }
 
 function switchTab(tabName) {
@@ -989,6 +1138,10 @@ function submitAddMember(event) {
     
     const formData = new FormData(event.target);
     const memberData = Object.fromEntries(formData.entries());
+    const chamaId = document.querySelector('.admin-members-container').dataset.chamaId;
+    
+    // Add chama_id to the member data
+    memberData.chama_id = chamaId;
     
     // Show loading state
     const submitBtn = event.target.querySelector('[type="submit"]');
@@ -996,32 +1149,46 @@ function submitAddMember(event) {
     submitBtn.textContent = 'Adding...';
     submitBtn.disabled = true;
     
-    // Simulate API call
-    setTimeout(() => {
-        // In real app, make AJAX call to add member
-        // fetch('/chamas/add-member/', {
-        //     method: 'POST',
-        //     body: formData,
-        //     headers: {
-        //         'X-CSRFToken': getCsrfToken()
-        //     }
-        // }).then(response => response.json())
-        //   .then(data => {
-        //       if (data.success) {
-        //           showAlert('Member added successfully!', 'success');
-        //           location.reload(); // Refresh to show new member
-        //       } else {
-        //           showAlert(data.message, 'error');
-        //       }
-        //   });
-        
-        showAlert('Member added successfully!', 'success');
-        closeAddMemberModal();
-        
+    console.log('[DEBUG] Adding member:', memberData);
+    
+    // Make AJAX call to add member
+    fetch('/chamas/add-member/', {
+        method: 'POST',
+        body: JSON.stringify(memberData),
+        headers: {
+            'X-CSRFToken': getCsrfToken(),
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.status === 'success') {
+            console.log('[DEBUG] Member added successfully:', data.member);
+            showAlert(data.message, 'success');
+            closeAddMemberModal();
+            
+            // Refresh the page to show the new member
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        } else {
+            throw new Error(data.message || 'Failed to add member');
+        }
+    })
+    .catch(error => {
+        console.error('[ERROR] Failed to add member:', error);
+        showAlert(error.message, 'error');
+    })
+    .finally(() => {
         // Reset button state
         submitBtn.textContent = originalText;
         submitBtn.disabled = false;
-    }, 1000);
+    });
 }
 
 function confirmRemoveMember(memberId, memberName) {
@@ -1031,40 +1198,58 @@ function confirmRemoveMember(memberId, memberName) {
 }
 
 function removeMember(memberId) {
-    // Show loading state on the member card
     const memberCard = document.querySelector(`[data-member-id="${memberId}"]`);
+    const chamaId = document.querySelector('.admin-members-container').dataset.chamaId;
+    
+    // Show loading state on the member card
     if (memberCard) {
         memberCard.style.opacity = '0.5';
         memberCard.style.pointerEvents = 'none';
     }
     
-    // Simulate API call
-    setTimeout(() => {
-        // In real app, make AJAX call to remove member
-        // fetch(`/chamas/remove-member/${memberId}/`, {
-        //     method: 'DELETE',
-        //     headers: {
-        //         'X-CSRFToken': getCsrfToken()
-        //     }
-        // }).then(response => response.json())
-        //   .then(data => {
-        //       if (data.success) {
-        //           showAlert('Member removed successfully!', 'success');
-        //           memberCard.remove();
-        //           initializeMembers(); // Refresh pagination
-        //       } else {
-        //           showAlert(data.message, 'error');
-        //           memberCard.style.opacity = '1';
-        //           memberCard.style.pointerEvents = 'auto';
-        //       }
-        //   });
-        
-        showAlert('Member removed successfully!', 'warning');
-        if (memberCard) {
-            memberCard.remove();
-            initializeMembers(); // Refresh pagination
+    console.log(`[DEBUG] Removing member ID: ${memberId}`);
+    
+    // Make AJAX call to remove member
+    fetch(`/chamas/remove-member-from-chama/${memberId}/${chamaId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCsrfToken(),
+            'Content-Type': 'application/json'
         }
-    }, 500);
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.status === 'success') {
+            console.log('[DEBUG] Member removed successfully');
+            showAlert(data.message, 'warning');
+            if (memberCard) {
+                // Animate the removal
+                memberCard.style.transform = 'scale(0.8)';
+                memberCard.style.opacity = '0';
+                setTimeout(() => {
+                    memberCard.remove();
+                    initializeMembers(); // Refresh pagination
+                }, 300);
+            }
+        } else {
+            throw new Error(data.message || 'Failed to remove member');
+        }
+    })
+    .catch(error => {
+        console.error('[ERROR] Failed to remove member:', error);
+        showAlert(error.message, 'error');
+        
+        // Restore member card state
+        if (memberCard) {
+            memberCard.style.opacity = '1';
+            memberCard.style.pointerEvents = 'auto';
+        }
+    });
 }
 
 function showAlert(message, type) {
@@ -1102,9 +1287,23 @@ function getCsrfToken() {
     return document.querySelector('[name=csrfmiddlewaretoken]').value;
 }
 
+function formatCurrency(amount) {
+    // Format number with commas and handle null/undefined
+    if (!amount && amount !== 0) return '0';
+    return parseFloat(amount).toLocaleString('en-US', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2
+    });
+}
+
+function getDefaultAvatar() {
+    return "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMzAiIGZpbGw9IiNGM0Y0RjYiLz4KPGNpcmNsZSBjeD0iMzAiIGN5PSIyMiIgcj0iMTAiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0iTTEwIDUwQzEwIDQwLjMzNTkgMTcuMTYzNCAzMi41IDI2IDMyLjVIMzRDNDIuODM2NiAzMi41IDUwIDQwLjMzNTkgNTAgNTBWNTBIMTBWNTBaIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo=";
+}
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
     initializeMembers();
+    console.log('[DEBUG] Members page initialized');
 });
 </script>
 {% endblock %}

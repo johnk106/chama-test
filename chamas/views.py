@@ -244,20 +244,17 @@ def members(request,chama_id):
     try:
         chama = Chama.objects.get(pk=chama_id)
         
-        # Optimized query with prefetch_related for better performance
+        # Highly optimized query with annotations for better performance
         members = ChamaMember.objects.filter(
             active=True, 
             group=chama
         ).select_related(
             'role', 'user'
-        ).prefetch_related(
-            'member_records',
-            'loans', 
-            'fines'
         ).annotate(
             total_contributions_amount=models.Sum('member_records__amount_paid'),
             total_loans_count=models.Count('loans', distinct=True),
-            total_fines_amount=models.Sum('fines__fine_amount')
+            total_outstanding_fines=models.Sum('fines__fine_balance'),
+            active_loans_count=models.Count('loans', filter=models.Q(loans__status__in=['active', 'approved']), distinct=True)
         ).order_by('name')
         
         MemberService.audit_chama_members(chama.id)
@@ -277,8 +274,8 @@ def members(request,chama_id):
                 'profile': member.profile,
                 'member_since': member.member_since,
                 'total_contributions': member.total_contributions_amount or 0,
-                'total_loans': member.total_loans_count or 0,
-                'total_fines': member.total_fines_amount or 0,
+                'total_loans': member.active_loans_count or 0,
+                'total_fines': member.total_outstanding_fines or 0,
                 'user': member.user
             }
             members_data.append(member_data)
@@ -290,7 +287,8 @@ def members(request,chama_id):
             'members': members_data,
             'members_count': len(members_data),
             'roles': Role.objects.all(),
-            'chama_id': chama_id
+            'chama_id': chama_id,
+            'debug': True  # Enable debug mode for logging
         }
         
         return render(request, 'chamas/members.html', context)
@@ -300,7 +298,8 @@ def members(request,chama_id):
         return render(request, 'chamas/members.html', {
             'error': 'Chama not found',
             'members': [],
-            'roles': Role.objects.all()
+            'roles': Role.objects.all(),
+            'chama_id': chama_id
         })
 
 
@@ -312,10 +311,10 @@ def member_details(request, chama_member_id, group):
         
         print(f"[DEBUG] Loading details for member: {member.name} (ID: {chama_member_id})")
         
-        # Retrieve contributions with related data
+        # Retrieve contributions with related data - optimized query
         contributions = ContributionRecord.objects.filter(
             member=member
-        ).select_related('contribution').order_by('-date_created')[:10]
+        ).select_related('contribution').order_by('-date_created')[:20]
         
         contribution_dicts = []
         for contribution in contributions:
@@ -330,8 +329,8 @@ def member_details(request, chama_member_id, group):
             }
             contribution_dicts.append(contrib_data)
 
-        # Retrieve loans with better formatting
-        loans = LoanItem.objects.filter(member=member).select_related('type').order_by('-start_date')[:10]
+        # Retrieve loans with better formatting - optimized query
+        loans = LoanItem.objects.filter(member=member).select_related('type').order_by('-start_date')[:20]
         loan_dicts = []
         for loan in loans:
             loan_data = {
@@ -348,8 +347,8 @@ def member_details(request, chama_member_id, group):
             }
             loan_dicts.append(loan_data)
 
-        # Retrieve fines with better formatting
-        fines = FineItem.objects.filter(member=member).select_related('fine_type').order_by('-created')[:10]
+        # Retrieve fines with better formatting - optimized query
+        fines = FineItem.objects.filter(member=member).select_related('fine_type').order_by('-created')[:20]
         fine_dicts = []
         for fine in fines:
             fine_data = {
@@ -366,6 +365,10 @@ def member_details(request, chama_member_id, group):
             }
             fine_dicts.append(fine_data)
 
+        # Calculate totals
+        total_contributions = sum(c['amount_paid'] for c in contribution_dicts)
+        total_outstanding_fines = sum(f['fine_balance'] for f in fine_dicts)
+        
         # Serialize member data
         member_dict = {
             'id': member.id,
@@ -377,9 +380,9 @@ def member_details(request, chama_member_id, group):
             'member_since': member.member_since.strftime('%d/%m/%Y'),
             'active': member.active,
             'profile': member.profile.url if member.profile else None,
-            'total_contributions': sum(c['amount_paid'] for c in contribution_dicts),
+            'total_contributions': total_contributions,
             'total_loans': len(loan_dicts),
-            'total_fines': sum(f['fine_balance'] for f in fine_dicts)
+            'total_fines': total_outstanding_fines
         }
 
         print(f"[DEBUG] Member details loaded: {len(contribution_dicts)} contributions, {len(loan_dicts)} loans, {len(fine_dicts)} fines")
