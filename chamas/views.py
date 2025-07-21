@@ -211,6 +211,11 @@ def create_chama(request):
 
 @login_required(login_url='/user/Login')
 def add_member_to_chama(request):
+    print(f"[DEBUG] add_member_to_chama called")
+    print(f"[DEBUG] Request method: {request.method}")
+    print(f"[DEBUG] Request path: {request.path}")
+    print(f"[DEBUG] User authenticated: {request.user.is_authenticated}")
+    
     if request.method == 'POST':
         return MemberService.add_member_to_chama(request)
   
@@ -305,10 +310,16 @@ def members(request,chama_id):
 
 @login_required(login_url='/user/Login')
 def member_details(request, chama_member_id, group):
+    print(f"[DEBUG] member_details called with chama_member_id={chama_member_id}, group={group}")
+    print(f"[DEBUG] Request method: {request.method}")
+    print(f"[DEBUG] Request path: {request.path}")
+    print(f"[DEBUG] User authenticated: {request.user.is_authenticated}")
+    
     try:
         chama = get_object_or_404(Chama, pk=group)
-        member = get_object_or_404(ChamaMember, group=chama, id=chama_member_id)
+        print(f"[DEBUG] Found chama: {chama.name}")
         
+        member = get_object_or_404(ChamaMember, group=chama, id=chama_member_id)
         print(f"[DEBUG] Loading details for member: {member.name} (ID: {chama_member_id})")
         
         # Retrieve contributions with related data - optimized query
@@ -1367,5 +1378,15 @@ def create_notif(request,chama_id):
         }
 
         return JsonResponse(data,status=405)
+
+
+def debug_test(request):
+    """Simple debug view to test URL routing"""
+    return JsonResponse({
+        'status': 'success',
+        'message': 'URL routing is working',
+        'method': request.method,
+        'path': request.path
+    })
 
 

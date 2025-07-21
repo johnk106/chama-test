@@ -70,5 +70,6 @@ urlpatterns = [
     path('new-notification/<int:chama_id>/',views.create_notif,name='create-notification'),
 
     path('get_user_role/', views.get_user_role, name='get_user_role'),
+    path('debug-test/', views.debug_test, name='debug-test'),
 
 ]

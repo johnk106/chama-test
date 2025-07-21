@@ -572,6 +572,15 @@
     <div id="admin-alerts-container">
         <!-- Alerts will be dynamically inserted here -->
     </div>
+    
+    <!-- Debug Section (remove in production) -->
+    {% if debug %}
+    <div style="background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 5px;">
+        <strong>Debug Mode:</strong>
+        <button onclick="testUrlRouting()" style="margin-left: 10px; padding: 5px 10px;">Test URL Routing</button>
+        <button onclick="console.log('Chama ID:', document.querySelector('.admin-members-container').dataset.chamaId)" style="margin-left: 10px; padding: 5px 10px;">Log Chama ID</button>
+    </div>
+    {% endif %}
 
     <!-- Search Section -->
     <div class="admin-search-container">
@@ -857,10 +866,28 @@ function loadMemberDetails(memberId) {
     const modalBody = document.getElementById('adminMemberModalBody');
     const chamaId = document.querySelector('.admin-members-container').dataset.chamaId;
     
-    console.log(`[DEBUG] Loading member details for ID: ${memberId}`);
+    console.log(`[DEBUG] Loading member details for ID: ${memberId}, Chama ID: ${chamaId}`);
+    
+    // Validate required parameters
+    if (!memberId || !chamaId) {
+        console.error('[ERROR] Missing required parameters - memberId:', memberId, 'chamaId:', chamaId);
+        modalBody.innerHTML = `
+            <div class="admin-empty-state">
+                <div class="admin-empty-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3>Error Loading Member Details</h3>
+                <p>Missing required parameters</p>
+            </div>
+        `;
+        return;
+    }
+    
+    const url = `/chamas-bookeeping/member-detail/${memberId}/${chamaId}/`;
+    console.log(`[DEBUG] Making request to: ${url}`);
     
     // Make AJAX call to get detailed member data
-    fetch(`/chamas/member-detail/${memberId}/${chamaId}/`, {
+    fetch(url, {
         method: 'GET',
         headers: {
             'X-CSRFToken': getCsrfToken(),
@@ -868,12 +895,14 @@ function loadMemberDetails(memberId) {
         }
     })
     .then(response => {
+        console.log(`[DEBUG] Response status: ${response.status}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         return response.json();
     })
     .then(data => {
+        console.log('[DEBUG] Response data:', data);
         if (data.status === 'success') {
             console.log('[DEBUG] Member details loaded successfully:', data.member);
             renderMemberDetails(data);
@@ -1150,9 +1179,28 @@ function submitAddMember(event) {
     submitBtn.disabled = true;
     
     console.log('[DEBUG] Adding member:', memberData);
+    console.log('[DEBUG] Chama ID:', chamaId);
+    
+    // Validate required fields
+    if (!memberData.name || !memberData.email || !memberData.mobile || !memberData.role || !chamaId) {
+        const missingFields = [];
+        if (!memberData.name) missingFields.push('name');
+        if (!memberData.email) missingFields.push('email');
+        if (!memberData.mobile) missingFields.push('mobile');
+        if (!memberData.role) missingFields.push('role');
+        if (!chamaId) missingFields.push('chama_id');
+        
+        showAlert(`Missing required fields: ${missingFields.join(', ')}`, 'error');
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+        return;
+    }
+    
+    const url = '/chamas-bookeeping/add-member/';
+    console.log(`[DEBUG] Making request to: ${url}`);
     
     // Make AJAX call to add member
-    fetch('/chamas/add-member/', {
+    fetch(url, {
         method: 'POST',
         body: JSON.stringify(memberData),
         headers: {
@@ -1161,12 +1209,14 @@ function submitAddMember(event) {
         }
     })
     .then(response => {
+        console.log(`[DEBUG] Response status: ${response.status}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         return response.json();
     })
     .then(data => {
+        console.log('[DEBUG] Response data:', data);
         if (data.status === 'success') {
             console.log('[DEBUG] Member added successfully:', data.member);
             showAlert(data.message, 'success');
@@ -1201,16 +1251,26 @@ function removeMember(memberId) {
     const memberCard = document.querySelector(`[data-member-id="${memberId}"]`);
     const chamaId = document.querySelector('.admin-members-container').dataset.chamaId;
     
+    console.log(`[DEBUG] Removing member ID: ${memberId}, Chama ID: ${chamaId}`);
+    
+    // Validate required parameters
+    if (!memberId || !chamaId) {
+        console.error('[ERROR] Missing required parameters for member removal');
+        showAlert('Missing required parameters', 'error');
+        return;
+    }
+    
     // Show loading state on the member card
     if (memberCard) {
         memberCard.style.opacity = '0.5';
         memberCard.style.pointerEvents = 'none';
     }
     
-    console.log(`[DEBUG] Removing member ID: ${memberId}`);
+    const url = `/chamas-bookeeping/remove-member-from-chama/${memberId}/${chamaId}/`;
+    console.log(`[DEBUG] Making request to: ${url}`);
     
     // Make AJAX call to remove member
-    fetch(`/chamas/remove-member-from-chama/${memberId}/${chamaId}/`, {
+    fetch(url, {
         method: 'POST',
         headers: {
             'X-CSRFToken': getCsrfToken(),
@@ -1218,12 +1278,14 @@ function removeMember(memberId) {
         }
     })
     .then(response => {
+        console.log(`[DEBUG] Response status: ${response.status}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         return response.json();
     })
     .then(data => {
+        console.log('[DEBUG] Response data:', data);
         if (data.status === 'success') {
             console.log('[DEBUG] Member removed successfully');
             showAlert(data.message, 'warning');
@@ -1284,7 +1346,13 @@ function closeAlert(alertId) {
 }
 
 function getCsrfToken() {
-    return document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+    if (!csrfToken) {
+        console.error('[ERROR] CSRF token not found');
+        return '';
+    }
+    console.log('[DEBUG] CSRF token found:', csrfToken.value.substring(0, 10) + '...');
+    return csrfToken.value;
 }
 
 function formatCurrency(amount) {
@@ -1300,10 +1368,42 @@ function getDefaultAvatar() {
     return "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMzAiIGZpbGw9IiNGM0Y0RjYiLz4KPGNpcmNsZSBjeD0iMzAiIGN5PSIyMiIgcj0iMTAiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0iTTEwIDUwQzEwIDQwLjMzNTkgMTcuMTYzNCAzMi41IDI2IDMyLjVIMzRDNDIuODM2NiAzMi41IDUwIDQwLjMzNTkgNTAgNTBWNTBIMTBWNTBaIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo=";
 }
 
+// Test function to verify URL routing
+function testUrlRouting() {
+    console.log('[DEBUG] Testing URL routing...');
+    
+    fetch('/chamas-bookeeping/debug-test/', {
+        method: 'GET',
+        headers: {
+            'X-CSRFToken': getCsrfToken(),
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        console.log(`[DEBUG] Test response status: ${response.status}`);
+        return response.json();
+    })
+    .then(data => {
+        console.log('[DEBUG] Test response data:', data);
+        if (data.status === 'success') {
+            showAlert('URL routing is working correctly!', 'success');
+        }
+    })
+    .catch(error => {
+        console.error('[ERROR] URL routing test failed:', error);
+        showAlert('URL routing test failed: ' + error.message, 'error');
+    });
+}
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
     initializeMembers();
     console.log('[DEBUG] Members page initialized');
+    
+    // Test URL routing on page load
+    setTimeout(() => {
+        testUrlRouting();
+    }, 1000);
 });
 </script>
 {% endblock %}
