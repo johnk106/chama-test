@@ -1,0 +1,256 @@
+/* Mobile Unified Header and Footer Styles */
+
+/* Mobile Header Styles (from Goals page) */
+.page_header {
+    background-image: url(../../../static/images/header_back.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+.mob_nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 0px;
+}
+
+.nav-list {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+}
+
+.company_box {
+    gap: 24px;
+    margin: 29px 0px 23px 0px;
+}
+
+.company_image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.company_image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.company_content h6 {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+    font-family: 'Lusitana', serif;
+    margin: 0;
+}
+
+/* Mobile View Toggle */
+.mobile-view-toggle {
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+.view-toggle-mobile {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: center;
+}
+
+.view-option {
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 15px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    flex: 1;
+    max-width: 120px;
+}
+
+.view-option:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.view-option.active {
+    background: rgba(39, 37, 86, 0.9);
+    border-color: rgba(39, 37, 86, 1);
+}
+
+/* Ensure mobile toggle is properly styled */
+@media screen and (max-width: 991px) {
+    .mobile-view-toggle {
+        display: block;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .mobile-view-toggle {
+        display: none !important;
+    }
+}
+
+/* Mobile Footer Styles (from Goals page) */
+.mbl_footer {
+    background: #2291A5;
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.footer_row {
+    padding: 10px 0;
+}
+
+.footer_button {
+    background: transparent;
+    border: none;
+    padding: 8px 12px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    min-width: 60px;
+}
+
+.footer_button img {
+    width: 24px;
+    height: 24px;
+    filter: brightness(0) invert(1);
+}
+
+.footer_button p {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 15px;
+    letter-spacing: 0em;
+    text-align: center;
+    margin: 0px;
+    color: #fff;
+}
+
+.footer_button.active {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.footer_button.active p {
+    color: rgba(39, 37, 86, 1);
+    font-weight: 600;
+}
+
+.footer_button.active img {
+    filter: none;
+}
+
+/* Responsive behavior */
+.show_on_mobile {
+    display: block;
+}
+
+.hide_on_mobile {
+    display: none;
+}
+
+/* Desktop breakpoint - hide mobile elements */
+@media screen and (min-width: 992px) {
+    .mbl_footer {
+        display: none !important;
+    }
+    
+    .show_on_mobile {
+        display: none !important;
+    }
+    
+    .hide_on_mobile {
+        display: flex !important;
+    }
+}
+
+/* Mobile breakpoint - show mobile elements */
+@media screen and (max-width: 991px) {
+    .mbl_footer {
+        display: block !important;
+    }
+    
+    .show_on_mobile {
+        display: block !important;
+    }
+    
+    .hide_on_mobile {
+        display: none !important;
+    }
+    
+    /* Add padding to body to account for fixed footer */
+    body {
+        padding-bottom: 80px;
+    }
+    
+    .page-content {
+        padding-bottom: 80px;
+    }
+}
+
+/* Integration with existing chamas styles */
+.mobile-header-integration {
+    background: var(--brand-primary, #2291A5);
+    color: white;
+    padding: 15px;
+}
+
+/* Ensure proper z-index layering */
+.mobile-header {
+    z-index: 999;
+}
+
+.desktop-header {
+    z-index: 998;
+}
+
+/* Sidebar integration */
+.sidenav {
+    z-index: 1001;
+}
+
+.mobile-overlay {
+    z-index: 1000;
+}
+
+/* Additional mobile header styling for integration */
+.page_header.mobile-integrated {
+    position: relative;
+    z-index: 999;
+}
+
+/* Collapsible sidebar button styling */
+.collapseSidebar {
+    background: transparent;
+    border: none;
+    padding: 5px;
+}
+
+.collapseSidebar img {
+    width: 24px;
+    height: 24px;
+}

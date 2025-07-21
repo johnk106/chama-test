@@ -1,0 +1,748 @@
+{%load static%}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Link Styles -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link rel="stylesheet" href="{%static 'chamas/style.css'%}" />
+  <link rel="stylesheet" href="{%static 'chamas/brand-colors.css'%}" />
+  <link rel="stylesheet" href="{%static 'chamas/mobile-unified.css'%}" />
+  
+  <!-- Goals page styles for mobile header/footer -->
+  <link rel="stylesheet" href="{% static 'css/style-test.css' %}">
+  <link rel="stylesheet" href="{% static 'bootstrap/bootstrap.min.css' %}">
+
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <style>
+    .profile {
+      display: flex;
+      align-items: center;
+    }
+
+    .dropdown {
+      position: relative;
+    }
+
+    .dropdown-toggle {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: #333;
+      cursor: pointer;
+    }
+
+    .dropdown-toggle img {
+      margin-right: 5px;
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 10px;
+      list-style: none;
+      margin: 0;
+    }
+
+    .dropdown-menu ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .dropdown-menu li {
+      padding: 5px 0;
+    }
+
+    .dropdown-menu.show {
+      display: block;
+    }
+
+    .iframe-container {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5); 
+      justify-content: center;
+      align-items: center;
+    }
+    .iframe-container iframe {
+        width: 80%;
+        height: 80%;
+        filter: blur(10px);
+        border: none;
+        background: white;
+    }
+    .iframe-container.show {
+        display: flex;
+    }
+    .close-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: white;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    /* Integration styles */
+    .unified-layout {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mobile-integrated-header {
+      background: #2291A5;
+      padding: 15px;
+      color: white;
+    }
+
+    /* Ensure mobile footer doesn't overlap content */
+    @media screen and (max-width: 991px) {
+      .page-content {
+        padding-bottom: 100px;
+      }
+    }
+  </style>
+
+  {%block head%}
+  <title>Chamaspace</title>
+  {%endblock%}
+</head>
+<body class="unified-layout">
+  <!-- Main Layout Container -->
+  <div class="app-layout">
+    
+    <!-- Mobile Header (Goals Style) - Only on Mobile -->
+    <div class="mobile-integrated-header show_on_mobile">
+      <div class="page_header mobile-integrated">
+        <div class="container">
+          {% include 'chamas/includes/mobile_header.html' %}
+        </div>
+      </div>
+    </div>
+    
+    <!-- Mobile Sidebar (Hidden by default, shown on mobile when menu is clicked) -->
+    <div id="mySidenav" class="sidenav">
+      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+      <div class="logo_details">
+        <img src="{%static 'chamas/logo.png'%}" alt="Logo" />
+      </div>
+      <ul class="nav-list">
+        <li>
+          <a href="#" class="dashboard-link">
+            <i class='bx bx-bolt-circle'></i>
+            <span class="link_name">Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="finances-link">
+            <i class="bx bx-wallet"></i>
+            <span class="link_name">Finances Page</span>
+          </a>
+        </li>
+        <li>
+          <a class="contribution-link" href="#">
+            <i class='bx bx-sort bx-rotate-90'></i>
+            <span class="link_name">Contributions</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="loans-link">
+            <i class='bx bxs-donate-heart'></i>
+            <span class="link_name">Loans</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="expenses-link">
+            <i class="bx bx-folder"></i>
+            <span class="link_name">Expenses</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="fines-link">
+            <i class="bx bx-file"></i>
+            <span class="link_name">Fines</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="reports-link">
+            <i class='bx bxs-report'></i>
+            <span class="link_name">Reports</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="members-link">
+            <i class="bx bx-user"></i>
+            <span class="link_name">Members</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="notifications-link">
+            <i class="bx bx-bell"></i>
+            <span class="link_name">Notifications</span>
+          </a>
+        </li>
+        <li class="admin">
+          <a href="#" class="bot-link">
+            <i class="bx bx-cog"></i>
+            <span class="link_name">Bot Control</span>
+          </a>
+        </li>
+        <li>
+          <a href="{%url 'chamas:chamas'%}">
+            <i class="bx bx-arrow-back"></i>
+            <span class="link_name">Back</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- Desktop Sidebar (Always visible on desktop) -->
+    <aside class="desktop-sidebar">
+      <div class="sidebar-header">
+        <div class="logo_details">
+          <img src="{%static 'chamas/logo.png'%}" alt="Logo" />
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <ul class="nav-list">
+          <li>
+            <a href="#" class="dashboard-link">
+              <i class='bx bx-bolt-circle'></i>
+              <span class="link_name">Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="finances-link">
+              <i class="bx bx-wallet"></i>
+              <span class="link_name">Finances Page</span>
+            </a>
+          </li>
+          <li>
+            <a class="contribution-link" href="#">
+              <i class='bx bx-sort bx-rotate-90'></i>
+              <span class="link_name">Contributions</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="loans-link">
+              <i class='bx bxs-donate-heart'></i>
+              <span class="link_name">Loans</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="expenses-link">
+              <i class="bx bx-folder"></i>
+              <span class="link_name">Expenses</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="fines-link">
+              <i class="bx bx-file"></i>
+              <span class="link_name">Fines</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="reports-link">
+              <i class='bx bxs-report'></i>
+              <span class="link_name">Reports</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="members-link">
+              <i class="bx bx-user"></i>
+              <span class="link_name">Members</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="notifications-link">
+              <i class="bx bx-bell"></i>
+              <span class="link_name">Notifications</span>
+            </a>
+          </li>
+          <li class="admin">
+            <a href="#" class="bot-link">
+              <i class="bx bx-cog"></i>
+              <span class="link_name">Bot Control</span>
+            </a>
+          </li>
+          <li>
+            <a href="{%url 'chamas:chamas'%}">
+              <i class="bx bx-arrow-back"></i>
+              <span class="link_name">Back</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Desktop Header (Hidden on Mobile) -->
+      <header class="desktop-header hide_on_mobile">
+        <div class="header-actions">
+          <input type="text" placeholder="Search ...." class="search-input" />
+          <div class="action-icons">
+            <i class='bx bxs-sun' style='color:#2191a5;'></i>
+            <i class='bx bxs-toggle-left' style='color:#2191a5;'></i>
+            <i class='bx bxs-moon' style='color:#141414;'></i>
+            <i class='bx bx-message-rounded-detail' style='color:#2191a5;'></i>
+            <a onclick="handleDiamondClick()"> 
+              <i class='bx bxs-diamond' style='color:#2191a5; cursor: pointer;'></i>
+            </a>
+          </div>
+          <div class="profile">
+            <div class="avatar">
+              {% if request.user.profile.picture %}
+                <img src="{{ request.user.profile.picture.url }}" alt="Profile" />
+              {% else %}
+                <i class='bx bxs-user'></i>
+              {% endif %}
+            </div>
+            <span class="profile-name">{{ request.user.first_name }} {{ request.user.last_name }}</span>
+            <i class='bx bx-chevron-down' data-bs-toggle="dropdown" aria-expanded="false"></i>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{% url 'Setting' %}">My Profile</a></li>
+              <li class="view-option" data-view="member">View as member</li>
+              <li class="view-option" data-view="admin">View as admin</li>
+              <li><a class="dropdown-item" href="#">My Groups</a></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <div class="page-content">
+        {%block body%}
+        {%endblock%}
+      </div>
+    </main>
+  </div>
+
+  <!-- Mobile Footer (Goals Style) - Only on Mobile -->
+  {% include 'chamas/includes/mobile_footer.html' %}
+
+  <!-- Mobile Overlay -->
+  <div class="mobile-overlay" onclick="closeNav()"></div>
+
+  <!-- Existing modals and scripts from base.html -->
+  <!-- add member to group modal-->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel" style="color: #2291A5;">Add Member to group</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="add-member-form">
+            <h6 class="text"></h6>
+            <div class="modal-alert-hub"></div>
+            <form action="" id="add-member-form">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="Name" class="form-label" style="color: #2291A5;">Name</label>
+                <input type="text" name="name" class="form-control" id="member-name" placeholder="member name..." required>
+              </div>
+              <div class="mb-3">
+                <label for="email" class="form-label" style="color: #2291A5;">Email address</label>
+                <input type="email" name="email" class="form-control" id="member-email" placeholder="name@example.com" required>
+              </div>
+              <div class="mb-3">
+                <label for="id_number" class="form-label" style="color: #2291A5;">Id Number</label>
+                <input type="number" name="id_number" class="form-control" id="member-id_number" placeholder="12345678" required>
+              </div>
+              <div class="mb-3">
+                <label for="mobile" class="form-label" style="color: #2291A5;">Mobile</label>
+                <input type="number" name="mobile" class="form-control" id="member-mobile" placeholder="07 xxx xxx" required>
+              </div>
+              <div class="input-group mb-3">
+                <label class="input-group-text" for="inputGroupSelect01" style="color: #2291A5;">Role</label>
+                <select class="form-select text-capitalize" name="role" id="member-role">
+                  {%for role in roles%}
+                  <option value="{{role.name}}">{{role.name}}</option>
+                  {%endfor%}
+                </select>
+              </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button id="add-member-modal-button" type="button" class="btn btn-primary" style="background-color: #2291A5;">Save changes</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="iframe-container" id="iframeContainer">
+    <button class="close-button" id="closeIframe">X</button>
+    <iframe src="/subscriptions/plans/" id="iframe"></iframe>
+  </div>
+
+  <script src="{%static 'chamas/script.js'%}"></script>
+  <script src="https://kit.fontawesome.com/d90233e428.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+    crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+  <!-- All existing JavaScript from base.html -->
+  <script>
+    /* Open mobile navigation */
+    function openNav() {
+      document.getElementById("mySidenav").style.width = "260px";
+      document.querySelector(".mobile-overlay").style.display = "block";
+      document.querySelector(".mobile-overlay").classList.add("show");
+    }
+
+    /* Close mobile navigation */
+    function closeNav() {
+      document.getElementById("mySidenav").style.width = "0";
+      document.querySelector(".mobile-overlay").style.display = "none";
+      document.querySelector(".mobile-overlay").classList.remove("show");
+    }
+
+    function getGroupId() {
+      return localStorage.getItem('groupId');
+    }
+
+    $(document).ready(function () {
+      // All existing JavaScript functions from base.html
+      function handleDashboardClick (){
+        var chama_id = getGroupId();
+        if (chama_id){
+          window.location.href = `/chamas-bookeeping/chama-dashboard/${chama_id}/`;
+        }else{
+          console.error('invalid chama_id');
+        }
+      }
+
+      function handleContributionsClick() {
+        var chama_id = getGroupId();
+        if (chama_id) {
+          window.location.href = `/chamas-bookeeping/contributions/${chama_id}/`;
+        } else {
+          console.error('Invalid chama_id');
+        }
+      }
+
+      function handleMembersClick() {
+        var chama_id = getGroupId();
+        if (chama_id) {
+          window.location.href = `/chamas-bookeeping/members/${chama_id}/`
+        } else {
+          console.log('invalid chama id');
+        }
+      }
+
+      function handleFinesClick() {
+        var chama_id = getGroupId();
+        if (chama_id) {
+          window.location.href = `/chamas-bookeeping/chama-fines/${chama_id}/`
+        } else {
+          console.log('invalid chama id');
+        }
+      }
+
+      function handleLoansClick() {
+        var chama_id = getGroupId();
+        if (chama_id) {
+          window.location.href = `/chamas-bookeeping/chama-loans/${chama_id}/`;
+        } else {
+          console.log('invalid chama id');
+        }
+      }
+
+      function handleExpensesClick() {
+        var chama_id = getGroupId();
+        if (chama_id) {
+          window.location.href = `/chamas-bookeeping/chama-expenses/${chama_id}/`;
+        } else {
+          console.log('invalid chama id');
+        }
+      }
+
+      function handleFinancesClick() {
+        var chama_id = getGroupId();
+        if (chama_id) {
+          window.location.href = `/chamas-bookeeping/chama-finances/${chama_id}/`;
+        } else {
+          console.log('invalid chama id');
+        }
+      }
+
+      function handleReportsClick() {
+        var chama_id = getGroupId();
+        if (chama_id) {
+          window.location.href = `/chamas-bookeeping/chama-reports/${chama_id}/`;
+        } else {
+          console.log('invalid chama id');
+        }
+      }
+
+      function handleNotificationsClick() {
+        var chama_id = getGroupId();
+        if (chama_id) {
+          window.location.href = `/chamas-bookeeping/chama-notifications/${chama_id}/`;
+        } else {
+          console.log('Invalid chama id');
+        }
+      }
+
+      function handleBotClick() {
+        var chama_id = getGroupId();
+        if(chama_id) {
+          window.location.href = `/bot/reports/${chama_id}/`;
+        }else{
+          console.log('Invalid chama id');
+        }
+      }
+
+      // Attach the click event handlers to  links
+      $('.dashboard-link').on('click', function (event) {
+        event.preventDefault();
+        handleDashboardClick();
+      });
+
+      $('.contribution-link').on('click', function (event) {
+        event.preventDefault();
+        handleContributionsClick();
+      });
+
+      $('.members-link').on('click',function(event){
+        event.preventDefault();
+        handleMembersClick();
+      });
+
+      $('.loans-link').on('click',function(event){
+        event.preventDefault();
+        handleLoansClick();
+      });
+
+      $('.fines-link').on('click',function(event){
+        event.preventDefault();
+        handleFinesClick();
+      });
+
+      $('.expenses-link').on('click',function(event){
+        event.preventDefault();
+        handleExpensesClick();
+      });
+
+      $('.finances-link').on('click',function(event){
+        event.preventDefault();
+        handleFinancesClick();
+      });
+
+      $('.reports-link').on('click',function(event){
+        event.preventDefault();
+        handleReportsClick();
+      });
+
+      $('.notifications-link').on('click',function(event){
+        event.preventDefault();
+        handleNotificationsClick();
+      })
+
+      $('.bot-link').on('click',function(event){
+        event.preventDefault();
+        handleBotClick();
+      })
+
+      // Handle mobile sidebar toggle for Goals-style header
+      $('.collapseSidebar').on('click', function(event) {
+        event.preventDefault();
+        openNav();
+      });
+    });
+
+    function handleDiamondClick (){
+      var chama_id = getGroupId();
+      if (chama_id){
+        window.location.href = `/subscriptions/plans/${chama_id}`;
+      }else{
+        console.error('invalid chama_id');
+      }
+    }
+  </script>
+
+  <!-- View switching functionality from base.html -->
+  <script>
+    $(document).ready(function() {
+      var groupId = localStorage.getItem('groupId');
+      if (!groupId) {
+        console.error("No groupId in localStorage!");
+        return;
+      }
+      var storageKey = "selectedView_" + groupId;
+      var savedView = localStorage.getItem(storageKey) || "member";
+
+      $(".admin, #remove-user, #add-member-button").hide();
+
+      if (savedView === "member") {
+        $(".view-option[data-view='member']").text("Viewing as member");
+        $(".view-option[data-view='admin']").text("Switch to admin view");
+      } else {
+        $(".view-option[data-view='admin']").text("Verifying admin…");
+        $(".view-option[data-view='member']").text("Switch to member view");
+      }
+
+      $.ajax({
+        url: '/chamas-bookeeping/get_user_role/',
+        data: { group_id: groupId },
+        dataType: 'json',
+        success: function(data) {
+          if (data.role !== "admin") {
+            savedView = "member";
+            $(".view-option[data-view='admin']").hide();
+            updateView("member");
+            localStorage.setItem(storageKey, "member");
+          } else {
+            $(".view-option[data-view='admin']").show();
+            if (savedView === "admin") {
+              updateView("admin");
+              $(".view-option[data-view='admin']").text("Viewing as admin");
+              $(".view-option[data-view='member']").text("Switch to member view");
+            } else {
+              updateView("member");
+              $(".view-option[data-view='member']").text("Viewing as member");
+              $(".view-option[data-view='admin']").text("Switch to admin view");
+            }
+          }
+        },
+        error: function() {
+          $(".view-option[data-view='admin']").hide();
+          updateView("member");
+          localStorage.setItem(storageKey, "member");
+        }
+      });
+
+      $(".view-option").on("click", function() {
+        var view = $(this).data("view");
+        if (view === "admin") {
+          $.ajax({
+            url: '/chamas-bookeeping/get_user_role/',
+            data: { group_id: groupId },
+            dataType: 'json',
+            success: function(data) {
+              if (data.role === "admin") {
+                updateView("admin");
+                $(".view-option[data-view='admin']").text("Viewing as admin");
+                $(".view-option[data-view='member']").text("Switch to member view");
+                localStorage.setItem(storageKey, "admin");
+              } else {
+                alert("You don't have permission to view as admin here.");
+                updateView("member");
+                $(".view-option[data-view='member']").text("Viewing as member");
+                $(".view-option[data-view='admin']").text("Switch to admin view");
+                localStorage.setItem(storageKey, "member");
+              }
+            },
+            error: function() {
+              alert("Unable to verify your role. Showing member view.");
+              updateView("member");
+              $(".view-option[data-view='member']").text("Viewing as member");
+              $(".view-option[data-view='admin']").text("Switch to admin view");
+              localStorage.setItem(storageKey, "member");
+            }
+          });
+        } else {
+          updateView("member");
+          $(".view-option[data-view='member']").text("Viewing as member");
+          $(".view-option[data-view='admin']").text("Switch to admin view");
+          localStorage.setItem(storageKey, "member");
+        }
+      });
+
+      function updateView(view) {
+        if (view === "member") {
+          $(".admin, #remove-user, #add-member-button").hide();
+          $(".member").show();
+          $(".view-option[data-view='member']").text("Viewing as member");
+          $(".view-option[data-view='admin']").text("Switch to admin view");
+        } else {
+          $(".member").hide();
+          $(".admin, #remove-user, #add-member-button").show();
+          $(".view-option[data-view='admin']").text("Viewing as admin");
+          $(".view-option[data-view='member']").text("Switch to member view");
+        }
+      }
+    });
+  </script>
+
+  <!-- Add member functionality -->
+  <script>
+    document.getElementById('add-member-modal-button').addEventListener('click', function() {
+      const name = document.querySelector("input[name='name']").value;
+      const role = document.querySelector("select[name='role']").value;
+      const email = document.querySelector("input[name='email']").value;
+      const phone = document.querySelector("input[name='mobile']").value;
+      const id_number = document.querySelector("input[name='id_number']").value;
+      var group = localStorage.getItem('groupId');
+
+      var formData = {
+        name:name,
+        role:role,
+        email:email,
+        phone:phone,
+        id_number:id_number,
+        group:group
+      }
+
+      fetch('/chamas-bookeeping/add-member/', {
+          method: 'POST',
+          headers: {
+              'X-Requested-With': 'XMLHttpRequest',
+              'X-CSRFToken': "{{ csrf_token }}"
+          },
+          body: JSON.stringify(formData)
+      })
+      .then(function(response) {
+          if (response.ok) {
+              return response.json();
+          } else {
+              return response.json().then(function(data) {
+                  throw new Error(data.message);
+              });
+          }
+      })
+      .then(function(responseData) {
+          var status = responseData.status;
+          var message = responseData.message;
+          var alertsHub = document.querySelector('.modal-alert-hub');
+          alertsHub.innerHTML = '<div class="alert alert-success" role="alert">' + message + '</div>';
+
+          document.querySelector("input[name='name']").value = '';
+          document.querySelector("select[name='role']").value = '';
+          document.querySelector("input[name='email']").value = '';
+          document.querySelector("input[name='mobile']").value = '';
+          document.querySelector("input[name='id_number']").value = '';
+
+          $('#exampleModal').modal('hide');
+          window.location.href = `/chamas-bookeeping/members/${localStorage.getItem('groupId')}`;
+      })
+      .catch(function(error) {
+          var errorMessage = error.message;
+          var alertsHub = document.querySelector('.modal-alert-hub');
+          alertsHub.innerHTML = '<div class="alert alert-danger" role="alert">' + errorMessage + '</div>';
+      });
+    });
+  </script>
+
+</body>
+</html>
