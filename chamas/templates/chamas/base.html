@@ -866,6 +866,30 @@ $(document).ready(function() {
       document.getElementById('iframeContainer').classList.remove('show');
   }); {% endcomment %}
 </script>
+
+<!-- Mobile Footer -->
+<footer class="mbl_footer">
+    <div class="container">
+        <div class="footer_row d-flex flex-row justify-content-between align-items-center">
+            <a href="{% url 'my_goals' %}" class="footer_button btn">
+                <img class="homer_white" src="{% static 'images/home_white.png' %}" alt="">
+                <p>Home</p>
+            </a>
+            <a href="{% url 'chamas:chamas' %}" class="footer_button btn active">
+                <img src="{% static 'images/filter_active.png' %}" alt="">
+                <p>Features</p>
+            </a>
+            <a href="{% url 'wallet_index' %}" class="footer_button btn">
+                <img src="{% static 'images/wallet_alt_fill.png' %}" alt="">
+                <p>Account</p>
+            </a>
+            <a href="{% url 'Setting' %}" class="footer_button btn">
+                <img src="{% static 'images/setting.png' %}" alt="">
+                <p>Settings</p>
+            </a>
+        </div>
+    </div>
+</footer>
   
 
 </body>
