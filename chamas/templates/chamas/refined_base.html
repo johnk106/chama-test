@@ -1,0 +1,889 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- CDN CSS for reliability -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    
+    <!-- Local CSS Files -->
+    <link rel="stylesheet" href="{% static 'css/style-test.css' %}">
+    <link rel="stylesheet" href="{% static 'chamas/style.css' %}">
+    <link rel="stylesheet" href="{% static 'chamas/brand-colors.css' %}">
+
+    {% block head %}
+    <title>ChamaSpace</title>
+    {% endblock %}
+    
+    <style>
+        /* Critical CSS for proper integration */
+        body {
+            font-family: 'Overpass', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #e4e9f7 !important;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        
+        /* App Layout Structure */
+        .app-layout {
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        /* Desktop Sidebar Styling - Original Chamas Style */
+        .desktop-sidebar {
+            height: 100vh;
+            width: 260px;
+            background-color: #2191a5;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding-top: 20px;
+            text-align: left;
+            z-index: 1000;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+        
+        .desktop-sidebar .logo_details {
+            padding: 0 20px 20px 20px;
+            text-align: center;
+        }
+        
+        .desktop-sidebar .logo_details img {
+            max-width: 120px;
+            height: auto;
+        }
+        
+        .desktop-sidebar .nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .desktop-sidebar .nav-list li {
+            padding: 10px 5px;
+            margin: 0 5px 10px 5px;
+        }
+        
+        .desktop-sidebar .nav-list li a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+        
+        .desktop-sidebar .nav-list li a i {
+            font-size: 20px;
+            margin-right: 10px;
+        }
+        
+        .desktop-sidebar .nav-list li:hover a {
+            background-color: white;
+            color: #2191a5;
+        }
+        
+        /* Mobile Sidebar - Original Chamas Style */
+        .sidenav {
+            height: 100vh;
+            width: 0;
+            position: fixed;
+            z-index: 2000;
+            top: 0;
+            left: 0;
+            background-color: #2191a5;
+            overflow-x: hidden;
+            padding-top: 20px;
+            transition: 0.5s;
+            text-align: left;
+        }
+        
+        .sidenav .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .sidenav .logo_details {
+            padding: 0 20px 20px 20px;
+            text-align: center;
+        }
+        
+        .sidenav .logo_details img {
+            max-width: 120px;
+            height: auto;
+        }
+        
+        .sidenav .nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidenav .nav-list li {
+            padding: 10px 5px;
+            margin: 0 5px 10px 5px;
+        }
+        
+        .sidenav .nav-list li a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+        
+        .sidenav .nav-list li a i {
+            font-size: 20px;
+            margin-right: 10px;
+        }
+        
+        .sidenav .nav-list li:hover a {
+            background-color: white;
+            color: #2191a5;
+        }
+        
+        /* Mobile Overlay */
+        .mobile-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1999;
+            display: none;
+        }
+        
+        .mobile-overlay.show {
+            display: block;
+        }
+        
+        /* Main Content Area */
+        .main-content {
+            margin-left: 260px;
+            min-height: 100vh;
+            background: #e4e9f7;
+            position: relative;
+        }
+        
+        .page-content {
+            padding: 20px;
+        }
+        
+        /* Goals Header Styles */
+        .topnav {
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0.5rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .topnav .nav {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .topnav .nav-link {
+            padding: 0.5rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            color: #6c757d;
+        }
+        
+        .topnav .nav-link:hover {
+            background: #f8f9fa;
+            color: #495057;
+        }
+        
+        /* Mobile Header - Goals Style */
+        .page_header {
+            background: linear-gradient(135deg, #2291A5 0%, #1a7a8a 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .page_header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('../../../static/images/header_back.png') no-repeat center center;
+            background-size: cover;
+            opacity: 0.1;
+            z-index: 1;
+        }
+        
+        .page_header > * {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .mob_nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+        }
+        
+        .brand img {
+            height: 40px;
+            width: auto;
+        }
+        
+        .nav-list {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        
+        .collapseSidebar {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 6px;
+            padding: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .collapseSidebar img {
+            width: 20px;
+            height: 20px;
+            filter: brightness(0) invert(1);
+        }
+        
+        .company_box {
+            padding: 1.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .company_image {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid rgba(255,255,255,0.3);
+            margin-right: 1rem;
+        }
+        
+        .company_image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .company_content h6 {
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.4;
+            margin: 0;
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .company_content b {
+            font-weight: 600;
+            color: white;
+        }
+        
+        /* Avatar Styling */
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            overflow: hidden;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .mobile-avatar-dropdown .avatar {
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        
+        /* Dropdown Styling */
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-radius: 8px;
+            padding: 0.5rem 0;
+            min-width: 200px;
+            margin-top: 0.5rem;
+        }
+        
+        .dropdown-header {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0.5rem 1rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .dropdown-item {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            color: #495057;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        
+        .dropdown-item:hover {
+            background: #f8f9fa;
+            color: #2291A5;
+        }
+        
+        .dropdown-item i {
+            width: 16px;
+            opacity: 0.7;
+        }
+        
+        /* Mobile Footer */
+        .mbl_footer {
+            background: #2291A5;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 0;
+            box-shadow: 0 -2px 12px rgba(0,0,0,0.15);
+        }
+        
+        .footer_row {
+            padding: 0.75rem 0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        
+        .footer_button {
+            background: transparent;
+            border: none;
+            padding: 0.5rem 0.75rem;
+            color: rgba(255,255,255,0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            cursor: pointer;
+            flex: 1;
+            max-width: 80px;
+        }
+        
+        .footer_button img {
+            width: 24px;
+            height: 24px;
+            filter: brightness(0) invert(1);
+            opacity: 0.8;
+        }
+        
+        .footer_button p {
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin: 0;
+            color: inherit;
+        }
+        
+        .footer_button.active {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        
+        .footer_button.active img {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        
+        /* Responsive Design */
+        .show_on_mobile { display: block; }
+        .hide_on_mobile { display: none; }
+        
+        @media screen and (min-width: 992px) {
+            .show_on_mobile { display: none !important; }
+            .hide_on_mobile { display: block !important; }
+            .mbl_footer { display: none !important; }
+            .desktop-sidebar { display: block !important; }
+            .sidenav { display: none !important; }
+        }
+        
+        @media screen and (max-width: 991px) {
+            .show_on_mobile { display: block !important; }
+            .hide_on_mobile { display: none !important; }
+            .mbl_footer { display: block !important; }
+            .desktop-sidebar { display: none !important; }
+            .sidenav { display: block !important; }
+            .main-content { margin-left: 0; padding-bottom: 80px; }
+            body { padding-bottom: 80px; }
+        }
+        
+        /* Z-index Management */
+        .sidenav { z-index: 2000; }
+        .mobile-overlay { z-index: 1999; }
+        .desktop-sidebar { z-index: 1000; }
+        .topnav { z-index: 999; }
+        .mbl_footer { z-index: 1000; }
+        .modal { z-index: 2100; }
+        .modal-backdrop { z-index: 2099; }
+    </style>
+</head>
+
+<body>
+    <!-- App Layout Container -->
+    <div class="app-layout">
+        
+        <!-- Goals Header Component -->
+        {% include 'chamas/includes/goals_header.html' %}
+        
+        <!-- Original Sidebar Component -->
+        {% include 'chamas/includes/original_sidebar.html' %}
+        
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Page Content -->
+            <div class="page-content">
+                {% block body %}
+                {% endblock %}
+            </div>
+        </main>
+        
+        <!-- Mobile Footer (Goals Style) -->
+        <div class="show_on_mobile">
+            {% include 'chamas/includes/mobile_footer_fixed.html' %}
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Add member modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel" style="color: #2291A5;">Add Member to group</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="add-member-form">
+                        <div class="modal-alert-hub"></div>
+                        <form action="" id="add-member-form">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="Name" class="form-label" style="color: #2291A5;">Name</label>
+                                <input type="text" name="name" class="form-control" id="member-name" placeholder="member name..." required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label" style="color: #2291A5;">Email address</label>
+                                <input type="email" name="email" class="form-control" id="member-email" placeholder="name@example.com" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="id_number" class="form-label" style="color: #2291A5;">Id Number</label>
+                                <input type="number" name="id_number" class="form-control" id="member-id_number" placeholder="12345678" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="mobile" class="form-label" style="color: #2291A5;">Mobile</label>
+                                <input type="number" name="mobile" class="form-control" id="member-mobile" placeholder="07 xxx xxx" required>
+                            </div>
+                            <div class="input-group mb-3">
+                                <label class="input-group-text" for="inputGroupSelect01" style="color: #2291A5;">Role</label>
+                                <select class="form-select text-capitalize" name="role" id="member-role">
+                                    {% for role in roles %}
+                                    <option value="{{role.name}}">{{role.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="add-member-modal-button" type="button" class="btn btn-primary" style="background-color: #2291A5;">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/d90233e428.js" crossorigin="anonymous"></script>
+
+    <script>
+        /* Original Chamas Sidebar Functions */
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "260px";
+            document.querySelector(".mobile-overlay").style.display = "block";
+            document.querySelector(".mobile-overlay").classList.add("show");
+        }
+
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+            document.querySelector(".mobile-overlay").style.display = "none";
+            document.querySelector(".mobile-overlay").classList.remove("show");
+        }
+
+        function getGroupId() {
+            return localStorage.getItem('groupId');
+        }
+
+        /* Navigation Functions - Original Chamas Logic */
+        $(document).ready(function () {
+            function handleDashboardClick() {
+                var chama_id = getGroupId();
+                if (chama_id) {
+                    window.location.href = `/chamas-bookeeping/chama-dashboard/${chama_id}/`;
+                } else {
+                    console.error('invalid chama_id');
+                }
+            }
+
+            function handleContributionsClick() {
+                var chama_id = getGroupId();
+                if (chama_id) {
+                    window.location.href = `/chamas-bookeeping/contributions/${chama_id}/`;
+                } else {
+                    console.error('Invalid chama_id');
+                }
+            }
+
+            function handleMembersClick() {
+                var chama_id = getGroupId();
+                if (chama_id) {
+                    window.location.href = `/chamas-bookeeping/members/${chama_id}/`;
+                } else {
+                    console.log('invalid chama id');
+                }
+            }
+
+            function handleFinesClick() {
+                var chama_id = getGroupId();
+                if (chama_id) {
+                    window.location.href = `/chamas-bookeeping/chama-fines/${chama_id}/`;
+                } else {
+                    console.log('invalid chama id');
+                }
+            }
+
+            function handleLoansClick() {
+                var chama_id = getGroupId();
+                if (chama_id) {
+                    window.location.href = `/chamas-bookeeping/chama-loans/${chama_id}/`;
+                } else {
+                    console.log('invalid chama id');
+                }
+            }
+
+            function handleExpensesClick() {
+                var chama_id = getGroupId();
+                if (chama_id) {
+                    window.location.href = `/chamas-bookeeping/chama-expenses/${chama_id}/`;
+                } else {
+                    console.log('invalid chama id');
+                }
+            }
+
+            function handleFinancesClick() {
+                var chama_id = getGroupId();
+                if (chama_id) {
+                    window.location.href = `/chamas-bookeeping/chama-finances/${chama_id}/`;
+                } else {
+                    console.log('invalid chama id');
+                }
+            }
+
+            function handleReportsClick() {
+                var chama_id = getGroupId();
+                if (chama_id) {
+                    window.location.href = `/chamas-bookeeping/chama-reports/${chama_id}/`;
+                } else {
+                    console.log('invalid chama id');
+                }
+            }
+
+            function handleNotificationsClick() {
+                var chama_id = getGroupId();
+                if (chama_id) {
+                    window.location.href = `/chamas-bookeeping/chama-notifications/${chama_id}/`;
+                } else {
+                    console.log('Invalid chama id');
+                }
+            }
+
+            function handleBotClick() {
+                var chama_id = getGroupId();
+                if (chama_id) {
+                    window.location.href = `/bot/reports/${chama_id}/`;
+                } else {
+                    console.log('Invalid chama id');
+                }
+            }
+
+            // Attach event handlers
+            $('.dashboard-link').on('click', function (event) {
+                event.preventDefault();
+                handleDashboardClick();
+            });
+
+            $('.contribution-link').on('click', function (event) {
+                event.preventDefault();
+                handleContributionsClick();
+            });
+
+            $('.members-link').on('click', function (event) {
+                event.preventDefault();
+                handleMembersClick();
+            });
+
+            $('.loans-link').on('click', function (event) {
+                event.preventDefault();
+                handleLoansClick();
+            });
+
+            $('.fines-link').on('click', function (event) {
+                event.preventDefault();
+                handleFinesClick();
+            });
+
+            $('.expenses-link').on('click', function (event) {
+                event.preventDefault();
+                handleExpensesClick();
+            });
+
+            $('.finances-link').on('click', function (event) {
+                event.preventDefault();
+                handleFinancesClick();
+            });
+
+            $('.reports-link').on('click', function (event) {
+                event.preventDefault();
+                handleReportsClick();
+            });
+
+            $('.notifications-link').on('click', function (event) {
+                event.preventDefault();
+                handleNotificationsClick();
+            });
+
+            $('.bot-link').on('click', function (event) {
+                event.preventDefault();
+                handleBotClick();
+            });
+        });
+
+        /* View Switching Functionality - Original Chamas Logic */
+        $(document).ready(function() {
+            var groupId = localStorage.getItem('groupId');
+            if (!groupId) {
+                console.error("No groupId in localStorage!");
+                return;
+            }
+            var storageKey = "selectedView_" + groupId;
+            var savedView = localStorage.getItem(storageKey) || "member";
+
+            // Hide admin elements initially
+            $(".admin, #remove-user, #add-member-button").hide();
+
+            // Initialize view option text
+            if (savedView === "member") {
+                $(".view-option[data-view='member']").text("View as Member");
+                $(".view-option[data-view='admin']").text("View as Admin");
+            } else {
+                $(".view-option[data-view='admin']").text("Verifying admin…");
+                $(".view-option[data-view='member']").text("View as Member");
+            }
+
+            // Check user role
+            $.ajax({
+                url: '/chamas-bookeeping/get_user_role/',
+                data: { group_id: groupId },
+                dataType: 'json',
+                success: function(data) {
+                    if (data.role !== "admin") {
+                        savedView = "member";
+                        $(".view-option[data-view='admin']").hide();
+                        updateView("member");
+                        localStorage.setItem(storageKey, "member");
+                    } else {
+                        $(".view-option[data-view='admin']").show();
+                        if (savedView === "admin") {
+                            updateView("admin");
+                            $(".view-option[data-view='admin']").text("View as Admin");
+                            $(".view-option[data-view='member']").text("View as Member");
+                        } else {
+                            updateView("member");
+                            $(".view-option[data-view='member']").text("View as Member");
+                            $(".view-option[data-view='admin']").text("View as Admin");
+                        }
+                    }
+                },
+                error: function() {
+                    $(".view-option[data-view='admin']").hide();
+                    updateView("member");
+                    localStorage.setItem(storageKey, "member");
+                }
+            });
+
+            // Handle view option clicks
+            $(".view-option").on("click", function(e) {
+                e.preventDefault();
+                var view = $(this).data("view");
+                if (view === "admin") {
+                    $.ajax({
+                        url: '/chamas-bookeeping/get_user_role/',
+                        data: { group_id: groupId },
+                        dataType: 'json',
+                        success: function(data) {
+                            if (data.role === "admin") {
+                                updateView("admin");
+                                $(".view-option[data-view='admin']").text("View as Admin");
+                                $(".view-option[data-view='member']").text("View as Member");
+                                localStorage.setItem(storageKey, "admin");
+                            } else {
+                                alert("You don't have permission to view as admin here.");
+                                updateView("member");
+                                localStorage.setItem(storageKey, "member");
+                            }
+                        },
+                        error: function() {
+                            alert("Unable to verify your role. Showing member view.");
+                            updateView("member");
+                            localStorage.setItem(storageKey, "member");
+                        }
+                    });
+                } else {
+                    updateView("member");
+                    $(".view-option[data-view='member']").text("View as Member");
+                    $(".view-option[data-view='admin']").text("View as Admin");
+                    localStorage.setItem(storageKey, "member");
+                }
+            });
+
+            function updateView(view) {
+                if (view === "member") {
+                    $(".admin, #remove-user, #add-member-button").hide();
+                    $(".member").show();
+                } else {
+                    $(".member").hide();
+                    $(".admin, #remove-user, #add-member-button").show();
+                }
+            }
+        });
+
+        /* Add Member Functionality - Original Chamas Logic */
+        document.addEventListener('DOMContentLoaded', function() {
+            var addMemberButton = document.getElementById('add-member-modal-button');
+            if (addMemberButton) {
+                addMemberButton.addEventListener('click', function() {
+                    const name = document.querySelector("input[name='name']").value;
+                    const role = document.querySelector("select[name='role']").value;
+                    const email = document.querySelector("input[name='email']").value;
+                    const phone = document.querySelector("input[name='mobile']").value;
+                    const id_number = document.querySelector("input[name='id_number']").value;
+                    var group = localStorage.getItem('groupId');
+
+                    var formData = {
+                        name: name,
+                        role: role,
+                        email: email,
+                        phone: phone,
+                        id_number: id_number,
+                        group: group
+                    };
+
+                    fetch('/chamas-bookeeping/add-member/', {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRFToken': "{{ csrf_token }}"
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(function(response) {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            return response.json().then(function(data) {
+                                throw new Error(data.message);
+                            });
+                        }
+                    })
+                    .then(function(responseData) {
+                        var message = responseData.message;
+                        var alertsHub = document.querySelector('.modal-alert-hub');
+                        alertsHub.innerHTML = '<div class="alert alert-success" role="alert">' + message + '</div>';
+
+                        // Clear form
+                        document.querySelector("input[name='name']").value = '';
+                        document.querySelector("select[name='role']").value = '';
+                        document.querySelector("input[name='email']").value = '';
+                        document.querySelector("input[name='mobile']").value = '';
+                        document.querySelector("input[name='id_number']").value = '';
+
+                        setTimeout(function() {
+                            window.location.href = `/chamas-bookeeping/members/${localStorage.getItem('groupId')}`;
+                        }, 1000);
+                    })
+                    .catch(function(error) {
+                        var errorMessage = error.message;
+                        var alertsHub = document.querySelector('.modal-alert-hub');
+                        alertsHub.innerHTML = '<div class="alert alert-danger" role="alert">' + errorMessage + '</div>';
+                    });
+                });
+            }
+        });
+
+        function handleDiamondClick() {
+            var chama_id = getGroupId();
+            if (chama_id) {
+                window.location.href = `/subscriptions/plans/${chama_id}`;
+            } else {
+                console.error('invalid chama_id');
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,127 @@
+{% load static %}
+
+<!-- Desktop Header (Goals Style) -->
+<nav class="topnav navbar navbar-light page_header hide_on_mobile">
+    <button type="button" class="navbar-toggler text-muted mt-2 p-0 mr-3 collapseSidebar" onclick="openNav()">
+        <i class="fe fe-menu navbar-toggler-icon"></i>
+    </button>
+
+    <ul class="nav">
+        <li class="nav-item">
+            <a class="nav-link text-muted my-2" href="#" id="modeSwitcher" data-mode="light">
+                <i class="fe fe-sun fe-16"></i>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-muted my-2" href="#" data-toggle="modal" data-target=".modal-shortcut">
+                <span class="fe fe-grid fe-16"></span>
+            </a>
+        </li>
+        <li class="nav-item nav-notif">
+            <a class="nav-link text-muted my-2" href="#" data-toggle="modal" data-target=".modal-notif">
+                <span class="fe fe-bell fe-16"></span>
+                <span class="dot dot-md bg-success"></span>
+            </a>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-muted pr-0" href="#" id="navbarDropdownMenuLink"
+               role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="avatar avatar-sm mt-2">
+                    {% if request.user.profile.picture %}
+                        <img src="{{ request.user.profile.picture.url }}" alt="Profile" class="avatar-img rounded-circle">
+                    {% else %}
+                        <img src="{% static 'assets/avatars/face-1.png' %}" alt="Default Avatar" class="avatar-img rounded-circle">
+                    {% endif %}
+                </span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+                <li><h6 class="dropdown-header">View Options</h6></li>
+                <li><a class="dropdown-item view-option" href="#" data-view="member">
+                    <i class="fe fe-user fe-16 me-2"></i>View as Member
+                </a></li>
+                <li><a class="dropdown-item view-option admin" href="#" data-view="admin" style="display: none;">
+                    <i class="fe fe-shield fe-16 me-2"></i>View as Admin
+                </a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'Setting' %}">
+                    <i class="fe fe-settings fe-16 me-2"></i>Settings
+                </a></li>
+                <li><a class="dropdown-item" href="{% url 'Logout' %}">
+                    <i class="fe fe-log-out fe-16 me-2"></i>Logout
+                </a></li>
+            </ul>
+        </li>
+    </ul>
+</nav>
+
+<!-- Mobile Header (Goals Style) -->
+<div class="show_on_mobile">
+    <div class="page_header pt-3">
+        <div class="container">
+            <!-- Mobile Navigation Bar -->
+            <nav class="page_nav mob_nav">
+                <div class="brand">
+                    <a href="#">
+                        <img src="{% static 'images/Chama-Bora_clrd.png' %}" alt="ChamaBora Logo">
+                    </a>
+                </div>
+                <ul class="nav-list">
+                    <li>
+                        <img src="{% static 'images/Notifications.png' %}" alt="Notifications">
+                    </li>
+                    <li>
+                        <button class="btn navbar-toggler text-muted collapseSidebar" type="button" onclick="openNav()">
+                            <img src="{% static 'images/menu.png' %}" alt="Menu">
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- User Profile Section -->
+            <div class="company_box d-flex flex-row justify-content-between align-items-center pt-0 mt-0">
+                <div class="d-flex align-items-center">
+                    <div class="company_image">
+                        {% if request.user.profile.picture %}
+                            <img src="{{ request.user.profile.picture.url }}" alt="Profile Picture">
+                        {% else %}
+                            <img src="{% static 'assets/avatars/face-1.png' %}" alt="Default Avatar">
+                        {% endif %}
+                    </div>
+                    <div class="company_content">
+                        <h6>
+                            Good Morning <br>
+                            <b>{{ request.user.first_name }} {{ request.user.last_name }}</b>
+                        </h6>
+                    </div>
+                </div>
+                
+                <!-- Mobile Avatar Dropdown -->
+                <div class="mobile-avatar-dropdown dropdown">
+                    <div class="avatar avatar-sm" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;">
+                        {% if request.user.profile.picture %}
+                            <img src="{{ request.user.profile.picture.url }}" alt="Profile" class="avatar-img rounded-circle">
+                        {% else %}
+                            <img src="{% static 'assets/avatars/face-1.png' %}" alt="Default Avatar" class="avatar-img rounded-circle">
+                        {% endif %}
+                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><h6 class="dropdown-header">View Options</h6></li>
+                        <li><a class="dropdown-item view-option" href="#" data-view="member">
+                            <i class="fe fe-user fe-16 me-2"></i>View as Member
+                        </a></li>
+                        <li><a class="dropdown-item view-option admin" href="#" data-view="admin" style="display: none;">
+                            <i class="fe fe-shield fe-16 me-2"></i>View as Admin
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'Setting' %}">
+                            <i class="fe fe-settings fe-16 me-2"></i>Settings
+                        </a></li>
+                        <li><a class="dropdown-item" href="{% url 'Logout' %}">
+                            <i class="fe fe-log-out fe-16 me-2"></i>Logout
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,159 @@
+{% load static %}
+
+<!-- Mobile Sidebar (Hidden by default, shown on mobile when menu is clicked) -->
+<div id="mySidenav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+  <div class="logo_details">
+    <img src="{% static 'chamas/logo.png' %}" alt="Logo" />
+  </div>
+  <ul class="nav-list">
+    <li>
+      <a href="#" class="dashboard-link">
+        <i class='bx bx-bolt-circle'></i>
+        <span class="link_name">Dashboard</span>
+      </a>
+    </li>
+    <li>
+      <a href="#" class="finances-link">
+        <i class="bx bx-wallet"></i>
+        <span class="link_name">Finances Page</span>
+      </a>
+    </li>
+    <li>
+      <a class="contribution-link" href="#">
+        <i class='bx bx-sort bx-rotate-90'></i>
+        <span class="link_name">Contributions</span>
+      </a>
+    </li>
+    <li>
+      <a href="#" class="loans-link">
+        <i class='bx bxs-donate-heart'></i>
+        <span class="link_name">Loans</span>
+      </a>
+    </li>
+    <li>
+      <a href="#" class="expenses-link">
+        <i class="bx bx-folder"></i>
+        <span class="link_name">Expenses</span>
+      </a>
+    </li>
+    <li>
+      <a href="#" class="fines-link">
+        <i class="bx bx-file"></i>
+        <span class="link_name">Fines</span>
+      </a>
+    </li>
+    <li>
+      <a href="#" class="reports-link">
+        <i class='bx bxs-report'></i>
+        <span class="link_name">Reports</span>
+      </a>
+    </li>
+    <li>
+      <a href="#" class="members-link">
+        <i class="bx bx-user"></i>
+        <span class="link_name">Members</span>
+      </a>
+    </li>
+    <li>
+      <a href="#" class="notifications-link">
+        <i class="bx bx-bell"></i>
+        <span class="link_name">Notifications</span>
+      </a>
+    </li>
+    <li class="admin">
+      <a href="#" class="bot-link">
+        <i class="bx bx-cog"></i>
+        <span class="link_name">Bot Control</span>
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'chamas:chamas' %}">
+        <i class="bx bx-arrow-back"></i>
+        <span class="link_name">Back</span>
+      </a>
+    </li>
+  </ul>
+</div>
+
+<!-- Desktop Sidebar (Always visible on desktop) -->
+<aside class="desktop-sidebar">
+  <div class="sidebar-header">
+    <div class="logo_details">
+      <img src="{% static 'chamas/logo.png' %}" alt="Logo" />
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <ul class="nav-list">
+      <li>
+        <a href="#" class="dashboard-link">
+          <i class='bx bx-bolt-circle'></i>
+          <span class="link_name">Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" class="finances-link">
+          <i class="bx bx-wallet"></i>
+          <span class="link_name">Finances Page</span>
+        </a>
+      </li>
+      <li>
+        <a class="contribution-link" href="#">
+          <i class='bx bx-sort bx-rotate-90'></i>
+          <span class="link_name">Contributions</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" class="loans-link">
+          <i class='bx bxs-donate-heart'></i>
+          <span class="link_name">Loans</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" class="expenses-link">
+          <i class="bx bx-folder"></i>
+          <span class="link_name">Expenses</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" class="fines-link">
+          <i class="bx bx-file"></i>
+          <span class="link_name">Fines</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" class="reports-link">
+          <i class='bx bxs-report'></i>
+          <span class="link_name">Reports</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" class="members-link">
+          <i class="bx bx-user"></i>
+          <span class="link_name">Members</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" class="notifications-link">
+          <i class="bx bx-bell"></i>
+          <span class="link_name">Notifications</span>
+        </a>
+      </li>
+      <li class="admin">
+        <a href="#" class="bot-link">
+          <i class="bx bx-cog"></i>
+          <span class="link_name">Bot Control</span>
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'chamas:chamas' %}">
+          <i class="bx bx-arrow-back"></i>
+          <span class="link_name">Back</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</aside>
+
+<!-- Mobile Overlay -->
+<div class="mobile-overlay" onclick="closeNav()"></div>
