@@ -1,0 +1,372 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Essential CSS Only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.css">
+    
+    <!-- Try local CSS files -->
+    <link rel="stylesheet" href="{% static 'css/style-test.css' %}">
+    <link rel="stylesheet" href="{% static 'chamas/unified-layout.css' %}">
+
+    {% block head %}
+    <title>ChamaSpace</title>
+    {% endblock %}
+    
+    <style>
+        /* Critical inline CSS to ensure basic styling works */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Header Styles */
+        .topnav {
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0.5rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .page_header {
+            background: linear-gradient(135deg, #2291A5 0%, #1a7a8a 100%);
+            color: white;
+            padding: 1rem 0;
+        }
+        
+        .mob_nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .brand img {
+            height: 40px;
+        }
+        
+        .nav-list {
+            display: flex;
+            gap: 1rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .collapseSidebar {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 6px;
+            padding: 0.5rem;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar-left {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 280px;
+            height: 100vh;
+            background: white;
+            z-index: 2000;
+            transition: all 0.3s ease;
+            overflow-y: auto;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-left.show {
+            left: 0;
+        }
+        
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Mobile Footer */
+        .mbl_footer {
+            background: #2291A5;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 0.75rem 0;
+        }
+        
+        .footer_row {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        
+        .footer_button {
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.5rem;
+            cursor: pointer;
+        }
+        
+        .footer_button img {
+            width: 24px;
+            height: 24px;
+            filter: brightness(0) invert(1);
+        }
+        
+        .footer_button.active {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 8px;
+        }
+        
+        /* Responsive */
+        .show_on_mobile { display: block; }
+        .hide_on_mobile { display: none; }
+        
+        @media screen and (min-width: 992px) {
+            .show_on_mobile { display: none !important; }
+            .hide_on_mobile { display: block !important; }
+            .mbl_footer { display: none !important; }
+        }
+        
+        @media screen and (max-width: 991px) {
+            .show_on_mobile { display: block !important; }
+            .hide_on_mobile { display: none !important; }
+            .mbl_footer { display: block !important; }
+            body { padding-bottom: 80px; }
+        }
+        
+        /* Avatar */
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Company Box */
+        .company_box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+        }
+        
+        .company_image {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 1rem;
+        }
+        
+        .company_content h6 {
+            margin: 0;
+            font-size: 1rem;
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .company_content b {
+            color: white;
+        }
+        
+        /* Dropdown */
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-radius: 8px;
+            min-width: 200px;
+        }
+        
+        .dropdown-item {
+            padding: 0.5rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .dropdown-item:hover {
+            background: #f8f9fa;
+            color: #2291A5;
+        }
+        
+        /* Sidebar Content */
+        .offcanvas-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .offcanvas-body {
+            padding: 1.5rem;
+        }
+        
+        .offcanvas_list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .list-item {
+            margin-bottom: 0.5rem;
+        }
+        
+        .list-item a {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: #495057;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            gap: 0.75rem;
+        }
+        
+        .list-item a:hover {
+            background: #f8f9fa;
+            color: #2291A5;
+        }
+        
+        .list-item img {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .log_out_btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .log_out_btn:hover {
+            background: #c82333;
+            color: white;
+        }
+        
+        /* Main Content */
+        .main-content {
+            min-height: 100vh;
+            background: #f8f9fa;
+        }
+        
+        .page-content {
+            padding: 1.5rem;
+        }
+        
+        /* Toggle Button */
+        .toggle-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #6c757d;
+        }
+    </style>
+</head>
+
+<body class="vertical light">
+    <div class="wrapper">
+        
+        <!-- Unified Header Component -->
+        {% include 'chamas/includes/unified_header.html' %}
+        
+        <!-- Unified Sidebar Component -->
+        {% include 'chamas/includes/unified_sidebar.html' %}
+        
+        <!-- Main Content Area -->
+        <main role="main" class="main-content">
+            <div class="page-content">
+                {% block body %}
+                <div class="alert alert-info">
+                    <h4>CSS Test</h4>
+                    <p>If you can see this styled alert box, CSS is loading correctly!</p>
+                </div>
+                {% endblock %}
+            </div>
+        </main>
+        
+        <!-- Mobile Footer (Goals Style) -->
+        <div class="show_on_mobile">
+            {% include 'chamas/includes/mobile_footer_fixed.html' %}
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        /* Sidebar Navigation Functions */
+        function openNav() {
+            document.getElementById("leftSidebar").classList.add("show");
+            document.querySelector(".sidebar-overlay").classList.add("show");
+        }
+
+        function closeNav() {
+            document.getElementById("leftSidebar").classList.remove("show");
+            document.querySelector(".sidebar-overlay").classList.remove("show");
+        }
+
+        /* Test CSS Loading */
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('CSS Test: Page loaded');
+            
+            // Test if CSS is working
+            const testElement = document.createElement('div');
+            testElement.style.cssText = 'position: absolute; top: -1000px; background: #2291A5; width: 10px; height: 10px;';
+            document.body.appendChild(testElement);
+            
+            const computedStyle = window.getComputedStyle(testElement);
+            if (computedStyle.backgroundColor === 'rgb(34, 145, 165)') {
+                console.log('✅ CSS is working correctly');
+            } else {
+                console.log('❌ CSS may not be loading properly');
+            }
+            
+            document.body.removeChild(testElement);
+        });
+    </script>
+
+</body>
+</html>

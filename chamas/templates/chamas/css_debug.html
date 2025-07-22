@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Debug Test</title>
+    
+    <!-- Test CSS Files One by One -->
+    <link rel="stylesheet" href="{% static 'css/style-test.css' %}">
+    <link rel="stylesheet" href="{% static 'chamas/unified-layout.css' %}">
+    
+    <style>
+        .debug-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            font-family: Arial, sans-serif;
+        }
+        
+        .debug-section {
+            margin: 2rem 0;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        .test-element {
+            background: #2291A5;
+            color: white;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        
+        .error {
+            background: #dc3545;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        
+        .success {
+            background: #28a745;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-container">
+        <h1>CSS Debug Test</h1>
+        
+        <div class="debug-section">
+            <h2>Static Files Test</h2>
+            <p>Testing if Django can load static files...</p>
+            
+            <div class="test-element">
+                This should have a blue background (#2291A5) if inline CSS works
+            </div>
+            
+            <!-- Test Goals CSS -->
+            <div class="page_header" style="padding: 1rem; margin: 1rem 0;">
+                <div class="container">
+                    <p>This should have Goals page header styling if style-test.css loads</p>
+                </div>
+            </div>
+            
+            <!-- Test Unified CSS -->
+            <div class="topnav" style="margin: 1rem 0;">
+                <p>This should have topnav styling if unified-layout.css loads</p>
+            </div>
+        </div>
+        
+        <div class="debug-section">
+            <h2>CSS File Paths</h2>
+            <ul>
+                <li>style-test.css: <code>{% static 'css/style-test.css' %}</code></li>
+                <li>unified-layout.css: <code>{% static 'chamas/unified-layout.css' %}</code></li>
+            </ul>
+        </div>
+        
+        <div class="debug-section">
+            <h2>Network Test</h2>
+            <p>Check browser console and network tab for:</p>
+            <ul>
+                <li>404 errors for CSS files</li>
+                <li>MIME type errors</li>
+                <li>Load timing issues</li>
+            </ul>
+        </div>
+        
+        <div id="css-test-results"></div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const results = document.getElementById('css-test-results');
+            let testResults = [];
+            
+            // Test if CSS is being applied
+            const testElement = document.createElement('div');
+            testElement.className = 'page_header';
+            testElement.style.position = 'absolute';
+            testElement.style.top = '-1000px';
+            document.body.appendChild(testElement);
+            
+            const computedStyle = window.getComputedStyle(testElement);
+            
+            // Check for Goals CSS
+            if (computedStyle.backgroundImage && computedStyle.backgroundImage !== 'none') {
+                testResults.push('<div class="success">✅ Goals CSS (style-test.css) is loading - background image detected</div>');
+            } else {
+                testResults.push('<div class="error">❌ Goals CSS (style-test.css) may not be loading - no background image</div>');
+            }
+            
+            // Test topnav styling
+            testElement.className = 'topnav';
+            const topnavStyle = window.getComputedStyle(testElement);
+            if (topnavStyle.boxShadow && topnavStyle.boxShadow !== 'none') {
+                testResults.push('<div class="success">✅ Unified CSS (unified-layout.css) is loading - box shadow detected</div>');
+            } else {
+                testResults.push('<div class="error">❌ Unified CSS (unified-layout.css) may not be loading - no box shadow</div>');
+            }
+            
+            document.body.removeChild(testElement);
+            
+            // Check for network errors
+            const links = document.querySelectorAll('link[rel="stylesheet"]');
+            let loadedCount = 0;
+            let totalCount = links.length;
+            
+            links.forEach(link => {
+                const testImg = new Image();
+                testImg.onload = function() {
+                    loadedCount++;
+                    if (loadedCount === totalCount) {
+                        testResults.push('<div class="success">✅ All CSS files are accessible</div>');
+                        results.innerHTML = testResults.join('');
+                    }
+                };
+                testImg.onerror = function() {
+                    testResults.push(`<div class="error">❌ Failed to load: ${link.href}</div>`);
+                    results.innerHTML = testResults.join('');
+                };
+                // Use a trick to test if CSS file loads
+                testImg.src = link.href;
+            });
+            
+            // Show initial results
+            results.innerHTML = testResults.join('');
+            
+            // Log to console
+            console.log('CSS Debug Results:', testResults);
+        });
+    </script>
+</body>
+</html>

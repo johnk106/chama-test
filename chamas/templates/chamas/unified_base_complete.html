@@ -9,26 +9,15 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <!-- Core CSS -->
-    <link rel="stylesheet" href="{% static 'css/simplebar.css' %}">
+    <!-- CDN CSS for reliability -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.css">
     
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     
-    <!-- Icons CSS -->
-    <link rel="stylesheet" href="{% static 'css/feather.css' %}">
-    
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="{% static 'bootstrap/bootstrap.min.css' %}">
-    
-    <!-- Goals Page Styles */
-    <link rel="stylesheet" href="{% static 'css/app-light.css' %}" id="lightTheme">
+    <!-- Local CSS Files -->
     <link rel="stylesheet" href="{% static 'css/style-test.css' %}">
-    
-    <!-- Chamas Core Styles */
-    <link rel="stylesheet" href="{% static 'chamas/brand-colors.css' %}">
-    
-    <!-- Unified Layout CSS - Load Last to Override Everything */
     <link rel="stylesheet" href="{% static 'chamas/unified-layout.css' %}">
 
     {% block head %}
@@ -37,9 +26,12 @@
     
     <style>
         /* Critical inline styles for layout stability */
-        body.vertical.light {
+        body {
+            font-family: 'Overpass', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background-color: #f8f9fa;
-            font-family: 'Overpass', sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
         }
         
         .wrapper {
@@ -52,6 +44,195 @@
             flex: 1;
             display: flex;
             flex-direction: column;
+        }
+        
+        /* Header Styles */
+        .topnav {
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0.5rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .page_header {
+            background: linear-gradient(135deg, #2291A5 0%, #1a7a8a 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .mob_nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+        }
+        
+        .brand img {
+            height: 40px;
+            width: auto;
+        }
+        
+        .nav-list {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        
+        .collapseSidebar {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 6px;
+            padding: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar-left {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 280px;
+            height: 100vh;
+            background: white;
+            z-index: 2000;
+            transition: all 0.3s ease;
+            overflow-y: auto;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-left.show {
+            left: 0;
+        }
+        
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Mobile Footer */
+        .mbl_footer {
+            background: #2291A5;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 0;
+            box-shadow: 0 -2px 12px rgba(0,0,0,0.15);
+        }
+        
+        .footer_row {
+            padding: 0.75rem 0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        
+        .footer_button {
+            background: transparent;
+            border: none;
+            padding: 0.5rem 0.75rem;
+            color: rgba(255,255,255,0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            cursor: pointer;
+            flex: 1;
+            max-width: 80px;
+        }
+        
+        .footer_button.active {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        
+        /* Responsive */
+        .show_on_mobile { display: block; }
+        .hide_on_mobile { display: none; }
+        
+        @media screen and (min-width: 992px) {
+            .show_on_mobile { display: none !important; }
+            .hide_on_mobile { display: block !important; }
+            .mbl_footer { display: none !important; }
+        }
+        
+        @media screen and (max-width: 991px) {
+            .show_on_mobile { display: block !important; }
+            .hide_on_mobile { display: none !important; }
+            .mbl_footer { display: block !important; }
+            body { padding-bottom: 80px; }
+        }
+        
+        /* Avatar */
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Company Box */
+        .company_box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem 0;
+        }
+        
+        .company_image {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid rgba(255,255,255,0.3);
+            margin-right: 1rem;
+        }
+        
+        .company_content h6 {
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.4;
+            margin: 0;
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .company_content b {
+            font-weight: 600;
+            color: white;
+        }
+        
+        /* Page Content */
+        .page-content {
+            padding: 1.5rem;
         }
         
         /* Ensure proper z-index hierarchy */
@@ -176,10 +357,8 @@
     </div>
 
     <!-- Scripts -->
-    <script src="{% static 'js/jquery.min.js' %}"></script>
-    <script src="{% static 'js/popper.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/simplebar.min.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://kit.fontawesome.com/d90233e428.js" crossorigin="anonymous"></script>
 
     <script>
