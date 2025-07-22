@@ -1,0 +1,523 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="{% static 'css/simplebar.css' %}">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    
+    <!-- Icons CSS -->
+    <link rel="stylesheet" href="{% static 'css/feather.css' %}">
+    
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="{% static 'bootstrap/bootstrap.min.css' %}">
+    
+    <!-- Goals Page Styles */
+    <link rel="stylesheet" href="{% static 'css/app-light.css' %}" id="lightTheme">
+    <link rel="stylesheet" href="{% static 'css/style-test.css' %}">
+    
+    <!-- Chamas Core Styles */
+    <link rel="stylesheet" href="{% static 'chamas/brand-colors.css' %}">
+    
+    <!-- Unified Layout CSS - Load Last to Override Everything */
+    <link rel="stylesheet" href="{% static 'chamas/unified-layout.css' %}">
+
+    {% block head %}
+    <title>ChamaSpace</title>
+    {% endblock %}
+    
+    <style>
+        /* Critical inline styles for layout stability */
+        body.vertical.light {
+            background-color: #f8f9fa;
+            font-family: 'Overpass', sans-serif;
+        }
+        
+        .wrapper {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Ensure proper z-index hierarchy */
+        .sidebar-left { z-index: 2000; }
+        .sidebar-overlay { z-index: 1999; }
+        .topnav { z-index: 1000; }
+        .mbl_footer { z-index: 1000; }
+        .modal { z-index: 2100; }
+        .modal-backdrop { z-index: 2099; }
+    </style>
+</head>
+
+<body class="vertical light">
+    <div class="wrapper">
+        
+        <!-- Unified Header Component -->
+        {% include 'chamas/includes/unified_header.html' %}
+        
+        <!-- Unified Sidebar Component -->
+        {% include 'chamas/includes/unified_sidebar.html' %}
+        
+        <!-- Main Content Area -->
+        <main role="main" class="main-content">
+            <div class="page-content">
+                {% block body %}
+                {% endblock %}
+            </div>
+        </main>
+        
+        <!-- Mobile Footer (Goals Style) -->
+        <div class="show_on_mobile">
+            {% include 'chamas/includes/mobile_footer_fixed.html' %}
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Add member modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel" style="color: #2291A5;">Add Member to group</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="add-member-form">
+                        <div class="modal-alert-hub"></div>
+                        <form action="" id="add-member-form">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="Name" class="form-label" style="color: #2291A5;">Name</label>
+                                <input type="text" name="name" class="form-control" id="member-name" placeholder="member name..." required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label" style="color: #2291A5;">Email address</label>
+                                <input type="email" name="email" class="form-control" id="member-email" placeholder="name@example.com" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="id_number" class="form-label" style="color: #2291A5;">Id Number</label>
+                                <input type="number" name="id_number" class="form-control" id="member-id_number" placeholder="12345678" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="mobile" class="form-label" style="color: #2291A5;">Mobile</label>
+                                <input type="number" name="mobile" class="form-control" id="member-mobile" placeholder="07 xxx xxx" required>
+                            </div>
+                            <div class="input-group mb-3">
+                                <label class="input-group-text" for="inputGroupSelect01" style="color: #2291A5;">Role</label>
+                                <select class="form-select text-capitalize" name="role" id="member-role">
+                                    {% for role in roles %}
+                                    <option value="{{role.name}}">{{role.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="add-member-modal-button" type="button" class="btn btn-primary" style="background-color: #2291A5;">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Modal -->
+    <div class="modal fade modal-notif modal-slide" tabindex="-1" role="dialog" aria-labelledby="defaultModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="defaultModalLabel">Notifications</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="list-group list-group-flush my-n3">
+                        <div class="list-group-item bg-transparent">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <small><strong>Your next contribution is due soon</strong></small>
+                                    <div class="my-0 text-muted small">Please ensure you have sufficient funds.</div>
+                                    <small class="badge badge-pill badge-light text-muted">1m ago</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group-item bg-transparent">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <small><strong>New member added to group</strong></small>
+                                    <div class="my-0 text-muted small">Welcome the new member to your chama</div>
+                                    <small class="badge badge-pill badge-light text-muted">30m ago</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">Clear All</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/simplebar.min.js' %}"></script>
+    <script src="https://kit.fontawesome.com/d90233e428.js" crossorigin="anonymous"></script>
+
+    <script>
+        /* Sidebar Navigation Functions */
+        function openNav() {
+            document.getElementById("leftSidebar").classList.add("show");
+            document.querySelector(".sidebar-overlay").classList.add("show");
+        }
+
+        function closeNav() {
+            document.getElementById("leftSidebar").classList.remove("show");
+            document.querySelector(".sidebar-overlay").classList.remove("show");
+        }
+
+        /* Utility Functions */
+        function getGroupId() {
+            return localStorage.getItem('groupId');
+        }
+
+        /* Navigation Functions */
+        $(document).ready(function () {
+            function handleDashboardClick() {
+                var chama_id = getGroupId();
+                if (chama_id) {
+                    window.location.href = `/chamas-bookeeping/chama-dashboard/${chama_id}/`;
+                } else {
+                    console.error('invalid chama_id');
+                }
+            }
+
+            function handleContributionsClick() {
+                var chama_id = getGroupId();
+                if (chama_id) {
+                    window.location.href = `/chamas-bookeeping/contributions/${chama_id}/`;
+                } else {
+                    console.error('Invalid chama_id');
+                }
+            }
+
+            function handleMembersClick() {
+                var chama_id = getGroupId();
+                if (chama_id) {
+                    window.location.href = `/chamas-bookeeping/members/${chama_id}/`;
+                } else {
+                    console.log('invalid chama id');
+                }
+            }
+
+            function handleFinesClick() {
+                var chama_id = getGroupId();
+                if (chama_id) {
+                    window.location.href = `/chamas-bookeeping/chama-fines/${chama_id}/`;
+                } else {
+                    console.log('invalid chama id');
+                }
+            }
+
+            function handleLoansClick() {
+                var chama_id = getGroupId();
+                if (chama_id) {
+                    window.location.href = `/chamas-bookeeping/chama-loans/${chama_id}/`;
+                } else {
+                    console.log('invalid chama id');
+                }
+            }
+
+            function handleExpensesClick() {
+                var chama_id = getGroupId();
+                if (chama_id) {
+                    window.location.href = `/chamas-bookeeping/chama-expenses/${chama_id}/`;
+                } else {
+                    console.log('invalid chama id');
+                }
+            }
+
+            function handleFinancesClick() {
+                var chama_id = getGroupId();
+                if (chama_id) {
+                    window.location.href = `/chamas-bookeeping/chama-finances/${chama_id}/`;
+                } else {
+                    console.log('invalid chama id');
+                }
+            }
+
+            function handleReportsClick() {
+                var chama_id = getGroupId();
+                if (chama_id) {
+                    window.location.href = `/chamas-bookeeping/chama-reports/${chama_id}/`;
+                } else {
+                    console.log('invalid chama id');
+                }
+            }
+
+            function handleNotificationsClick() {
+                var chama_id = getGroupId();
+                if (chama_id) {
+                    window.location.href = `/chamas-bookeeping/chama-notifications/${chama_id}/`;
+                } else {
+                    console.log('Invalid chama id');
+                }
+            }
+
+            function handleBotClick() {
+                var chama_id = getGroupId();
+                if (chama_id) {
+                    window.location.href = `/bot/reports/${chama_id}/`;
+                } else {
+                    console.log('Invalid chama id');
+                }
+            }
+
+            // Attach event handlers
+            $('.dashboard-link').on('click', function (event) {
+                event.preventDefault();
+                handleDashboardClick();
+            });
+
+            $('.contribution-link').on('click', function (event) {
+                event.preventDefault();
+                handleContributionsClick();
+            });
+
+            $('.members-link').on('click', function (event) {
+                event.preventDefault();
+                handleMembersClick();
+            });
+
+            $('.loans-link').on('click', function (event) {
+                event.preventDefault();
+                handleLoansClick();
+            });
+
+            $('.fines-link').on('click', function (event) {
+                event.preventDefault();
+                handleFinesClick();
+            });
+
+            $('.expenses-link').on('click', function (event) {
+                event.preventDefault();
+                handleExpensesClick();
+            });
+
+            $('.finances-link').on('click', function (event) {
+                event.preventDefault();
+                handleFinancesClick();
+            });
+
+            $('.reports-link').on('click', function (event) {
+                event.preventDefault();
+                handleReportsClick();
+            });
+
+            $('.notifications-link').on('click', function (event) {
+                event.preventDefault();
+                handleNotificationsClick();
+            });
+
+            $('.bot-link').on('click', function (event) {
+                event.preventDefault();
+                handleBotClick();
+            });
+        });
+
+        /* View Switching Functionality */
+        $(document).ready(function() {
+            var groupId = localStorage.getItem('groupId');
+            if (!groupId) {
+                console.error("No groupId in localStorage!");
+                return;
+            }
+            var storageKey = "selectedView_" + groupId;
+            var savedView = localStorage.getItem(storageKey) || "member";
+
+            // Hide admin elements initially
+            $(".admin, #remove-user, #add-member-button").hide();
+
+            // Initialize view option text
+            if (savedView === "member") {
+                $(".view-option[data-view='member']").text("Viewing as Member");
+                $(".view-option[data-view='admin']").text("Switch to Admin View");
+            } else {
+                $(".view-option[data-view='admin']").text("Verifying admin…");
+                $(".view-option[data-view='member']").text("Switch to Member View");
+            }
+
+            // Check user role
+            $.ajax({
+                url: '/chamas-bookeeping/get_user_role/',
+                data: { group_id: groupId },
+                dataType: 'json',
+                success: function(data) {
+                    if (data.role !== "admin") {
+                        savedView = "member";
+                        $(".view-option[data-view='admin']").hide();
+                        updateView("member");
+                        localStorage.setItem(storageKey, "member");
+                    } else {
+                        $(".view-option[data-view='admin']").show();
+                        if (savedView === "admin") {
+                            updateView("admin");
+                            $(".view-option[data-view='admin']").text("Viewing as Admin");
+                            $(".view-option[data-view='member']").text("Switch to Member View");
+                        } else {
+                            updateView("member");
+                            $(".view-option[data-view='member']").text("Viewing as Member");
+                            $(".view-option[data-view='admin']").text("Switch to Admin View");
+                        }
+                    }
+                },
+                error: function() {
+                    $(".view-option[data-view='admin']").hide();
+                    updateView("member");
+                    localStorage.setItem(storageKey, "member");
+                }
+            });
+
+            // Handle view option clicks
+            $(".view-option").on("click", function() {
+                var view = $(this).data("view");
+                if (view === "admin") {
+                    $.ajax({
+                        url: '/chamas-bookeeping/get_user_role/',
+                        data: { group_id: groupId },
+                        dataType: 'json',
+                        success: function(data) {
+                            if (data.role === "admin") {
+                                updateView("admin");
+                                $(".view-option[data-view='admin']").text("Viewing as Admin");
+                                $(".view-option[data-view='member']").text("Switch to Member View");
+                                localStorage.setItem(storageKey, "admin");
+                            } else {
+                                alert("You don't have permission to view as admin here.");
+                                updateView("member");
+                                $(".view-option[data-view='member']").text("Viewing as Member");
+                                $(".view-option[data-view='admin']").text("Switch to Admin View");
+                                localStorage.setItem(storageKey, "member");
+                            }
+                        },
+                        error: function() {
+                            alert("Unable to verify your role. Showing member view.");
+                            updateView("member");
+                            $(".view-option[data-view='member']").text("Viewing as Member");
+                            $(".view-option[data-view='admin']").text("Switch to Admin View");
+                            localStorage.setItem(storageKey, "member");
+                        }
+                    });
+                } else {
+                    updateView("member");
+                    $(".view-option[data-view='member']").text("Viewing as Member");
+                    $(".view-option[data-view='admin']").text("Switch to Admin View");
+                    localStorage.setItem(storageKey, "member");
+                }
+            });
+
+            function updateView(view) {
+                if (view === "member") {
+                    $(".admin, #remove-user, #add-member-button").hide();
+                    $(".member").show();
+                } else {
+                    $(".member").hide();
+                    $(".admin, #remove-user, #add-member-button").show();
+                }
+            }
+        });
+
+        /* Add Member Functionality */
+        document.addEventListener('DOMContentLoaded', function() {
+            var addMemberButton = document.getElementById('add-member-modal-button');
+            if (addMemberButton) {
+                addMemberButton.addEventListener('click', function() {
+                    const name = document.querySelector("input[name='name']").value;
+                    const role = document.querySelector("select[name='role']").value;
+                    const email = document.querySelector("input[name='email']").value;
+                    const phone = document.querySelector("input[name='mobile']").value;
+                    const id_number = document.querySelector("input[name='id_number']").value;
+                    var group = localStorage.getItem('groupId');
+
+                    var formData = {
+                        name: name,
+                        role: role,
+                        email: email,
+                        phone: phone,
+                        id_number: id_number,
+                        group: group
+                    };
+
+                    fetch('/chamas-bookeeping/add-member/', {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRFToken': "{{ csrf_token }}"
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(function(response) {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            return response.json().then(function(data) {
+                                throw new Error(data.message);
+                            });
+                        }
+                    })
+                    .then(function(responseData) {
+                        var message = responseData.message;
+                        var alertsHub = document.querySelector('.modal-alert-hub');
+                        alertsHub.innerHTML = '<div class="alert alert-success" role="alert">' + message + '</div>';
+
+                        // Clear form
+                        document.querySelector("input[name='name']").value = '';
+                        document.querySelector("select[name='role']").value = '';
+                        document.querySelector("input[name='email']").value = '';
+                        document.querySelector("input[name='mobile']").value = '';
+                        document.querySelector("input[name='id_number']").value = '';
+
+                        setTimeout(function() {
+                            window.location.href = `/chamas-bookeeping/members/${localStorage.getItem('groupId')}`;
+                        }, 1000);
+                    })
+                    .catch(function(error) {
+                        var errorMessage = error.message;
+                        var alertsHub = document.querySelector('.modal-alert-hub');
+                        alertsHub.innerHTML = '<div class="alert alert-danger" role="alert">' + errorMessage + '</div>';
+                    });
+                });
+            }
+        });
+
+        /* Close sidebar when clicking outside on mobile */
+        document.addEventListener('click', function(event) {
+            var sidebar = document.getElementById('leftSidebar');
+            var overlay = document.querySelector('.sidebar-overlay');
+            
+            if (overlay && overlay.classList.contains('show') && !sidebar.contains(event.target)) {
+                closeNav();
+            }
+        });
+    </script>
+
+</body>
+</html>
