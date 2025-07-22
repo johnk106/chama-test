@@ -11,6 +11,16 @@
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <link rel="stylesheet" href="{%static 'chamas/style.css'%}" />
   <link rel="stylesheet" href="{%static 'chamas/brand-colors.css'%}" />
+  
+  <!-- Goals Style CSS -->
+  <link rel="stylesheet" href="{% static 'css/simplebar.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/feather.css' %}">
+  <link rel="stylesheet" href="{% static 'css/select2.css' %}">
+  <link rel="stylesheet" href="{% static 'css/app-light.css' %}" id="lightTheme">
+  <link rel="stylesheet" href="{% static 'css/style-test.css' %}">
+  <link rel="stylesheet" href="{% static 'bootstrap/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{%static 'chamas/goals-integration.css'%}" />
 
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
   <style>
@@ -265,76 +275,17 @@
 
     <!-- Main Content Area -->
     <main class="main-content">
-      <!-- Mobile Header -->
-      <header class="mobile-header">
-        <div class="mobile-nav-toggle">
-          <span onclick="openNav()" class="menu-btn">
-            <i class='bx bx-menu-alt-right'></i>
-          </span>
-        </div>
-        
-        <div class="mobile-actions">
-          <a onclick="handleDiamondClick()"> 
-            <i class='bx bxs-diamond' style='color:#2191a5; cursor: pointer;'></i>
-          </a>
-          <div class="profile">
-            <div class="avatar">
-              {% if request.user.profile.picture %}
-                <img src="{{ request.user.profile.picture.url }}" alt="Profile" />
-              {% else %}
-                <i class='bx bxs-user'></i>
-              {% endif %}
-            </div>
-            <span class="profile-name">{{ user.first_name }} {{ user.last_name }}</span>
-            <i class='bx bx-chevron-down' data-bs-toggle="dropdown" aria-expanded="false"></i>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="{% url 'Setting' %}">My Profile</a></li>
-              <li class="view-option" data-view="member">Viewing as member</li>
-              <li class="view-option" data-view="admin" style="display: none;">Viewing as admin</li>
-              <li><a class="dropdown-item" href="#">My Groups</a></li>
-            </ul>
-          </div>
-        </div>
-      </header>
-
-      <!-- Desktop Header -->
-      <header class="desktop-header">
-        <div class="header-actions">
-          <input type="text" placeholder="Search ...." class="search-input" />
-          <div class="action-icons">
-            <i class='bx bxs-sun' style='color:#2191a5;'></i>
-            <i class='bx bxs-toggle-left' style='color:#2191a5;'></i>
-            <i class='bx bxs-moon' style='color:#141414;'></i>
-            <i class='bx bx-message-rounded-detail' style='color:#2191a5;'></i>
-            <a onclick="handleDiamondClick()"> 
-              <i class='bx bxs-diamond' style='color:#2191a5; cursor: pointer;'></i>
-            </a>
-          </div>
-          <div class="profile">
-            <div class="avatar">
-              {% if request.user.profile.picture %}
-                <img src="{{ request.user.profile.picture.url }}" alt="Profile" />
-              {% else %}
-                <i class='bx bxs-user'></i>
-              {% endif %}
-            </div>
-            <span class="profile-name">{{ request.user.first_name }} {{ request.user.last_name }}</span>
-            <i class='bx bx-chevron-down' data-bs-toggle="dropdown" aria-expanded="false"></i>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="{% url 'Setting' %}">My Profile</a></li>
-              <li class="view-option" data-view="member">View as member</li>
-              <li class="view-option" data-view="admin">View as admin</li>
-              <li><a class="dropdown-item" href="#">My Groups</a></li>
-            </ul>
-          </div>
-        </div>
-      </header>
+      <!-- Goals Style Header (Mobile & Desktop) -->
+      {% include 'chamas/includes/goals_header.html' %}
 
       <!-- Page Content -->
       <div class="page-content">
         {%block body%}
         {%endblock%}
       </div>
+      
+      <!-- Goals Style Mobile Footer -->
+      {% include 'chamas/includes/goals_footer.html' %}
     </main>
   </div>
 
@@ -411,6 +362,13 @@
   <script src="{%static 'chamas/script.js'%}"></script>
   <script src="https://kit.fontawesome.com/d90233e428.js" crossorigin="anonymous"></script>
 
+  <!-- Goals Style Scripts -->
+  <script src="{% static 'js/jquery.min.js' %}"></script>
+  <script src="{% static 'js/popper.min.js' %}"></script>
+  <script src="{% static 'js/moment.min.js' %}"></script>
+  <script src="{% static 'js/simplebar.min.js' %}"></script>
+  <script src="{% static 'js/config.js' %}"></script>
+  <script src="{% static 'js/apps.js' %}"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"

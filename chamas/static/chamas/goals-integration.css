@@ -1,0 +1,105 @@
+/* Goals Header/Footer Integration with Chamas */
+
+/* Ensure main content accommodates both chamas sidebar and goals header */
+.main-content {
+    margin-left: 0;
+    transition: margin-left 0.3s ease;
+}
+
+/* Desktop: make sure sidebar and header work together */
+@media (min-width: 992px) {
+    .main-content {
+        margin-left: 260px; /* Width of chamas sidebar */
+    }
+    
+    /* Goals header positioning for desktop */
+    .page_header {
+        margin-left: 260px;
+        width: calc(100% - 260px);
+        position: fixed;
+        top: 0;
+        z-index: 1000;
+    }
+    
+    /* Adjust main content to account for fixed header */
+    .page-content {
+        padding-top: 80px; /* Height of Goals header */
+    }
+}
+
+/* Mobile: ensure header doesn't conflict with chamas mobile sidebar */
+@media (max-width: 991px) {
+    .page_header {
+        display: none; /* Hide desktop header on mobile */
+    }
+    
+    .weknz_header {
+        position: relative;
+        z-index: 1001;
+    }
+    
+    /* Ensure mobile sidebar stays above Goals elements */
+    .sidenav {
+        z-index: 1002;
+    }
+    
+    /* Make sure footer doesn't overlap content */
+    .page-content {
+        padding-bottom: 80px; /* Height of mobile footer */
+    }
+}
+
+/* Goals sidebar integration with chamas sidebar */
+#leftSidebar {
+    z-index: 1001;
+}
+
+/* Ensure Goals mobile footer is properly positioned */
+.mbl_footer {
+    z-index: 1000;
+}
+
+/* Make sure chamas desktop sidebar stays visible */
+.desktop-sidebar {
+    z-index: 999;
+}
+
+/* Goals header brand adjustments */
+.weknz_header .brand img {
+    max-height: 40px;
+}
+
+/* Footer button adjustments for mobile */
+.footer_button {
+    background: none;
+    border: none;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px;
+    min-width: 60px;
+}
+
+.footer_button img {
+    width: 20px;
+    height: 20px;
+    margin-bottom: 4px;
+}
+
+.footer_button.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .footer_button {
+        min-width: 50px;
+        padding: 6px;
+    }
+    
+    .footer_button p {
+        font-size: 10px;
+    }
+}

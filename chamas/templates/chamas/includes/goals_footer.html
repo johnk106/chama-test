@@ -1,0 +1,24 @@
+{% load static %}
+
+<footer class="mbl_footer">
+    <div class="container">
+        <div class="footer_row d-flex flex-row justify-content-between align-items-center">
+            <button class="footer_button btn">
+                <img class="homer_white" src="{% static 'images/home_white.png' %}" alt="">
+                <p>Home</p>
+            </button>
+            <button class="footer_button btn active">
+                <img src="{% static 'images/filter_active.png' %}" alt="">
+                <p>Features</p>
+            </button>
+            <button class="footer_button btn">
+                <img src="{% static 'images/wallet_alt_fill.png' %}" alt="">
+                <p>Account</p>
+            </button>
+            <button class="footer_button btn">
+                <img src="{% static 'images/setting.png' %}" alt="">
+                <p>Settings</p>
+            </button>
+        </div>
+    </div>
+</footer>
