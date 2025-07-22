@@ -11,211 +11,61 @@
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <link rel="stylesheet" href="{%static 'chamas/style.css'%}" />
   <link rel="stylesheet" href="{%static 'chamas/brand-colors.css'%}" />
+  <link rel="stylesheet" href="{%static 'chamas/mobile-unified.css'%}" />
   
-  <!-- Goals page styles for header implementation -->
+  <!-- Goals page styles for mobile header/footer -->
   <link rel="stylesheet" href="{% static 'css/style-test.css' %}">
   <link rel="stylesheet" href="{% static 'bootstrap/bootstrap.min.css' %}">
-  <link rel="stylesheet" href="{% static 'css/feather.css' %}">
-  <link rel="stylesheet" href="{% static 'css/app-light.css' %}">
-  
-  <!-- Unified integration styles -->
-  <link rel="stylesheet" href="{% static 'chamas/unified-integration.css' %}">
 
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
-  
   <style>
-    /* Header and navigation integration styles */
-    .unified-layout {
-      min-height: 100vh;
+    .profile {
+      display: flex;
+      align-items: center;
     }
 
-    /* Hide/show classes for responsive behavior */
-    .hide_on_mobile {
-      display: block;
+    .dropdown {
+      position: relative;
     }
-    
-    .show_on_mobile {
+
+    .dropdown-toggle {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: #333;
+      cursor: pointer;
+    }
+
+    .dropdown-toggle img {
+      margin-right: 5px;
+    }
+
+    .dropdown-menu {
       display: none;
-    }
-    
-    @media screen and (max-width: 991px) {
-      .hide_on_mobile {
-        display: none !important;
-      }
-      
-      .show_on_mobile {
-        display: block !important;
-      }
-      
-      /* Adjust content padding for mobile footer */
-      .page-content {
-        padding-bottom: 100px;
-      }
-    }
-
-    /* Goals header styling compatibility */
-    .topnav {
-      background: #fff;
-      padding: 16px 24px;
-      border-bottom: 1px solid #e0e4e8;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .topnav .nav {
-      margin-left: auto;
-    }
-
-    .nav-item .nav-link {
-      color: #6c757d;
-      padding: 8px 12px;
-    }
-
-    .avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-    }
-
-    .avatar-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    /* Mobile header styling */
-    .page_header {
-      background-image: url('/static/images/header_back.png');
-      background-repeat: no-repeat;
-      background-size: cover;
-      background-position: center;
-      padding: 15px 0;
-    }
-
-    .mob_nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 9px 0;
-    }
-
-    .nav-list {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: 16px;
-      margin: 0;
-      padding: 0;
-    }
-
-    .company_box {
-      gap: 24px;
-      margin: 29px 0 23px 0;
-    }
-
-    .company_content h6 {
-      font-size: 16px;
-      font-weight: 400;
-      line-height: 24px;
-      color: #fff;
-      margin: 0;
-    }
-
-    /* Layout structure */
-    .app-layout {
-      display: flex;
-      min-height: 100vh;
-    }
-
-    .main-content {
-      flex: 1;
-      margin-left: 260px;
-    }
-
-    @media (max-width: 768px) {
-      .main-content {
-        margin-left: 0;
-      }
-    }
-
-    /* Original sidebar styles restored */
-    .desktop-sidebar {
-      height: 100vh;
-      width: 260px;
-      background-color: var(--color-default);
-      position: fixed;
+      position: absolute;
+      top: 100%;
       left: 0;
-      top: 0;
-      padding-top: 0;
-      z-index: 1000;
-      overflow-y: auto;
-      transition: all 0.3s ease;
-    }
-
-    .desktop-sidebar .logo_details {
-      padding: 20px;
-      text-align: center;
-    }
-
-    .desktop-sidebar .nav-list {
-      flex-direction: column;
-      gap: 0;
-    }
-
-    .desktop-sidebar .nav-list li {
-      width: 100%;
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 10px;
       list-style: none;
       margin: 0;
+    }
+
+    .dropdown-menu ul {
+      list-style: none;
       padding: 0;
+      margin: 0;
     }
 
-    .desktop-sidebar .nav-list li a {
-      display: flex;
-      align-items: center;
-      padding: 15px 20px;
-      color: white;
-      text-decoration: none;
-      transition: all 0.3s ease;
+    .dropdown-menu li {
+      padding: 5px 0;
     }
 
-    .desktop-sidebar .nav-list li a:hover {
-      background-color: white;
-      color: var(--color-default);
-      border-radius: 12px;
-      margin: 0 10px;
-    }
-
-    .desktop-sidebar .nav-list li a i {
-      font-size: 20px;
-      margin-right: 15px;
-    }
-
-    /* Mobile overlay */
-    .mobile-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 1999;
-    }
-
-    .mobile-overlay.show {
+    .dropdown-menu.show {
       display: block;
     }
 
-    /* Dropdown styling */
-    .dropdown-menu {
-      border: 1px solid #e0e4e8;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-
-    .dropdown-item:hover {
-      background-color: #f8f9fa;
-    }
-
-    /* iframe container styles */
     .iframe-container {
       display: none;
       position: fixed;
@@ -223,32 +73,48 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
+      background-color: rgba(0, 0, 0, 0.5); 
       justify-content: center;
       align-items: center;
-      z-index: 9999;
     }
-
     .iframe-container iframe {
-      width: 80%;
-      height: 80%;
-      border: none;
-      background: white;
+        width: 80%;
+        height: 80%;
+        filter: blur(10px);
+        border: none;
+        background: white;
     }
-
     .iframe-container.show {
-      display: flex;
+        display: flex;
+    }
+    .close-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: white;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
     }
 
-    .close-button {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: white;
-      border: none;
-      font-size: 20px;
-      cursor: pointer;
-      z-index: 10000;
+    /* Integration styles */
+    .unified-layout {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mobile-integrated-header {
+      background: #2291A5;
+      padding: 15px;
+      color: white;
+    }
+
+    /* Ensure mobile footer doesn't overlap content */
+    @media screen and (max-width: 991px) {
+      .page-content {
+        padding-bottom: 100px;
+      }
     }
   </style>
 
@@ -256,13 +122,20 @@
   <title>Chamaspace</title>
   {%endblock%}
 </head>
-
 <body class="unified-layout">
-  <!-- App Layout Container -->
+  <!-- Main Layout Container -->
   <div class="app-layout">
     
-    <!-- Restored Original Sidebar (Both Mobile and Desktop versions) -->
-    <!-- Mobile Sidebar (Hidden by default, shown when menu is clicked) -->
+    <!-- Mobile Header (Goals Style) - Only on Mobile -->
+    <div class="mobile-integrated-header show_on_mobile">
+      <div class="page_header mobile-integrated">
+        <div class="container">
+          {% include 'chamas/includes/mobile_header.html' %}
+        </div>
+      </div>
+    </div>
+    
+    <!-- Mobile Sidebar (Hidden by default, shown on mobile when menu is clicked) -->
     <div id="mySidenav" class="sidenav">
       <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
       <div class="logo_details">
@@ -419,132 +292,38 @@
 
     <!-- Main Content Area -->
     <main class="main-content">
-      
-      <!-- Goals-Style Desktop Header (Hidden on Mobile) -->
-      <nav class="topnav navbar navbar-light page_header hide_on_mobile">
-        <button type="button" class="navbar-toggler text-muted mt-2 p-0 mr-3 collapseSidebar" onclick="openNav()">
-          <i class="fe fe-menu navbar-toggler-icon"></i>
-        </button>
-
-        <ul class="nav">
-          <li class="nav-item">
-            <a class="nav-link text-muted my-2" href="#" id="modeSwitcher" data-mode="light">
-              <i class="fe fe-sun fe-16"></i>
+      <!-- Desktop Header (Hidden on Mobile) -->
+      <header class="desktop-header hide_on_mobile">
+        <div class="header-actions">
+          <input type="text" placeholder="Search ...." class="search-input" />
+          <div class="action-icons">
+            <i class='bx bxs-sun' style='color:#2191a5;'></i>
+            <i class='bx bxs-toggle-left' style='color:#2191a5;'></i>
+            <i class='bx bxs-moon' style='color:#141414;'></i>
+            <i class='bx bx-message-rounded-detail' style='color:#2191a5;'></i>
+            <a onclick="handleDiamondClick()"> 
+              <i class='bx bxs-diamond' style='color:#2191a5; cursor: pointer;'></i>
             </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-muted my-2" href="#" data-toggle="modal" data-target=".modal-shortcut">
-              <span class="fe fe-grid fe-16"></span>
-            </a>
-          </li>
-          <li class="nav-item nav-notif">
-            <a class="nav-link text-muted my-2" href="#" data-toggle="modal" data-target=".modal-notif">
-              <span class="fe fe-bell fe-16"></span>
-              <span class="dot dot-md bg-success"></span>
-            </a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-muted pr-0" href="#" id="navbarDropdownMenuLink"
-               role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <span class="avatar avatar-sm mt-2">
-                {% if request.user.profile.picture %}
-                  <img src="{{ request.user.profile.picture.url }}" alt="Profile" class="avatar-img rounded-circle">
-                {% else %}
-                  <img src="{% static 'assets/avatars/face-1.png' %}" alt="Default Avatar" class="avatar-img rounded-circle">
-                {% endif %}
-              </span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-              <li><h6 class="dropdown-header">View Options</h6></li>
-              <li><a class="dropdown-item view-option" href="#" data-view="member">
-                <i class="fe fe-user fe-16 me-2"></i>View as Member
-              </a></li>
-              <li><a class="dropdown-item view-option admin" href="#" data-view="admin" style="display: none;">
-                <i class="fe fe-shield fe-16 me-2"></i>View as Admin
-              </a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="{% url 'Setting' %}">
-                <i class="fe fe-settings fe-16 me-2"></i>Settings
-              </a></li>
-              <li><a class="dropdown-item" href="{% url 'Logout' %}">
-                <i class="fe fe-log-out fe-16 me-2"></i>Logout
-              </a></li>
-            </ul>
-          </li>
-        </ul>
-      </nav>
-
-      <!-- Goals-Style Mobile Header (Shown only on Mobile) -->
-      <div class="show_on_mobile">
-        <div class="page_header pt-3">
-          <div class="container">
-            <!-- Mobile Navigation Bar -->
-            <nav class="page_nav mob_nav">
-              <div class="brand">
-                <a href="#">
-                  <img src="{% static 'images/Chama-Bora_clrd.png' %}" alt="ChamaBora Logo">
-                </a>
-              </div>
-              <ul class="nav-list">
-                <li>
-                  <img src="{% static 'images/Notifications.png' %}" alt="Notifications">
-                </li>
-                <li>
-                  <button class="btn navbar-toggler text-muted collapseSidebar" type="button" onclick="openNav()">
-                    <img src="{% static 'images/menu.png' %}" alt="Menu">
-                  </button>
-                </li>
-              </ul>
-            </nav>
-            
-            <!-- User Profile Section -->
-            <div class="company_box d-flex flex-row justify-content-between align-items-center pt-0 mt-0">
-              <div class="d-flex align-items-center">
-                <div class="company_image">
-                  {% if request.user.profile.picture %}
-                    <img src="{{ request.user.profile.picture.url }}" alt="Profile Picture">
-                  {% else %}
-                    <img src="{% static 'assets/avatars/face-1.png' %}" alt="Default Avatar">
-                  {% endif %}
-                </div>
-                <div class="company_content">
-                  <h6>
-                    Good Morning <br>
-                    <b>{{ request.user.first_name }} {{ request.user.last_name }}</b>
-                  </h6>
-                </div>
-              </div>
-              
-              <!-- Mobile Avatar Dropdown -->
-              <div class="mobile-avatar-dropdown dropdown">
-                <div class="avatar avatar-sm" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;">
-                  {% if request.user.profile.picture %}
-                    <img src="{{ request.user.profile.picture.url }}" alt="Profile" class="avatar-img rounded-circle">
-                  {% else %}
-                    <img src="{% static 'assets/avatars/face-1.png' %}" alt="Default Avatar" class="avatar-img rounded-circle">
-                  {% endif %}
-                </div>
-                <ul class="dropdown-menu dropdown-menu-end">
-                  <li><h6 class="dropdown-header">View Options</h6></li>
-                  <li><a class="dropdown-item view-option" href="#" data-view="member">
-                    <i class="fe fe-user fe-16 me-2"></i>View as Member
-                  </a></li>
-                  <li><a class="dropdown-item view-option admin" href="#" data-view="admin" style="display: none;">
-                    <i class="fe fe-shield fe-16 me-2"></i>View as Admin
-                  </a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="{% url 'Setting' %}">
-                    <i class="fe fe-settings fe-16 me-2"></i>Settings
-                  </a></li>
-                  <li><a class="dropdown-item" href="{% url 'Logout' %}">
-                    <i class="fe fe-log-out fe-16 me-2"></i>Logout
-                  </a></li>
-                </ul>
-              </div>
+          </div>
+          <div class="profile">
+            <div class="avatar">
+              {% if request.user.profile.picture %}
+                <img src="{{ request.user.profile.picture.url }}" alt="Profile" />
+              {% else %}
+                <i class='bx bxs-user'></i>
+              {% endif %}
             </div>
+            <span class="profile-name">{{ request.user.first_name }} {{ request.user.last_name }}</span>
+            <i class='bx bx-chevron-down' data-bs-toggle="dropdown" aria-expanded="false"></i>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{% url 'Setting' %}">My Profile</a></li>
+              <li class="view-option" data-view="member">View as member</li>
+              <li class="view-option" data-view="admin">View as admin</li>
+              <li><a class="dropdown-item" href="#">My Groups</a></li>
+            </ul>
           </div>
         </div>
-      </div>
+      </header>
 
       <!-- Page Content -->
       <div class="page-content">
@@ -560,7 +339,8 @@
   <!-- Mobile Overlay -->
   <div class="mobile-overlay" onclick="closeNav()"></div>
 
-  <!-- Add member to group modal -->
+  <!-- Existing modals and scripts from base.html -->
+  <!-- add member to group modal-->
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -609,13 +389,11 @@
     </div>
   </div>
 
-  <!-- Subscription iframe container -->
   <div class="iframe-container" id="iframeContainer">
     <button class="close-button" id="closeIframe">X</button>
     <iframe src="/subscriptions/plans/" id="iframe"></iframe>
   </div>
 
-  <!-- Scripts -->
   <script src="{%static 'chamas/script.js'%}"></script>
   <script src="https://kit.fontawesome.com/d90233e428.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
@@ -623,7 +401,7 @@
     crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-  <!-- Navigation Functions -->
+  <!-- All existing JavaScript from base.html -->
   <script>
     /* Open mobile navigation */
     function openNav() {
@@ -644,12 +422,12 @@
     }
 
     $(document).ready(function () {
-      // Navigation link handlers
-      function handleDashboardClick() {
+      // All existing JavaScript functions from base.html
+      function handleDashboardClick (){
         var chama_id = getGroupId();
-        if (chama_id) {
-          window.location.href = \`/chamas-bookeeping/chama-dashboard/\${chama_id}/\`;
-        } else {
+        if (chama_id){
+          window.location.href = `/chamas-bookeeping/chama-dashboard/${chama_id}/`;
+        }else{
           console.error('invalid chama_id');
         }
       }
@@ -657,7 +435,7 @@
       function handleContributionsClick() {
         var chama_id = getGroupId();
         if (chama_id) {
-          window.location.href = \`/chamas-bookeeping/contributions/\${chama_id}/\`;
+          window.location.href = `/chamas-bookeeping/contributions/${chama_id}/`;
         } else {
           console.error('Invalid chama_id');
         }
@@ -666,7 +444,7 @@
       function handleMembersClick() {
         var chama_id = getGroupId();
         if (chama_id) {
-          window.location.href = \`/chamas-bookeeping/members/\${chama_id}/\`
+          window.location.href = `/chamas-bookeeping/members/${chama_id}/`
         } else {
           console.log('invalid chama id');
         }
@@ -675,7 +453,7 @@
       function handleFinesClick() {
         var chama_id = getGroupId();
         if (chama_id) {
-          window.location.href = \`/chamas-bookeeping/chama-fines/\${chama_id}/\`
+          window.location.href = `/chamas-bookeeping/chama-fines/${chama_id}/`
         } else {
           console.log('invalid chama id');
         }
@@ -684,7 +462,7 @@
       function handleLoansClick() {
         var chama_id = getGroupId();
         if (chama_id) {
-          window.location.href = \`/chamas-bookeeping/chama-loans/\${chama_id}/\`;
+          window.location.href = `/chamas-bookeeping/chama-loans/${chama_id}/`;
         } else {
           console.log('invalid chama id');
         }
@@ -693,7 +471,7 @@
       function handleExpensesClick() {
         var chama_id = getGroupId();
         if (chama_id) {
-          window.location.href = \`/chamas-bookeeping/chama-expenses/\${chama_id}/\`;
+          window.location.href = `/chamas-bookeeping/chama-expenses/${chama_id}/`;
         } else {
           console.log('invalid chama id');
         }
@@ -702,7 +480,7 @@
       function handleFinancesClick() {
         var chama_id = getGroupId();
         if (chama_id) {
-          window.location.href = \`/chamas-bookeeping/chama-finances/\${chama_id}/\`;
+          window.location.href = `/chamas-bookeeping/chama-finances/${chama_id}/`;
         } else {
           console.log('invalid chama id');
         }
@@ -711,7 +489,7 @@
       function handleReportsClick() {
         var chama_id = getGroupId();
         if (chama_id) {
-          window.location.href = \`/chamas-bookeeping/chama-reports/\${chama_id}/\`;
+          window.location.href = `/chamas-bookeeping/chama-reports/${chama_id}/`;
         } else {
           console.log('invalid chama id');
         }
@@ -720,7 +498,7 @@
       function handleNotificationsClick() {
         var chama_id = getGroupId();
         if (chama_id) {
-          window.location.href = \`/chamas-bookeeping/chama-notifications/\${chama_id}/\`;
+          window.location.href = `/chamas-bookeeping/chama-notifications/${chama_id}/`;
         } else {
           console.log('Invalid chama id');
         }
@@ -728,14 +506,14 @@
 
       function handleBotClick() {
         var chama_id = getGroupId();
-        if (chama_id) {
-          window.location.href = \`/bot/reports/\${chama_id}/\`;
-        } else {
+        if(chama_id) {
+          window.location.href = `/bot/reports/${chama_id}/`;
+        }else{
           console.log('Invalid chama id');
         }
       }
 
-      // Attach click event handlers
+      // Attach the click event handlers to  links
       $('.dashboard-link').on('click', function (event) {
         event.preventDefault();
         handleDashboardClick();
@@ -746,64 +524,64 @@
         handleContributionsClick();
       });
 
-      $('.members-link').on('click', function (event) {
+      $('.members-link').on('click',function(event){
         event.preventDefault();
         handleMembersClick();
       });
 
-      $('.loans-link').on('click', function (event) {
+      $('.loans-link').on('click',function(event){
         event.preventDefault();
         handleLoansClick();
       });
 
-      $('.fines-link').on('click', function (event) {
+      $('.fines-link').on('click',function(event){
         event.preventDefault();
         handleFinesClick();
       });
 
-      $('.expenses-link').on('click', function (event) {
+      $('.expenses-link').on('click',function(event){
         event.preventDefault();
         handleExpensesClick();
       });
 
-      $('.finances-link').on('click', function (event) {
+      $('.finances-link').on('click',function(event){
         event.preventDefault();
         handleFinancesClick();
       });
 
-      $('.reports-link').on('click', function (event) {
+      $('.reports-link').on('click',function(event){
         event.preventDefault();
         handleReportsClick();
       });
 
-      $('.notifications-link').on('click', function (event) {
+      $('.notifications-link').on('click',function(event){
         event.preventDefault();
         handleNotificationsClick();
       })
 
-      $('.bot-link').on('click', function (event) {
+      $('.bot-link').on('click',function(event){
         event.preventDefault();
         handleBotClick();
       })
 
-      // Handle mobile sidebar toggle
+      // Handle mobile sidebar toggle for Goals-style header
       $('.collapseSidebar').on('click', function(event) {
         event.preventDefault();
         openNav();
       });
     });
 
-    function handleDiamondClick() {
+    function handleDiamondClick (){
       var chama_id = getGroupId();
-      if (chama_id) {
-        window.location.href = \`/subscriptions/plans/\${chama_id}\`;
-      } else {
+      if (chama_id){
+        window.location.href = `/subscriptions/plans/${chama_id}`;
+      }else{
         console.error('invalid chama_id');
       }
     }
   </script>
 
-  <!-- View switching functionality -->
+  <!-- View switching functionality from base.html -->
   <script>
     $(document).ready(function() {
       var groupId = localStorage.getItem('groupId');
@@ -817,11 +595,11 @@
       $(".admin, #remove-user, #add-member-button").hide();
 
       if (savedView === "member") {
-        $(".view-option[data-view='member']").text("View as Member");
-        $(".view-option[data-view='admin']").text("View as Admin");
+        $(".view-option[data-view='member']").text("Viewing as member");
+        $(".view-option[data-view='admin']").text("Switch to admin view");
       } else {
         $(".view-option[data-view='admin']").text("Verifying admin…");
-        $(".view-option[data-view='member']").text("View as Member");
+        $(".view-option[data-view='member']").text("Switch to member view");
       }
 
       $.ajax({
@@ -838,12 +616,12 @@
             $(".view-option[data-view='admin']").show();
             if (savedView === "admin") {
               updateView("admin");
-              $(".view-option[data-view='admin']").text("View as Admin");
-              $(".view-option[data-view='member']").text("View as Member");
+              $(".view-option[data-view='admin']").text("Viewing as admin");
+              $(".view-option[data-view='member']").text("Switch to member view");
             } else {
               updateView("member");
-              $(".view-option[data-view='member']").text("View as Member");
-              $(".view-option[data-view='admin']").text("View as Admin");
+              $(".view-option[data-view='member']").text("Viewing as member");
+              $(".view-option[data-view='admin']").text("Switch to admin view");
             }
           }
         },
@@ -864,29 +642,29 @@
             success: function(data) {
               if (data.role === "admin") {
                 updateView("admin");
-                $(".view-option[data-view='admin']").text("View as Admin");
-                $(".view-option[data-view='member']").text("View as Member");
+                $(".view-option[data-view='admin']").text("Viewing as admin");
+                $(".view-option[data-view='member']").text("Switch to member view");
                 localStorage.setItem(storageKey, "admin");
               } else {
                 alert("You don't have permission to view as admin here.");
                 updateView("member");
-                $(".view-option[data-view='member']").text("View as Member");
-                $(".view-option[data-view='admin']").text("View as Admin");
+                $(".view-option[data-view='member']").text("Viewing as member");
+                $(".view-option[data-view='admin']").text("Switch to admin view");
                 localStorage.setItem(storageKey, "member");
               }
             },
             error: function() {
               alert("Unable to verify your role. Showing member view.");
               updateView("member");
-              $(".view-option[data-view='member']").text("View as Member");
-              $(".view-option[data-view='admin']").text("View as Admin");
+              $(".view-option[data-view='member']").text("Viewing as member");
+              $(".view-option[data-view='admin']").text("Switch to admin view");
               localStorage.setItem(storageKey, "member");
             }
           });
         } else {
           updateView("member");
-          $(".view-option[data-view='member']").text("View as Member");
-          $(".view-option[data-view='admin']").text("View as Admin");
+          $(".view-option[data-view='member']").text("Viewing as member");
+          $(".view-option[data-view='admin']").text("Switch to admin view");
           localStorage.setItem(storageKey, "member");
         }
       });
@@ -895,9 +673,13 @@
         if (view === "member") {
           $(".admin, #remove-user, #add-member-button").hide();
           $(".member").show();
+          $(".view-option[data-view='member']").text("Viewing as member");
+          $(".view-option[data-view='admin']").text("Switch to admin view");
         } else {
           $(".member").hide();
           $(".admin, #remove-user, #add-member-button").show();
+          $(".view-option[data-view='admin']").text("Viewing as admin");
+          $(".view-option[data-view='member']").text("Switch to member view");
         }
       }
     });
@@ -952,7 +734,7 @@
           document.querySelector("input[name='id_number']").value = '';
 
           $('#exampleModal').modal('hide');
-          window.location.href = \`/chamas-bookeeping/members/\${localStorage.getItem('groupId')}\`;
+          window.location.href = `/chamas-bookeeping/members/${localStorage.getItem('groupId')}`;
       })
       .catch(function(error) {
           var errorMessage = error.message;

@@ -1,0 +1,207 @@
+/* Unified Integration CSS - Cohesive Sidebar and Header Integration */
+
+/* Reset and base layout */
+.unified-layout {
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+}
+
+/* App layout structure */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: 260px;
+  transition: margin-left 0.3s ease;
+}
+
+/* Hide/Show responsive classes */
+.hide_on_mobile {
+  display: block;
+}
+
+.show_on_mobile {
+  display: none;
+}
+
+@media screen and (max-width: 991px) {
+  .hide_on_mobile {
+    display: none !important;
+  }
+  
+  .show_on_mobile {
+    display: block !important;
+  }
+  
+  .main-content {
+    margin-left: 0;
+  }
+  
+  .page-content {
+    padding-bottom: 100px; /* Space for mobile footer */
+  }
+}
+
+/* Desktop sidebar - restored original styling */
+.desktop-sidebar {
+  height: 100vh;
+  width: 260px;
+  background-color: var(--color-default, #2291A5);
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  overflow-y: auto;
+  transition: all 0.3s ease;
+  display: block;
+}
+
+.desktop-sidebar .logo_details {
+  padding: 20px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.desktop-sidebar .logo_details img {
+  max-width: 150px;
+  height: auto;
+}
+
+.desktop-sidebar .nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.desktop-sidebar .nav-list li {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.desktop-sidebar .nav-list li a {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border-radius: 0;
+  margin: 0;
+}
+
+.desktop-sidebar .nav-list li a:hover {
+  background-color: white;
+  color: var(--color-default, #2291A5);
+  border-radius: 12px;
+  margin: 0 10px;
+}
+
+.desktop-sidebar .nav-list li a i {
+  font-size: 20px;
+  margin-right: 15px;
+  min-width: 25px;
+}
+
+.desktop-sidebar .nav-list li a .link_name {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+/* Mobile sidebar - restored original */
+.sidenav {
+  height: 100vh;
+  width: 0;
+  position: fixed;
+  z-index: 2000;
+  top: 0;
+  left: 0;
+  background-color: var(--color-default, #2291A5);
+  overflow-x: hidden;
+  padding-top: 20px;
+  transition: 0.5s;
+}
+
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  color: white;
+  text-decoration: none;
+}
+
+.sidenav .logo_details {
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.sidenav .nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidenav .nav-list li a {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.sidenav .nav-list li a:hover {
+  background-color: white;
+  color: var(--color-default, #2291A5);
+  border-radius: 12px;
+  margin: 0 10px;
+}
+
+.sidenav .nav-list li a i {
+  font-size: 20px;
+  margin-right: 15px;
+}
+
+/* Goals header styling - Desktop */
+.topnav {
+  background: #fff;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e0e4e8;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 999;
+}
+
+/* Z-index management to prevent conflicts */
+.desktop-sidebar {
+  z-index: 1000;
+}
+
+.topnav {
+  z-index: 999;
+}
+
+.sidenav {
+  z-index: 2000;
+}
+
+.mobile-overlay {
+  z-index: 1999;
+}
+
+.dropdown-menu {
+  z-index: 1050;
+}
+
+.iframe-container {
+  z-index: 9999;
+}
+
+.close-button {
+  z-index: 10000;
+}
