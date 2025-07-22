@@ -868,24 +868,33 @@ $(document).ready(function() {
 </script>
 
 <!-- Mobile Footer -->
-<footer class="mbl_footer">
+<style>
+@media screen and (min-width: 992px) {
+    .mbl_footer { display: none !important; }
+}
+@media screen and (max-width: 991px) {
+    body { padding-bottom: 80px !important; }
+    .mbl_footer { display: block !important; }
+}
+</style>
+<footer class="mbl_footer" style="background: #2291A5 !important; background-color: #2291A5 !important; position: fixed; bottom: 0; left: 0; right: 0; z-index: 1000; padding: 10px 0; display: block;">
     <div class="container">
-        <div class="footer_row d-flex flex-row justify-content-between align-items-center">
-            <a href="{% url 'my_goals' %}" class="footer_button btn">
-                <img class="homer_white" src="{% static 'images/home_white.png' %}" alt="">
-                <p>Home</p>
+        <div class="footer_row d-flex flex-row justify-content-between align-items-center" style="padding: 0 15px;">
+            <a href="{% url 'my_goals' %}" class="footer_button btn" style="color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 8px 12px;">
+                <img class="homer_white" src="{% static 'images/home_white.png' %}" alt="" style="width: 24px; height: 24px; margin-bottom: 4px; filter: brightness(0) invert(1);">
+                <p style="margin: 0; color: #fff; font-size: 12px; text-align: center;">Home</p>
             </a>
-            <a href="{% url 'chamas:chamas' %}" class="footer_button btn active">
-                <img src="{% static 'images/filter_active.png' %}" alt="">
-                <p>Features</p>
+            <a href="{% url 'chamas:chamas' %}" class="footer_button btn active" style="color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 8px 12px; background: rgba(255, 255, 255, 0.2); border-radius: 8px;">
+                <img src="{% static 'images/filter_active.png' %}" alt="" style="width: 24px; height: 24px; margin-bottom: 4px; filter: brightness(0) invert(1);">
+                <p style="margin: 0; color: #fff; font-size: 12px; text-align: center; font-weight: 600;">Features</p>
             </a>
-            <a href="{% url 'wallet_index' %}" class="footer_button btn">
-                <img src="{% static 'images/wallet_alt_fill.png' %}" alt="">
-                <p>Account</p>
+            <a href="{% url 'wallet_index' %}" class="footer_button btn" style="color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 8px 12px;">
+                <img src="{% static 'images/wallet_alt_fill.png' %}" alt="" style="width: 24px; height: 24px; margin-bottom: 4px; filter: brightness(0) invert(1);">
+                <p style="margin: 0; color: #fff; font-size: 12px; text-align: center;">Account</p>
             </a>
-            <a href="{% url 'Setting' %}" class="footer_button btn">
-                <img src="{% static 'images/setting.png' %}" alt="">
-                <p>Settings</p>
+            <a href="{% url 'Setting' %}" class="footer_button btn" style="color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 8px 12px;">
+                <img src="{% static 'images/setting.png' %}" alt="" style="width: 24px; height: 24px; margin-bottom: 4px; filter: brightness(0) invert(1);">
+                <p style="margin: 0; color: #fff; font-size: 12px; text-align: center;">Settings</p>
             </a>
         </div>
     </div>

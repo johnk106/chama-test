@@ -260,14 +260,7 @@ form input::placeholder,form textarea::placeholder {
     color: #fff;
 }
 
-.footer_button.active p {
-    color: rgba(39, 37, 86, 1);
-
-}
-
-.mbl_footer {
-    background: #2291A5;
-}
+/* Removed - replaced with enhanced styles below */
 
 .tab_content {
     padding-top: 15px;
@@ -915,13 +908,7 @@ color: rgba(37, 30, 111, 1);
 .modal {
 	top: 100px;
 }
-.mbl_footer{
-    display: block;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-}
+/* Removed - replaced with enhanced styles below */
 .grp-mem_heading {
     font-family: 'Open Sans';
     font-size: 12px;
@@ -972,10 +959,8 @@ color: rgba(37, 30, 111, 1);
 .text_invite{
     color: #2291A5 !important;
 }
+/* Removed - replaced with enhanced styles below */
 @media screen and (min-width:992px) {
-    .mbl_footer{
-        display: none;
-    }
     .hide_on_mobile{
         display: flex;
     }
@@ -1065,5 +1050,91 @@ color: rgba(37, 30, 111, 1);
     font-size: 16px;
     font-weight: 600;
     line-height: 22px;
+}
 
+/* Enhanced Mobile Footer Styles */
+.mbl_footer {
+    background: #2291A5 !important;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 10px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer_row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+}
+
+.footer_button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    background: transparent;
+    border: none;
+    min-width: 60px;
+}
+
+.footer_button img {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 4px;
+    filter: brightness(0) invert(1);
+}
+
+.footer_button p {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 15px;
+    text-align: center;
+    margin: 0;
+    color: #fff;
+}
+
+.footer_button.active {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+}
+
+.footer_button.active p {
+    color: #fff;
+    font-weight: 600;
+}
+
+.footer_button.active img {
+    filter: brightness(0) invert(1);
+}
+
+.footer_button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    text-decoration: none;
+}
+
+.footer_button:hover p {
+    color: #fff;
+}
+
+/* Hide on desktop */
+@media screen and (min-width: 992px) {
+    .mbl_footer {
+        display: none !important;
+    }
+}
+
+/* Add padding to body on mobile to prevent content being hidden behind footer */
+@media screen and (max-width: 991px) {
+    body {
+        padding-bottom: 80px;
+    }
 }
