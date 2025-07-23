@@ -39,14 +39,28 @@ class FineService:
         
     @staticmethod
     def fine_contribution(request,contribution_id):
-        data = json.loads(request.body)
-        contribution_item = ContributionRecord.objects.get(pk=contribution_id)
-        contribution = contribution_item.contribution
-        member = contribution_item.member
-        fine = FineType.objects.get(pk=data.get('fine'))
-        contribution_balance = contribution_item.balance
-
         try:
+            data = json.loads(request.body)
+            contribution_item = ContributionRecord.objects.get(pk=contribution_id)
+            contribution = contribution_item.contribution
+            member = contribution_item.member
+            fine_type_id = data.get('fine_type_id') or data.get('fine')  # Support both formats
+            
+            if not fine_type_id:
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': 'Fine type ID is required'
+                }, status=400)
+                
+            fine = FineType.objects.get(pk=fine_type_id)
+            contribution_balance = contribution_item.balance
+
+            # Check if contribution has a balance to fine
+            if contribution_balance <= 0:
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': 'Cannot apply fine to a fully paid contribution'
+                }, status=400)
             new_fine_object = FineItem.objects.create(
                 fine_type = fine,
                 member = member,
@@ -78,13 +92,22 @@ class FineService:
 
             return JsonResponse(data,status=200)
     
+        except ContributionRecord.DoesNotExist:
+            return JsonResponse({
+                'status': 'failed',
+                'message': 'Contribution record not found'
+            }, status=404)
+        except FineType.DoesNotExist:
+            return JsonResponse({
+                'status': 'failed',
+                'message': 'Fine type not found'
+            }, status=404)
         except Exception as e:
-            data = {
-                'status':'failed',
-                'message':'an error occured,the fine could not be imposed'
-            }
-
-            return JsonResponse(data,status=200)
+            print(f"Error in fine_contribution: {e}")
+            return JsonResponse({
+                'status': 'failed',
+                'message': 'An error occurred while applying the fine'
+            }, status=500)
         
     @staticmethod
     def impose_fine(request):

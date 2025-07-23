@@ -608,36 +608,40 @@ $(document).ready(function () {
                     const paid = parseFloat(record.amount_paid).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                     const bal = parseFloat(record.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-                    let rowHtml;
-                    if (localStorage.getItem('selectedView') === 'admin') {
-                        rowHtml = `
-                            <tr data-record-id="${record.id}" id="record-id">
-                                <td>${date}</td>
-                                <td>${member}</td>
-                                <td>${contrib}</td>
-                                <td>ksh ${paid}</td>
-                                <td>ksh ${bal}</td>
-                                <td class="admin">
-                                    <button type="button" class="btn btn-sm table-fine-button" 
-                                            data-bs-toggle="modal" data-bs-target="#fineContribution">
-                                        Fine
-                                    </button>
-                                    <button type="button" class="btn btn-sm table-pay-button" 
-                                            data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                        Pay
-                                    </button>
-                                </td>
-                            </tr>`;
+                    // Check if this record has a balance greater than 0
+                    const hasBalance = parseFloat(record.balance) > 0;
+                    
+                    let rowHtml = `
+                        <tr data-record-id="${record.id}" id="record-id">
+                            <td>${date}</td>
+                            <td>${member}</td>
+                            <td>${contrib}</td>
+                            <td>ksh ${paid}</td>
+                            <td>ksh ${bal}</td>
+                            <td class="admin">`;
+                    
+                    // Only show buttons if there's a balance
+                    if (hasBalance) {
+                        rowHtml += `
+                            <button type="button" class="btn btn-sm btn-warning table-fine-button" 
+                                    data-bs-toggle="modal" data-bs-target="#fineContribution"
+                                    title="Apply fine for late payment">
+                                <i class='bx bx-error'></i> Fine
+                            </button>
+                            <button type="button" class="btn btn-sm btn-success table-pay-button" 
+                                    data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                    title="Record payment for this contribution">
+                                <i class='bx bx-money'></i> Pay
+                            </button>`;
                     } else {
-                        rowHtml = `
-                            <tr data-record-id="${record.id}">
-                                <td>${date}</td>
-                                <td>${member}</td>
-                                <td>${contrib}</td>
-                                <td>ksh ${paid}</td>
-                                <td>ksh ${bal}</td>
-                            </tr>`;
+                        rowHtml += `<span class="badge bg-success text-white">
+                            <i class='bx bx-check'></i> Fully Paid
+                        </span>`;
                     }
+                    
+                    rowHtml += `
+                            </td>
+                        </tr>`;
 
                     tbody.append(rowHtml);
                 });
@@ -862,6 +866,8 @@ $(document).ready(function () {
             success: function(response) {
                 if (response.status === "success") {
                     $('#exampleModal').modal('hide');
+                    $('.pay-contribution-alerts').empty(); // Clear alerts
+                    $('#repayment-amount').val(''); // Clear amount input
                     alert("Payment recorded successfully!");
                     fetchAndRenderContributionDetails($("#contribution-details-name").text());
                 } else {
@@ -904,6 +910,7 @@ $(document).ready(function () {
              success: function(response) {
                  if (response.status === "success") {
                      $('#fineContribution').modal('hide');
+                     $('.fine-contribution-alerts').empty(); // Clear alerts
                      alert("Fine applied successfully!");
                      fetchAndRenderContributionDetails($("#contribution-details-name").text());
                  } else {
