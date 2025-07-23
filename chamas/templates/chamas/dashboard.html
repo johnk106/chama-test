@@ -21,7 +21,7 @@
             <div class="total-cash-card brand-card">
                 <div class="cash-info">
                     <p class="cash-label">Total Cash</p>
-                    <h1 class="cash-amount text-brand-primary">Ksh {{total_savings|intcomma}}</h1>
+                    <h1 class="breakdown-value">Ksh {{total_savings|intcomma}}</h1>
                     <div class="growth-indicator">
                         <i class='bx bx-trending-up'></i>
                         <span>15%</span>
@@ -58,7 +58,7 @@
                 <i class='bx bx-chevron-right nav-arrow'></i>
             </a>
 
-            <a href="{% url 'chamas:chama-expenses' chama.id %}" class="nav-item admin">
+            <a href="{% url 'chamas:chama-expenses' chama.id %}" class="nav-item">
                 <div class="nav-icon">
                     <i class='bx bx-folder'></i>
                 </div>
@@ -66,7 +66,7 @@
                 <i class='bx bx-chevron-right nav-arrow'></i>
             </a>
 
-            <a href="{% url 'chamas:chama-fines' chama.id %}" class="nav-item admin">
+            <a href="{% url 'chamas:chama-fines' chama.id %}" class="nav-item">
                 <div class="nav-icon">
                     <i class='bx bx-file'></i>
                 </div>
@@ -82,7 +82,7 @@
                 <i class='bx bx-chevron-right nav-arrow'></i>
             </a>
 
-            <a href="{% url 'chamas:reports' chama.id %}" class="nav-item admin">
+            <a href="{% url 'chamas:reports' chama.id %}" class="nav-item">
                 <div class="nav-icon">
                     <i class='bx bxs-report'></i>
                 </div>
@@ -90,11 +90,18 @@
                 <i class='bx bx-chevron-right nav-arrow'></i>
             </a>
 
-            <a href="{% url 'chamas:notifications' chama.id %}" class="nav-item admin">
+            <a href="{% url 'chamas:notifications' chama.id %}" class="nav-item">
                 <div class="nav-icon">
                     <i class='bx bx-bell'></i>
                 </div>
                 <span class="nav-label">Manage Notifications</span>
+                <i class='bx bx-chevron-right nav-arrow'></i>
+            </a>
+            <a href="{% url 'bot:bot-records' chama.id %}" class="nav-item admin">
+                <div class="nav-icon">
+                    <i class='bx bx-bot'></i>
+                </div>
+                <span class="nav-label">Bot Management</span>
                 <i class='bx bx-chevron-right nav-arrow'></i>
             </a>
         </div>
