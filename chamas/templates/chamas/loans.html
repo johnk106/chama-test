@@ -377,6 +377,7 @@
 
     <!-- Applications Tab Content -->
     <div class="tab-content admin" id="applications">
+      <div id="mobile-applications-feedback" class="alert" style="display: none; margin-bottom: 15px;"></div>
       <div class="mobile-applications-list admin">
         {% for application in applications %}
         <div class="application-beautiful-card">
@@ -1280,13 +1281,32 @@
   }
 
   function handleLoanResponse(data) {
-    var alertDiv = document.querySelector(".loan-alerts-hub");
+    // Update both desktop and mobile alert divs
+    var desktopAlertDiv = document.querySelector(".loan-alerts-hub");
+    var mobileAlertDiv = document.getElementById("mobile-applications-feedback");
 
     if (data.status === "success") {
-      alertDiv.innerHTML = `<div class="alert alert-success" role="alert">${data.message}</div>`;
-      // You can update the UI or perform any other actions here
+      // Desktop alert
+      if (desktopAlertDiv) {
+        desktopAlertDiv.innerHTML = `<div class="alert alert-success" role="alert">${data.message}</div>`;
+      }
+      // Mobile alert
+      if (mobileAlertDiv) {
+        mobileAlertDiv.innerHTML = data.message;
+        mobileAlertDiv.className = "alert alert-success";
+        mobileAlertDiv.style.display = "block";
+      }
     } else {
-      alertDiv.innerHTML = `<div class="alert alert-danger" role="alert">${data.message}</div>`;
+      // Desktop alert
+      if (desktopAlertDiv) {
+        desktopAlertDiv.innerHTML = `<div class="alert alert-danger" role="alert">${data.message}</div>`;
+      }
+      // Mobile alert
+      if (mobileAlertDiv) {
+        mobileAlertDiv.innerHTML = data.message;
+        mobileAlertDiv.className = "alert alert-danger";
+        mobileAlertDiv.style.display = "block";
+      }
     }
   }
 

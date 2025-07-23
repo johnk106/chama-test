@@ -623,11 +623,11 @@ margin: 0;
 
 /* Member specific styling */
 .member .create-loan-card {
-    border-left: 3px solid #10b981;
+    border-left: 3px solid #2191a5;
 }
 
 .member .create-loan-btn {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(135deg, #2191a5 0%, #1a7589 100%);
 }
 
 /* Mobile Loan History - Table Style */
@@ -660,8 +660,8 @@ margin: 0;
 }
 
 .status-completed {
-    background: #dcfce7;
-    color: #16a34a;
+    background: #e0f4f7;
+    color: #1a7589;
 }
 
 .status-active {
@@ -734,7 +734,7 @@ margin: 0;
 
 .loan-amount {
     font-weight: 600;
-    color: #059669;
+    color: #1a7589;
 }
 
 /* Apply Loan Form */
@@ -745,7 +745,7 @@ margin: 0;
     padding: 16px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     border: 1px solid #e5e7eb;
-    border-left: 3px solid #10b981;
+    border-left: 3px solid #2191a5;
     width: 100%;
 }
 
@@ -760,7 +760,7 @@ margin: 0;
 
 .apply-loan-header i {
     font-size: 20px;
-    color: #10b981;
+    color: #2191a5;
 }
 
 .apply-loan-header span {
@@ -826,7 +826,7 @@ margin: 0;
 
 .approve-btn {
     flex: 1;
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(135deg, #2191a5 0%, #1a7589 100%);
     color: white;
     border: none;
     border-radius: 6px;
@@ -839,7 +839,7 @@ margin: 0;
 
 .approve-btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 4px 12px rgba(33, 145, 165, 0.3);
 }
 
 .decline-btn {

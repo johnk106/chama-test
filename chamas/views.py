@@ -498,6 +498,15 @@ def chama_loans(request, chama_id):
     applications = LoanItem.objects.filter(member__group=chama, status='application').all()
 
     active_loans = LoanItem.objects.filter(member__group = chama,status='active').all()
+    
+    # Add context variables for mobile My Loans section
+    my_active_loans = LoanItem.objects.filter(chama=chama,member=member,status='active').all()
+    my_completed_loans = LoanItem.objects.filter(chama=chama,member=member,status='completed').all()
+    my_defaulted_loans = LoanItem.objects.filter(chama=chama,member=member,status='defaulted').all()
+    
+    # Add context variables for desktop Active Loans section  
+    completed_loans = LoanItem.objects.filter(member__group = chama,status='completed').all()
+    defaulted_loans = LoanItem.objects.filter(member__group = chama,status='defaulted').all()
      
 
     context = {
@@ -506,7 +515,12 @@ def chama_loans(request, chama_id):
         'applications': applications,
         'active_loans':active_loans,
         'members': members,
-        'my_loans':my_loans
+        'my_loans':my_loans,
+        'my_active_loans': my_active_loans,
+        'my_completed_loans': my_completed_loans, 
+        'my_defaulted_loans': my_defaulted_loans,
+        'completed_loans': completed_loans,
+        'defaulted_loans': defaulted_loans
         
     }
 
