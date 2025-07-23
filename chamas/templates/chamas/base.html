@@ -867,6 +867,118 @@ $(document).ready(function() {
   }); {% endcomment %}
 </script>
 
+<!-- Mobile Navigation JavaScript -->
+<script>
+// Mobile Navigation Functions
+function openNav() {
+    const sidenav = document.getElementById("mySidenav");
+    const overlay = document.querySelector(".mobile-overlay");
+    const body = document.body;
+    
+    if (sidenav) {
+        sidenav.style.width = "280px";
+        sidenav.style.display = "block";
+    }
+    
+    if (overlay) {
+        overlay.style.display = "block";
+        overlay.style.opacity = "1";
+    }
+    
+    // Add class to body to prevent scrolling
+    body.classList.add("sidebar-open");
+    
+    // Add touch/click event to close on outside click
+    setTimeout(() => {
+        document.addEventListener('click', outsideClickHandler);
+    }, 100);
+}
+
+function closeNav() {
+    const sidenav = document.getElementById("mySidenav");
+    const overlay = document.querySelector(".mobile-overlay");
+    const body = document.body;
+    
+    if (sidenav) {
+        sidenav.style.width = "0";
+        setTimeout(() => {
+            sidenav.style.display = "none";
+        }, 300);
+    }
+    
+    if (overlay) {
+        overlay.style.opacity = "0";
+        setTimeout(() => {
+            overlay.style.display = "none";
+        }, 300);
+    }
+    
+    // Remove class from body
+    body.classList.remove("sidebar-open");
+    
+    // Remove event listener
+    document.removeEventListener('click', outsideClickHandler);
+}
+
+function outsideClickHandler(event) {
+    const sidenav = document.getElementById("mySidenav");
+    const menuBtn = document.querySelector('.menu-btn');
+    
+    // Check if click is outside sidebar and not on menu button
+    if (!sidenav.contains(event.target) && !menuBtn.contains(event.target)) {
+        closeNav();
+    }
+}
+
+// Initialize mobile navigation on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Ensure mobile overlay exists
+    let overlay = document.querySelector('.mobile-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.className = 'mobile-overlay';
+        document.body.appendChild(overlay);
+    }
+    
+    // Close sidebar on window resize if moving to desktop
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+            closeNav();
+        }
+    });
+    
+    // Handle swipe gestures for mobile
+    let startX = 0;
+    let startY = 0;
+    
+    document.addEventListener('touchstart', function(e) {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+    });
+    
+    document.addEventListener('touchmove', function(e) {
+        if (!startX || !startY) return;
+        
+        let currentX = e.touches[0].clientX;
+        let currentY = e.touches[0].clientY;
+        
+        let diffX = startX - currentX;
+        let diffY = startY - currentY;
+        
+        // Swipe left to close sidebar
+        if (Math.abs(diffX) > Math.abs(diffY) && diffX > 50) {
+            const sidenav = document.getElementById("mySidenav");
+            if (sidenav && sidenav.style.width !== "0px" && sidenav.style.width !== "") {
+                closeNav();
+            }
+        }
+        
+        startX = 0;
+        startY = 0;
+    });
+});
+</script>
+
 <!-- Mobile Footer -->
 <style>
 @media screen and (min-width: 992px) {
