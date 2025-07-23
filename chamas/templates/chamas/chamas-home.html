@@ -1,111 +1,220 @@
-{%extends 'chamas/chamas_base.html'%}
 {%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <link
+    href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+    rel="stylesheet"
+  />
+    <link rel="stylesheet" href="{%static 'chamas/brand-colors.css'%}" />
+    <link rel="stylesheet" href="{%static 'chamas/chama-home.css'%}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <title>Chamas - Choose Your Type</title>
+</head>
+<body class="chama-home-page">
 
-{%block head%}
-<link rel="stylesheet" href="{%static 'chamas/chama-home.css'%}">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    document.body.classList.add('chama-home-page');
-});
-</script>
-{%endblock%}
-
-{%block body%}
-
-<!-- Welcome Header Section -->
-<div class="welcome-section">
-    <div class="welcome-content">
-        <h1 class="welcome-title">Welcome to Chamas</h1>
-        <p class="welcome-description">
-            Join an Online Merry-Go-round Chama, manage your book keeping, or 
-            create and manage your Table Banking Chama. Everything you need 
-            to grow your financial community is right here.
-        </p>
-    </div>
-</div>
-
-<!-- Chama Types Selection Section -->
-<div class="chama-types-container">
-    <div class="chama-types-section">
-        <h2 class="section-title">Choose Your Chama Type</h2>
-        <p class="section-subtitle">Select from our available chama management options</p>
-        
-        <div class="row chama-options-row">
-            <!-- Book Keeping - First Option -->
-            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                <div class="chama-option-card available" id="book-keeping-card">
-                    <div class="card-content">
-                        <div class="card-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 25 24" fill="none">
-                                <path d="M20.2311 16H8.23103C7.30106 16 6.83607 16 6.45457 16.1022C5.41929 16.3796 4.61065 17.1883 4.33325 18.2235" stroke="#FFFFFF" stroke-width="1.5"/>
-                                <path d="M8.33325 7H16.3333" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
-                                <path d="M8.33325 10.5H13.3333" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
-                                <path d="M19.8333 19H8.33325" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
-                                <path d="M10.3333 22C7.50482 22 6.09061 22 5.21193 21.1213C4.33325 20.2426 4.33325 18.8284 4.33325 16V8C4.33325 5.17157 4.33325 3.75736 5.21193 2.87868C6.09061 2 7.50482 2 10.3333 2H14.3333C17.1617 2 18.5759 2 19.4546 2.87868C20.3333 3.75736 20.3333 5.17157 20.3333 8M14.3333 22C17.1617 22 18.5759 22 19.4546 21.1213C20.3333 20.2426 20.3333 18.8284 20.3333 16V12" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
-                            </svg>
-                        </div>
-                        <h3 class="card-title">Book Keeping</h3>
-                        <p class="card-description">
-                            Manage your chama's financial records, track contributions, loans, expenses, and generate reports.
-                        </p>
-                    </div>
-                    <div class="card-status available-status">Available</div>
-                </div>
+<!-- Full Width Layout -->
+<div class="chama-home-layout">
+    <!-- Desktop Header with Back Button -->
+    <header class="chama-home-header">
+        <div class="header-container">
+            <div class="header-left">
+                <a href="{% url 'goals_dashboard' %}" class="back-to-dashboard-btn">
+                    <i class='bx bx-arrow-left'></i>
+                    <span>Back to Dashboard</span>
+                </a>
             </div>
-
-            <!-- Merry-Go-Round Chama -->
-            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                <div class="chama-option-card coming-soon">
-                    <div class="card-content">
-                        <div class="card-icon disabled">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none">
-                                <path d="M12 10C14.2091 10 16 8.20914 16 6C16 3.79086 14.2091 2 12 2C9.79086 2 8 3.79086 8 6C8 8.20914 9.79086 10 12 10Z" stroke="#94A3B8" stroke-width="1.5"/>
-                                <path opacity="0.5" d="M18 9C19.6569 9 21 7.88071 21 6.5C21 5.11929 19.6569 4 18 4" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round"/>
-                                <path opacity="0.5" d="M6 9C4.34315 9 3 7.88071 3 6.5C3 5.11929 4.34315 4 6 4" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round"/>
-                                <path d="M12 21C15.3137 21 18 19.2091 18 17C18 14.7909 15.3137 13 12 13C8.68629 13 6 14.7909 6 17C6 19.2091 8.68629 21 12 21Z" stroke="#94A3B8" stroke-width="1.5"/>
-                                <path opacity="0.5" d="M20 19C21.7542 18.6153 23 17.6411 23 16.5C23 15.3589 21.7542 14.3847 20 14" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round"/>
-                                <path opacity="0.5" d="M4 19C2.24575 18.6153 1 17.6411 1 16.5C1 15.3589 2.24575 14.3847 4 14" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round"/>
-                            </svg>
-                        </div>
-                        <h3 class="card-title">Merry-Go-Round Chama</h3>
-                        <p class="card-description">
-                            Join rotating savings groups where members contribute regularly and take turns receiving the total amount.
-                        </p>
-                    </div>
-                    <div class="card-status coming-soon-status">Coming Soon</div>
-                </div>
+            <div class="header-center">
+                <h1 class="page-title">Chamas</h1>
             </div>
-
-            <!-- Table Banking -->
-            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                <div class="chama-option-card coming-soon">
-                    <div class="card-content">
-                        <div class="card-icon disabled">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 25 24" fill="none">
-                                <g clip-path="url(#clip0_4039_4475)">
-                                    <path d="M24.0958 2.85742H6.952C6.80093 2.85742 6.65608 2.91755 6.54829 3.02458L0.833747 8.73921C0.727473 8.84624 0.666504 8.99134 0.666504 9.14292V20.5713C0.666504 20.887 0.922252 21.143 1.23728 21.143H24.0957C24.4108 21.143 24.6665 20.887 24.6665 20.5713V3.42904C24.6666 3.11342 24.4108 2.85742 24.0958 2.85742ZM23.5233 20.0005H1.80975V9.71446H6.952C7.26863 9.71446 7.52438 9.45846 7.52438 9.14283V3.99991H23.5233V20.0005Z" fill="#94A3B8"/>
-                                    <path d="M5.80857 11.4285C5.49346 11.4285 5.23779 11.6845 5.23779 12.0002V16.2863C5.23779 16.6019 5.49346 16.8572 5.80857 16.8572H20.095C20.4101 16.8572 20.6659 16.6019 20.6659 16.2863V7.71442C20.6659 7.3988 20.4101 7.14355 20.095 7.14355H14.3805C14.0654 7.14355 13.8097 7.3988 13.8097 7.71442V11.4285H5.80857V11.4285ZM16.667 12.5718V15.7148H10.38V12.5718H16.667ZM6.38095 12.5718H9.23831V15.7148H6.38095V12.5718ZM17.8086 15.7147V12.5717H19.5242V15.7147H17.8086ZM19.5243 8.28613V11.4285H14.9529V8.28613H19.5243Z" fill="#94A3B8"/>
-                                </g>
-                                <defs>
-                                    <clipPath id="clip0_4039_4475">
-                                        <rect width="24" height="24" fill="white" transform="translate(0.666504)"/>
-                                    </clipPath>
-                                </defs>
-                            </svg>
+            <div class="header-right">
+                <div class="theme-toggles">
+                    <i class='bx bxs-sun' style='color:#2191a5;'></i>
+                    <i class='bx bxs-toggle-left' style='color:#2191a5;'></i>
+                    <i class='bx bxs-moon' style='color:#141414;'></i>
+                </div>
+                <div class="profile dropdown">
+                    <div class="profile-info" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="avatar">
+                            {% if request.user.profile.picture %}
+                                <img src="{{ request.user.profile.picture.url }}" alt="Profile" />
+                            {% else %}
+                                <i class='bx bxs-user'></i>
+                            {% endif %}
                         </div>
-                        <h3 class="card-title">Table Banking</h3>
-                        <p class="card-description">
-                            Create and manage investment groups focused on collective savings and loan schemes.
-                        </p>
+                        <span class="profile-name">{{ user.first_name }} {{ user.last_name }}</span>
+                        <i class='bx bx-chevron-down'></i>
                     </div>
-                    <div class="card-status coming-soon-status">Coming Soon</div>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'Setting' %}">My Profile</a></li>
+                        <li><a class="dropdown-item" href="#">View as Member</a></li>
+                        <li><a class="dropdown-item" href="#">My Groups</a></li>
+                    </ul>
                 </div>
             </div>
         </div>
-    </div>
+    </header>
+
+    <!-- Mobile Header -->
+    <header class="mobile-header-chama">
+        <div class="mobile-header-container">
+            <a href="{% url 'goals_dashboard' %}" class="mobile-back-btn">
+                <i class='bx bx-arrow-left'></i>
+            </a>
+            <h1 class="mobile-page-title">Chamas</h1>
+            <div class="mobile-profile">
+                <div class="avatar">
+                    {% if request.user.profile.picture %}
+                        <img src="{{ request.user.profile.picture.url }}" alt="Profile" />
+                    {% else %}
+                        <i class='bx bxs-user'></i>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="chama-home-main">
+        <!-- Welcome Header Section -->
+        <div class="welcome-section">
+            <div class="welcome-content">
+                <h1 class="welcome-title">Welcome to Chamas</h1>
+                <p class="welcome-description">
+                    Join an Online Merry-Go-round Chama, manage your book keeping, or 
+                    create and manage your Table Banking Chama. Everything you need 
+                    to grow your financial community is right here.
+                </p>
+            </div>
+        </div>
+
+        <!-- Chama Types Selection Section -->
+        <div class="chama-types-container">
+            <div class="chama-types-section">
+                <h2 class="section-title">Choose Your Chama Type</h2>
+                <p class="section-subtitle">Select from our available chama management options</p>
+                
+                <div class="row chama-options-row">
+                    <!-- Book Keeping - First Option -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <div class="chama-option-card available" id="book-keeping-card">
+                            <div class="card-content">
+                                <div class="card-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 25 24" fill="none">
+                                        <path d="M20.2311 16H8.23103C7.30106 16 6.83607 16 6.45457 16.1022C5.41929 16.3796 4.61065 17.1883 4.33325 18.2235" stroke="#FFFFFF" stroke-width="1.5"/>
+                                        <path d="M8.33325 7H16.3333" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+                                        <path d="M8.33325 10.5H13.3333" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+                                        <path d="M19.8333 19H8.33325" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+                                        <path d="M10.3333 22C7.50482 22 6.09061 22 5.21193 21.1213C4.33325 20.2426 4.33325 18.8284 4.33325 16V8C4.33325 5.17157 4.33325 3.75736 5.21193 2.87868C6.09061 2 7.50482 2 10.3333 2H14.3333C17.1617 2 18.5759 2 19.4546 2.87868C20.3333 3.75736 20.3333 5.17157 20.3333 8M14.3333 22C17.1617 22 18.5759 22 19.4546 21.1213C20.3333 20.2426 20.3333 18.8284 20.3333 16V12" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+                                    </svg>
+                                </div>
+                                <h3 class="card-title">Book Keeping</h3>
+                                <p class="card-description">
+                                    Manage your chama's financial records, track contributions, loans, expenses, and generate reports.
+                                </p>
+                            </div>
+                            <div class="card-status available-status">Available</div>
+                        </div>
+                    </div>
+
+                    <!-- Merry-Go-Round Chama -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <div class="chama-option-card coming-soon">
+                            <div class="card-content">
+                                <div class="card-icon disabled">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none">
+                                        <path d="M12 10C14.2091 10 16 8.20914 16 6C16 3.79086 14.2091 2 12 2C9.79086 2 8 3.79086 8 6C8 8.20914 9.79086 10 12 10Z" stroke="#94A3B8" stroke-width="1.5"/>
+                                        <path opacity="0.5" d="M18 9C19.6569 9 21 7.88071 21 6.5C21 5.11929 19.6569 4 18 4" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round"/>
+                                        <path opacity="0.5" d="M6 9C4.34315 9 3 7.88071 3 6.5C3 5.11929 4.34315 4 6 4" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round"/>
+                                        <path d="M12 21C15.3137 21 18 19.2091 18 17C18 14.7909 15.3137 13 12 13C8.68629 13 6 14.7909 6 17C6 19.2091 8.68629 21 12 21Z" stroke="#94A3B8" stroke-width="1.5"/>
+                                        <path opacity="0.5" d="M20 19C21.7542 18.6153 23 17.6411 23 16.5C23 15.3589 21.7542 14.3847 20 14" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round"/>
+                                        <path opacity="0.5" d="M4 19C2.24575 18.6153 1 17.6411 1 16.5C1 15.3589 2.24575 14.3847 4 14" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round"/>
+                                    </svg>
+                                </div>
+                                <h3 class="card-title">Merry-Go-Round Chama</h3>
+                                <p class="card-description">
+                                    Join rotating savings groups where members contribute regularly and take turns receiving the total amount.
+                                </p>
+                            </div>
+                            <div class="card-status coming-soon-status">Coming Soon</div>
+                        </div>
+                    </div>
+
+                    <!-- Table Banking -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <div class="chama-option-card coming-soon">
+                            <div class="card-content">
+                                <div class="card-icon disabled">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 25 24" fill="none">
+                                        <g clip-path="url(#clip0_4039_4475)">
+                                            <path d="M24.0958 2.85742H6.952C6.80093 2.85742 6.65608 2.91755 6.54829 3.02458L0.833747 8.73921C0.727473 8.84624 0.666504 8.99134 0.666504 9.14292V20.5713C0.666504 20.887 0.922252 21.143 1.23728 21.143H24.0957C24.4108 21.143 24.6665 20.887 24.6665 20.5713V3.42904C24.6666 3.11342 24.4108 2.85742 24.0958 2.85742ZM23.5233 20.0005H1.80975V9.71446H6.952C7.26863 9.71446 7.52438 9.45846 7.52438 9.14283V3.99991H23.5233V20.0005Z" fill="#94A3B8"/>
+                                            <path d="M5.80857 11.4285C5.49346 11.4285 5.23779 11.6845 5.23779 12.0002V16.2863C5.23779 16.6019 5.49346 16.8572 5.80857 16.8572H20.095C20.4101 16.8572 20.6659 16.6019 20.6659 16.2863V7.71442C20.6659 7.3988 20.4101 7.14355 20.095 7.14355H14.3805C14.0654 7.14355 13.8097 7.3988 13.8097 7.71442V11.4285H5.80857V11.4285ZM16.667 12.5718V15.7148H10.38V12.5718H16.667ZM6.38095 12.5718H9.23831V15.7148H6.38095V12.5718ZM17.8086 15.7147V12.5717H19.5242V15.7147H17.8086ZM19.5243 8.28613V11.4285H14.9529V8.28613H19.5243Z" fill="#94A3B8"/>
+                                        </g>
+                                        <defs>
+                                            <clipPath id="clip0_4039_4475">
+                                                <rect width="24" height="24" fill="white" transform="translate(0.666504)"/>
+                                            </clipPath>
+                                        </defs>
+                                    </svg>
+                                </div>
+                                <h3 class="card-title">Table Banking</h3>
+                                <p class="card-description">
+                                    Create and manage investment groups focused on collective savings and loan schemes.
+                                </p>
+                            </div>
+                            <div class="card-status coming-soon-status">Coming Soon</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 </div>
 
+<!-- Mobile Footer -->
+<style>
+@media screen and (min-width: 992px) {
+    .mbl_footer { display: none !important; }
+}
+@media screen and (max-width: 991px) {
+    body { padding-bottom: 80px !important; }
+    .mbl_footer { display: block !important; }
+}
+</style>
+<footer class="mbl_footer" style="background: #2291A5 !important; background-color: #2291A5 !important; position: fixed; bottom: 0; left: 0; right: 0; z-index: 1000; padding: 10px 0; display: block;">
+    <div class="container">
+        <div class="footer_row d-flex flex-row justify-content-between align-items-center" style="padding: 0 15px;">
+            <a href="{% url 'my_goals' %}" class="footer_button btn" style="color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 8px 12px;">
+                <img class="homer_white" src="{% static 'images/home_white.png' %}" alt="" style="width: 24px; height: 24px; margin-bottom: 4px; filter: brightness(0) invert(1);">
+                <p style="margin: 0; color: #fff; font-size: 12px; text-align: center;">Home</p>
+            </a>
+            <a href="{% url 'chamas:chamas' %}" class="footer_button btn active" style="color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 8px 12px; background: rgba(255, 255, 255, 0.2); border-radius: 8px;">
+                <img src="{% static 'images/filter_active.png' %}" alt="" style="width: 24px; height: 24px; margin-bottom: 4px; filter: brightness(0) invert(1);">
+                <p style="margin: 0; color: #fff; font-size: 12px; text-align: center; font-weight: 600;">Features</p>
+            </a>
+            <a href="{% url 'wallet_index' %}" class="footer_button btn" style="color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 8px 12px;">
+                <img src="{% static 'images/wallet_alt_fill.png' %}" alt="" style="width: 24px; height: 24px; margin-bottom: 4px; filter: brightness(0) invert(1);">
+                <p style="margin: 0; color: #fff; font-size: 12px; text-align: center;">Account</p>
+            </a>
+            <a href="{% url 'Setting' %}" class="footer_button btn" style="color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 8px 12px;">
+                <img src="{% static 'images/setting.png' %}" alt="" style="width: 24px; height: 24px; margin-bottom: 4px; filter: brightness(0) invert(1);">
+                <p style="margin: 0; color: #fff; font-size: 12px; text-align: center;">Settings</p>
+            </a>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
 $(document).ready(function() {
@@ -129,4 +238,5 @@ $(document).ready(function() {
 });
 </script>
 
-{%endblock%}
+</body>
+</html>
