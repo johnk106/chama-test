@@ -343,27 +343,89 @@ $(document).ready(function () {
         $('#desktop-create-form').slideToggle();
     });
 
-    // Enhanced mobile navigation functions
-    window.openNav = function() {
-        document.getElementById("mySidenav").style.width = "250px";
-        
-        if (window.innerWidth <= 767) {
-            document.getElementById("sidebarBackdrop").classList.add("show");
-            document.body.classList.add("sidebar-open");
-        } else {
-            document.getElementById("main").style.marginLeft = "150px";
-        }
-    }
+    // Ensure DOM is loaded before accessing elements
+    document.addEventListener('DOMContentLoaded', function() {
+        // Fixed mobile navigation functions with null checks
+        window.openNav = function() {
+            const sidenav = document.getElementById("mySidenav");
+            const overlay = document.querySelector(".mobile-overlay");
+            const body = document.body;
+            
+            console.log("Opening navigation sidebar"); // Debug log
+            
+            if (sidenav) {
+                sidenav.style.width = "280px";
+                sidenav.style.display = "block";
+                console.log("Sidebar opened successfully");
+            } else {
+                console.error("Sidebar element #mySidenav not found");
+                return;
+            }
+            
+            if (overlay) {
+                overlay.style.display = "block";
+                overlay.style.opacity = "1";
+                console.log("Overlay displayed");
+            } else {
+                console.warn("Mobile overlay not found");
+            }
+            
+            // Add class to body to prevent scrolling
+            if (body) {
+                body.classList.add("sidebar-open");
+            }
+            
+            // Add touch/click event to close on outside click
+            setTimeout(() => {
+                document.addEventListener('click', outsideClickHandler);
+            }, 100);
+        };
 
-    window.closeNav = function() {
-        document.getElementById("mySidenav").style.width = "0";
-        document.getElementById("sidebarBackdrop").classList.remove("show");
-        document.body.classList.remove("sidebar-open");
-        
-        if (window.innerWidth > 767) {
-            document.getElementById("main").style.marginLeft = "0";
+        window.closeNav = function() {
+            const sidenav = document.getElementById("mySidenav");
+            const overlay = document.querySelector(".mobile-overlay");
+            const body = document.body;
+            
+            console.log("Closing navigation sidebar"); // Debug log
+            
+            if (sidenav) {
+                sidenav.style.width = "0";
+                setTimeout(() => {
+                    sidenav.style.display = "none";
+                }, 300);
+                console.log("Sidebar closed successfully");
+            } else {
+                console.error("Sidebar element #mySidenav not found");
+                return;
+            }
+            
+            if (overlay) {
+                overlay.style.opacity = "0";
+                setTimeout(() => {
+                    overlay.style.display = "none";
+                }, 300);
+                console.log("Overlay hidden");
+            }
+            
+            // Remove class from body
+            if (body) {
+                body.classList.remove("sidebar-open");
+            }
+            
+            // Remove event listener
+            document.removeEventListener('click', outsideClickHandler);
+        };
+
+        function outsideClickHandler(event) {
+            const sidenav = document.getElementById("mySidenav");
+            const menuBtn = document.querySelector('.menu-btn');
+            
+            // Check if click is outside sidebar and not on menu button
+            if (sidenav && menuBtn && !sidenav.contains(event.target) && !menuBtn.contains(event.target)) {
+                closeNav();
+            }
         }
-    }
+    });
 
          // Load members for mobile view
      function loadMembersForMobile(contributionId) {
