@@ -29,6 +29,20 @@ html, body,
    CHAMAS BASE LAYOUT COMPATIBILITY
    ================================ */
 
+/* Ensure compatibility with new responsive layout */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  transition: margin-left 0.3s ease;
+}
+
 /* Updated to work with the new layout system */
 .side-nav {
   background-color: #2191a5 !important;
@@ -221,8 +235,54 @@ html, body,
   gap: 8px !important;
 }
 
-/* Responsive adjustments */
+/* ================================
+   RESPONSIVE LAYOUT ENHANCEMENTS
+   ================================ */
+
+/* Desktop View */
+@media (min-width: 769px) {
+  .main-content {
+    margin-left: 260px !important;
+  }
+  
+  .desktop-sidebar {
+    display: block !important;
+  }
+  
+  .desktop-header {
+    display: block !important;
+  }
+  
+  .mobile-header {
+    display: none !important;
+  }
+  
+  .side-nav {
+    display: block !important;
+  }
+}
+
+/* Mobile View */
 @media (max-width: 768px) {
+  .main-content {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+  
+  .desktop-sidebar {
+    display: none !important;
+  }
+  
+  .desktop-header {
+    display: none !important;
+  }
+  
+  .mobile-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+  }
+  
   .side-nav {
     display: none !important;
   }
@@ -231,10 +291,34 @@ html, body,
     margin: 16px !important;
     border-radius: 20px !important;
   }
+  
+  .page-content {
+    padding: 16px !important;
+  }
 }
 
-@media (min-width: 769px) {
-  .side-nav {
-    display: block !important;
+/* Ensure mobile navigation hamburger is visible on mobile */
+@media (max-width: 768px) {
+  .mobile-nav-toggle {
+    display: flex !important;
+    align-items: center !important;
+  }
+  
+  .menu-btn {
+    background: none !important;
+    border: none !important;
+    font-size: 24px !important;
+    color: #2191a5 !important;
+    cursor: pointer !important;
+    padding: 8px !important;
+    border-radius: 50% !important;
+    transition: background 0.3s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  .menu-btn:hover {
+    background: rgba(33, 145, 165, 0.1) !important;
   }
 }

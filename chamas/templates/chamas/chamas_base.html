@@ -275,14 +275,18 @@
           const overlay = document.querySelector(".mobile-overlay");
           const body = document.body;
           
+          console.log("Opening navigation sidebar"); // Debug log
+          
           if (sidenav) {
               sidenav.style.width = "280px";
               sidenav.style.display = "block";
+              console.log("Sidebar width set to 280px"); // Debug log
           }
           
           if (overlay) {
               overlay.style.display = "block";
               overlay.style.opacity = "1";
+              console.log("Overlay displayed"); // Debug log
           }
           
           // Add class to body to prevent scrolling
@@ -299,11 +303,14 @@
           const overlay = document.querySelector(".mobile-overlay");
           const body = document.body;
           
+          console.log("Closing navigation sidebar"); // Debug log
+          
           if (sidenav) {
               sidenav.style.width = "0";
               setTimeout(() => {
                   sidenav.style.display = "none";
               }, 300);
+              console.log("Sidebar width set to 0"); // Debug log
           }
           
           if (overlay) {
@@ -311,6 +318,7 @@
               setTimeout(() => {
                   overlay.style.display = "none";
               }, 300);
+              console.log("Overlay hidden"); // Debug log
           }
           
           // Remove class from body

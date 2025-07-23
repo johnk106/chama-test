@@ -875,14 +875,18 @@ function openNav() {
     const overlay = document.querySelector(".mobile-overlay");
     const body = document.body;
     
+    console.log("Opening navigation sidebar"); // Debug log
+    
     if (sidenav) {
         sidenav.style.width = "280px";
         sidenav.style.display = "block";
+        console.log("Sidebar width set to 280px"); // Debug log
     }
     
     if (overlay) {
         overlay.style.display = "block";
         overlay.style.opacity = "1";
+        console.log("Overlay displayed"); // Debug log
     }
     
     // Add class to body to prevent scrolling
@@ -899,11 +903,14 @@ function closeNav() {
     const overlay = document.querySelector(".mobile-overlay");
     const body = document.body;
     
+    console.log("Closing navigation sidebar"); // Debug log
+    
     if (sidenav) {
         sidenav.style.width = "0";
         setTimeout(() => {
             sidenav.style.display = "none";
         }, 300);
+        console.log("Sidebar width set to 0"); // Debug log
     }
     
     if (overlay) {
@@ -911,6 +918,7 @@ function closeNav() {
         setTimeout(() => {
             overlay.style.display = "none";
         }, 300);
+        console.log("Overlay hidden"); // Debug log
     }
     
     // Remove class from body
@@ -938,6 +946,27 @@ document.addEventListener('DOMContentLoaded', function() {
         overlay = document.createElement('div');
         overlay.className = 'mobile-overlay';
         document.body.appendChild(overlay);
+        console.log("Mobile overlay created");
+    }
+    
+    // Get chama ID from URL for navigation links
+    const pathSegments = window.location.pathname.split('/');
+    let chamaId = null;
+    
+    // Look for chama ID in URL pattern like /chama-dashboard/123/ or /contributions/123/
+    for (let i = 0; i < pathSegments.length - 1; i++) {
+        const nextSegment = pathSegments[i + 1];
+        if (nextSegment && !isNaN(nextSegment) && parseInt(nextSegment) > 0) {
+            chamaId = parseInt(nextSegment);
+            break;
+        }
+    }
+    
+    console.log("Detected chama ID:", chamaId);
+    
+    // Update navigation links with correct URLs if chama ID is found
+    if (chamaId) {
+        updateNavigationLinks(chamaId);
     }
     
     // Close sidebar on window resize if moving to desktop
@@ -977,6 +1006,33 @@ document.addEventListener('DOMContentLoaded', function() {
         startY = 0;
     });
 });
+
+// Function to update navigation links with correct chama ID
+function updateNavigationLinks(chamaId) {
+    const linkMappings = {
+        'dashboard-link': `/chamas/chama-dashboard/${chamaId}/`,
+        'finances-link': `/chamas/chama-finances/${chamaId}/`,
+        'contribution-link': `/chamas/contributions/${chamaId}/`,
+        'loans-link': `/chamas/chama-loans/${chamaId}/`,
+        'expenses-link': `/chamas/chama-expenses/${chamaId}/`,
+        'fines-link': `/chamas/chama-fines/${chamaId}/`,
+        'reports-link': `/chamas/chama-reports/${chamaId}/`,
+        'members-link': `/chamas/members/${chamaId}/`,
+        'notifications-link': `/chamas/chama-notifications/${chamaId}/`
+    };
+    
+    // Update both mobile and desktop sidebar links
+    Object.keys(linkMappings).forEach(className => {
+        const mobileLinks = document.querySelectorAll(`#mySidenav .${className}`);
+        const desktopLinks = document.querySelectorAll(`.desktop-sidebar .${className}`);
+        
+        [...mobileLinks, ...desktopLinks].forEach(link => {
+            link.href = linkMappings[className];
+        });
+    });
+    
+    console.log("Navigation links updated for chama ID:", chamaId);
+}
 </script>
 
 <!-- Mobile Footer -->
