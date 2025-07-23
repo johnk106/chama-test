@@ -378,7 +378,7 @@
     <!-- Applications Tab Content -->
     <div class="tab-content admin" id="applications">
       <div class="mobile-applications-list admin">
-        {% for application in pending_applications %}
+        {% for application in applications %}
         <div class="application-beautiful-card">
           <div class="application-beautiful-row">
             <div class="application-beautiful-label">Application ID</div>
@@ -390,11 +390,12 @@
             <div class="application-beautiful-label">Amount</div>
             <div class="application-beautiful-value">Ksh{{application.amount|floatformat:1}}</div>
             <div class="application-beautiful-label">Type</div>
-            <div class="application-beautiful-value">{{application.loan_type.name}}</div>
+            <div class="application-beautiful-value">{{application.type.name}}</div>
           </div>
+          <p style="display: none" id="application-id">{{application.id}}</p>
           <div class="application-actions">
-            <button class="approve-btn">Approve</button>
-            <button class="decline-btn">Decline</button>
+            <button class="approve-btn approve-button">Approve</button>
+            <button class="decline-btn cancel-button">Decline</button>
           </div>
         </div>
         {% empty %}
@@ -1219,9 +1220,9 @@
     var approveButtons = document.querySelectorAll(".approve-button");
     approveButtons.forEach(function (button) {
       button.addEventListener("click", function (event) {
-        var applicationId = event.target
-          .closest(".application-single")
-          .querySelector("#application-id").innerText;
+        // Handle both mobile (.application-beautiful-card) and desktop (.application-single) containers
+        var container = event.target.closest(".application-single") || event.target.closest(".application-beautiful-card");
+        var applicationId = container.querySelector("#application-id").innerText;
         approveLoan(applicationId);
       });
     });
@@ -1230,9 +1231,9 @@
     var declineButtons = document.querySelectorAll(".cancel-button");
     declineButtons.forEach(function (button) {
       button.addEventListener("click", function (event) {
-        var applicationId = event.target
-          .closest(".application-single")
-          .querySelector("#application-id").innerText;
+        // Handle both mobile (.application-beautiful-card) and desktop (.application-single) containers
+        var container = event.target.closest(".application-single") || event.target.closest(".application-beautiful-card");
+        var applicationId = container.querySelector("#application-id").innerText;
         declineLoan(applicationId);
       });
     });
