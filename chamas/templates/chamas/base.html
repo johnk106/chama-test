@@ -418,19 +418,7 @@
   <!-- Add this script tag at the end of your HTML body section -->
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
   <script>
-    /* Open mobile navigation */
-    function openNav() {
-      document.getElementById("mySidenav").style.width = "260px";
-      document.querySelector(".mobile-overlay").style.display = "block";
-      document.querySelector(".mobile-overlay").classList.add("show");
-    }
-
-    /* Close mobile navigation */
-    function closeNav() {
-      document.getElementById("mySidenav").style.width = "0";
-      document.querySelector(".mobile-overlay").style.display = "none";
-      document.querySelector(".mobile-overlay").classList.remove("show");
-    }
+    /* Mobile navigation functions are defined later in the page with proper error handling */
 
   function getGroupId() {
     return localStorage.getItem('groupId');
@@ -869,83 +857,171 @@ $(document).ready(function() {
 
 <!-- Mobile Navigation JavaScript -->
 <script>
-// Mobile Navigation Functions
+// Ensure DOM is ready before any mobile navigation functions are called
+let isNavigationReady = false;
+
+// Mobile Navigation Functions with robust error handling
 function openNav() {
-    const sidenav = document.getElementById("mySidenav");
-    const overlay = document.querySelector(".mobile-overlay");
-    const body = document.body;
+    console.log('openNav() called'); // Debug log
     
-    if (sidenav) {
+    // Wait for DOM if not ready
+    if (!isNavigationReady) {
+        console.log('DOM not ready, waiting...');
+        setTimeout(openNav, 100);
+        return;
+    }
+    
+    try {
+        const sidenav = document.getElementById("mySidenav");
+        const overlay = document.querySelector(".mobile-overlay");
+        const body = document.body;
+        
+        if (!sidenav) {
+            console.error('Sidebar element #mySidenav not found');
+            return;
+        }
+        
+        if (!overlay) {
+            console.warn('Mobile overlay not found, creating one');
+            createMobileOverlay();
+        }
+        
+        // Open sidebar
         sidenav.style.width = "280px";
         sidenav.style.display = "block";
+        
+        // Show overlay
+        const currentOverlay = document.querySelector(".mobile-overlay");
+        if (currentOverlay) {
+            currentOverlay.style.display = "block";
+            currentOverlay.style.opacity = "1";
+        }
+        
+        // Prevent body scrolling
+        if (body && body.classList) {
+            body.classList.add("sidebar-open");
+        }
+        
+        // Add outside click handler after a delay
+        setTimeout(() => {
+            document.addEventListener('click', outsideClickHandler);
+        }, 100);
+        
+        console.log('Sidebar opened successfully');
+    } catch (error) {
+        console.error('Error in openNav():', error);
     }
-    
-    if (overlay) {
-        overlay.style.display = "block";
-        overlay.style.opacity = "1";
-    }
-    
-    // Add class to body to prevent scrolling
-    body.classList.add("sidebar-open");
-    
-    // Add touch/click event to close on outside click
-    setTimeout(() => {
-        document.addEventListener('click', outsideClickHandler);
-    }, 100);
 }
 
 function closeNav() {
-    const sidenav = document.getElementById("mySidenav");
-    const overlay = document.querySelector(".mobile-overlay");
-    const body = document.body;
+    console.log('closeNav() called'); // Debug log
     
-    if (sidenav) {
-        sidenav.style.width = "0";
-        setTimeout(() => {
-            sidenav.style.display = "none";
-        }, 300);
+    try {
+        const sidenav = document.getElementById("mySidenav");
+        const overlay = document.querySelector(".mobile-overlay");
+        const body = document.body;
+        
+        // Close sidebar
+        if (sidenav) {
+            sidenav.style.width = "0";
+            setTimeout(() => {
+                if (sidenav) {
+                    sidenav.style.display = "none";
+                }
+            }, 300);
+        }
+        
+        // Hide overlay
+        if (overlay) {
+            overlay.style.opacity = "0";
+            setTimeout(() => {
+                if (overlay) {
+                    overlay.style.display = "none";
+                }
+            }, 300);
+        }
+        
+        // Remove sidebar-open class from body
+        if (body && body.classList) {
+            body.classList.remove("sidebar-open");
+        }
+        
+        // Remove event listener
+        document.removeEventListener('click', outsideClickHandler);
+        
+        console.log('Sidebar closed successfully');
+    } catch (error) {
+        console.error('Error in closeNav():', error);
     }
-    
-    if (overlay) {
-        overlay.style.opacity = "0";
-        setTimeout(() => {
-            overlay.style.display = "none";
-        }, 300);
-    }
-    
-    // Remove class from body
-    body.classList.remove("sidebar-open");
-    
-    // Remove event listener
-    document.removeEventListener('click', outsideClickHandler);
 }
 
 function outsideClickHandler(event) {
-    const sidenav = document.getElementById("mySidenav");
-    const menuBtn = document.querySelector('.menu-btn');
-    
-    // Check if click is outside sidebar and not on menu button
-    if (!sidenav.contains(event.target) && !menuBtn.contains(event.target)) {
-        closeNav();
+    try {
+        const sidenav = document.getElementById("mySidenav");
+        const menuBtn = document.querySelector('.menu-btn');
+        
+        // Check if click is outside sidebar and not on menu button
+        if (sidenav && !sidenav.contains(event.target) && 
+            (!menuBtn || !menuBtn.contains(event.target))) {
+            closeNav();
+        }
+    } catch (error) {
+        console.error('Error in outsideClickHandler:', error);
+    }
+}
+
+// Helper function to create mobile overlay if it doesn't exist
+function createMobileOverlay() {
+    try {
+        let overlay = document.querySelector('.mobile-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.className = 'mobile-overlay';
+            overlay.onclick = closeNav;
+            document.body.appendChild(overlay);
+            console.log('Mobile overlay created');
+        }
+        return overlay;
+    } catch (error) {
+        console.error('Error creating mobile overlay:', error);
+        return null;
     }
 }
 
 // Initialize mobile navigation on page load
 document.addEventListener('DOMContentLoaded', function() {
-    // Ensure mobile overlay exists
-    let overlay = document.querySelector('.mobile-overlay');
-    if (!overlay) {
-        overlay = document.createElement('div');
-        overlay.className = 'mobile-overlay';
-        document.body.appendChild(overlay);
-    }
+    console.log('DOM loaded, initializing mobile navigation');
     
-    // Close sidebar on window resize if moving to desktop
-    window.addEventListener('resize', function() {
-        if (window.innerWidth > 768) {
-            closeNav();
+    try {
+        // Check if required elements exist
+        const sidenav = document.getElementById("mySidenav");
+        const menuBtn = document.querySelector('.menu-btn');
+        
+        if (!sidenav) {
+            console.error('Mobile sidebar element #mySidenav not found in DOM');
+            return;
         }
-    });
+        
+        if (!menuBtn) {
+            console.warn('Menu button .menu-btn not found in DOM');
+        }
+        
+        // Ensure mobile overlay exists
+        createMobileOverlay();
+        
+        // Close sidebar on window resize if moving to desktop
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                closeNav();
+            }
+        });
+        
+        // Mark navigation as ready
+        isNavigationReady = true;
+        console.log('Mobile navigation initialized successfully');
+    } catch (error) {
+        console.error('Error initializing mobile navigation:', error);
+    }
     
     // Handle swipe gestures for mobile
     let startX = 0;
