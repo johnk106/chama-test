@@ -449,8 +449,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const overlay = document.querySelector(".mobile-overlay");
         const body = document.body;
         
-        console.log("Opening navigation sidebar"); // Debug log
-        
         if (sidenav) {
             // Force display and visibility first
             sidenav.style.display = "block";
@@ -462,12 +460,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Set width to trigger animation
             sidenav.style.width = "280px";
-            
-            console.log("Sidebar opened successfully");
-            console.log("Sidebar computed style:", window.getComputedStyle(sidenav));
-            console.log("Sidebar display:", sidenav.style.display);
-            console.log("Sidebar width:", sidenav.style.width);
-            console.log("Sidebar visibility:", sidenav.style.visibility);
         } else {
             console.error("Sidebar element #mySidenav not found");
             return;
@@ -478,11 +470,6 @@ document.addEventListener('DOMContentLoaded', function() {
             overlay.style.visibility = "visible";
             overlay.style.opacity = "1";
             overlay.classList.add("active");
-            console.log("Overlay displayed");
-            console.log("Overlay display:", overlay.style.display);
-            console.log("Overlay opacity:", overlay.style.opacity);
-        } else {
-            console.warn("Mobile overlay not found");
         }
         
         // Add class to body to prevent scrolling
@@ -501,8 +488,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const overlay = document.querySelector(".mobile-overlay");
         const body = document.body;
         
-        console.log("Closing navigation sidebar"); // Debug log
-        
         if (sidenav) {
             // Remove open class
             sidenav.classList.remove("open");
@@ -515,7 +500,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 sidenav.style.display = "none";
                 sidenav.style.visibility = "hidden";
             }, 300);
-            console.log("Sidebar closed successfully");
         } else {
             console.error("Sidebar element #mySidenav not found");
             return;
@@ -530,7 +514,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 overlay.style.display = "none";
                 overlay.style.visibility = "hidden";
             }, 300);
-            console.log("Overlay hidden");
         }
         
         // Remove class from body
