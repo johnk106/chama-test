@@ -144,6 +144,7 @@
                 </div>
               </div>
             </div>
+            <div id="mobile-issue-loan-feedback" class="alert" style="display: none; margin-top: 10px;"></div>
             <button type="submit" class="create-loan-btn beautiful-btn">
               Issue Loan
             </button>
@@ -928,15 +929,33 @@
   function submitForm(event) {
     event.preventDefault(); // Prevent the default form submission behavior
 
-    // Extract form values
-    var name = document.getElementById("name").value;
-    var max = document.getElementById("max").value;
-    var late_fine = document.getElementById("late-fine").value;
-    var grace_period = document.getElementById("grace-period").value;
-    var intrest_rate = parseFloat(document.getElementById("intrest-rate").value);
-    var description = document.getElementById("description").value;
-    var due = document.getElementById("max-due").value;
-    var schedule = document.getElementById("schedule").value;
+    // Determine if we're on mobile or desktop by checking which form is visible
+    var isMobile = window.getComputedStyle(document.querySelector('.mobile-loans')).display !== 'none';
+    
+    // Extract form values based on the active form
+    var name, max, late_fine, grace_period, intrest_rate, description, due, schedule;
+    
+         if (isMobile) {
+       // Use mobile form IDs
+       name = document.getElementById("mobile-name")?.value || '';
+       max = document.getElementById("mobile-max")?.value || '';
+       late_fine = document.getElementById("mobile-late-fine")?.value || '';
+       grace_period = document.getElementById("mobile-grace-period")?.value || '';
+       intrest_rate = parseFloat(document.getElementById("mobile-interest-rate")?.value || '0');
+       description = document.getElementById("mobile-description")?.value || '';
+       due = document.getElementById("mobile-max-due")?.value || '';
+       schedule = document.getElementById("mobile-schedule")?.value || '';
+     } else {
+       // Use desktop form IDs
+       name = document.getElementById("name")?.value || '';
+       max = document.getElementById("max")?.value || '';
+       late_fine = document.getElementById("late-fine")?.value || '';
+       grace_period = document.getElementById("grace-period")?.value || '';
+       intrest_rate = parseFloat(document.getElementById("intrest-rate")?.value || '0');
+       description = document.getElementById("description")?.value || '';
+       due = document.getElementById("max-due")?.value || '';
+       schedule = document.getElementById("schedule")?.value || '';
+     }
 
     // Get chama_id from local storage
     var chama_id = localStorage.getItem("groupId");
@@ -968,13 +987,31 @@
     })
       .then((response) => response.json())
       .then((data) => {
-        var alertDiv = document.getElementById("alert-div");
+        // Update both desktop and mobile alert divs
+        var desktopAlertDiv = document.getElementById("alert-div");
+        var mobileAlertDiv = document.getElementById("mobile-create-loan-feedback");
+        
         if (data.status === "success") {
-          alertDiv.className = "alert alert-success";
+          if (desktopAlertDiv) {
+            desktopAlertDiv.className = "alert alert-success";
+            desktopAlertDiv.innerHTML = data.message;
+          }
+          if (mobileAlertDiv) {
+            mobileAlertDiv.className = "alert alert-success";
+            mobileAlertDiv.innerHTML = data.message;
+            mobileAlertDiv.style.display = "block";
+          }
         } else {
-          alertDiv.className = "alert alert-danger";
+          if (desktopAlertDiv) {
+            desktopAlertDiv.className = "alert alert-danger";
+            desktopAlertDiv.innerHTML = data.message;
+          }
+          if (mobileAlertDiv) {
+            mobileAlertDiv.className = "alert alert-danger";
+            mobileAlertDiv.innerHTML = data.message;
+            mobileAlertDiv.style.display = "block";
+          }
         }
-        alertDiv.innerHTML = data.message;
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -993,12 +1030,25 @@
   function applyLoan(event) {
     event.preventDefault(); // Prevent the default form submission behavior
 
-    // Extract form values
-    var amount = document.getElementById("apply-amount-pc").value;
-    var loanType = document.getElementById("loan-type-pc").value;
-    var due = document.getElementById("apply-due-pc").value;
+    // Determine if we're on mobile or desktop by checking which form is visible
+    var isMobile = window.getComputedStyle(document.querySelector('.mobile-loans')).display !== 'none';
+    
+    // Extract form values based on the active form
+    var amount, loanType, due;
+    
+    if (isMobile) {
+      // Use mobile form IDs
+      amount = document.getElementById("apply-amount")?.value || '';
+      loanType = document.getElementById("apply-loan-type")?.value || '';
+      due = document.getElementById("apply-term")?.value || '';
+    } else {
+      // Use desktop form IDs
+      amount = document.getElementById("apply-amount-pc")?.value || '';
+      loanType = document.getElementById("loan-type-pc")?.value || '';
+      due = document.getElementById("apply-due-pc")?.value || '';
+    }
 
-    console.log(amount);
+    console.log("Amount:", amount, "Loan Type:", loanType, "Due:", due);
 
     // Get chama_id from local storage
     var chamaId = localStorage.getItem("groupId");
@@ -1069,50 +1119,90 @@
 </script>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const form = document.getElementById("issue-loan-form");
+  // Function to handle issue loan form submission for both mobile and desktop
+  function issueLoanForm(event) {
+    event.preventDefault();
+    
+    // Determine if we're on mobile or desktop
+    var isMobile = window.getComputedStyle(document.querySelector('.mobile-loans')).display !== 'none';
+    
+    // Get form data based on the active form
+    var jsonData = {};
+    
+         if (isMobile) {
+       // Mobile form field mapping
+       jsonData.member = document.getElementById("mobile-member")?.value || '';
+       jsonData.type = document.getElementById("mobile-loan-type")?.value || '';
+       jsonData.amount = document.getElementById("mobile-amount")?.value || '';
+       jsonData.due = document.getElementById("mobile-term")?.value || '';
+       // Mobile form doesn't have start_date, so use current date
+       jsonData.start_date = new Date().toISOString().split('T')[0];
+     } else {
+       // Desktop form
+       jsonData.member = document.getElementById("member")?.value || '';
+       jsonData.type = document.getElementById("type")?.value || '';
+       jsonData.amount = document.getElementById("amount")?.value || '';
+       jsonData.due = document.getElementById("due")?.value || '';
+       jsonData.start_date = document.getElementById("start_date")?.value || new Date().toISOString().split('T')[0];
+     }
 
-    form.addEventListener("submit", function (event) {
-      event.preventDefault();
+    // Fetch the CSRF token from the cookie
+    const csrftoken = getCookie("csrftoken");
 
-      const formData = new FormData(form);
+    // Send AJAX request to the backend
+    fetch(`/chamas-bookeeping/issue-loan/${localStorage.getItem('groupId')}/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrftoken
+      },
+      body: JSON.stringify(jsonData)
+    })
+      .then(response => response.json())
+      .then(data => {
+        // Process the response and display alerts for both mobile and desktop
+        const desktopAlertHub = document.getElementById("issue-loan-alert");
+        const mobileAlertHub = document.getElementById("mobile-issue-loan-feedback");
 
-      // Convert form data to JSON
-      const jsonData = {};
-      formData.forEach((value, key) => {
-        jsonData[key] = value;
-      });
-
-      // Fetch the CSRF token from the cookie
-      const csrftoken = getCookie("csrftoken");
-
-      // Send AJAX request to the backend
-      fetch(`/chamas-bookeeping/issue-loan/${localStorage.getItem('groupId')}/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": csrftoken
-        },
-        body: JSON.stringify(jsonData)
-      })
-        .then(response => response.json())
-        .then(data => {
-          // Process the response and display Bootstrap alerts
-          const alertHub = document.getElementById("issue-loan-alert");
-
-          if (data.status === "success") {
-            // Display success alert
-            alertHub.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
-          } else {
-            // Display error alert
-            alertHub.innerHTML = `<div class="alert alert-danger">${data.message}</div>`;
+        if (data.status === "success") {
+          // Display success alert
+          if (desktopAlertHub) {
+            desktopAlertHub.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
           }
-        })
-        .catch(error => {
-          console.error("Error:", error);
-        });
+          if (mobileAlertHub) {
+            mobileAlertHub.innerHTML = data.message;
+            mobileAlertHub.className = "alert alert-success";
+            mobileAlertHub.style.display = "block";
+          }
+        } else {
+          // Display error alert
+          if (desktopAlertHub) {
+            desktopAlertHub.innerHTML = `<div class="alert alert-danger">${data.message}</div>`;
+          }
+          if (mobileAlertHub) {
+            mobileAlertHub.innerHTML = data.message;
+            mobileAlertHub.className = "alert alert-danger";
+            mobileAlertHub.style.display = "block";
+          }
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+      });
+  }
 
-    });
+  document.addEventListener("DOMContentLoaded", function () {
+    const desktopForm = document.getElementById("issue-loan-form");
+    const mobileForm = document.getElementById("mobile-issue-loan-form");
+
+    // Add event listeners for both forms
+    if (desktopForm) {
+      desktopForm.addEventListener("submit", issueLoanForm);
+    }
+    
+    if (mobileForm) {
+      mobileForm.addEventListener("submit", issueLoanForm);
+    }
 
     // Function to get the value of a cookie by name
     function getCookie(name) {
