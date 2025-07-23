@@ -452,9 +452,22 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log("Opening navigation sidebar"); // Debug log
         
         if (sidenav) {
-            sidenav.style.width = "280px";
+            // Force display and visibility first
             sidenav.style.display = "block";
+            sidenav.style.visibility = "visible";
+            sidenav.style.zIndex = "2000";
+            
+            // Add open class for additional styling
+            sidenav.classList.add("open");
+            
+            // Set width to trigger animation
+            sidenav.style.width = "280px";
+            
             console.log("Sidebar opened successfully");
+            console.log("Sidebar computed style:", window.getComputedStyle(sidenav));
+            console.log("Sidebar display:", sidenav.style.display);
+            console.log("Sidebar width:", sidenav.style.width);
+            console.log("Sidebar visibility:", sidenav.style.visibility);
         } else {
             console.error("Sidebar element #mySidenav not found");
             return;
@@ -462,8 +475,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (overlay) {
             overlay.style.display = "block";
+            overlay.style.visibility = "visible";
             overlay.style.opacity = "1";
+            overlay.classList.add("active");
             console.log("Overlay displayed");
+            console.log("Overlay display:", overlay.style.display);
+            console.log("Overlay opacity:", overlay.style.opacity);
         } else {
             console.warn("Mobile overlay not found");
         }
@@ -487,9 +504,16 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log("Closing navigation sidebar"); // Debug log
         
         if (sidenav) {
+            // Remove open class
+            sidenav.classList.remove("open");
+            
+            // Set width to 0 to trigger close animation
             sidenav.style.width = "0";
+            
+            // Hide after animation completes
             setTimeout(() => {
                 sidenav.style.display = "none";
+                sidenav.style.visibility = "hidden";
             }, 300);
             console.log("Sidebar closed successfully");
         } else {
@@ -498,9 +522,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         if (overlay) {
+            // Remove active class
+            overlay.classList.remove("active");
             overlay.style.opacity = "0";
+            
             setTimeout(() => {
                 overlay.style.display = "none";
+                overlay.style.visibility = "hidden";
             }, 300);
             console.log("Overlay hidden");
         }
