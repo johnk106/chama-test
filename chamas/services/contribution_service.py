@@ -5,6 +5,8 @@ import json
 from authentication.models import Profile
 from django.db import IntegrityError
 from django.core.paginator import Paginator
+from django.utils import timezone
+from decimal import Decimal
 
 
 class ContributionService:
@@ -72,80 +74,200 @@ class ContributionService:
     def create_contribution_record(request,chama_id):
         try:
             chama = Chama.objects.get(pk=chama_id)
-
             data = json.loads(request.body)
-            contribution = Contribution.objects.get(pk=data.get('contribution'))
-            date = timezone.now()
-            amount_expected = contribution.amount
-            amount_paid = Decimal(str(data.get('amount', 0)))
-            member = ChamaMember.objects.get(pk=data.get('member'))
+            
+            # Check if this is the new format (multiple contributions)
+            if 'contribution_id' in data and 'contributions' in data:
+                # Handle multiple contributions format
+                contribution_id = data.get('contribution_id')
+                contributions_list = data.get('contributions', [])
+                
+                if not contribution_id:
+                    return JsonResponse({
+                        'status': 'failed',
+                        'message': 'Contribution ID is required'
+                    }, status=400)
+                
+                if not contributions_list:
+                    return JsonResponse({
+                        'status': 'failed',
+                        'message': 'At least one contribution entry is required'
+                    }, status=400)
+                
+                try:
+                    contribution = Contribution.objects.get(pk=contribution_id)
+                except Contribution.DoesNotExist:
+                    return JsonResponse({
+                        'status': 'failed',
+                        'message': 'Contribution not found'
+                    }, status=404)
+                
+                created_records = []
+                errors = []
+                
+                for contrib_data in contributions_list:
+                    try:
+                        member_id = contrib_data.get('member_id')
+                        amount = Decimal(str(contrib_data.get('amount', 0)))
+                        
+                        if amount <= 0:
+                            errors.append(f'Invalid amount for member ID {member_id}')
+                            continue
+                            
+                        try:
+                            member = ChamaMember.objects.get(pk=member_id)
+                        except ChamaMember.DoesNotExist:
+                            errors.append(f'Member with ID {member_id} not found')
+                            continue
+                        
+                        date = timezone.now()
+                        amount_expected = contribution.amount
+                        balance = amount_expected - amount
+                        
+                        # Create the main contribution record
+                        new_contribution_record = ContributionRecord.objects.create(
+                            contribution=contribution,
+                            date_created=date,
+                            amount_expected=amount_expected,
+                            amount_paid=amount,
+                            balance=balance if balance > 0 else Decimal('0.00'),
+                            member=member,
+                            chama=chama
+                        )
+                        
+                        # Create cashflow record
+                        CashflowReport.objects.create(
+                            object_date=new_contribution_record.date_created,
+                            member=new_contribution_record.member,
+                            type='contribution',
+                            amount=new_contribution_record.amount_paid,
+                            chama=chama,
+                            forGroup=False
+                        )
+                        
+                        # If overpayment, create an additional record for the excess
+                        if balance < 0:  # Overpayment
+                            excess_amount = abs(balance)
+                            ContributionRecord.objects.create(
+                                contribution=contribution,
+                                date_created=date,
+                                amount_expected=Decimal('0.00'),
+                                amount_paid=excess_amount,
+                                balance=Decimal('0.00'),
+                                member=member,
+                                chama=chama
+                            )
+                        
+                        created_records.append({
+                            'id': new_contribution_record.id,
+                            'member': member.name,
+                            'amount_paid': float(amount),
+                            'amount_expected': float(amount_expected),
+                            'balance': float(new_contribution_record.balance),
+                            'date_created': date.strftime('%Y-%m-%d')
+                        })
+                        
+                    except (ValueError, TypeError) as e:
+                        errors.append(f'Invalid amount for member ID {member_id}: {str(e)}')
+                        continue
+                    except Exception as e:
+                        errors.append(f'Error processing member ID {member_id}: {str(e)}')
+                        continue
+                
+                if created_records:
+                    message = f'Successfully created {len(created_records)} contribution record(s)'
+                    if errors:
+                        message += f'. {len(errors)} error(s) occurred: {"; ".join(errors[:3])}'
+                        if len(errors) > 3:
+                            message += f' and {len(errors) - 3} more...'
+                    
+                    return JsonResponse({
+                        'status': 'success',
+                        'message': message,
+                        'records': created_records,
+                        'errors': errors
+                    }, status=200)
+                else:
+                    return JsonResponse({
+                        'status': 'failed',
+                        'message': f'No records created. Errors: {"; ".join(errors)}',
+                        'errors': errors
+                    }, status=400)
+            
+            else:
+                # Handle legacy single contribution format
+                contribution = Contribution.objects.get(pk=data.get('contribution'))
+                date = timezone.now()
+                amount_expected = contribution.amount
+                amount_paid = Decimal(str(data.get('amount', 0)))
+                member = ChamaMember.objects.get(pk=data.get('member'))
 
-            # Validate amount
-            if amount_paid < 0:
-                data = {
-                    'status': 'failed',
-                    'message': f'Amount for member {member.name} cannot be negative.'
-                }
-                return JsonResponse(data, status=400)
+                # Validate amount
+                if amount_paid < 0:
+                    data = {
+                        'status': 'failed',
+                        'message': f'Amount for member {member.name} cannot be negative.'
+                    }
+                    return JsonResponse(data, status=400)
 
-            if amount_paid == 0:
-                data = {
-                    'status': 'failed',
-                    'message': f'Amount for member {member.name} must be greater than zero.'
-                }
-                return JsonResponse(data, status=400)
+                if amount_paid == 0:
+                    data = {
+                        'status': 'failed',
+                        'message': f'Amount for member {member.name} must be greater than zero.'
+                    }
+                    return JsonResponse(data, status=400)
 
-            # Calculate balance (negative means overpayment, positive means underpayment)
-            balance = amount_expected - amount_paid
+                # Calculate balance (negative means overpayment, positive means underpayment)
+                balance = amount_expected - amount_paid
 
-            # Create the main contribution record
-            new_contribution_record = ContributionRecord.objects.create(
-                contribution=contribution,
-                date_created=date,
-                amount_expected=amount_expected,
-                amount_paid=amount_paid,
-                balance=balance if balance > 0 else Decimal('0.00'),
-                member=member,
-                chama=chama
-            )
-
-            # Create cashflow record
-            new_cashflow_object = CashflowReport.objects.create(
-                object_date=new_contribution_record.date_created,
-                member=new_contribution_record.member,
-                type='contribution',
-                amount=new_contribution_record.amount_paid,
-                chama=chama,
-                forGroup=False
-            )
-
-            # If overpayment, create an additional record for the excess
-            if balance < 0:  # Overpayment
-                excess_amount = abs(balance)
-                ContributionRecord.objects.create(
+                # Create the main contribution record
+                new_contribution_record = ContributionRecord.objects.create(
                     contribution=contribution,
                     date_created=date,
-                    amount_expected=Decimal('0.00'),  # No expectation for excess
-                    amount_paid=excess_amount,
-                    balance=Decimal('0.00'),  # Excess has no balance
+                    amount_expected=amount_expected,
+                    amount_paid=amount_paid,
+                    balance=balance if balance > 0 else Decimal('0.00'),
                     member=member,
                     chama=chama
                 )
 
-            data = {
-                'status': 'success',
-                'message': f'Contribution record created successfully for {member.name}',
-                'record': {
-                    'id': new_contribution_record.id,
-                    'member': member.name,
-                    'amount_paid': float(amount_paid),
-                    'amount_expected': float(amount_expected),
-                    'balance': float(new_contribution_record.balance),
-                    'date_created': date.strftime('%Y-%m-%d')
-                }
-            }
+                # Create cashflow record
+                new_cashflow_object = CashflowReport.objects.create(
+                    object_date=new_contribution_record.date_created,
+                    member=new_contribution_record.member,
+                    type='contribution',
+                    amount=new_contribution_record.amount_paid,
+                    chama=chama,
+                    forGroup=False
+                )
 
-            return JsonResponse(data, status=200)
+                # If overpayment, create an additional record for the excess
+                if balance < 0:  # Overpayment
+                    excess_amount = abs(balance)
+                    ContributionRecord.objects.create(
+                        contribution=contribution,
+                        date_created=date,
+                        amount_expected=Decimal('0.00'),  # No expectation for excess
+                        amount_paid=excess_amount,
+                        balance=Decimal('0.00'),  # Excess has no balance
+                        member=member,
+                        chama=chama
+                    )
+
+                data = {
+                    'status': 'success',
+                    'message': f'Contribution record created successfully for {member.name}',
+                    'record': {
+                        'id': new_contribution_record.id,
+                        'member': member.name,
+                        'amount_paid': float(amount_paid),
+                        'amount_expected': float(amount_expected),
+                        'balance': float(new_contribution_record.balance),
+                        'date_created': date.strftime('%Y-%m-%d')
+                    }
+                }
+                return JsonResponse(data, status=200)
+                
         except Contribution.DoesNotExist:
             data = {
                 'status': 'failed',
