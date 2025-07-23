@@ -893,13 +893,13 @@
             <div class="input-sect">
               <div class="some-cont">
                 <label for="name" class="form-label">Amount</label>
-                <input type="number" name="amount" class="form-control" id="apply-amount" required />
+                <input type="number" name="apply-amount" class="form-control" id="apply-amount-pc" required />
               </div>
             </div>
             <div class="input-sect">
               <div class="some-cont" style="width: 100%">
                 <label for="loan-type">Loan type</label>
-                <select name="loan_type" id="loan-type">
+                <select name="loan_type" id="loan-type-pc">
                   {%for type in loan_types%}
                   <option value="{{type.id}}">{{type.name}}({{type.schedule}})</option>
                   {%endfor%}
@@ -909,7 +909,7 @@
             <div class="input-sect">
               <div class="some-cont">
                 <label for="due" class="form-label">repayemt in(months/weeks)</label>
-                <input type="number" name="due" class="form-control" id="apply-due" required />
+                <input type="number" name="apply-due" class="form-control" id="apply-due-pc" required />
               </div>
             </div>
 
@@ -994,9 +994,11 @@
     event.preventDefault(); // Prevent the default form submission behavior
 
     // Extract form values
-    var amount = document.getElementById("apply-amount").value;
-    var loanType = document.getElementById("loan-type").value;
-    var due = document.getElementById("apply-due").value;
+    var amount = document.getElementById("apply-amount-pc").value;
+    var loanType = document.getElementById("loan-type-pc").value;
+    var due = document.getElementById("apply-due-pc").value;
+
+    console.log(amount);
 
     // Get chama_id from local storage
     var chamaId = localStorage.getItem("groupId");

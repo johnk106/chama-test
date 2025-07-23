@@ -20,8 +20,8 @@ urlpatterns = [
     path('download-document/<int:chama_id>/<int:document_id>/',views.download_document,name='download-document'),
 
     path('contributions/<int:chama_id>/',views.contributions,name='contributions'),
-    path('create-contribution/<int:chama_id>/',views.create_contribution,name='create-contribution'),
     path('create-contribution-record/<int:chama_id>/',views.create_contribution_record,name='create-contribution-record'),
+    path('create-contribution/<int:chama_id>/',views.create_contribution,name='create-contribution'),
     path('retrieve-contribution/<int:chama_id>/',views.contributions_details,name='contribution-details'),
     path('pay-contribution/<int:contribution_id>/',views.pay_contribution,name='pay-contribution'),
 
