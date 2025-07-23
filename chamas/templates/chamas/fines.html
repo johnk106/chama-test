@@ -1,4 +1,4 @@
-{%extends 'chamas/base.html'%} {%load static%} {% load humanize %} {%block head%}
+{%extends 'chamas/base.html'%} {%load static%} {% load humanize %} {% load avatar_filters %} {%block head%}
 <title>Fines</title>
 <link rel="stylesheet" href="{%static 'chamas/fines.css'%}" />
 <link rel="stylesheet" href="{%static 'chamas/contribution.css'%}" />
@@ -1134,6 +1134,41 @@
     var parts = value.split("; " + name + "=");
     if (parts.length == 2) return parts.pop().split(";").shift();
   }
+
+  // Function to generate initials from name
+  function getInitials(name) {
+    if (!name) return '??';
+    const nameParts = name.trim().split(/\s+/);
+    if (nameParts.length >= 2) {
+      return (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase();
+    } else if (nameParts[0].length >= 2) {
+      return (nameParts[0][0] + nameParts[0][1]).toUpperCase();
+    } else {
+      return (nameParts[0][0] + '?').toUpperCase();
+    }
+  }
+
+  // Replace empty avatars with initials
+  document.addEventListener('DOMContentLoaded', function() {
+    const avatars = document.querySelectorAll('.fine-avatar, .fine-profile');
+    avatars.forEach(avatar => {
+      // If avatar has no background image and no content, add initials
+      const hasBackgroundImage = avatar.style.backgroundImage && avatar.style.backgroundImage !== 'none';
+      const hasContent = avatar.textContent.trim().length > 0;
+      
+      if (!hasBackgroundImage && !hasContent) {
+        // Find the member name in the same container
+        const memberContainer = avatar.closest('.fine-member-card, .fine-payment-card, .fine-card, .single-loan');
+        if (memberContainer) {
+          const memberNameElement = memberContainer.querySelector('.fine-member-details h6, .member-name, h5');
+          if (memberNameElement) {
+            const memberName = memberNameElement.textContent.trim();
+            avatar.textContent = getInitials(memberName);
+          }
+        }
+      }
+    });
+  });
 </script>
 
 {%endblock%}

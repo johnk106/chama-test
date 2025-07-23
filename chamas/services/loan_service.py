@@ -147,89 +147,125 @@ class LoanService:
     
     @staticmethod
     def apply_loan(request,chama_id):
-        data = json.loads(request.body)
-
-        loan_type = data.get('loan_type')
-        loan = LoanType.objects.get(pk=loan_type)
-        amount = int(data.get('amount'))
-        due = data.get('due')
-        schedule = loan.schedule
-        chama = Chama.objects.get(pk=chama_id)
-
-        if schedule == 'monthly':
-            if loan.schedule == 'weekly':
-                weeks = int(due) * 4
-                if weeks < int(due):
-                    data = {
-                    'status':'failed',
-                    'message':'the loan amount due is longer than the allowed period for this loan'
-                    }
-                    return JsonResponse(data,status=200)
-            
-            elif loan.max_due < int(due):
-                data = {
-                'status':'failed',
-                'message':'the loan amount due is longer than the allowed period for this loan'
-                }
-                return JsonResponse(data,status=200)
-
-
-        elif schedule == 'weekly':
-            if loan.schedule == 'weekly':
-                if loan.max_due < int(due):
-
-                    data = {
-                    'status':'failed',
-                    'message':'the loan amount due is longer than the allowed period for this loan'
-                    }
-                    return JsonResponse(data,status=200)
-            elif loan.schedule == 'monthly':
-                weeks = loan.max_due * 4
-                if weeks < int(due):
-                    data = {
-                    'status':'failed',
-                    'message':'the loan amount due is longer than the allowed period for this loan'
-                    }
-                    return JsonResponse(data,status=200)
-
-        
-
-
-        if(amount > loan.max_loan_amount):
-            data = {
-                'status':'failed',
-                'message':'The loan amount or repayment term is greater than the maximum allowed'
-            }
-            return JsonResponse(data,status=406)
-
-
-        for member in chama.member.all():
-            if member.user == request.user:
-                member = member
-                break
-
         try:
+            data = json.loads(request.body)
+
+            loan_type_id = data.get('loan_type')
+            amount = data.get('amount')
+            due = data.get('due')
+            
+            # Validate required fields
+            if not loan_type_id:
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': 'Loan type is required'
+                }, status=400)
+            
+            if not amount:
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': 'Loan amount is required'
+                }, status=400)
+            
+            if not due:
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': 'Loan duration is required'
+                }, status=400)
+
+            try:
+                amount = float(amount)
+                due = int(due)
+            except (ValueError, TypeError):
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': 'Invalid amount or duration format'
+                }, status=400)
+
+            loan = LoanType.objects.get(pk=loan_type_id)
+            chama = Chama.objects.get(pk=chama_id)
+
+            # Validate loan amount
+            if amount > loan.max_loan_amount:
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': 'The loan amount exceeds the maximum allowed for this loan type'
+                }, status=400)
+
+            # Validate loan duration
+            if due > loan.max_due:
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': 'The loan duration exceeds the maximum allowed period for this loan type'
+                }, status=400)
+
+            # Find the member
+            member = None
+            try:
+                member = ChamaMember.objects.get(user=request.user, group=chama)
+            except ChamaMember.DoesNotExist:
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': 'You are not a member of this chama'
+                }, status=403)
+
+            # Check if member has pending loan applications
+            existing_application = LoanItem.objects.filter(
+                member=member, 
+                status='application'
+            ).exists()
+            
+            if existing_application:
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': 'You already have a pending loan application'
+                }, status=400)
+
+            # Create the loan application
             new_application = LoanItem.objects.create(
                 member=member,
-                amount = amount,
+                amount=amount,
                 type=loan,
                 chama=chama,
-                due = due,
-                schedule=schedule
+                due=due,
+                schedule=loan.schedule,
+                status='application'
             )
-            data = {
-                'status':'success',
-                'message':'Loan request submitted succesfully',
-                'application':model_to_dict(new_application)
-            }
-            return JsonResponse(data,status=200)
+            
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Loan application submitted successfully',
+                'application': {
+                    'id': new_application.id,
+                    'amount': float(new_application.amount),
+                    'due': new_application.due,
+                    'schedule': new_application.schedule,
+                    'status': new_application.status,
+                    'applied_on': new_application.applied_on.strftime('%Y-%m-%d')
+                }
+            }, status=200)
 
+        except LoanType.DoesNotExist:
+            return JsonResponse({
+                'status': 'failed',
+                'message': 'Loan type not found'
+            }, status=404)
+        except Chama.DoesNotExist:
+            return JsonResponse({
+                'status': 'failed',
+                'message': 'Chama not found'
+            }, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({
+                'status': 'failed',
+                'message': 'Invalid JSON data'
+            }, status=400)
         except Exception as e:
-            data = {
-                'status':'failed',
-                'message':f'an error happened:{e}'
-            }
-            return JsonResponse(data,status=200)
+            print(f"Error in apply_loan: {e}")
+            return JsonResponse({
+                'status': 'failed',
+                'message': f'An error occurred while processing your loan application: {str(e)}'
+            }, status=500)
         
     @staticmethod
     def accept_loan_request(loan_id):

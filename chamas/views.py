@@ -528,10 +528,17 @@ def issue_loan(request, chama_id):
 
 
 @login_required(login_url='/user/Login')
+@is_user_chama_member
 def apply_loan(request,chama_id):
     if request.method == 'POST':
         return LoanService.apply_loan(request,chama_id)
         
+    else:
+        data = {
+            'status': 'failed',
+            'message': 'Invalid HTTP method. Only POST is allowed.'
+        }
+        return JsonResponse(data, status=405)
 
 
 @login_required(login_url='/user/Login')

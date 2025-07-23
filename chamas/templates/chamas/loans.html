@@ -92,6 +92,7 @@
                 </div>
               </div>
             </div>
+            <div id="mobile-create-loan-feedback" class="alert" style="display: none; margin-top: 10px;"></div>
             <button type="submit" class="create-loan-btn beautiful-btn">
               Create Loan Type
             </button>
@@ -912,6 +913,7 @@
               </div>
             </div>
 
+            <div id="mobile-apply-loan-feedback" class="alert" style="display: none; margin-top: 10px;"></div>
             <button class="btn btn-primary" onclick="applyLoan(event)" style="width: 100%">
               Apply
             </button>
@@ -1021,8 +1023,16 @@
       .then((response) => response.json())
       .then((data) => {
         var alertDiv = document.querySelector(".apply-loan-alerts-hub");
+        var mobileAlertDiv = document.getElementById("mobile-apply-loan-feedback");
+        
         if (data.status === "success") {
-          alertDiv.innerHTML = `<div class="alert alert-success" role="alert">${data.message}</div>`;
+          const successMessage = `<div class="alert alert-success" role="alert">${data.message}</div>`;
+          if (alertDiv) alertDiv.innerHTML = successMessage;
+          if (mobileAlertDiv) {
+            mobileAlertDiv.innerHTML = data.message;
+            mobileAlertDiv.className = "alert alert-success";
+            mobileAlertDiv.style.display = "block";
+          }
 
           // Append the newly created application to the list
           var applicationHtml = `<div class="application-item">
@@ -1032,9 +1042,15 @@
                 </div>`;
 
           var applicationsList = document.querySelector(".applications-list");
-          applicationsList.insertAdjacentHTML("beforeend", applicationHtml);
+          if (applicationsList) applicationsList.insertAdjacentHTML("beforeend", applicationHtml);
         } else {
-          alertDiv.innerHTML = `<div class="alert alert-danger" role="alert">${data.message}</div>`;
+          const errorMessage = `<div class="alert alert-danger" role="alert">${data.message}</div>`;
+          if (alertDiv) alertDiv.innerHTML = errorMessage;
+          if (mobileAlertDiv) {
+            mobileAlertDiv.innerHTML = data.message;
+            mobileAlertDiv.className = "alert alert-danger";
+            mobileAlertDiv.style.display = "block";
+          }
         }
       })
       .catch((error) => {

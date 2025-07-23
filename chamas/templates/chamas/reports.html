@@ -947,6 +947,113 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+// Initialize report data from Django context
+const reportData = {
+    groupContributions: JSON.parse('{{ group_contributions|escapejs }}' || '[]'),
+    groupSavings: JSON.parse('{{ group_saving_report|escapejs }}' || '[]'),
+    individualSavings: JSON.parse('{{ individual_saving_report|escapejs }}' || '[]'),
+    groupInvestmentIncomes: JSON.parse('{{ group_investment_incomes|escapejs }}' || '[]'),
+    memberInvestmentIncomes: JSON.parse('{{ member_investment_income|escapejs }}' || '[]'),
+    loans: JSON.parse('{{ unpaid_loans|escapejs }}' || '[]'),
+    collectedFines: JSON.parse('{{ collected_fines|escapejs }}' || '[]'),
+    unpaidFines: JSON.parse('{{ unpaid_fines|escapejs }}' || '[]'),
+    expenses: JSON.parse('{{ chama_expense_reports|escapejs }}' || '[]'),
+    cashflow: JSON.parse('{{ chama_cashflow_reports|escapejs }}' || '[]'),
+    myReports: JSON.parse('{{ my_reports|escapejs }}' || '[]')
+};
+
+// Function to populate data containers
+function populateReportData() {
+    // Group Contributions
+    if (reportData.groupContributions.length > 0) {
+        const container = document.getElementById('group-contributions-items');
+        if (container) {
+            container.innerHTML = reportData.groupContributions.map(item => `
+                <div class="data-row">
+                    <span class="data-label">${item.member_name || 'N/A'}</span>
+                    <span class="data-value">Ksh ${item.amount_paid?.toLocaleString() || '0'}</span>
+                    <span class="data-date">${item.date_created || 'N/A'}</span>
+                </div>
+            `).join('');
+        }
+    }
+
+    // Individual Savings
+    if (reportData.individualSavings.length > 0) {
+        const container = document.getElementById('individual-savings-items');
+        if (container) {
+            container.innerHTML = reportData.individualSavings.map(item => `
+                <div class="data-row">
+                    <span class="data-label">${item.owner_id || 'N/A'}</span>
+                    <span class="data-value">Ksh ${item.amount?.toLocaleString() || '0'}</span>
+                    <span class="data-date">${item.date || 'N/A'}</span>
+                </div>
+            `).join('');
+        }
+    }
+
+    // Group Savings
+    if (reportData.groupSavings.length > 0) {
+        const container = document.getElementById('group-savings-items');
+        if (container) {
+            container.innerHTML = reportData.groupSavings.map(item => `
+                <div class="data-row">
+                    <span class="data-label">${item.saving_type_id || 'Group Saving'}</span>
+                    <span class="data-value">Ksh ${item.amount?.toLocaleString() || '0'}</span>
+                    <span class="data-date">${item.date || 'N/A'}</span>
+                </div>
+            `).join('');
+        }
+    }
+
+    // Loans
+    if (reportData.loans.length > 0) {
+        const container = document.getElementById('loans-items');
+        if (container) {
+            container.innerHTML = reportData.loans.map(item => `
+                <div class="data-row">
+                    <span class="data-label">${item.member_id || 'N/A'}</span>
+                    <span class="data-value">Ksh ${item.amount?.toLocaleString() || '0'}</span>
+                    <span class="data-date">${item.start_date || 'N/A'}</span>
+                </div>
+            `).join('');
+        }
+    }
+
+    // Collected Fines
+    if (reportData.collectedFines.length > 0) {
+        const container = document.getElementById('collected-fines-items');
+        if (container) {
+            container.innerHTML = reportData.collectedFines.map(item => `
+                <div class="data-row">
+                    <span class="data-label">${item.member || 'N/A'}</span>
+                    <span class="data-value">Ksh ${item.fine_amount?.toLocaleString() || '0'}</span>
+                    <span class="data-date">${item.created || 'N/A'}</span>
+                </div>
+            `).join('');
+        }
+    }
+
+    // Expenses
+    if (reportData.expenses.length > 0) {
+        const container = document.getElementById('expenses-items');
+        if (container) {
+            container.innerHTML = reportData.expenses.map(item => `
+                <div class="data-row">
+                    <span class="data-label">${item.name || 'N/A'}</span>
+                    <span class="data-value">Ksh ${item.amount?.toLocaleString() || '0'}</span>
+                    <span class="data-date">${item.created_on || 'N/A'}</span>
+                </div>
+            `).join('');
+        }
+    }
+}
+
+// Initialize data when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    populateReportData();
+});
+
 // Function to get CSRF token from cookies
 function getCookie(name) {
     let cookieValue = null;

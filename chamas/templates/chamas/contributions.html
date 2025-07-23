@@ -55,6 +55,7 @@
                         <div class="members-list" id="members-list-{{contribution.id}}">
                             <!-- Will be populated by JavaScript -->
                         </div>
+                        <div id="mobile-contribution-feedback-{{contribution.id}}" class="alert" style="display: none; margin-top: 10px;"></div>
                         <button class="update-contribution-btn admin" data-contribution-id="{{contribution.id}}">
                             Update contribution
                         </button>
@@ -98,6 +99,7 @@
                         <label for="mobile-description">Description</label>
                         <textarea id="mobile-description" name="description" class="form-input" rows="3" placeholder="Enter description for contribution"></textarea>
                     </div>
+                    <div id="mobile-alert-div" class="alert" style="display: none; margin-top: 10px;"></div>
                     <button type="button" class="create-contribution-btn" id="mobile-create-contribution-button">
                         Create contribution Scheme
                     </button>
@@ -705,16 +707,38 @@ $(document).ready(function () {
              }),
              contentType: "application/json",
              success: function (response) {
+                 const feedbackDiv = $(`#mobile-contribution-feedback-${contributionId}`);
                  if (response.status === "success") {
-                     alert("Contributions updated successfully!");
+                     // Show success message in mobile feedback div
+                     if (feedbackDiv.length) {
+                         feedbackDiv.removeClass('alert-danger').addClass('alert-success');
+                         feedbackDiv.html(response.message || "Contributions updated successfully!");
+                         feedbackDiv.show();
+                     } else {
+                         alert("Contributions updated successfully!");
+                     }
                      // Clear input fields
                      $(this).closest('.accordion-content').find('.amount-input-mobile').val("");
                  } else {
-                     alert(response.message);
+                     // Show error message in mobile feedback div
+                     if (feedbackDiv.length) {
+                         feedbackDiv.removeClass('alert-success').addClass('alert-danger');
+                         feedbackDiv.html(response.message || "Failed to update contributions");
+                         feedbackDiv.show();
+                     } else {
+                         alert(response.message);
+                     }
                  }
              },
              error: function () {
-                 alert("Failed to update contributions. Please try again.");
+                 const feedbackDiv = $(`#mobile-contribution-feedback-${contributionId}`);
+                 if (feedbackDiv.length) {
+                     feedbackDiv.removeClass('alert-success').addClass('alert-danger');
+                     feedbackDiv.html("Failed to update contributions. Please try again.");
+                     feedbackDiv.show();
+                 } else {
+                     alert("Failed to update contributions. Please try again.");
+                 }
              }
          });
      });

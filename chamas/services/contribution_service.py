@@ -77,59 +77,39 @@ class ContributionService:
             contribution = Contribution.objects.get(pk=data.get('contribution'))
             date = timezone.now()
             amount_expected = contribution.amount
-            amount_paid = Decimal(data.get('amount'))
+            amount_paid = Decimal(str(data.get('amount', 0)))
             member = ChamaMember.objects.get(pk=data.get('member'))
 
-            # Calculate balance
-            balance = amount_paid - amount_expected
-
-            if amount_paid < 0 or amount_paid is None:
+            # Validate amount
+            if amount_paid < 0:
                 data = {
                     'status': 'failed',
-                    'message': f'Amount for member {member.name} is either negative or has not been passed.'
+                    'message': f'Amount for member {member.name} cannot be negative.'
                 }
-                return JsonResponse(data, status=200)
+                return JsonResponse(data, status=400)
 
-            # If amount paid is greater than the contribution amount
-            if amount_paid > amount_expected:
-                # Create contribution record with balance carried forward
-                new_contribution_record = ContributionRecord.objects.create(
-                    contribution=contribution,
-                    date_created=date,
-                    amount_expected=amount_expected,
-                    amount_paid=amount_expected,  # Set amount paid to the expected amount
-                    balance=0,  # No balance remaining for this contribution
-                    member=member,
-                    chama = chama
-                )
+            if amount_paid == 0:
+                data = {
+                    'status': 'failed',
+                    'message': f'Amount for member {member.name} must be greater than zero.'
+                }
+                return JsonResponse(data, status=400)
 
-                # Calculate the extra amount
-                extra_amount = amount_paid - amount_expected
+            # Calculate balance (negative means overpayment, positive means underpayment)
+            balance = amount_expected - amount_paid
 
-                # Create a contribution record for the extra amount with the next due date
-                
-                ContributionRecord.objects.create(
-                        contribution=contribution,
-                        date_created=timezone.now(),
-                        amount_expected=amount_expected,  # No expected amount for extra contribution
-                        amount_paid=extra_amount,
-                        balance=amount_expected - extra_amount,  # No balance for extra contribution
-                        member=member,
-                        chama=chama
-                    )
+            # Create the main contribution record
+            new_contribution_record = ContributionRecord.objects.create(
+                contribution=contribution,
+                date_created=date,
+                amount_expected=amount_expected,
+                amount_paid=amount_paid,
+                balance=balance if balance > 0 else Decimal('0.00'),
+                member=member,
+                chama=chama
+            )
 
-            else:
-                # Create contribution record with no balance carried forward
-                new_contribution_record = ContributionRecord.objects.create(
-                    contribution=contribution,
-                    date_created=date,
-                    amount_expected=amount_expected,
-                    amount_paid=amount_paid,
-                    balance=abs(balance),
-                    member=member,
-                    chama=chama
-                )
-
+            # Create cashflow record
             new_cashflow_object = CashflowReport.objects.create(
                 object_date=new_contribution_record.date_created,
                 member=new_contribution_record.member,
@@ -139,21 +119,58 @@ class ContributionService:
                 forGroup=False
             )
 
+            # If overpayment, create an additional record for the excess
+            if balance < 0:  # Overpayment
+                excess_amount = abs(balance)
+                ContributionRecord.objects.create(
+                    contribution=contribution,
+                    date_created=date,
+                    amount_expected=Decimal('0.00'),  # No expectation for excess
+                    amount_paid=excess_amount,
+                    balance=Decimal('0.00'),  # Excess has no balance
+                    member=member,
+                    chama=chama
+                )
+
             data = {
                 'status': 'success',
                 'message': f'Contribution record created successfully for {member.name}',
-                'record': model_to_dict(new_contribution_record)
+                'record': {
+                    'id': new_contribution_record.id,
+                    'member': member.name,
+                    'amount_paid': float(amount_paid),
+                    'amount_expected': float(amount_expected),
+                    'balance': float(new_contribution_record.balance),
+                    'date_created': date.strftime('%Y-%m-%d')
+                }
             }
 
             return JsonResponse(data, status=200)
-        except Exception as e:
-            print(e)
+        except Contribution.DoesNotExist:
             data = {
                 'status': 'failed',
-                'message': f'An error occurred during record creation: {e}'
+                'message': 'Contribution not found'
             }
-
-            return JsonResponse(data, status=200)
+            return JsonResponse(data, status=404)
+        except ChamaMember.DoesNotExist:
+            data = {
+                'status': 'failed',
+                'message': 'Member not found'
+            }
+            return JsonResponse(data, status=404)
+        except (ValueError, TypeError) as e:
+            data = {
+                'status': 'failed',
+                'message': f'Invalid amount provided: {str(e)}'
+            }
+            return JsonResponse(data, status=400)
+        except Exception as e:
+            print(f"Error in create_contribution_record: {e}")
+            data = {
+                'status': 'failed',
+                'message': f'An error occurred during record creation: {str(e)}'
+            }
+            return JsonResponse(data, status=500)
         
     @staticmethod
     def pay_contribution(request,contribution_id):

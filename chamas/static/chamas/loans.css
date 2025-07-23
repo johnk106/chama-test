@@ -512,7 +512,7 @@ margin: 0;
 
 .create-loan-header i {
     font-size: 20px;
-    color: #06b6d4;
+    color: var(--brand-primary);
 }
 
 .create-loan-header span {
@@ -584,7 +584,7 @@ margin: 0;
 
 .form-input:focus {
     outline: none;
-    border-color: #06b6d4;
+    border-color: var(--brand-primary);
     box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.1);
 }
 
@@ -594,7 +594,7 @@ margin: 0;
 }
 
 .create-loan-btn {
-    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-primary-dark) 100%);
     color: white;
     border: none;
     border-radius: 6px;
@@ -614,11 +614,11 @@ margin: 0;
 
 /* Admin specific styling */
 .admin .create-loan-card {
-    border-left: 3px solid #06b6d4;
+    border-left: 3px solid var(--brand-primary);
 }
 
 .admin .create-loan-btn {
-    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-primary-dark) 100%);
 }
 
 /* Member specific styling */
