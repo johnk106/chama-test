@@ -8,6 +8,44 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    .action-buttons {
+        min-width: 80px;
+    }
+    
+    .action-buttons .btn {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-width: 1.5px;
+        transition: all 0.2s ease;
+    }
+    
+    .action-buttons .btn i {
+        font-size: 16px;
+        line-height: 1;
+    }
+    
+    .action-buttons .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .table-fine-button:hover {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+    
+    .table-pay-button:hover {
+        background-color: #198754;
+        border-color: #198754;
+        color: white;
+    }
+</style>
 {%endblock%}
 
 {%block body%}
@@ -623,19 +661,21 @@ $(document).ready(function () {
                     // Only show buttons if there's a balance
                     if (hasBalance) {
                         rowHtml += `
-                            <button type="button" class="btn btn-sm btn-warning table-fine-button" 
-                                    data-bs-toggle="modal" data-bs-target="#fineContribution"
-                                    title="Apply fine for late payment">
-                                <i class='bx bx-error'></i> Fine
-                            </button>
-                            <button type="button" class="btn btn-sm btn-success table-pay-button" 
-                                    data-bs-toggle="modal" data-bs-target="#exampleModal"
-                                    title="Record payment for this contribution">
-                                <i class='bx bx-money'></i> Pay
-                            </button>`;
+                            <div class="action-buttons d-flex justify-content-center align-items-center">
+                                <button type="button" class="btn btn-sm btn-outline-danger table-fine-button me-2" 
+                                        data-bs-toggle="modal" data-bs-target="#fineContribution"
+                                        title="Apply fine for late payment">
+                                    <i class='bx bx-error-circle'></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-success table-pay-button" 
+                                        data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                        title="Record payment for this contribution">
+                                    <i class='bx bx-money-withdraw'></i>
+                                </button>
+                            </div>`;
                     } else {
                         rowHtml += `<span class="badge bg-success text-white">
-                            <i class='bx bx-check'></i> Fully Paid
+                            <i class='bx bx-check-circle'></i> Paid
                         </span>`;
                     }
                     
