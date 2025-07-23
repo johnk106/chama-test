@@ -56,6 +56,10 @@
     justify-content: center;
 }
 
+.chama-home-page .header-center {
+    display: none;
+}
+
 .header-right {
     flex: 1;
     display: flex;
@@ -71,7 +75,7 @@
     gap: 8px;
     padding: 10px 16px;
     background: #2291A5;
-    color: #FFFFFF;
+    color: #FFFFFF !important;
     text-decoration: none;
     border-radius: 8px;
     font-weight: 500;
@@ -82,22 +86,24 @@
 
 .back-to-dashboard-btn:hover {
     background: #1B7A8B;
-    color: #FFFFFF;
+    color: #FFFFFF !important;
     text-decoration: none;
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(34, 145, 165, 0.3);
 }
 
-.back-to-dashboard-btn i {
-    font-size: 18px;
+.back-to-dashboard-btn span {
+    color: #FFFFFF !important;
 }
 
-/* Page Title */
-.page-title {
-    color: #2291A5;
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 0;
+.back-to-dashboard-btn i {
+    font-size: 18px;
+    color: #FFFFFF !important;
+}
+
+/* Page Title - Hidden on chamas home page */
+.chama-home-page .page-title {
+    display: none;
 }
 
 /* Theme Toggles */
