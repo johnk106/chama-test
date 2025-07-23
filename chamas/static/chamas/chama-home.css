@@ -5,6 +5,26 @@
     flex-direction: column;
 }
 
+/* Override base layout for full-width experience on chamas home page */
+.chama-home-page .app-layout {
+    display: block !important;
+}
+
+.chama-home-page .desktop-sidebar {
+    display: none !important;
+}
+
+.chama-home-page .main-content {
+    margin-left: 0 !important;
+    width: 100% !important;
+}
+
+.chama-home-page .page-content {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+}
+
 /* Desktop Header Styles */
 .chama-home-header {
     background: #FFFFFF;
@@ -239,7 +259,7 @@
     position: relative;
     z-index: 3;
     padding: 0 15px;
-    max-width: 1200px;
+    max-width: 1400px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -272,6 +292,21 @@
 .chama-options-row {
     justify-content: center;
     gap: 20px;
+    display: flex !important;
+    flex-wrap: wrap;
+    margin: 0 -10px;
+}
+
+.chama-options-row .col-lg-4 {
+    flex: 0 0 auto;
+    width: 33.333333%;
+    max-width: 400px;
+    padding: 0 10px;
+    display: flex;
+}
+
+.chama-options-row .col-lg-4 .chama-option-card {
+    flex: 1;
 }
 
 .chama-option-card {
@@ -287,6 +322,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    width: 100%;
 }
 
 .chama-option-card.available {
@@ -402,6 +438,11 @@
 @media (max-width: 1199px) {
     .chama-options-row {
         gap: 15px;
+        margin: 0 -7px;
+    }
+    
+    .chama-options-row .col-lg-4 {
+        padding: 0 7px;
     }
     
     .chama-option-card {
@@ -411,6 +452,32 @@
     
     .header-container {
         padding: 16px 20px;
+    }
+}
+
+/* Medium and large desktop screens */
+@media (min-width: 992px) {
+    .chama-options-row {
+        justify-content: center;
+        align-items: stretch;
+    }
+    
+    .chama-options-row .col-lg-4 {
+        width: 33.333333%;
+        flex: 0 0 33.333333%;
+        display: flex;
+    }
+}
+
+/* Large screens - better spacing */
+@media (min-width: 1200px) {
+    .chama-options-row {
+        gap: 30px;
+        margin: 0 -15px;
+    }
+    
+    .chama-options-row .col-lg-4 {
+        padding: 0 15px;
     }
 }
 
@@ -447,6 +514,14 @@
     
     .chama-options-row {
         gap: 20px;
+        flex-direction: column;
+        margin: 0;
+    }
+    
+    .chama-options-row .col-lg-4 {
+        width: 100%;
+        max-width: none;
+        padding: 0;
     }
     
     .chama-option-card {
@@ -488,6 +563,10 @@
     .section-subtitle {
         font-size: 0.9rem;
         margin-bottom: 30px;
+    }
+    
+    .chama-options-row {
+        gap: 16px;
     }
     
     .chama-option-card {
