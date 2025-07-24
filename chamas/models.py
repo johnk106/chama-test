@@ -63,10 +63,8 @@ class ChamaMember(models.Model):
 class Contribution(models.Model):
     name = models.CharField(max_length=55)
     amount = models.DecimalField(max_digits=10,decimal_places=2)
-    grace_period = models.IntegerField()
     description = models.TextField()
     start_date = models.DateField(null=True)
-    end_date = models.DateField(null=True)
     chama = models.ForeignKey(Chama,on_delete = models.CASCADE,related_name='contributions')
 
     def __str__(self):

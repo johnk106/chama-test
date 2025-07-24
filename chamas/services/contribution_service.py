@@ -21,12 +21,13 @@ class ContributionService:
 
         try:
             chama = Chama.objects.get(pk=chama_id)
-            contribution = Contribution.objects.filter(name=name).first()
+            # Check for duplicate contribution name within the same chama, not globally
+            contribution = Contribution.objects.filter(name=name, chama=chama).first()
 
             if contribution:
                 data = {
                     'status':'failed',
-                    'message':'A contribution with that id already exists,please choose another name'
+                    'message':'A contribution with that name already exists in this chama, please choose another name'
                 }
 
                 return JsonResponse(data,status=409)
@@ -35,11 +36,9 @@ class ContributionService:
                     new_contribution = Contribution.objects.create(
                 name=name,
                 amount=amount,
-                grace_period=0,  # Default value since field is required but not used
                 description=description,
                 chama = chama,
-                start_date=start_date,
-                end_date=None  # Set to None since field allows null
+                start_date=start_date
 
                     )
 
