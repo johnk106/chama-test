@@ -22,29 +22,6 @@
     </div>
 
     <!-- Mobile FAB Container -->
-    <div class="fab-backdrop" id="fabBackdrop"></div>
-    <div class="fab-container admin">
-        <button class="fab-create admin" id="fabCreate">
-            <i class='bx bx-plus'></i>
-        </button>
-        
-        <button class="mini-fab mini-fab-savings admin" data-bs-toggle="modal" data-bs-target="#createSavingModal">
-            <i class='bx bx-wallet'></i>
-            <span class="fab-label">Create Savings</span>
-        </button>
-        
-        <button class="mini-fab mini-fab-investment admin" data-bs-toggle="modal" data-bs-target="#createInvestmentModal">
-            <i class='bx bx-trending-up'></i>
-            <span class="fab-label">Create Investment</span>
-        </button>
-        
-        <button class="mini-fab mini-fab-income admin" data-bs-toggle="modal" data-bs-target="#createIncomeModal">
-            <i class='bx bx-money'></i>
-            <span class="fab-label">Create Income</span>
-        </button>
-    </div>
-
-    <!-- Mobile FAB Container -->
     <div class="fab-backdrop admin" id="fabBackdrop"></div>
     <div class="fab-container admin">
         <button class="fab-create admin" id="fabCreate">
@@ -1566,11 +1543,19 @@
 <!-- FAB Functionality Script -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        console.log('FAB Script Loading...');
         const fabCreate = document.getElementById('fabCreate');
         const fabBackdrop = document.getElementById('fabBackdrop');
         const miniFabs = document.querySelectorAll('.mini-fab');
         const fabContainer = document.querySelector('.fab-container');
         let isExpanded = false;
+        
+        console.log('FAB Elements:', {
+            fabCreate: fabCreate,
+            fabBackdrop: fabBackdrop,
+            miniFabs: miniFabs.length,
+            fabContainer: fabContainer
+        });
 
         function expandFAB() {
             isExpanded = true;
