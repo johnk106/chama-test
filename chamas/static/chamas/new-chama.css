@@ -391,3 +391,84 @@
     line-height: 20px;
     /* 142.857% */
 }
+
+/* Member card styles */
+.member-card .card {
+    border: 1px solid #e0e7ee;
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+    background: #fff;
+}
+
+.member-card .card:hover {
+    box-shadow: 0 2px 8px rgba(34, 145, 165, 0.1);
+    border-color: #2291A5;
+}
+
+.member-card .card-title {
+    color: #1a202c;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.member-card .card-text {
+    color: #4a5568;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.member-card .badge {
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 6px;
+}
+
+.member-card .btn-outline-danger {
+    border: none;
+    color: #e53e3e;
+    background: transparent;
+    padding: 4px 6px;
+    font-size: 12px;
+}
+
+.member-card .btn-outline-danger:hover {
+    background: #fee;
+    color: #c53030;
+}
+
+.member-card .bx {
+    font-size: 12px;
+    margin-right: 2px;
+    color: #718096;
+}
+
+/* Alert styles enhancement */
+.alert {
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.alert-success {
+    background-color: #f0fff4;
+    border-color: #9ae6b4;
+    color: #276749;
+}
+
+.alert-danger {
+    background-color: #fed7d7;
+    border-color: #feb2b2;
+    color: #c53030;
+}
+
+.alert-warning {
+    background-color: #fffbeb;
+    border-color: #f6e05e;
+    color: #744210;
+}
+
+.alert-info {
+    background-color: #ebf8ff;
+    border-color: #90cdf4;
+    color: #2c5282;
+}
