@@ -4,6 +4,8 @@ from django.forms.models import model_to_dict
 import json
 from django.db import transaction
 from authentication.models import Profile
+from datetime import datetime
+from django.utils.dateparse import parse_date
 
 
 class ChamaService:
@@ -34,16 +36,33 @@ class ChamaService:
             with transaction.atomic():
                 data = json.loads(request.body)
                 name = data.get('name')
-                start = data.get('date')
+                start_date_str = data.get('date')
                 type = data.get('type')
                 members = data.get('members', [])
                 created_by = request.user
 
                 # Validation
-                if not name or not start or not type:
+                if not name or not start_date_str or not type:
                     return JsonResponse({
                         'status': 'failed',
                         'message': 'Please fill in all required fields (name, start date, and type)'
+                    }, status=400)
+
+                # Parse and validate the date
+                try:
+                    if isinstance(start_date_str, str):
+                        start_date = parse_date(start_date_str)
+                        if start_date is None:
+                            return JsonResponse({
+                                'status': 'failed',
+                                'message': 'Invalid date format. Please use YYYY-MM-DD format.'
+                            }, status=400)
+                    else:
+                        start_date = start_date_str
+                except Exception as e:
+                    return JsonResponse({
+                        'status': 'failed',
+                        'message': 'Invalid date provided'
                     }, status=400)
 
                 try:
@@ -59,7 +78,7 @@ class ChamaService:
                     name=name,
                     type=_type,
                     created_by=created_by,
-                    start_date=start
+                    start_date=start_date
                 )
 
                 # Add creator as admin member
@@ -157,7 +176,9 @@ class ChamaService:
                     except Exception as e:
                         member_creation_errors.append(f"Error adding member {member_data['name']}: {str(e)}")
 
-                # Prepare response
+                # Prepare response with proper date formatting
+                start_date_formatted = start_date.strftime('%Y-%m-%d') if hasattr(start_date, 'strftime') else str(start_date)
+                
                 response_data = {
                     'status': 'success',
                     'message': f'Chama "{name}" created successfully!',
@@ -166,7 +187,7 @@ class ChamaService:
                         'name': new_chama.name,
                         'type': new_chama.type.name,
                         'created_by': creator_name,
-                        'start_date': new_chama.start_date.strftime('%Y-%m-%d'),
+                        'start_date': start_date_formatted,
                         'total_members': new_chama.member.filter(active=True).count()
                     },
                     'added_members': added_members
