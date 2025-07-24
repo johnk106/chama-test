@@ -818,7 +818,7 @@ html, body,
     .fab-container {
         display: block !important;
         position: fixed !important;
-        bottom: 24px !important;
+        bottom: 80px !important;
         right: 24px !important;
         z-index: 1050 !important;
     }
@@ -847,7 +847,7 @@ html, body,
         width: 56px !important;
         height: 56px !important;
         border-radius: 50% !important;
-        border: 3px solid #ffffff !important;
+        border: none !important;
         background: #1F8A70 !important;
         color: white !important;
         box-shadow: 0 8px 24px rgba(31, 138, 112, 0.6) !important;
@@ -1285,73 +1285,170 @@ html, body,
         min-width: 100%;
     }
 
-    /* Modal Mobile Adjustments */
+    /* Finance Modal Mobile Adjustments */
     .finance-modal .modal-dialog {
-        margin: 16px;
-        max-width: calc(100vw - 32px);
+        margin: 15px auto !important;
+        max-width: 95vw !important;
+        width: auto !important;
+    }
+
+    .finance-modal .modal-content {
+        border-radius: 12px !important;
+        border: none !important;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .finance-modal .modal-header {
+        background: #1F8A70 !important;
+        color: white !important;
+        border: none !important;
+        padding: 20px 24px !important;
+        border-radius: 12px 12px 0 0 !important;
     }
 
     .finance-modal .modal-body {
-        padding: 20px;
-    }
-
-    .finance-modal .input-sect {
-        flex-direction: column;
-        gap: 0;
-    }
-
-    /* ================================
-       FULL-WIDTH MODALS ON MOBILE
-       ================================ */
-    .modal {
-        padding: 0 !important;
-    }
-
-    .modal-dialog {
-        width: 100vw !important;
-        height: 100vh !important;
-        max-width: 100vw !important;
-        max-height: 100vh !important;
-        margin: 0 !important;
-        border-radius: 0 !important;
-    }
-
-    .modal-content {
-        width: 100% !important;
-        height: 100vh !important;
-        border-radius: 0 !important;
-        border: none !important;
-    }
-
-    .modal-body {
-        display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important;
-        grid-gap: 0.5rem !important;
-        padding: 1rem !important;
-        flex: 1 !important;
+        padding: 24px !important;
+        max-height: 70vh !important;
         overflow-y: auto !important;
     }
 
+    .finance-modal .input-sect {
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+
+    .finance-modal .btn-primary {
+        background-color: #1F8A70 !important;
+        border-color: #1F8A70 !important;
+        color: #ffffff !important;
+        width: 100% !important;
+        padding: 12px 16px !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+    }
+
+    .finance-modal .btn-primary:hover {
+        background-color: #1a7560 !important;
+        border-color: #1a7560 !important;
+    }
+
+    /* ================================
+       PROPER MOBILE MODAL STYLES
+       ================================ */
+    .modal {
+        padding: 15px !important;
+    }
+
+    .modal-dialog {
+        width: auto !important;
+        max-width: 95vw !important;
+        margin: 15px auto !important;
+        border-radius: 12px !important;
+    }
+
+    .modal-content {
+        border-radius: 12px !important;
+        border: none !important;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .modal-header {
+        background: #1F8A70 !important;
+        color: white !important;
+        border: none !important;
+        padding: 20px 24px !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+
+    .modal-title {
+        display: flex !important;
+        align-items: center !important;
+        gap: 12px !important;
+        font-weight: 600 !important;
+        font-size: 18px !important;
+    }
+
+    .modal-header .btn-close {
+        filter: invert(1) !important;
+        opacity: 0.8 !important;
+    }
+
+    .modal-header .btn-close:hover {
+        opacity: 1 !important;
+    }
+
+    .modal-body {
+        padding: 24px !important;
+        overflow-y: auto !important;
+        max-height: 70vh !important;
+    }
+
     .modal-body .input-sect {
-        display: contents !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
     }
 
     .modal-body .mb-3 {
         display: flex !important;
         flex-direction: column !important;
+        margin-bottom: 1rem !important;
     }
 
     .modal-body button[type="submit"] {
-        grid-column: 1 / -1 !important;
-        margin-top: 1rem !important;
-        justify-self: stretch !important;
+        width: 100% !important;
+        background-color: #1F8A70 !important;
+        border-color: #1F8A70 !important;
+        color: #ffffff !important;
+        padding: 12px 16px !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
     }
 
-    /* Single column for very small screens */
-    @media (max-width: 359px) {
-        .modal-body {
-            grid-template-columns: 1fr !important;
-        }
+    .modal-body button[type="submit"]:hover {
+        background-color: #1a7560 !important;
+        border-color: #1a7560 !important;
+    }
+
+    /* Form inputs in modals */
+    .modal-body .form-control,
+    .modal-body select,
+    .modal-body input {
+        border: 1px solid #e5e7eb !important;
+        border-radius: 8px !important;
+        padding: 10px 12px !important;
+        font-size: 14px !important;
+        background: #ffffff !important;
+        color: #374151 !important;
+    }
+
+    .modal-body .form-control:focus,
+    .modal-body select:focus,
+    .modal-body input:focus {
+        border-color: #1F8A70 !important;
+        box-shadow: 0 0 0 0.2rem rgba(31, 138, 112, 0.25) !important;
+        outline: none !important;
+    }
+
+    .modal-body .form-label {
+        color: #1F8A70 !important;
+        font-weight: 600 !important;
+        font-size: 14px !important;
+        margin-bottom: 6px !important;
+    }
+
+    .modal-body .input-group {
+        border: 1px solid #e5e7eb !important;
+        border-radius: 8px !important;
+        background: #ffffff !important;
+        padding: 0 !important;
+    }
+
+    .modal-body .input-group select {
+        border: none !important;
+        background: transparent !important;
+        width: 100% !important;
+        padding: 10px 12px !important;
     }
 
     /* ================================
