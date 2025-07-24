@@ -243,7 +243,7 @@
    MODAL STYLES
    ================================ */
 .finance-modal .modal-header {
-    background: #1F8A70;
+    background: var(--brand-primary);
     color: white;
     border: none;
     padding: 20px 24px;
@@ -390,8 +390,8 @@ select {
 
 .btn-primary {
     border-radius: 8px;
-    background: #1F8A70;
-    background-color: #1F8A70;
+    background: var(--brand-primary);
+    background-color: var(--brand-primary);
     display: flex;
     padding: 12px 16px;
     flex-direction: column;
@@ -401,7 +401,7 @@ select {
     align-self: stretch;
     color: #ffffff;
     text-align: center;
-    border-color: #1F8A70;
+    border-color: var(--brand-primary);
 
     /* Public Sans/Text sm/Semibold */
     font-family: sans-serif;
@@ -413,9 +413,9 @@ select {
 }
 
 .btn-primary:hover {
-    background: #1a7560;
-    background-color: #1a7560;
-    border-color: #1a7560;
+    background: var(--brand-primary-hover);
+    background-color: var(--brand-primary-hover);
+    border-color: var(--brand-primary-hover);
 }
 
 .saving-single {
@@ -502,7 +502,7 @@ select {
 .summary-section {
     border-radius: 8px;
     border: 0.5px solid var(--light, rgba(0, 0, 0, 0.20));
-    background: var(--Primary-500, #2291A5);
+    background: var(--brand-primary);
     display: flex;
     padding: 10px;
     flex-direction: column;
@@ -729,56 +729,56 @@ html, body,
         display: none !important;
     }
 
-    /* Brand teal color for all desktop modal elements */
+    /* Brand color for all desktop modal elements */
     .modal-header,
     .modal-footer .btn,
     .modal-footer .btn-primary {
-        background-color: #1F8A70 !important;
+        background-color: var(--brand-primary) !important;
         color: #ffffff !important;
-        border-color: #1F8A70 !important;
+        border-color: var(--brand-primary) !important;
     }
 
-    /* Brand teal for desktop action buttons */
+    /* Brand color for desktop action buttons */
     .finance-action-row button,
     .finance-create-savings,
     .finance-create-investment,
     .finance-create-income {
-        background-color: #1F8A70 !important;
+        background-color: var(--brand-primary) !important;
         color: #ffffff !important;
-        border-color: #1F8A70 !important;
+        border-color: var(--brand-primary) !important;
     }
 
-    /* Brand teal for desktop action buttons hover states */
+    /* Brand color for desktop action buttons hover states */
     .finance-action-row button:hover,
     .finance-create-savings:hover,
     .finance-create-investment:hover,
     .finance-create-income:hover {
-        background-color: #1a7560 !important;
-        border-color: #1a7560 !important;
+        background-color: var(--brand-primary-hover) !important;
+        border-color: var(--brand-primary-hover) !important;
     }
 
-    /* Brand teal for tab navigation active states */
+    /* Brand color for tab navigation active states */
     .finance-tabs .nav-link.active {
-        color: #1F8A70 !important;
-        border-bottom-color: #1F8A70 !important;
+        color: var(--brand-primary) !important;
+        border-bottom-color: var(--brand-primary) !important;
     }
 
     .finance-tabs .nav-link:hover {
-        color: #1F8A70 !important;
+        color: var(--brand-primary) !important;
     }
 
-    /* Brand teal for primary buttons in modals */
+    /* Brand color for primary buttons in modals */
     .modal-body .btn-primary,
     .finance-modal .btn-primary {
-        background-color: #1F8A70 !important;
-        border-color: #1F8A70 !important;
+        background-color: var(--brand-primary) !important;
+        border-color: var(--brand-primary) !important;
         color: #ffffff !important;
     }
 
     .modal-body .btn-primary:hover,
     .finance-modal .btn-primary:hover {
-        background-color: #1a7560 !important;
-        border-color: #1a7560 !important;
+        background-color: var(--brand-primary-hover) !important;
+        border-color: var(--brand-primary-hover) !important;
     }
 
     /* Ensure modal close button is properly styled */
@@ -818,7 +818,7 @@ html, body,
     .fab-container {
         display: block !important;
         position: fixed !important;
-        bottom: 80px !important;
+        bottom: 100px !important;
         right: 24px !important;
         z-index: 1050 !important;
     }
@@ -848,9 +848,9 @@ html, body,
         height: 56px !important;
         border-radius: 50% !important;
         border: none !important;
-        background: #1F8A70 !important;
+        background: var(--brand-primary) !important;
         color: white !important;
-        box-shadow: 0 8px 24px rgba(31, 138, 112, 0.6) !important;
+        box-shadow: 0 8px 24px rgba(33, 145, 165, 0.6) !important;
         cursor: pointer !important;
         align-items: center !important;
         justify-content: center !important;
@@ -861,14 +861,14 @@ html, body,
     }
 
     .fab-create:hover {
-        background: #1a7560 !important;
+        background: var(--brand-primary-hover) !important;
         transform: scale(1.1) !important;
-        box-shadow: 0 6px 20px rgba(31, 138, 112, 0.6) !important;
+        box-shadow: 0 6px 20px rgba(33, 145, 165, 0.6) !important;
     }
 
     .fab-create.active {
         transform: rotate(45deg) !important;
-        background: #1a7560 !important;
+        background: var(--brand-primary-hover) !important;
     }
 
     /* Touch and Active States */
@@ -909,7 +909,7 @@ html, body,
         height: 48px !important;
         border-radius: 50% !important;
         border: none !important;
-        background: #1F8A70 !important;
+        background: var(--brand-primary) !important;
         color: white !important;
         position: absolute !important;
         bottom: 0 !important;
@@ -918,7 +918,7 @@ html, body,
         align-items: center !important;
         justify-content: center !important;
         font-size: 18px !important;
-        box-shadow: 0 3px 12px rgba(31, 138, 112, 0.4) !important;
+        box-shadow: 0 3px 12px rgba(33, 145, 165, 0.4) !important;
         opacity: 0 !important;
         visibility: hidden !important;
         transform: scale(0.3) translateY(0) !important;
@@ -1299,7 +1299,7 @@ html, body,
     }
 
     .finance-modal .modal-header {
-        background: #1F8A70 !important;
+        background: var(--brand-primary) !important;
         color: white !important;
         border: none !important;
         padding: 20px 24px !important;
@@ -1318,8 +1318,8 @@ html, body,
     }
 
     .finance-modal .btn-primary {
-        background-color: #1F8A70 !important;
-        border-color: #1F8A70 !important;
+        background-color: var(--brand-primary) !important;
+        border-color: var(--brand-primary) !important;
         color: #ffffff !important;
         width: 100% !important;
         padding: 12px 16px !important;
@@ -1328,8 +1328,8 @@ html, body,
     }
 
     .finance-modal .btn-primary:hover {
-        background-color: #1a7560 !important;
-        border-color: #1a7560 !important;
+        background-color: var(--brand-primary-hover) !important;
+        border-color: var(--brand-primary-hover) !important;
     }
 
     /* ================================
@@ -1353,7 +1353,7 @@ html, body,
     }
 
     .modal-header {
-        background: #1F8A70 !important;
+        background: var(--brand-primary) !important;
         color: white !important;
         border: none !important;
         padding: 20px 24px !important;
@@ -1397,8 +1397,8 @@ html, body,
 
     .modal-body button[type="submit"] {
         width: 100% !important;
-        background-color: #1F8A70 !important;
-        border-color: #1F8A70 !important;
+        background-color: var(--brand-primary) !important;
+        border-color: var(--brand-primary) !important;
         color: #ffffff !important;
         padding: 12px 16px !important;
         border-radius: 8px !important;
@@ -1406,8 +1406,8 @@ html, body,
     }
 
     .modal-body button[type="submit"]:hover {
-        background-color: #1a7560 !important;
-        border-color: #1a7560 !important;
+        background-color: var(--brand-primary-hover) !important;
+        border-color: var(--brand-primary-hover) !important;
     }
 
     /* Form inputs in modals */
@@ -1425,13 +1425,13 @@ html, body,
     .modal-body .form-control:focus,
     .modal-body select:focus,
     .modal-body input:focus {
-        border-color: #1F8A70 !important;
-        box-shadow: 0 0 0 0.2rem rgba(31, 138, 112, 0.25) !important;
+        border-color: var(--brand-primary) !important;
+        box-shadow: 0 0 0 0.2rem rgba(33, 145, 165, 0.25) !important;
         outline: none !important;
     }
 
     .modal-body .form-label {
-        color: #1F8A70 !important;
+        color: var(--brand-primary) !important;
         font-weight: 600 !important;
         font-size: 14px !important;
         margin-bottom: 6px !important;
