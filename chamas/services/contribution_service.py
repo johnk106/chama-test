@@ -15,9 +15,9 @@ class ContributionService:
         name = request.POST['name']
         amount = request.POST['amount']
         start_date = request.POST['start-date']
-        grace_period = request.POST['grace-period']
         description = request.POST['description']
-        end_date = request.POST['end-date']
+        # Grace period and end date are no longer used in the logic but may still be sent from UI
+        # We ignore them by not extracting them from the request
 
         try:
             chama = Chama.objects.get(pk=chama_id)
@@ -35,11 +35,11 @@ class ContributionService:
                     new_contribution = Contribution.objects.create(
                 name=name,
                 amount=amount,
-                grace_period=grace_period,
+                grace_period=0,  # Default value since field is required but not used
                 description=description,
                 chama = chama,
                 start_date=start_date,
-                end_date=end_date
+                end_date=None  # Set to None since field allows null
 
                     )
 
