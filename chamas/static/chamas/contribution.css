@@ -658,6 +658,143 @@
     margin: 0;
 }
 
+/* Mobile Contribution Records Styles */
+.mobile-contribution-records {
+    margin-top: 20px;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 16px;
+}
+
+.mobile-records-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 12px 0;
+}
+
+.mobile-records-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mobile-record-card {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+}
+
+.mobile-record-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.mobile-record-member {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.mobile-record-date {
+    font-size: 12px;
+    color: #64748b;
+}
+
+.mobile-record-details {
+    margin-bottom: 8px;
+}
+
+.mobile-record-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.mobile-record-label {
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.mobile-record-value {
+    font-size: 13px;
+    color: #374151;
+    font-weight: 600;
+}
+
+.mobile-record-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 8px;
+}
+
+.mobile-fine-btn, .mobile-pay-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.mobile-fine-btn {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.mobile-fine-btn:hover {
+    background-color: #dc2626;
+    color: white;
+}
+
+.mobile-pay-btn {
+    background-color: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+.mobile-pay-btn:hover {
+    background-color: #16a34a;
+    color: white;
+}
+
+.mobile-record-status {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 8px;
+}
+
+.mobile-paid-badge {
+    background-color: #f0fdf4;
+    color: #16a34a;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.no-mobile-records {
+    text-align: center;
+    padding: 20px;
+    color: #9ca3af;
+    font-size: 14px;
+    font-style: italic;
+}
+
 /* Desktop Styles */
 @media (min-width: 1024px) {
     .desktop-content {

@@ -97,6 +97,14 @@
                         <button class="update-contribution-btn admin" data-contribution-id="{{contribution.id}}">
                             Update contribution
                         </button>
+                        
+                        <!-- Mobile Contribution Records Section -->
+                        <div class="mobile-contribution-records" style="margin-top: 20px;">
+                            <h4 class="mobile-records-title">Contribution Records</h4>
+                            <div class="mobile-records-container" id="mobile-records-{{contribution.id}}">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
                     </div>
                 </div>
                 {%empty%}
@@ -119,7 +127,16 @@
                     </div>
                     <div class="form-group">
                         <label for="mobile-target-amount">Amount</label>
-                        <input type="number" id="mobile-target-amount" name="amount" class="form-input" placeholder="Enter Amount">
+                        <select id="mobile-target-amount" name="amount" class="form-input">
+                            <option value="">Select Amount</option>
+                            <option value="500">Ksh 500</option>
+                            <option value="1000">Ksh 1,000</option>
+                            <option value="2000">Ksh 2,000</option>
+                            <option value="5000">Ksh 5,000</option>
+                            <option value="10000">Ksh 10,000</option>
+                            <option value="custom">Custom Amount</option>
+                        </select>
+                        <input type="number" id="mobile-custom-amount" name="custom-amount" class="form-input" placeholder="Enter Custom Amount" style="display: none; margin-top: 8px;">
                     </div>
                     <div class="form-group">
                         <label for="mobile-start-date">Start date</label>
@@ -179,7 +196,16 @@
                             </div>
                             <div class="form-group">
                                 <label for="amount">Amount</label>
-                                <input type="number" name="amount" id="amount" class="form-input-wide" />
+                                <select name="amount" id="amount" class="form-input-wide">
+                                    <option value="">Select Amount</option>
+                                    <option value="500">Ksh 500</option>
+                                    <option value="1000">Ksh 1,000</option>
+                                    <option value="2000">Ksh 2,000</option>
+                                    <option value="5000">Ksh 5,000</option>
+                                    <option value="10000">Ksh 10,000</option>
+                                    <option value="custom">Custom Amount</option>
+                                </select>
+                                <input type="number" name="custom-amount" id="custom-amount" class="form-input-wide" placeholder="Enter Custom Amount" style="display: none; margin-top: 8px;" />
                             </div>
                             <div class="form-group">
                                 <label for="start-date">Start date</label>
@@ -351,6 +377,36 @@
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
 $(document).ready(function () {
+    // Dynamic amount handling for mobile
+    $('#mobile-target-amount').change(function() {
+        const selectedValue = $(this).val();
+        const customAmountInput = $('#mobile-custom-amount');
+        
+        if (selectedValue === 'custom') {
+            customAmountInput.show();
+            customAmountInput.prop('required', true);
+        } else {
+            customAmountInput.hide();
+            customAmountInput.prop('required', false);
+            customAmountInput.val('');
+        }
+    });
+
+    // Dynamic amount handling for desktop
+    $('#amount').change(function() {
+        const selectedValue = $(this).val();
+        const customAmountInput = $('#custom-amount');
+        
+        if (selectedValue === 'custom') {
+            customAmountInput.show();
+            customAmountInput.prop('required', true);
+        } else {
+            customAmountInput.hide();
+            customAmountInput.prop('required', false);
+            customAmountInput.val('');
+        }
+    });
+
     // Mobile tab functionality
     $('.tab-btn').click(function() {
         const tabId = $(this).data('tab');
@@ -367,6 +423,7 @@ $(document).ready(function () {
     // Mobile accordion toggle
     $('.mobile-accordion-item .accordion-header').click(function() {
         const contributionId = $(this).data('contribution-id');
+        const contributionName = $(this).closest('.mobile-accordion-item').data('contribution-name');
         const accordionContent = $(this).closest('.mobile-accordion-item').find('.accordion-content');
         const toggleIcon = $(this).find('.accordion-toggle');
         
@@ -377,6 +434,7 @@ $(document).ready(function () {
             accordionContent.slideDown();
             toggleIcon.removeClass('bx-chevron-down').addClass('bx-chevron-up');
             loadMembersForMobile(contributionId);
+            loadMobileContributionRecords(contributionName);
         }
     });
 
@@ -516,8 +574,96 @@ $(document).ready(function () {
          membersList.html(membersHtml);
      }
 
+     // Load contribution records for mobile view
+     function loadMobileContributionRecords(contributionName) {
+         const chamaId = localStorage.getItem("groupId");
+         const csrfToken = getCookie("csrftoken");
+
+         $.ajaxSetup({
+             headers: { "X-CSRFToken": csrfToken }
+         });
+
+         $.ajax({
+             url: `/chamas-bookeeping/retrieve-contribution/${chamaId}/`,
+             type: "POST",
+             data: JSON.stringify({ name: contributionName }),
+             contentType: "application/json",
+             success: function (response) {
+                 if (response.status !== "success") {
+                     return;
+                 }
+
+                 const contributionId = response.contribution.id;
+                 const recordsContainer = $(`#mobile-records-${contributionId}`);
+                 let recordsHtml = '';
+
+                 if (response.records.results && response.records.results.length > 0) {
+                     response.records.results.forEach(record => {
+                         const date = new Date(record.date_created).toLocaleDateString();
+                         const paid = parseFloat(record.amount_paid).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                         const balance = parseFloat(record.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                         const hasBalance = parseFloat(record.balance) > 0;
+
+                         recordsHtml += `
+                             <div class="mobile-record-card" data-record-id="${record.id}">
+                                 <div class="mobile-record-header">
+                                     <div class="mobile-record-member">${record.member}</div>
+                                     <div class="mobile-record-date">${date}</div>
+                                 </div>
+                                 <div class="mobile-record-details">
+                                     <div class="mobile-record-row">
+                                         <span class="mobile-record-label">Amount Paid:</span>
+                                         <span class="mobile-record-value">Ksh ${paid}</span>
+                                     </div>
+                                     <div class="mobile-record-row">
+                                         <span class="mobile-record-label">Balance:</span>
+                                         <span class="mobile-record-value">Ksh ${balance}</span>
+                                     </div>
+                                 </div>`;
+                         
+                         if (hasBalance) {
+                             recordsHtml += `
+                                 <div class="mobile-record-actions">
+                                     <button class="mobile-fine-btn" data-bs-toggle="modal" data-bs-target="#fineContribution" data-record-id="${record.id}">
+                                         <i class='bx bx-error-circle'></i> Fine
+                                     </button>
+                                     <button class="mobile-pay-btn" data-bs-toggle="modal" data-bs-target="#exampleModal" data-record-id="${record.id}">
+                                         <i class='bx bx-money-withdraw'></i> Pay
+                                     </button>
+                                 </div>`;
+                         } else {
+                             recordsHtml += `
+                                 <div class="mobile-record-status">
+                                     <span class="mobile-paid-badge">
+                                         <i class='bx bx-check-circle'></i> Paid
+                                     </span>
+                                 </div>`;
+                         }
+                         
+                         recordsHtml += `</div>`;
+                     });
+                 } else {
+                     recordsHtml = '<div class="no-mobile-records">No contribution records found</div>';
+                 }
+
+                 recordsContainer.html(recordsHtml);
+             },
+             error: function () {
+                 console.error("Failed to load contribution records for mobile view");
+             }
+         });
+     }
+
     // Existing JavaScript functionality (keeping all original functions)
     function submitContributionForm() {
+        // Handle dynamic amount selection for desktop
+        const amountSelect = $("#amount").val();
+        const customAmount = $("#custom-amount").val();
+        
+        if (amountSelect === "custom" && customAmount) {
+            $("#amount").val(customAmount);
+        }
+        
         var formData = $("#create-contribution-form").serialize();
         var chama_id = localStorage.getItem("groupId");
 
@@ -572,6 +718,14 @@ $(document).ready(function () {
 
     // Mobile create contribution
     $("#mobile-create-contribution-button").click(function () {
+        // Handle dynamic amount selection for mobile
+        const mobileAmountSelect = $("#mobile-target-amount").val();
+        const mobileCustomAmount = $("#mobile-custom-amount").val();
+        
+        if (mobileAmountSelect === "custom" && mobileCustomAmount) {
+            $("#mobile-target-amount").val(mobileCustomAmount);
+        }
+        
         var formData = $("#mobile-create-contribution-form").serialize();
         var chama_id = localStorage.getItem("groupId");
 
@@ -765,6 +919,14 @@ $(document).ready(function () {
                      }
                      // Clear input fields
                      $(this).closest('.accordion-content').find('.amount-input-mobile').val("");
+                     
+                     // Refresh mobile records
+                     const contributionName = $(this).closest('.mobile-accordion-item').data('contribution-name');
+                     if (contributionName) {
+                         setTimeout(() => {
+                             loadMobileContributionRecords(contributionName);
+                         }, 1000);
+                     }
                  } else {
                      // Show error message in mobile feedback div
                      if (feedbackDiv.length) {
@@ -875,7 +1037,7 @@ $(document).ready(function () {
         });
     });
 
-    // Modal functionality for payments and fines
+    // Modal functionality for payments and fines (desktop)
     $(document).on('click', '.table-pay-button', function() {
         const recordId = $(this).closest('tr').data('record-id');
         $('#contribution-record-id').val(recordId);
@@ -883,6 +1045,17 @@ $(document).ready(function () {
 
     $(document).on('click', '.table-fine-button', function() {
         const recordId = $(this).closest('tr').data('record-id');
+        $('#fine-contribution-record-id').val(recordId);
+    });
+
+    // Modal functionality for payments and fines (mobile)
+    $(document).on('click', '.mobile-pay-btn', function() {
+        const recordId = $(this).data('record-id');
+        $('#contribution-record-id').val(recordId);
+    });
+
+    $(document).on('click', '.mobile-fine-btn', function() {
+        const recordId = $(this).data('record-id');
         $('#fine-contribution-record-id').val(recordId);
     });
 
@@ -912,6 +1085,12 @@ $(document).ready(function () {
                     $('#repayment-amount').val(''); // Clear amount input
                     alert("Payment recorded successfully!");
                     fetchAndRenderContributionDetails($("#contribution-details-name").text());
+                    
+                    // Refresh mobile records if currently viewing mobile
+                    const currentContributionName = $("#contribution-details-name").text();
+                    if (currentContributionName && currentContributionName !== "Select a contribution") {
+                        loadMobileContributionRecords(currentContributionName);
+                    }
                 } else {
                     $('.pay-contribution-alerts').html(`
                         <div class="alert alert-danger" role="alert">
@@ -955,6 +1134,12 @@ $(document).ready(function () {
                      $('.fine-contribution-alerts').empty(); // Clear alerts
                      alert("Fine applied successfully!");
                      fetchAndRenderContributionDetails($("#contribution-details-name").text());
+                     
+                     // Refresh mobile records if currently viewing mobile
+                     const currentContributionName = $("#contribution-details-name").text();
+                     if (currentContributionName && currentContributionName !== "Select a contribution") {
+                         loadMobileContributionRecords(currentContributionName);
+                     }
                  } else {
                      $('.fine-contribution-alerts').html(`
                          <div class="alert alert-danger" role="alert">
