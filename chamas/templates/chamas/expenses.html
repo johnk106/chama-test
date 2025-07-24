@@ -29,21 +29,22 @@
                         <i class='bx bx-transfer-alt'></i>
                         <span>Create Expense</span>
                     </div>
+                    <div class="mobile-alert-box"></div>
                     <form id="mobile-create-expense-form" class="expense-card-form" onsubmit="submitExpenseFormMobile(); return false;">
                         {%csrf_token%}
                         <div class="form-row form-row-split">
                             <div class="form-group">
                                 <label for="mobile-expense-name">Name</label>
-                                <input type="text" id="mobile-expense-name" name="name" class="form-input" placeholder="Enter name">
+                                <input type="text" id="mobile-expense-name" name="name" class="form-input" placeholder="Enter name" required>
                             </div>
                             <div class="form-group">
                                 <label for="mobile-expense-amount">Amount</label>
-                                <input type="number" id="mobile-expense-amount" name="amount" class="form-input" placeholder="Enter amount">
+                                <input type="number" id="mobile-expense-amount" name="amount" class="form-input" placeholder="Enter amount" step="0.01" min="0.01" required>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="mobile-expense-description">Description</label>
-                            <textarea id="mobile-expense-description" name="description" class="form-input" rows="2" placeholder="Enter description"></textarea>
+                            <textarea id="mobile-expense-description" name="description" class="form-input" rows="2" placeholder="Enter description" required></textarea>
                         </div>
                         <button type="submit" class="create-expense-btn beautiful-btn" id="mobile-create-expense-button">
                             Create Expense
@@ -136,6 +137,22 @@
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
+// Function to get the value of a cookie by name - made global
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+        var cookies = document.cookie.split(";");
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === name + "=") {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 $(document).ready(function () {
     // Mobile tab functionality
     $('.tab-btn').click(function() {
@@ -145,22 +162,19 @@ $(document).ready(function () {
         $('.tab-content').removeClass('active');
         $('#' + tabId).addClass('active');
     });
-
-    // Function to get the value of a cookie by name
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie !== "") {
-            var cookies = document.cookie.split(";");
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === name + "=") {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
+    
+    // Add event listener to mobile form for debugging
+    $('#mobile-create-expense-form').on('submit', function(e) {
+        console.log('Mobile form submit event triggered');
+        e.preventDefault();
+        submitExpenseFormMobile();
+        return false;
+    });
+    
+    // Add click event listener to mobile button for debugging
+    $('#mobile-create-expense-button').on('click', function(e) {
+        console.log('Mobile button clicked');
+    });
 });
 
 // Desktop form submission (existing)
@@ -211,53 +225,161 @@ function submitExpenseForm() {
     });
 }
 
-// Mobile create expense (fixed CSRF token handling)
+// Mobile create expense with enhanced debugging
 window.submitExpenseFormMobile = function() {
+    console.log('Mobile form submission started');
+    
+    // Check if we're on mobile view and the correct tab is active
+    console.log('Mobile view visible:', $('.mobile-expenses').is(':visible'));
+    console.log('Create expenses tab active:', $('#create-expenses').hasClass('active'));
+    
+    // Clear previous alerts
+    $('.mobile-alert-box').html('');
+    
+    // Check if elements exist
+    console.log('Name element found:', $('#mobile-expense-name').length > 0);
+    console.log('Amount element found:', $('#mobile-expense-amount').length > 0);
+    console.log('Description element found:', $('#mobile-expense-description').length > 0);
+    
     var name = $('#mobile-expense-name').val();
     var amount = $('#mobile-expense-amount').val();
     var description = $('#mobile-expense-description').val();
     var chama_id = localStorage.getItem('groupId');
     
-    // Use the same CSRF token method as desktop form
-    var csrfToken = getCookie('csrftoken');
-    if (!csrfToken) {
-        // Fallback to the desktop method if getCookie fails
-        csrfToken = $('[name=csrfmiddlewaretoken]').val();
+    // Try to get chama_id from URL if not in localStorage
+    if (!chama_id) {
+        var urlPath = window.location.pathname;
+        var chamaMatch = urlPath.match(/\/chama-expenses\/(\d+)\//);
+        if (chamaMatch) {
+            chama_id = chamaMatch[1];
+            console.log('Found chama_id from URL:', chama_id);
+        }
     }
     
-    var formData = { name: name, amount: amount, description: description };
+    console.log('Form data:', { name, amount, description, chama_id });
+    console.log('Raw form values - name:', name, 'amount:', amount, 'description:', description);
+    console.log('localStorage contents:', localStorage);
+    console.log('Current URL:', window.location.href);
+    
+    // Check if we have the necessary elements for CSRF token
+    console.log('CSRF token elements found:', $('[name=csrfmiddlewaretoken]').length);
+    
+    // Get CSRF token - try multiple methods
+    var csrfToken = $('[name=csrfmiddlewaretoken]').val();
+    if (!csrfToken) {
+        csrfToken = getCookie('csrftoken');
+    }
+    
+    console.log('CSRF token found:', !!csrfToken);
+    console.log('CSRF token value:', csrfToken ? 'exists' : 'missing');
+    
+    // Validate required fields
+    if (!name || !amount || !description) {
+        $('.mobile-alert-box').html('<div class="alert alert-danger">Please fill in all fields</div>');
+        return;
+    }
     
     if (!chama_id) {
-        alert('Invalid chama_id');
+        $('.mobile-alert-box').html('<div class="alert alert-danger">Invalid chama ID. Please refresh the page.</div>');
         return;
     }
+    
     if (!csrfToken) {
-        alert('CSRF token not found');
+        $('.mobile-alert-box').html('<div class="alert alert-danger">Security token not found. Please refresh the page.</div>');
         return;
     }
     
-    // Validate form fields
-    if (!name || !amount || !description) {
-        alert('Please fill in all fields');
-        return;
-    }
+    // Disable submit button to prevent double submission
+    $('#mobile-create-expense-button').prop('disabled', true).text('Creating...');
     
-    $.ajaxSetup({ headers: { 'X-CSRFToken': csrfToken } });
+    var formData = { name: name, amount: amount, description: description };
+    var url = '/chamas-bookeeping/create-expense/' + chama_id + '/';
+    
+    console.log('Submitting to URL:', url);
+    console.log('Form data:', formData);
+    
+    $.ajaxSetup({ 
+        headers: { 'X-CSRFToken': csrfToken },
+        beforeSend: function(xhr, settings) {
+            console.log('AJAX request starting:', settings);
+        }
+    });
+    
     $.ajax({
-        url: '/chamas-bookeeping/create-expense/' + chama_id + '/',
+        url: url,
         type: 'POST',
         data: JSON.stringify(formData),
         contentType: 'application/json',
         success: function(response) {
-            alert('Expense created successfully!');
+            console.log('Success response:', response);
+            $('.mobile-alert-box').html('<div class="alert alert-success">' + (response.message || 'Expense created successfully!') + '</div>');
             $('#mobile-create-expense-form')[0].reset();
-            setTimeout(() => { location.reload(); }, 1000);
+            
+            // Re-enable button
+            $('#mobile-create-expense-button').prop('disabled', false).text('Create Expense');
+            
+            // Reload page after short delay
+            setTimeout(() => { 
+                location.reload(); 
+            }, 1500);
         },
-        error: function(xhr) {
-            console.error('Error creating expense:', xhr);
-            alert(xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'An error occurred. Please try again.');
-        }
-    });
+        error: function(xhr, status, error) {
+            console.error('AJAX Error:', { xhr, status, error });
+            console.error('Response text:', xhr.responseText);
+            
+            var errorMessage = 'An error occurred. Please try again.';
+            
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            } else if (xhr.status === 403) {
+                errorMessage = 'Permission denied. Please refresh the page and try again.';
+            } else if (xhr.status === 404) {
+                errorMessage = 'Service not found. Please contact support.';
+            } else if (xhr.status === 500) {
+                errorMessage = 'Server error. Please try again later.';
+            }
+            
+            $('.mobile-alert-box').html('<div class="alert alert-danger">' + errorMessage + '</div>');
+            
+            // Re-enable button
+            $('#mobile-create-expense-button').prop('disabled', false).text('Create Expense');
+                 }
+     });
+};
+
+// Test function for debugging - can be called from browser console
+window.testMobileExpenseSubmission = function(testChamaId) {
+    console.log('=== Testing Mobile Expense Submission ===');
+    
+    // Set test chama_id if provided
+    if (testChamaId) {
+        localStorage.setItem('groupId', testChamaId);
+        console.log('Set test chama_id:', testChamaId);
+    }
+    
+    // Fill in test data
+    $('#mobile-expense-name').val('Test Expense');
+    $('#mobile-expense-amount').val('100');
+    $('#mobile-expense-description').val('Test Description');
+    
+    console.log('Test data filled in');
+    
+    // Try submission
+    submitExpenseFormMobile();
+};
+
+// Debug function to check current state
+window.debugMobileForm = function() {
+    console.log('=== Mobile Form Debug Info ===');
+    console.log('Form exists:', $('#mobile-create-expense-form').length > 0);
+    console.log('Button exists:', $('#mobile-create-expense-button').length > 0);
+    console.log('Name field exists:', $('#mobile-expense-name').length > 0);
+    console.log('Amount field exists:', $('#mobile-expense-amount').length > 0);
+    console.log('Description field exists:', $('#mobile-expense-description').length > 0);
+    console.log('CSRF token exists:', $('[name=csrfmiddlewaretoken]').length > 0);
+    console.log('localStorage groupId:', localStorage.getItem('groupId'));
+    console.log('Current URL:', window.location.href);
+    console.log('Alert box exists:', $('.mobile-alert-box').length > 0);
 };
 </script>
 {%endblock%}
