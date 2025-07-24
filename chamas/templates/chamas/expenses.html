@@ -30,6 +30,7 @@
                         <span>Create Expense</span>
                     </div>
                     <form id="mobile-create-expense-form" class="expense-card-form" onsubmit="submitExpenseFormMobile(); return false;">
+                        {%csrf_token%}
                         <div class="form-row form-row-split">
                             <div class="form-group">
                                 <label for="mobile-expense-name">Name</label>
@@ -210,14 +211,22 @@ function submitExpenseForm() {
     });
 }
 
-// Mobile create expense (now uses same logic as desktop)
+// Mobile create expense (fixed CSRF token handling)
 window.submitExpenseFormMobile = function() {
     var name = $('#mobile-expense-name').val();
     var amount = $('#mobile-expense-amount').val();
     var description = $('#mobile-expense-description').val();
     var chama_id = localStorage.getItem('groupId');
+    
+    // Use the same CSRF token method as desktop form
     var csrfToken = getCookie('csrftoken');
+    if (!csrfToken) {
+        // Fallback to the desktop method if getCookie fails
+        csrfToken = $('[name=csrfmiddlewaretoken]').val();
+    }
+    
     var formData = { name: name, amount: amount, description: description };
+    
     if (!chama_id) {
         alert('Invalid chama_id');
         return;
@@ -226,6 +235,13 @@ window.submitExpenseFormMobile = function() {
         alert('CSRF token not found');
         return;
     }
+    
+    // Validate form fields
+    if (!name || !amount || !description) {
+        alert('Please fill in all fields');
+        return;
+    }
+    
     $.ajaxSetup({ headers: { 'X-CSRFToken': csrfToken } });
     $.ajax({
         url: '/chamas-bookeeping/create-expense/' + chama_id + '/',
@@ -238,6 +254,7 @@ window.submitExpenseFormMobile = function() {
             setTimeout(() => { location.reload(); }, 1000);
         },
         error: function(xhr) {
+            console.error('Error creating expense:', xhr);
             alert(xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'An error occurred. Please try again.');
         }
     });
