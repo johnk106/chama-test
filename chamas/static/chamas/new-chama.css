@@ -392,87 +392,109 @@
     /* 142.857% */
 }
 
-/* Member card styles */
-.member-card .card {
-    border: 1px solid #e0e7ee;
-    border-radius: 12px;
-    transition: all 0.3s ease-in-out;
+/* List tile styles */
+.member-tile {
+    margin-bottom: 8px;
+}
+
+.list-tile {
     background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+    overflow: hidden;
 }
 
-.member-card .card:hover {
-    box-shadow: 0 4px 12px rgba(34, 145, 165, 0.15);
+.list-tile:hover {
     border-color: #2291A5;
-    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(34, 145, 165, 0.1);
 }
 
-.member-card .card-title {
-    color: #1a202c;
-    font-weight: 600;
-    font-size: 15px;
+.tile-content {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    gap: 12px;
 }
 
-.member-card .card-text {
-    color: #4a5568;
-    font-size: 12px;
-    line-height: 1.4;
+.tile-leading {
+    flex-shrink: 0;
 }
 
-.member-card .badge {
-    font-size: 11px;
-    font-weight: 500;
-    padding: 4px 8px;
-    border-radius: 6px;
-}
-
-.member-card .btn-outline-danger {
-    border: 1px solid #e53e3e;
-    color: #e53e3e;
-    background: transparent;
-    padding: 6px 8px;
-    font-size: 12px;
-    border-radius: 6px;
-    transition: all 0.2s ease;
-}
-
-.member-card .btn-outline-danger:hover {
-    background: #e53e3e;
-    color: white;
-    transform: scale(1.05);
-}
-
-.member-card .bx {
-    font-size: 12px;
-    margin-right: 4px;
-    color: #718096;
-}
-
-/* Member avatar styles */
 .member-avatar {
+    width: 40px;
+    height: 40px;
+    background: rgba(34, 145, 165, 0.1);
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .member-avatar .bx-user-circle {
-    color: #2291A5 !important;
-    font-size: 32px !important;
+    font-size: 24px;
+    color: #2291A5;
 }
 
-/* Member details styling */
-.member-details {
-    margin-left: 8px;
+.tile-body {
+    flex: 1;
+    min-width: 0;
 }
 
-.detail-row {
+.tile-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a202c;
+    margin: 0 0 2px 0;
+    line-height: 1.3;
+}
+
+.tile-subtitle {
+    font-size: 13px;
+    color: #718096;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.tile-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.btn-action {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
     display: flex;
     align-items: center;
-    font-size: 13px;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: transparent;
 }
 
-.detail-row i {
-    width: 16px;
-    font-size: 13px;
+.btn-action i {
+    font-size: 16px;
+}
+
+.btn-edit {
+    color: #4299e1;
+}
+
+.btn-edit:hover {
+    background: rgba(66, 153, 225, 0.1);
+    color: #3182ce;
+}
+
+.btn-delete {
+    color: #e53e3e;
+}
+
+.btn-delete:hover {
+    background: rgba(229, 62, 62, 0.1);
+    color: #c53030;
 }
 
 /* Member count header */
@@ -489,46 +511,38 @@
     font-size: 11px;
     padding: 4px 8px;
     border-radius: 6px;
+    border-color: #cbd5e0;
+    color: #4a5568;
 }
 
-/* Badge improvements */
-.bg-primary.bg-opacity-10 {
-    background-color: rgba(34, 145, 165, 0.1) !important;
+.member-count-header .btn-outline-secondary:hover {
+    background-color: #f7fafc;
+    border-color: #a0aec0;
 }
 
-/* Enhanced member info layout */
-.member-info {
-    min-width: 0; /* Allows text to wrap properly */
-}
-
-.member-actions {
-    margin-left: 12px;
-    display: flex;
-    align-items: flex-start;
-}
-
-/* Selected members section header */
+/* Selected members section */
 .member-list {
-    max-height: 400px;
+    max-height: 350px;
     overflow-y: auto;
+    padding-right: 4px;
 }
 
 .member-list::-webkit-scrollbar {
-    width: 6px;
+    width: 4px;
 }
 
 .member-list::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 3px;
+    background: #f1f5f9;
+    border-radius: 2px;
 }
 
 .member-list::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 3px;
+    background: #cbd5e0;
+    border-radius: 2px;
 }
 
 .member-list::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
+    background: #a0aec0;
 }
 
 /* Alert styles enhancement */
