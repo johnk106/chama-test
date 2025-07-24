@@ -949,74 +949,169 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Initialize report data from Django context
 const reportData = {
-    groupContributions: JSON.parse('{{ group_contributions|escapejs }}' || '[]'),
-    groupSavings: JSON.parse('{{ group_saving_report|escapejs }}' || '[]'),
-    individualSavings: JSON.parse('{{ individual_saving_report|escapejs }}' || '[]'),
-    groupInvestmentIncomes: JSON.parse('{{ group_investment_incomes|escapejs }}' || '[]'),
-    memberInvestmentIncomes: JSON.parse('{{ member_investment_income|escapejs }}' || '[]'),
-    loans: JSON.parse('{{ unpaid_loans|escapejs }}' || '[]'),
-    collectedFines: JSON.parse('{{ collected_fines|escapejs }}' || '[]'),
-    unpaidFines: JSON.parse('{{ unpaid_fines|escapejs }}' || '[]'),
-    expenses: JSON.parse('{{ chama_expense_reports|escapejs }}' || '[]'),
-    cashflow: JSON.parse('{{ chama_cashflow_reports|escapejs }}' || '[]'),
-    myReports: JSON.parse('{{ my_reports|escapejs }}' || '[]')
+    groupContributions: {% if group_contributions %}{{ group_contributions|safe }}{% else %}[]{% endif %},
+    groupSavings: {% if group_saving_report %}{{ group_saving_report|safe }}{% else %}[]{% endif %},
+    individualSavings: {% if individual_saving_report %}{{ individual_saving_report|safe }}{% else %}[]{% endif %},
+    groupInvestmentIncomes: {% if group_investment_incomes %}{{ group_investment_incomes|safe }}{% else %}[]{% endif %},
+    memberInvestmentIncomes: {% if member_investment_income %}{{ member_investment_income|safe }}{% else %}[]{% endif %},
+    loans: {% if unpaid_loans %}{{ unpaid_loans|safe }}{% else %}[]{% endif %},
+    collectedFines: {% if collected_fines %}{{ collected_fines|safe }}{% else %}[]{% endif %},
+    unpaidFines: {% if unpaid_fines %}{{ unpaid_fines|safe }}{% else %}[]{% endif %},
+    expenses: {% if chama_expense_reports %}{{ chama_expense_reports|safe }}{% else %}[]{% endif %},
+    cashflow: {% if chama_cashflow_reports %}{{ chama_cashflow_reports|safe }}{% else %}[]{% endif %},
+    myReports: {% if my_reports %}{{ my_reports|safe }}{% else %}[]{% endif %}
 };
 
 // Function to populate data containers
 function populateReportData() {
-    // Group Contributions
-    if (reportData.groupContributions.length > 0) {
-        const container = document.getElementById('group-contributions-items');
+    // Cashflow Report
+    if (reportData.cashflow.length > 0) {
+        const container = document.getElementById('cashflow-report-items');
         if (container) {
-            container.innerHTML = reportData.groupContributions.map(item => `
-                <div class="data-row">
-                    <span class="data-label">${item.member_name || 'N/A'}</span>
-                    <span class="data-value">Ksh ${item.amount_paid?.toLocaleString() || '0'}</span>
-                    <span class="data-date">${item.date_created || 'N/A'}</span>
+            container.innerHTML = `
+                <div class="brand-table-responsive">
+                    <table class="brand-table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Member</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${reportData.cashflow.map(item => `
+                                <tr>
+                                    <td><span class="status-badge">${item.type || 'N/A'}</span></td>
+                                    <td>${item.member_id || 'Group'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.amount?.toLocaleString() || '0'}</td>
+                                    <td>${item.object_date || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
                 </div>
-            `).join('');
+            `;
+        }
+    }
+
+    // Group Investment Incomes
+    if (reportData.groupInvestmentIncomes.length > 0) {
+        const container = document.getElementById('group-investment-incomes-items');
+        if (container) {
+            container.innerHTML = `
+                <div class="brand-table-responsive">
+                    <table class="brand-table">
+                        <thead>
+                            <tr>
+                                <th>Investment</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${reportData.groupInvestmentIncomes.map(item => `
+                                <tr>
+                                    <td>${item.investment_id || 'N/A'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.amount?.toLocaleString() || '0'}</td>
+                                    <td>${item.date || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
         }
     }
 
     // Individual Savings
     if (reportData.individualSavings.length > 0) {
-        const container = document.getElementById('individual-savings-items');
+        const container = document.getElementById('individual-saving-items');
         if (container) {
-            container.innerHTML = reportData.individualSavings.map(item => `
-                <div class="data-row">
-                    <span class="data-label">${item.owner_id || 'N/A'}</span>
-                    <span class="data-value">Ksh ${item.amount?.toLocaleString() || '0'}</span>
-                    <span class="data-date">${item.date || 'N/A'}</span>
+            container.innerHTML = `
+                <div class="brand-table-responsive">
+                    <table class="brand-table">
+                        <thead>
+                            <tr>
+                                <th>Member</th>
+                                <th>Saving Type</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${reportData.individualSavings.map(item => `
+                                <tr>
+                                    <td>${item.owner_id || 'N/A'}</td>
+                                    <td>${item.saving_type_id || 'N/A'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.amount?.toLocaleString() || '0'}</td>
+                                    <td>${item.date || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
                 </div>
-            `).join('');
+            `;
         }
     }
 
     // Group Savings
     if (reportData.groupSavings.length > 0) {
-        const container = document.getElementById('group-savings-items');
+        const container = document.getElementById('group-saving-items');
         if (container) {
-            container.innerHTML = reportData.groupSavings.map(item => `
-                <div class="data-row">
-                    <span class="data-label">${item.saving_type_id || 'Group Saving'}</span>
-                    <span class="data-value">Ksh ${item.amount?.toLocaleString() || '0'}</span>
-                    <span class="data-date">${item.date || 'N/A'}</span>
+            container.innerHTML = `
+                <div class="brand-table-responsive">
+                    <table class="brand-table">
+                        <thead>
+                            <tr>
+                                <th>Saving Type</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${reportData.groupSavings.map(item => `
+                                <tr>
+                                    <td>${item.saving_type_id || 'Group Saving'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.amount?.toLocaleString() || '0'}</td>
+                                    <td>${item.date || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
                 </div>
-            `).join('');
+            `;
         }
     }
 
-    // Loans
-    if (reportData.loans.length > 0) {
-        const container = document.getElementById('loans-items');
+    // Group Contributions
+    if (reportData.groupContributions.length > 0) {
+        const container = document.getElementById('group-contributions-items');
         if (container) {
-            container.innerHTML = reportData.loans.map(item => `
-                <div class="data-row">
-                    <span class="data-label">${item.member_id || 'N/A'}</span>
-                    <span class="data-value">Ksh ${item.amount?.toLocaleString() || '0'}</span>
-                    <span class="data-date">${item.start_date || 'N/A'}</span>
+            container.innerHTML = `
+                <div class="brand-table-responsive">
+                    <table class="brand-table">
+                        <thead>
+                            <tr>
+                                <th>Member</th>
+                                <th>Scheme</th>
+                                <th>Amount Paid</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${reportData.groupContributions.map(item => `
+                                <tr>
+                                    <td>${item.member_name || 'N/A'}</td>
+                                    <td>${item.scheme_name || 'N/A'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.amount_paid?.toLocaleString() || '0'}</td>
+                                    <td>${item.date_created || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
                 </div>
-            `).join('');
+            `;
         }
     }
 
@@ -1024,13 +1119,61 @@ function populateReportData() {
     if (reportData.collectedFines.length > 0) {
         const container = document.getElementById('collected-fines-items');
         if (container) {
-            container.innerHTML = reportData.collectedFines.map(item => `
-                <div class="data-row">
-                    <span class="data-label">${item.member || 'N/A'}</span>
-                    <span class="data-value">Ksh ${item.fine_amount?.toLocaleString() || '0'}</span>
-                    <span class="data-date">${item.created || 'N/A'}</span>
+            container.innerHTML = `
+                <div class="brand-table-responsive">
+                    <table class="brand-table">
+                        <thead>
+                            <tr>
+                                <th>Member</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${reportData.collectedFines.map(item => `
+                                <tr>
+                                    <td>${item.member || 'N/A'}</td>
+                                    <td>${item.type || 'N/A'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.fine_amount?.toLocaleString() || '0'}</td>
+                                    <td>${item.created || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
                 </div>
-            `).join('');
+            `;
+        }
+    }
+
+    // Unpaid Fines
+    if (reportData.unpaidFines.length > 0) {
+        const container = document.getElementById('unpaid-fines-items');
+        if (container) {
+            container.innerHTML = `
+                <div class="brand-table-responsive">
+                    <table class="brand-table">
+                        <thead>
+                            <tr>
+                                <th>Member</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${reportData.unpaidFines.map(item => `
+                                <tr>
+                                    <td>${item.member || 'N/A'}</td>
+                                    <td>${item.type || 'N/A'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.fine_amount?.toLocaleString() || '0'}</td>
+                                    <td>${item.created || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
         }
     }
 
@@ -1038,21 +1181,265 @@ function populateReportData() {
     if (reportData.expenses.length > 0) {
         const container = document.getElementById('expenses-items');
         if (container) {
-            container.innerHTML = reportData.expenses.map(item => `
-                <div class="data-row">
-                    <span class="data-label">${item.name || 'N/A'}</span>
-                    <span class="data-value">Ksh ${item.amount?.toLocaleString() || '0'}</span>
-                    <span class="data-date">${item.created_on || 'N/A'}</span>
+            container.innerHTML = `
+                <div class="brand-table-responsive">
+                    <table class="brand-table">
+                        <thead>
+                            <tr>
+                                <th>Expense</th>
+                                <th>Created By</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${reportData.expenses.map(item => `
+                                <tr>
+                                    <td>${item.name || 'N/A'}</td>
+                                    <td>${item.created_by_id || 'N/A'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.amount?.toLocaleString() || '0'}</td>
+                                    <td>${item.created_on || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
                 </div>
-            `).join('');
+            `;
         }
     }
+
+    // My Reports (for cashflow)
+    if (reportData.myReports.length > 0) {
+        const container = document.getElementById('my-report-items');
+        if (container) {
+            container.innerHTML = `
+                <div class="brand-table-responsive">
+                    <table class="brand-table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${reportData.myReports.map(item => `
+                                <tr>
+                                    <td><span class="status-badge">${item.type || 'N/A'}</span></td>
+                                    <td class="text-brand-primary">Ksh ${item.amount?.toLocaleString() || '0'}</td>
+                                    <td>${item.object_date || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+    }
+
+    // Member Investment Income
+    if (reportData.memberInvestmentIncomes.length > 0) {
+        const container = document.getElementById('member-investment-income-items');
+        if (container) {
+            container.innerHTML = `
+                <div class="brand-table-responsive">
+                    <table class="brand-table">
+                        <thead>
+                            <tr>
+                                <th>Investment</th>
+                                <th>Member</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${reportData.memberInvestmentIncomes.map(item => `
+                                <tr>
+                                    <td>${item.investment_id || 'N/A'}</td>
+                                    <td>${item.owner_id || 'N/A'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.amount?.toLocaleString() || '0'}</td>
+                                    <td>${item.date || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+    }
+
+    // Add debug information to console for troubleshooting
+    console.log('Report Data:', reportData);
 }
 
 // Initialize data when page loads
 document.addEventListener('DOMContentLoaded', function() {
     populateReportData();
+    
+    // Add event listeners for filter interactions
+    setupFilterListeners();
 });
+
+// Function to setup filter event listeners
+function setupFilterListeners() {
+    // Individual savings member selection
+    const savingOwnerSelect = document.getElementById('saving-owner');
+    if (savingOwnerSelect) {
+        savingOwnerSelect.addEventListener('change', function() {
+            if (this.value) {
+                // Filter and show individual savings for selected member
+                filterIndividualSavings(this.value);
+            }
+        });
+    }
+
+    // Investment owner selection
+    const investmentOwnerSelect = document.getElementById('investment-owner');
+    if (investmentOwnerSelect) {
+        investmentOwnerSelect.addEventListener('change', function() {
+            if (this.value) {
+                filterMemberInvestmentIncome(this.value);
+            }
+        });
+    }
+
+    // Member cashflow selection
+    const memberCashflowSelect = document.getElementById('member-cashflow-owner');
+    if (memberCashflowSelect) {
+        memberCashflowSelect.addEventListener('change', function() {
+            if (this.value) {
+                filterMemberCashflow(this.value);
+            }
+        });
+    }
+}
+
+// Function to filter individual savings by member
+function filterIndividualSavings(memberId) {
+    const filteredSavings = reportData.individualSavings.filter(item => 
+        item.owner_id == memberId || item.owner_id === memberId
+    );
+    
+    const container = document.getElementById('individual-saving-items');
+    if (container && filteredSavings.length > 0) {
+        container.innerHTML = `
+            <div class="brand-table-responsive">
+                <table class="brand-table">
+                    <thead>
+                        <tr>
+                            <th>Member</th>
+                            <th>Saving Type</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${filteredSavings.map(item => `
+                            <tr>
+                                <td>${item.owner_id || 'N/A'}</td>
+                                <td>${item.saving_type_id || 'N/A'}</td>
+                                <td class="text-brand-primary">Ksh ${item.amount?.toLocaleString() || '0'}</td>
+                                <td>${item.date || 'N/A'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    } else if (container) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-file-blank empty-state-icon"></i>
+                <p class="empty-state-message">No savings data found</p>
+                <p class="empty-state-description">No savings data available for the selected member</p>
+            </div>
+        `;
+    }
+}
+
+// Function to filter member investment income
+function filterMemberInvestmentIncome(memberId) {
+    const filteredIncomes = reportData.memberInvestmentIncomes.filter(item => 
+        item.owner_id == memberId || item.owner_id === memberId
+    );
+    
+    const container = document.getElementById('member-investment-income-items');
+    if (container && filteredIncomes.length > 0) {
+        container.innerHTML = `
+            <div class="brand-table-responsive">
+                <table class="brand-table">
+                    <thead>
+                        <tr>
+                            <th>Investment</th>
+                            <th>Member</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${filteredIncomes.map(item => `
+                            <tr>
+                                <td>${item.investment_id || 'N/A'}</td>
+                                <td>${item.owner_id || 'N/A'}</td>
+                                <td class="text-brand-primary">Ksh ${item.amount?.toLocaleString() || '0'}</td>
+                                <td>${item.date || 'N/A'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    } else if (container) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-file-blank empty-state-icon"></i>
+                <p class="empty-state-message">No investment income found</p>
+                <p class="empty-state-description">No investment income data available for the selected member</p>
+            </div>
+        `;
+    }
+}
+
+// Function to filter member cashflow
+function filterMemberCashflow(memberId) {
+    const filteredCashflow = reportData.cashflow.filter(item => 
+        item.member_id == memberId || item.member_id === memberId
+    );
+    
+    const container = document.getElementById('member-cashflow-items');
+    if (container && filteredCashflow.length > 0) {
+        container.innerHTML = `
+            <div class="brand-table-responsive">
+                <table class="brand-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${filteredCashflow.map(item => `
+                            <tr>
+                                <td><span class="status-badge">${item.type || 'N/A'}</span></td>
+                                <td class="text-brand-primary">Ksh ${item.amount?.toLocaleString() || '0'}</td>
+                                <td>${item.object_date || 'N/A'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    } else if (container) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-file-blank empty-state-icon"></i>
+                <p class="empty-state-message">No cashflow data found</p>
+                <p class="empty-state-description">No cashflow data available for the selected member</p>
+            </div>
+        `;
+    }
+}
 
 // Function to get CSRF token from cookies
 function getCookie(name) {

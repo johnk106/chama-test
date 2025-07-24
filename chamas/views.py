@@ -1126,7 +1126,7 @@ def reports(request,chama_id):
             pass
 
         try:
-            i = Investment.objects.get(pk=int(income['investmnet_id']))
+            i = Investment.objects.get(pk=int(income['investment_id']))
             income['investment'] = i.name
         except:
             pass
