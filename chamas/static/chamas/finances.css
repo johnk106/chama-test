@@ -600,9 +600,9 @@ html, body,
     height: 56px;
     border-radius: 50%;
     border: none;
-    background: #1F8A70;
+    background: var(--brand-primary);
     color: white;
-    box-shadow: 0 4px 16px rgba(31, 138, 112, 0.4);
+    box-shadow: 0 4px 16px rgba(33, 145, 165, 0.4);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -614,14 +614,14 @@ html, body,
 }
 
 .fab-create:hover {
-    background: #1a7560;
+    background: var(--brand-primary-hover);
     transform: scale(1.1);
-    box-shadow: 0 6px 20px rgba(31, 138, 112, 0.6);
+    box-shadow: 0 6px 20px rgba(33, 145, 165, 0.6);
 }
 
 .fab-create.active {
     transform: rotate(45deg);
-    background: #1a7560;
+    background: var(--brand-primary-hover);
 }
 
 /* Mini FABs */
@@ -630,7 +630,7 @@ html, body,
     height: 48px;
     border-radius: 50%;
     border: none;
-    background: #1F8A70;
+    background: var(--brand-primary);
     color: white;
     position: absolute;
     bottom: 0;
@@ -640,7 +640,7 @@ html, body,
     align-items: center;
     justify-content: center;
     font-size: 18px;
-    box-shadow: 0 3px 12px rgba(31, 138, 112, 0.4);
+    box-shadow: 0 3px 12px rgba(33, 145, 165, 0.4);
     opacity: 0;
     visibility: hidden;
     transform: scale(0.3) translateY(0);
@@ -814,8 +814,8 @@ html, body,
         display: none;
     }
 
-    /* Show FAB on Mobile */
-    .fab-container {
+    /* Show FAB on Mobile - Only when visible (not hidden by jQuery) */
+    .fab-container.admin:not([style*="display: none"]):not(.hidden) {
         display: block !important;
         position: fixed !important;
         bottom: 100px !important;
@@ -823,7 +823,13 @@ html, body,
         z-index: 1050 !important;
     }
     
-    .fab-backdrop {
+    /* Ensure FAB is hidden when jQuery sets display: none */
+    .fab-container.admin[style*="display: none"],
+    .fab-container.admin.hidden {
+        display: none !important;
+    }
+    
+    .fab-backdrop.admin:not([style*="display: none"]):not(.hidden) {
         display: block !important;
         position: fixed !important;
         top: 0 !important;
@@ -835,6 +841,12 @@ html, body,
         opacity: 0 !important;
         visibility: hidden !important;
         transition: all 0.3s ease !important;
+    }
+    
+    /* Hide backdrop when not in admin view */
+    .fab-backdrop.admin[style*="display: none"],
+    .fab-backdrop.admin.hidden {
+        display: none !important;
     }
 
     .fab-backdrop.active {
@@ -1520,6 +1532,15 @@ html, body,
 
 .member {
     /* Member styles preserved as-is */
+}
+
+/* Ensure admin elements can be hidden by JavaScript */
+.admin.hidden,
+.fab-container.hidden,
+.fab-create.hidden,
+.mini-fab.hidden {
+    display: none !important;
+    visibility: hidden !important;
 }
 
 /* Admin specific button styling */
