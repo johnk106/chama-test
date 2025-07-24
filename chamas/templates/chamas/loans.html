@@ -199,83 +199,209 @@
 
     <!-- My Loans Tab Content -->
     <div class="tab-content member" id="my-loans">
-      <div class="mobile-loans-history-list">
+      <div class="mobile-loans-list">
         <!-- Completed Loans -->
         {% if my_completed_loans %}
-        <div class="loan-status-section">
-          <div class="loan-status-header status-completed">Completed</div>
-          <div class="loan-table">
-            <div class="loan-table-header">
-              <div>Loan ID</div>
-              <div>Name</div>
-              <div>Type</div>
-              <div>Amount</div>
-            </div>
-            {% for loan in my_completed_loans %}
-            <div class="loan-table-row">
-              <div class="loan-table-cell loan-id">L{{ loan.id|stringformat:'03d' }}</div>
-              <div class="loan-table-cell loan-name">{{ loan.member.name }}</div>
-              <div class="loan-table-cell loan-type">{{ loan.type.name }}</div>
-              <div class="loan-table-cell loan-amount">Ksh{{ loan.amount|floatformat:0 }}</div>
-            </div>
-            {% endfor %}
+        <div class="mobile-loan-category">
+          <div class="mobile-category-header status-completed">
+            <i class='bx bx-check-circle'></i>
+            <span>My Completed Loans</span>
           </div>
+          {% for loan in my_completed_loans %}
+          <div class="mobile-loan-card completed">
+            <div class="mobile-loan-header" onclick="toggleMobileLoanDetails(this)">
+              <div class="mobile-loan-info">
+                <div class="mobile-loan-member">
+                  {% if loan.member.profile %}
+                  <div class="mobile-member-avatar" style="background-image: url({{loan.member.profile.url}});"></div>
+                  {% else %}
+                  <div class="mobile-member-avatar default-avatar"></div>
+                  {% endif %}
+                  <span class="mobile-member-name">{{ loan.member.name }}</span>
+                </div>
+                <div class="mobile-loan-summary">
+                  <span class="mobile-loan-id">L{{ loan.id|stringformat:'03d' }}</span>
+                  <span class="mobile-loan-amount">Ksh{{ loan.amount|floatformat:0|intcomma }}</span>
+                </div>
+              </div>
+              <i class='bx bx-chevron-down mobile-expand-icon'></i>
+            </div>
+            <div class="mobile-loan-details" style="display: none;">
+              <div class="mobile-detail-grid">
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Loan Type</span>
+                  <span class="mobile-detail-value">{{ loan.type.name }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Total Amount</span>
+                  <span class="mobile-detail-value">Ksh{{ loan.total_amount_to_be_paid|floatformat:0|intcomma }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Start Date</span>
+                  <span class="mobile-detail-value">{{ loan.start_date|date:"d/m/Y" }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Due Date</span>
+                  <span class="mobile-detail-value">{{ loan.end_date|date:"d/m/Y" }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Total Paid</span>
+                  <span class="mobile-detail-value">Ksh{{ loan.total_paid|floatformat:0|intcomma }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Interest Rate</span>
+                  <span class="mobile-detail-value">{{ loan.intrest_rate }}%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
         </div>
         {% endif %}
 
         <!-- Active Loans -->
         {% if my_active_loans %}
-        <div class="loan-status-section">
-          <div class="loan-status-header status-active">Active</div>
-          <div class="loan-table">
-            <div class="loan-table-header">
-              <div>Loan ID</div>
-              <div>Name</div>
-              <div>Type</div>
-              <div>Amount</div>
-            </div>
-            {% for loan in my_active_loans %}
-            <div class="loan-table-row">
-              <div class="loan-table-cell loan-id">L{{ loan.id|stringformat:'03d' }}</div>
-              <div class="loan-table-cell loan-name">{{ loan.member.name }}</div>
-              <div class="loan-table-cell loan-type">{{ loan.type.name }}</div>
-              <div class="loan-table-cell loan-amount">Ksh{{ loan.amount|floatformat:0 }}</div>
-            </div>
-            {% endfor %}
+        <div class="mobile-loan-category">
+          <div class="mobile-category-header status-active">
+            <i class='bx bx-time-five'></i>
+            <span>My Active Loans</span>
           </div>
+          {% for loan in my_active_loans %}
+          <div class="mobile-loan-card active">
+            <div class="mobile-loan-header" onclick="toggleMobileLoanDetails(this)">
+              <div class="mobile-loan-info">
+                <div class="mobile-loan-member">
+                  {% if loan.member.profile %}
+                  <div class="mobile-member-avatar" style="background-image: url({{loan.member.profile.url}});"></div>
+                  {% else %}
+                  <div class="mobile-member-avatar default-avatar"></div>
+                  {% endif %}
+                  <span class="mobile-member-name">{{ loan.member.name }}</span>
+                </div>
+                <div class="mobile-loan-summary">
+                  <span class="mobile-loan-id">L{{ loan.id|stringformat:'03d' }}</span>
+                  <span class="mobile-loan-amount">Ksh{{ loan.amount|floatformat:0|intcomma }}</span>
+                </div>
+              </div>
+              <i class='bx bx-chevron-down mobile-expand-icon'></i>
+            </div>
+            <div class="mobile-loan-details" style="display: none;">
+              <div class="mobile-detail-grid">
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Loan Type</span>
+                  <span class="mobile-detail-value">{{ loan.type.name }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Total Amount</span>
+                  <span class="mobile-detail-value">Ksh{{ loan.total_amount_to_be_paid|floatformat:0|intcomma }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Balance</span>
+                  <span class="mobile-detail-value">Ksh{{ loan.balance|floatformat:0|intcomma }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Start Date</span>
+                  <span class="mobile-detail-value">{{ loan.start_date|date:"d/m/Y" }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Due Date</span>
+                  <span class="mobile-detail-value">{{ loan.end_date|date:"d/m/Y" }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Total Paid</span>
+                  <span class="mobile-detail-value">Ksh{{ loan.total_paid|floatformat:0|intcomma }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Interest Rate</span>
+                  <span class="mobile-detail-value">{{ loan.intrest_rate }}%</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Late Fine</span>
+                  <span class="mobile-detail-value">Ksh{{ loan.type.late_fine|floatformat:0|intcomma }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Grace Period</span>
+                  <span class="mobile-detail-value">{{ loan.type.grace_period }} days</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Status</span>
+                  <span class="mobile-detail-value mobile-status-badge status-{{ loan.status|lower }}">{{ loan.status }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
         </div>
         {% endif %}
 
         <!-- Defaulted Loans -->
         {% if my_defaulted_loans %}
-        <div class="loan-status-section">
-          <div class="loan-status-header status-defaulted">Defaulted</div>
-          <div class="loan-table">
-            <div class="loan-table-header">
-              <div>Loan ID</div>
-              <div>Name</div>
-              <div>Type</div>
-              <div>Amount</div>
-            </div>
-            {% for loan in my_defaulted_loans %}
-            <div class="loan-table-row">
-              <div class="loan-table-cell loan-id">L{{ loan.id|stringformat:'03d' }}</div>
-              <div class="loan-table-cell loan-name">{{ loan.member.name }}</div>
-              <div class="loan-table-cell loan-type">{{ loan.type.name }}</div>
-              <div class="loan-table-cell loan-amount">Ksh{{ loan.amount|floatformat:0 }}</div>
-            </div>
-            {% endfor %}
+        <div class="mobile-loan-category">
+          <div class="mobile-category-header status-defaulted">
+            <i class='bx bx-x-circle'></i>
+            <span>My Defaulted Loans</span>
           </div>
+          {% for loan in my_defaulted_loans %}
+          <div class="mobile-loan-card defaulted">
+            <div class="mobile-loan-header" onclick="toggleMobileLoanDetails(this)">
+              <div class="mobile-loan-info">
+                <div class="mobile-loan-member">
+                  {% if loan.member.profile %}
+                  <div class="mobile-member-avatar" style="background-image: url({{loan.member.profile.url}});"></div>
+                  {% else %}
+                  <div class="mobile-member-avatar default-avatar"></div>
+                  {% endif %}
+                  <span class="mobile-member-name">{{ loan.member.name }}</span>
+                </div>
+                <div class="mobile-loan-summary">
+                  <span class="mobile-loan-id">L{{ loan.id|stringformat:'03d' }}</span>
+                  <span class="mobile-loan-amount">Ksh{{ loan.amount|floatformat:0|intcomma }}</span>
+                </div>
+              </div>
+              <i class='bx bx-chevron-down mobile-expand-icon'></i>
+            </div>
+            <div class="mobile-loan-details" style="display: none;">
+              <div class="mobile-detail-grid">
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Loan Type</span>
+                  <span class="mobile-detail-value">{{ loan.type.name }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Total Amount</span>
+                  <span class="mobile-detail-value">Ksh{{ loan.total_amount_to_be_paid|floatformat:0|intcomma }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Balance</span>
+                  <span class="mobile-detail-value">Ksh{{ loan.balance|floatformat:0|intcomma }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Start Date</span>
+                  <span class="mobile-detail-value">{{ loan.start_date|date:"d/m/Y" }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Due Date</span>
+                  <span class="mobile-detail-value">{{ loan.end_date|date:"d/m/Y" }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Total Paid</span>
+                  <span class="mobile-detail-value">Ksh{{ loan.total_paid|floatformat:0|intcomma }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Interest Rate</span>
+                  <span class="mobile-detail-value">{{ loan.intrest_rate }}%</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Late Fine</span>
+                  <span class="mobile-detail-value">Ksh{{ loan.type.late_fine|floatformat:0|intcomma }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
         </div>
         {% endif %}
 
-        <!-- Download Report -->
-        <div class="download-report-section">
-          <button class="download-report-btn" onclick="downloadReport()">
-            <i class='bx bx-download'></i>
-            Download My Loans Report
-          </button>
-        </div>
+
 
         {% if not my_active_loans and not my_completed_loans and not my_defaulted_loans %}
         <div class="no-loans">
@@ -288,83 +414,268 @@
 
     <!-- Active Loans Tab Content -->
     <div class="tab-content admin" id="active-loans">
-      <div class="mobile-loans-history-list">
+      <div id="mobile-active-loans-feedback" class="alert" style="display: none; margin-bottom: 15px;"></div>
+      <div class="mobile-loans-list">
         <!-- Completed Loans -->
         {% if completed_loans %}
-        <div class="loan-status-section">
-          <div class="loan-status-header status-completed">Completed</div>
-          <div class="loan-table">
-            <div class="loan-table-header">
-              <div>Loan ID</div>
-              <div>Name</div>
-              <div>Type</div>
-              <div>Amount</div>
-            </div>
-            {% for loan in completed_loans %}
-            <div class="loan-table-row">
-              <div class="loan-table-cell loan-id">L{{ loan.id|stringformat:'03d' }}</div>
-              <div class="loan-table-cell loan-name">{{ loan.member.name }}</div>
-              <div class="loan-table-cell loan-type">{{ loan.type.name }}</div>
-              <div class="loan-table-cell loan-amount">Ksh{{ loan.amount|floatformat:0 }}</div>
-            </div>
-            {% endfor %}
+        <div class="mobile-loan-category">
+          <div class="mobile-category-header status-completed">
+            <i class='bx bx-check-circle'></i>
+            <span>Completed Loans</span>
           </div>
+          {% for loan in completed_loans %}
+          <div class="mobile-loan-card completed">
+            <div class="mobile-loan-header" onclick="toggleMobileLoanDetails(this)">
+              <div class="mobile-loan-info">
+                <div class="mobile-loan-member">
+                  {% if loan.member.profile %}
+                  <div class="mobile-member-avatar" style="background-image: url({{loan.member.profile.url}});"></div>
+                  {% else %}
+                  <div class="mobile-member-avatar default-avatar"></div>
+                  {% endif %}
+                  <span class="mobile-member-name">{{ loan.member.name }}</span>
+                </div>
+                <div class="mobile-loan-summary">
+                  <span class="mobile-loan-id">L{{ loan.id|stringformat:'03d' }}</span>
+                  <span class="mobile-loan-amount">Ksh{{ loan.amount|floatformat:0|intcomma }}</span>
+                </div>
+              </div>
+              <i class='bx bx-chevron-down mobile-expand-icon'></i>
+            </div>
+            <div class="mobile-loan-details" style="display: none;">
+              <div class="mobile-detail-grid">
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Loan Type</span>
+                  <span class="mobile-detail-value">{{ loan.type.name }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Total Amount</span>
+                  <span class="mobile-detail-value">Ksh{{ loan.total_amount_to_be_paid|floatformat:0|intcomma }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Start Date</span>
+                  <span class="mobile-detail-value">{{ loan.start_date|date:"d/m/Y" }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Due Date</span>
+                  <span class="mobile-detail-value">{{ loan.end_date|date:"d/m/Y" }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Total Paid</span>
+                  <span class="mobile-detail-value">Ksh{{ loan.total_paid|floatformat:0|intcomma }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Interest Rate</span>
+                  <span class="mobile-detail-value">{{ loan.intrest_rate }}%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
         </div>
         {% endif %}
 
         <!-- Active Loans -->
         {% if active_loans %}
-        <div class="loan-status-section">
-          <div class="loan-status-header status-active">Active</div>
-          <div class="loan-table">
-            <div class="loan-table-header">
-              <div>Loan ID</div>
-              <div>Name</div>
-              <div>Type</div>
-              <div>Amount</div>
-            </div>
-            {% for loan in active_loans %}
-            <div class="loan-table-row">
-              <div class="loan-table-cell loan-id">L{{ loan.id|stringformat:'03d' }}</div>
-              <div class="loan-table-cell loan-name">{{ loan.member.name }}</div>
-              <div class="loan-table-cell loan-type">{{ loan.type.name }}</div>
-              <div class="loan-table-cell loan-amount">Ksh{{ loan.amount|floatformat:0 }}</div>
-            </div>
-            {% endfor %}
+        <div class="mobile-loan-category">
+          <div class="mobile-category-header status-active">
+            <i class='bx bx-time-five'></i>
+            <span>Active Loans</span>
           </div>
+          {% for loan in active_loans %}
+          <div class="mobile-loan-card active">
+            <div class="mobile-loan-header" onclick="toggleMobileLoanDetails(this)">
+              <div class="mobile-loan-info">
+                <div class="mobile-loan-member">
+                  {% if loan.member.profile %}
+                  <div class="mobile-member-avatar" style="background-image: url({{loan.member.profile.url}});"></div>
+                  {% else %}
+                  <div class="mobile-member-avatar default-avatar"></div>
+                  {% endif %}
+                  <span class="mobile-member-name">{{ loan.member.name }}</span>
+                </div>
+                <div class="mobile-loan-summary">
+                  <span class="mobile-loan-id">L{{ loan.id|stringformat:'03d' }}</span>
+                  <span class="mobile-loan-amount">Ksh{{ loan.amount|floatformat:0|intcomma }}</span>
+                </div>
+              </div>
+              <i class='bx bx-chevron-down mobile-expand-icon'></i>
+            </div>
+            <div class="mobile-loan-details" style="display: none;">
+              <div class="mobile-detail-grid">
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Loan Type</span>
+                  <span class="mobile-detail-value">{{ loan.type.name }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Total Amount</span>
+                  <span class="mobile-detail-value">Ksh{{ loan.total_amount_to_be_paid|floatformat:0|intcomma }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Balance</span>
+                  <span class="mobile-detail-value">Ksh{{ loan.balance|floatformat:0|intcomma }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Start Date</span>
+                  <span class="mobile-detail-value">{{ loan.start_date|date:"d/m/Y" }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Due Date</span>
+                  <span class="mobile-detail-value">{{ loan.end_date|date:"d/m/Y" }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Next Due Date</span>
+                  <span class="mobile-detail-value">{{ loan.calc_next_date }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Next Due Amount</span>
+                  <span class="mobile-detail-value">Ksh{{ loan.next_due_amount|floatformat:2|intcomma }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Total Paid</span>
+                  <span class="mobile-detail-value">Ksh{{ loan.total_paid|floatformat:0|intcomma }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Interest Rate</span>
+                  <span class="mobile-detail-value">{{ loan.intrest_rate }}%</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Late Fine</span>
+                  <span class="mobile-detail-value">Ksh{{ loan.type.late_fine|floatformat:0|intcomma }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Grace Period</span>
+                  <span class="mobile-detail-value">{{ loan.type.grace_period }} days</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Status</span>
+                  <span class="mobile-detail-value mobile-status-badge status-{{ loan.status|lower }}">{{ loan.status }}</span>
+                </div>
+              </div>
+              
+              <!-- Update Loan Form (Admin Only) -->
+              <div class="admin mobile-update-form">
+                <div class="mobile-update-header">
+                  <i class='bx bx-edit'></i>
+                  <span>Update Loan Payment</span>
+                </div>
+                <form class="mobile-repayment-form">
+                  <input type="hidden" name="loan_id" value="{{ loan.id }}">
+                  <div class="mobile-form-group">
+                    <label for="mobile-loan-amount-{{ loan.id }}">Payment Amount (KSH)</label>
+                    <input type="number" 
+                           name="loan-amount" 
+                           id="mobile-loan-amount-{{ loan.id }}" 
+                           class="mobile-form-input" 
+                           placeholder="Enter payment amount" 
+                           min="0" 
+                           step="0.01" 
+                           required>
+                  </div>
+                  <button type="submit" class="mobile-update-btn">
+                    <i class='bx bx-check'></i>
+                    Update Payment
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
         </div>
         {% endif %}
 
         <!-- Defaulted Loans -->
         {% if defaulted_loans %}
-        <div class="loan-status-section">
-          <div class="loan-status-header status-defaulted">Defaulted</div>
-          <div class="loan-table">
-            <div class="loan-table-header">
-              <div>Loan ID</div>
-              <div>Name</div>
-              <div>Type</div>
-              <div>Amount</div>
-            </div>
-            {% for loan in defaulted_loans %}
-            <div class="loan-table-row">
-              <div class="loan-table-cell loan-id">L{{ loan.id|stringformat:'03d' }}</div>
-              <div class="loan-table-cell loan-name">{{ loan.member.name }}</div>
-              <div class="loan-table-cell loan-type">{{ loan.type.name }}</div>
-              <div class="loan-table-cell loan-amount">Ksh{{ loan.amount|floatformat:0 }}</div>
-            </div>
-            {% endfor %}
+        <div class="mobile-loan-category">
+          <div class="mobile-category-header status-defaulted">
+            <i class='bx bx-x-circle'></i>
+            <span>Defaulted Loans</span>
           </div>
+          {% for loan in defaulted_loans %}
+          <div class="mobile-loan-card defaulted">
+            <div class="mobile-loan-header" onclick="toggleMobileLoanDetails(this)">
+              <div class="mobile-loan-info">
+                <div class="mobile-loan-member">
+                  {% if loan.member.profile %}
+                  <div class="mobile-member-avatar" style="background-image: url({{loan.member.profile.url}});"></div>
+                  {% else %}
+                  <div class="mobile-member-avatar default-avatar"></div>
+                  {% endif %}
+                  <span class="mobile-member-name">{{ loan.member.name }}</span>
+                </div>
+                <div class="mobile-loan-summary">
+                  <span class="mobile-loan-id">L{{ loan.id|stringformat:'03d' }}</span>
+                  <span class="mobile-loan-amount">Ksh{{ loan.amount|floatformat:0|intcomma }}</span>
+                </div>
+              </div>
+              <i class='bx bx-chevron-down mobile-expand-icon'></i>
+            </div>
+            <div class="mobile-loan-details" style="display: none;">
+              <div class="mobile-detail-grid">
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Loan Type</span>
+                  <span class="mobile-detail-value">{{ loan.type.name }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Total Amount</span>
+                  <span class="mobile-detail-value">Ksh{{ loan.total_amount_to_be_paid|floatformat:0|intcomma }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Balance</span>
+                  <span class="mobile-detail-value">Ksh{{ loan.balance|floatformat:0|intcomma }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Start Date</span>
+                  <span class="mobile-detail-value">{{ loan.start_date|date:"d/m/Y" }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Due Date</span>
+                  <span class="mobile-detail-value">{{ loan.end_date|date:"d/m/Y" }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Total Paid</span>
+                  <span class="mobile-detail-value">Ksh{{ loan.total_paid|floatformat:0|intcomma }}</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Interest Rate</span>
+                  <span class="mobile-detail-value">{{ loan.intrest_rate }}%</span>
+                </div>
+                <div class="mobile-detail-item">
+                  <span class="mobile-detail-label">Late Fine</span>
+                  <span class="mobile-detail-value">Ksh{{ loan.type.late_fine|floatformat:0|intcomma }}</span>
+                </div>
+              </div>
+              
+              <!-- Update Loan Form (Admin Only) -->
+              <div class="admin mobile-update-form">
+                <div class="mobile-update-header">
+                  <i class='bx bx-edit'></i>
+                  <span>Update Loan Payment</span>
+                </div>
+                <form class="mobile-repayment-form">
+                  <input type="hidden" name="loan_id" value="{{ loan.id }}">
+                  <div class="mobile-form-group">
+                    <label for="mobile-loan-amount-{{ loan.id }}">Payment Amount (KSH)</label>
+                    <input type="number" 
+                           name="loan-amount" 
+                           id="mobile-loan-amount-{{ loan.id }}" 
+                           class="mobile-form-input" 
+                           placeholder="Enter payment amount" 
+                           min="0" 
+                           step="0.01" 
+                           required>
+                  </div>
+                  <button type="submit" class="mobile-update-btn">
+                    <i class='bx bx-check'></i>
+                    Update Payment
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
         </div>
         {% endif %}
-
-        <!-- Download Report -->
-        <div class="download-report-section">
-          <button class="download-report-btn" onclick="downloadReport()">
-            <i class='bx bx-download'></i>
-            Download Full Report
-          </button>
-        </div>
 
         {% if not active_loans and not completed_loans and not defaulted_loans %}
         <div class="no-loans">
@@ -1318,8 +1629,8 @@
 </script>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
+    // Desktop update forms
     var updateForms = document.querySelectorAll(".repayment-form");
-
     updateForms.forEach(function (form) {
       form.addEventListener("submit", function (event) {
         event.preventDefault();
@@ -1354,6 +1665,47 @@
           });
       });
     });
+
+    // Mobile update forms
+    var mobileUpdateForms = document.querySelectorAll(".mobile-repayment-form");
+    mobileUpdateForms.forEach(function (form) {
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        // Extract form values
+        var loanId = form.querySelector('input[name="loan_id"]').value;
+        var loanAmount = form.querySelector('input[name="loan-amount"]').value;
+
+        // Construct the URL
+        var url = `/chamas-bookeeping/update-loan/${loanId}/`;
+
+        // Prepare the data to send
+        var data = {
+          loan_amount: loanAmount,
+        };
+
+        // Send data to the server
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            handleMobileLoanResponse(data);
+            // Clear the form after successful update
+            if (data.status === "success") {
+              form.reset();
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      });
+    });
   });
 
   function handleLoanResponse(data) {
@@ -1364,6 +1716,43 @@
       // You can update the UI or perform any other actions here
     } else {
       alertDiv.innerHTML = `<div class="alert alert-danger" role="alert">${data.message}</div>`;
+    }
+  }
+
+  function handleMobileLoanResponse(data) {
+    var alertDiv = document.getElementById("mobile-active-loans-feedback");
+
+    if (data.status === "success") {
+      alertDiv.innerHTML = data.message;
+      alertDiv.className = "alert alert-success";
+      alertDiv.style.display = "block";
+      
+      // Auto-hide the alert after 5 seconds
+      setTimeout(function() {
+        alertDiv.style.display = "none";
+      }, 5000);
+    } else {
+      alertDiv.innerHTML = data.message;
+      alertDiv.className = "alert alert-danger";
+      alertDiv.style.display = "block";
+      
+      // Auto-hide the alert after 5 seconds
+      setTimeout(function() {
+        alertDiv.style.display = "none";
+      }, 5000);
+    }
+  }
+
+  function toggleMobileLoanDetails(headerElement) {
+    var detailsElement = headerElement.nextElementSibling;
+    var expandIcon = headerElement.querySelector('.mobile-expand-icon');
+    
+    if (detailsElement.style.display === "none" || detailsElement.style.display === "") {
+      detailsElement.style.display = "block";
+      expandIcon.classList.add('expanded');
+    } else {
+      detailsElement.style.display = "none";
+      expandIcon.classList.remove('expanded');
     }
   }
 
