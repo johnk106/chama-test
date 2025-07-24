@@ -558,7 +558,7 @@ $(document).ready(function () {
                              </div>
                              <span class="member-name">${memberName}</span>
                          </div>
-                         <div class="member-balance">Ksh1000</div>
+                         <div class="member-balance">Ksh${getContributionAmount(contributionId)}</div>
                          <div class="member-input">
                              <input type="number" placeholder="Enter amount" class="amount-input-mobile" data-member-id="${memberId}">
                          </div>
@@ -572,6 +572,26 @@ $(document).ready(function () {
          }
          
          membersList.html(membersHtml);
+     }
+
+     // Helper function to get contribution amount by ID
+     function getContributionAmount(contributionId) {
+         let amount = '0';
+         
+         // Find the contribution amount from the accordion items
+         $('.mobile-accordion-item').each(function() {
+             const accordionHeader = $(this).find('.accordion-header');
+             const currentContributionId = accordionHeader.data('contribution-id');
+             
+             if (currentContributionId == contributionId) {
+                 const amountText = $(this).find('.amount-value').text();
+                 // Extract the numeric value from "Ksh1,000" format
+                 amount = amountText.replace('Ksh', '').replace(/,/g, '');
+                 return false; // Break the loop
+             }
+         });
+         
+         return amount || '0';
      }
 
      // Load contribution records for mobile view
