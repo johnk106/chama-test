@@ -163,15 +163,7 @@ $(document).ready(function () {
         $('#' + tabId).addClass('active');
     });
     
-    // Add event listener to mobile form for debugging
-    $('#mobile-create-expense-form').on('submit', function(e) {
-        console.log('Mobile form submit event triggered');
-        e.preventDefault();
-        submitExpenseFormMobile();
-        return false;
-    });
-    
-    // Add click event listener to mobile button for debugging
+    // Debug click event listener for mobile button (removed duplicate submit handler)
     $('#mobile-create-expense-button').on('click', function(e) {
         console.log('Mobile button clicked');
     });
@@ -225,9 +217,17 @@ function submitExpenseForm() {
     });
 }
 
-// Mobile create expense with enhanced debugging
+// Mobile create expense with enhanced debugging and double-submission prevention
 window.submitExpenseFormMobile = function() {
     console.log('Mobile form submission started');
+    
+    // Prevent double submission
+    if (window.mobileFormSubmitting) {
+        console.log('Form submission already in progress, ignoring duplicate request');
+        return false;
+    }
+    
+    window.mobileFormSubmitting = true;
     
     // Check if we're on mobile view and the correct tab is active
     console.log('Mobile view visible:', $('.mobile-expenses').is(':visible'));
@@ -276,16 +276,19 @@ window.submitExpenseFormMobile = function() {
     // Validate required fields
     if (!name || !amount || !description) {
         $('.mobile-alert-box').html('<div class="alert alert-danger">Please fill in all fields</div>');
+        window.mobileFormSubmitting = false;
         return;
     }
     
     if (!chama_id) {
         $('.mobile-alert-box').html('<div class="alert alert-danger">Invalid chama ID. Please refresh the page.</div>');
+        window.mobileFormSubmitting = false;
         return;
     }
     
     if (!csrfToken) {
         $('.mobile-alert-box').html('<div class="alert alert-danger">Security token not found. Please refresh the page.</div>');
+        window.mobileFormSubmitting = false;
         return;
     }
     
@@ -315,8 +318,9 @@ window.submitExpenseFormMobile = function() {
             $('.mobile-alert-box').html('<div class="alert alert-success">' + (response.message || 'Expense created successfully!') + '</div>');
             $('#mobile-create-expense-form')[0].reset();
             
-            // Re-enable button
+            // Re-enable button and reset submission flag
             $('#mobile-create-expense-button').prop('disabled', false).text('Create Expense');
+            window.mobileFormSubmitting = false;
             
             // Reload page after short delay
             setTimeout(() => { 
@@ -341,8 +345,9 @@ window.submitExpenseFormMobile = function() {
             
             $('.mobile-alert-box').html('<div class="alert alert-danger">' + errorMessage + '</div>');
             
-            // Re-enable button
+            // Re-enable button and reset submission flag
             $('#mobile-create-expense-button').prop('disabled', false).text('Create Expense');
+            window.mobileFormSubmitting = false;
                  }
      });
 };
@@ -350,6 +355,9 @@ window.submitExpenseFormMobile = function() {
 // Test function for debugging - can be called from browser console
 window.testMobileExpenseSubmission = function(testChamaId) {
     console.log('=== Testing Mobile Expense Submission ===');
+    
+    // Reset submission flag if needed
+    window.mobileFormSubmitting = false;
     
     // Set test chama_id if provided
     if (testChamaId) {
@@ -380,6 +388,14 @@ window.debugMobileForm = function() {
     console.log('localStorage groupId:', localStorage.getItem('groupId'));
     console.log('Current URL:', window.location.href);
     console.log('Alert box exists:', $('.mobile-alert-box').length > 0);
+    console.log('Form submitting flag:', window.mobileFormSubmitting);
+};
+
+// Function to reset the mobile form state
+window.resetMobileFormState = function() {
+    window.mobileFormSubmitting = false;
+    $('#mobile-create-expense-button').prop('disabled', false).text('Create Expense');
+    console.log('Mobile form state reset');
 };
 </script>
 {%endblock%}
