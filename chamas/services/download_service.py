@@ -13,13 +13,52 @@ from datetime import datetime
 class DownloadService:
     @staticmethod
     def download_loan_report(request,chama_id):
-        chama = Chama.objects.get(pk=chama_id)
-        loans = LoanItem.objects.filter(chama=chama)
+        try:
+            chama = Chama.objects.get(pk=chama_id)
+            loans = LoanItem.objects.filter(chama=chama)
+        except Exception as e:
+            # If there's an error getting the chama or loans, return an error response
+            response = HttpResponse(content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename="loan_report_error.pdf"'
+            
+            doc = BaseDocTemplate(
+                response,
+                pagesize=letter,
+                leftMargin=36, rightMargin=36,
+                topMargin=72, bottomMargin=36
+            )
+            frame = Frame(
+                doc.leftMargin, doc.bottomMargin,
+                doc.width, doc.height,
+                id='normal'
+            )
+            
+            def draw_error_header(canvas, doc):
+                canvas.saveState()
+                canvas.setFont('Times-Bold', 16)
+                canvas.drawCentredString(letter[0]/2, letter[1]-40, "Error Generating Report")
+                canvas.setFont('Times-Roman', 12)
+                canvas.drawCentredString(letter[0]/2, letter[1]-60, f"Error: {str(e)}")
+                canvas.restoreState()
+            
+            doc.addPageTemplates([
+                PageTemplate(id='WithHeader', frames=frame, onPage=draw_error_header)
+            ])
+            
+            error_data = [['Error', 'Description'], ['Database Error', str(e)]]
+            error_table = Table(error_data)
+            doc.build([Spacer(1, 40), error_table])
+            return response
 
         
         response = HttpResponse(content_type='application/pdf')
+        # Sanitize the chama name for filename to avoid issues with special characters
+        safe_chama_name = "".join(c for c in chama.name if c.isalnum() or c in (' ', '-', '_')).rstrip()
+        safe_chama_name = safe_chama_name.replace(' ', '_')
+        if not safe_chama_name:
+            safe_chama_name = "chama"
         response['Content-Disposition'] = (
-            f'attachment; filename="{chama.name}_loan_report.pdf"'
+            f'attachment; filename="{safe_chama_name}_loan_report.pdf"'
         )
 
         doc = BaseDocTemplate(
@@ -67,17 +106,54 @@ class DownloadService:
             'Amount', 'Total Paid',
             'Balance', 'Status'
         ]]
-        for loan in loans:
+        
+        # Check if there are any loans
+        if not loans.exists():
             data.append([
-                loan.member.name,
-                loan.type.name,
-                loan.start_date.strftime('%Y-%m-%d'),
-                loan.end_date.strftime('%Y-%m-%d'),
-                f'ksh {loan.amount}',
-                f'ksh {loan.total_paid}',
-                f'ksh {loan.balance}',
-                loan.status,
+                'No loans found',
+                '-',
+                '-',
+                '-',
+                '-',
+                '-',
+                '-',
+                '-'
             ])
+        else:
+            for loan in loans:
+                try:
+                    # Handle potential None values safely
+                    member_name = loan.member.name if loan.member else 'N/A'
+                    loan_type = loan.type.name if loan.type else 'N/A'
+                    start_date = loan.start_date.strftime('%Y-%m-%d') if loan.start_date else 'N/A'
+                    end_date = loan.end_date.strftime('%Y-%m-%d') if loan.end_date else 'N/A'
+                    amount = f'ksh {loan.amount}' if loan.amount else 'ksh 0'
+                    total_paid = f'ksh {loan.total_paid}' if loan.total_paid else 'ksh 0'
+                    balance = f'ksh {loan.balance}' if loan.balance else 'ksh 0'
+                    status = loan.status if loan.status else 'N/A'
+                    
+                    data.append([
+                        member_name,
+                        loan_type,
+                        start_date,
+                        end_date,
+                        amount,
+                        total_paid,
+                        balance,
+                        status,
+                    ])
+                except Exception as e:
+                    # If there's an error with a specific loan, add a row with error info
+                    data.append([
+                        'Error',
+                        'Error',
+                        'Error',
+                        'Error',
+                        'Error',
+                        'Error',
+                        'Error',
+                        f'Error: {str(e)[:50]}',
+                    ])
 
         table = Table(data, repeatRows=1)
         table.setStyle(TableStyle([
@@ -89,13 +165,47 @@ class DownloadService:
             ('GRID',         (0, 0), (-1, -1), 1, colors.black),
         ]))
 
-    
-        story = [
-            Spacer(1, 40),  # space below header
-            table
-        ]
-        doc.build(story)
-        return response
+        try:
+            story = [
+                Spacer(1, 40),  # space below header
+                table
+            ]
+            doc.build(story)
+            return response
+        except Exception as e:
+            # If there's an error building the PDF, return a simple error response
+            response = HttpResponse(content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename="loan_report_error.pdf"'
+            
+            # Create a simple error document
+            error_doc = BaseDocTemplate(
+                response,
+                pagesize=letter,
+                leftMargin=36, rightMargin=36,
+                topMargin=72, bottomMargin=36
+            )
+            error_frame = Frame(
+                error_doc.leftMargin, error_doc.bottomMargin,
+                error_doc.width, error_doc.height,
+                id='normal'
+            )
+            
+            def draw_pdf_error_header(canvas, doc):
+                canvas.saveState()
+                canvas.setFont('Times-Bold', 16)
+                canvas.drawCentredString(letter[0]/2, letter[1]-40, "PDF Generation Error")
+                canvas.setFont('Times-Roman', 12)
+                canvas.drawCentredString(letter[0]/2, letter[1]-60, f"Error: {str(e)}")
+                canvas.restoreState()
+            
+            error_doc.addPageTemplates([
+                PageTemplate(id='WithHeader', frames=error_frame, onPage=draw_pdf_error_header)
+            ])
+            
+            error_data = [['Error Type', 'Description'], ['PDF Generation Error', str(e)[:100]]]
+            error_table = Table(error_data)
+            error_doc.build([Spacer(1, 40), error_table])
+            return response
     
     @staticmethod
     def download_loan_repayment_schedule(chama_id, member_id=None):

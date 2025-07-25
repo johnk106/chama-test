@@ -1228,8 +1228,20 @@ def reports(request,chama_id):
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_loan_report(request, chama_id):
-    
-    return DownloadService.download_loan_report(request,chama_id)
+    try:
+        return DownloadService.download_loan_report(request, chama_id)
+    except Exception as e:
+        # Log the error and return a JSON error response
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error downloading loan report for chama {chama_id}: {str(e)}")
+        
+        # Return an error response that the frontend can handle
+        from django.http import JsonResponse
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Failed to generate loan report: {str(e)}'
+        }, status=500)
 
 
 

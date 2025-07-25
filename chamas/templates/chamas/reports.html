@@ -977,10 +977,29 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 })
                 .then(response => {
-                    if (!response.ok) throw new Error('Network response was not ok');
+                    if (!response.ok) {
+                        // Check if it's a JSON error response
+                        if (response.headers.get('content-type')?.includes('application/json')) {
+                            return response.json().then(errorData => {
+                                throw new Error(errorData.message || `Server error: ${response.status}`);
+                            });
+                        } else {
+                            throw new Error(`Network response was not ok: ${response.status}`);
+                        }
+                    }
                     return response.blob();
                 })
                 .then(blob => {
+                    // Check if the blob is actually a PDF or an error response
+                    if (blob.type === 'application/json') {
+                        // It's a JSON error response, not a PDF
+                        blob.text().then(text => {
+                            const errorData = JSON.parse(text);
+                            alert(`Error generating report: ${errorData.message}`);
+                        });
+                        return;
+                    }
+                    
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.style.display = 'none';
@@ -990,7 +1009,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     a.click();
                     window.URL.revokeObjectURL(url);
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error => {
+                    console.error('Download Error:', error);
+                    alert(`Failed to download report: ${error.message}`);
+                });
             });
         }
     });
