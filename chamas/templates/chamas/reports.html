@@ -710,9 +710,18 @@
                                 <div class="filter-field">
                                     <label for="member-contribution-owner" class="field-label">Select Member</label>
                                     <select class="field-input" id="member-contribution-owner">
-                                        <option value="" disabled selected>Select Member</option>
+                                        <option value="" selected>All Members</option>
                                         {%for member in members%}
                                         <option value="{{member.id}}">{{member.name}}</option>
+                                        {%endfor%}
+                                    </select>
+                                </div>
+                                <div class="filter-field">
+                                    <label for="member-contribution-scheme" class="field-label">Contribution Scheme</label>
+                                    <select class="field-input" id="member-contribution-scheme">
+                                        <option value="" selected>All Schemes</option>
+                                        {%for contribution in contributions%}
+                                        <option value="{{contribution.id}}">{{contribution.name}}</option>
                                         {%endfor%}
                                     </select>
                                 </div>
@@ -729,9 +738,9 @@
                         <div class="report-data brand-card-body">
                             <div id="member-contributions-items" class="data-container">
                                 <div class="empty-state">
-                                    <i class="bx bx-file-blank empty-state-icon"></i>
-                                    <p class="empty-state-message">Nothing to show</p>
-                                    <p class="empty-state-description">No member contribution details available for the selected period</p>
+                                    <i class="bx bx-loader-alt bx-spin empty-state-icon"></i>
+                                    <p class="empty-state-message">Loading...</p>
+                                    <p class="empty-state-description">Loading member contribution data</p>
                                 </div>
                             </div>
                         </div>
@@ -945,6 +954,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     } else if (selector.includes('repayment')) {
                         const memberSelect = document.querySelector('#repayment-owner');
                         memberId = memberSelect?.value;
+                    } else if (selector.includes('member-contributions')) {
+                        const memberSelect = document.querySelector('#member-contribution-owner');
+                        memberId = memberSelect?.value;
                     }
                     
                     // For member cashflow report, use the URL pattern with member_id
@@ -957,6 +969,16 @@ document.addEventListener('DOMContentLoaded', function () {
                                 url += `?member_id=${memberId}`;
                             }
                             // If no member selected, download all repayment schedules
+                        } else if (selector.includes('member-contributions')) {
+                            // For member contributions, both member and scheme are optional
+                            const schemeId = document.getElementById('member-contribution-scheme')?.value;
+                            let params = [];
+                            if (memberId) params.push(`member_id=${memberId}`);
+                            if (schemeId) params.push(`scheme_id=${schemeId}`);
+                            if (params.length > 0) {
+                                url += `?${params.join('&')}`;
+                            }
+                            // If no filters selected, download all contributions
                         } else {
                             // For other reports, member selection is required
                             if (memberId) {
@@ -1353,6 +1375,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load all loan repayment schedule data initially
     filterLoanRepaymentSchedule();
     
+    // Load all member contributions data initially
+    filterMemberContributions();
+    
     // Add event listeners for filter interactions
     setupFilterListeners();
 });
@@ -1447,6 +1472,51 @@ function setupFilterListeners() {
              filterLoanRepaymentSchedule(memberId, startDate, this.value);
          });
      }
+     
+     // Member contributions filtering
+     const memberContributionOwnerSelect = document.getElementById('member-contribution-owner');
+     if (memberContributionOwnerSelect) {
+         memberContributionOwnerSelect.addEventListener('change', function() {
+             const schemeId = document.getElementById('member-contribution-scheme')?.value || null;
+             const startDate = document.getElementById('member-contributions-start')?.value;
+             const endDate = document.getElementById('member-contributions-end')?.value;
+             const memberId = this.value || null;
+             filterMemberContributions(memberId, schemeId, startDate, endDate);
+         });
+     }
+     
+     const memberContributionSchemeSelect = document.getElementById('member-contribution-scheme');
+     if (memberContributionSchemeSelect) {
+         memberContributionSchemeSelect.addEventListener('change', function() {
+             const memberId = document.getElementById('member-contribution-owner')?.value || null;
+             const startDate = document.getElementById('member-contributions-start')?.value;
+             const endDate = document.getElementById('member-contributions-end')?.value;
+             const schemeId = this.value || null;
+             filterMemberContributions(memberId, schemeId, startDate, endDate);
+         });
+     }
+     
+     // Member contributions date filters
+     const memberContributionsStartDate = document.getElementById('member-contributions-start');
+     const memberContributionsEndDate = document.getElementById('member-contributions-end');
+     
+     if (memberContributionsStartDate) {
+         memberContributionsStartDate.addEventListener('change', function() {
+             const memberId = document.getElementById('member-contribution-owner')?.value || null;
+             const schemeId = document.getElementById('member-contribution-scheme')?.value || null;
+             const endDate = document.getElementById('member-contributions-end')?.value;
+             filterMemberContributions(memberId, schemeId, this.value, endDate);
+         });
+     }
+     
+     if (memberContributionsEndDate) {
+         memberContributionsEndDate.addEventListener('change', function() {
+             const memberId = document.getElementById('member-contribution-owner')?.value || null;
+             const schemeId = document.getElementById('member-contribution-scheme')?.value || null;
+             const startDate = document.getElementById('member-contributions-start')?.value;
+             filterMemberContributions(memberId, schemeId, startDate, this.value);
+         });
+     }
 }
 
 // Function to filter individual savings by member
@@ -1533,6 +1603,111 @@ function filterMemberInvestmentIncome(memberId) {
             </div>
         `;
     }
+}
+
+// Function to filter member contributions with AJAX call
+function filterMemberContributions(memberId = null, schemeId = null, startDate = null, endDate = null) {
+    const container = document.getElementById('member-contributions-items');
+    const chamaId = localStorage.getItem('groupId');
+    
+    // Show loading state
+    if (container) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-loader-alt bx-spin empty-state-icon"></i>
+                <p class="empty-state-message">Loading...</p>
+                <p class="empty-state-description">Fetching member contribution data</p>
+            </div>
+        `;
+    }
+    
+    // Build query parameters
+    let params = new URLSearchParams();
+    if (memberId) params.append('member_id', memberId);
+    if (schemeId) params.append('scheme_id', schemeId);
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    
+    // Make AJAX request
+    fetch(`/chamas-bookeeping/get-member-contributions-data/${chamaId}/?${params.toString()}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success' && data.data.length > 0) {
+            // Show member and scheme columns based on filters
+            const showMemberColumn = !memberId;
+            const showSchemeColumn = !schemeId;
+            
+            container.innerHTML = `
+                <div class="brand-table-responsive">
+                    <table class="brand-table">
+                        <thead>
+                            <tr>
+                                ${showMemberColumn ? '<th>Member</th>' : ''}
+                                ${showSchemeColumn ? '<th>Scheme</th>' : ''}
+                                <th>Expected</th>
+                                <th>Paid</th>
+                                <th>Balance</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.data.map(item => `
+                                <tr>
+                                    ${showMemberColumn ? `<td>${item.member_name || 'N/A'}</td>` : ''}
+                                    ${showSchemeColumn ? `<td>${item.scheme_name || 'N/A'}</td>` : ''}
+                                    <td class="text-brand-primary">Ksh ${item.amount_expected?.toLocaleString() || '0'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.amount_paid?.toLocaleString() || '0'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.balance?.toLocaleString() || '0'}</td>
+                                    <td><span class="status-badge ${item.payment_status.toLowerCase().replace(' ', '-')}">${item.payment_status || 'N/A'}</span></td>
+                                    <td>${item.date_created || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            // Store current filtered data for download
+            window.currentMemberContributionsData = {
+                memberId: memberId,
+                schemeId: schemeId,
+                data: data.data,
+                startDate: startDate,
+                endDate: endDate
+            };
+        } else {
+            const emptyMessage = memberId || schemeId
+                ? `No contribution data available for the selected ${memberId ? 'member' : 'scheme'}${startDate || endDate ? ' in the specified date range' : ''}`
+                : `No member contribution data available${startDate || endDate ? ' in the specified date range' : ''}`;
+                
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="bx bx-file-blank empty-state-icon"></i>
+                    <p class="empty-state-message">No contributions found</p>
+                    <p class="empty-state-description">${emptyMessage}</p>
+                </div>
+            `;
+            window.currentMemberContributionsData = null;
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching member contributions:', error);
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-error empty-state-icon"></i>
+                <p class="empty-state-message">Error loading data</p>
+                <p class="empty-state-description">Failed to fetch contribution data. Please try again.</p>
+            </div>
+        `;
+        window.currentMemberContributionsData = null;
+    });
 }
 
 // Function to filter loan repayment schedule with AJAX call

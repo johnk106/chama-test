@@ -763,92 +763,180 @@ class DownloadService:
         return response
     
     @staticmethod
-    def download_member_contribution_report(chama_id,member_id,scheme_id):
-        # 1) Retrieve Chama and Member
-        chama  = Chama.objects.get(pk=chama_id)
-        member = ChamaMember.objects.get(pk=member_id)
+    def download_member_contribution_report(chama_id, member_id=None, scheme_id=None):
+        try:
+            # 1) Retrieve Chama
+            chama = Chama.objects.get(pk=chama_id)
+            
+            # 2) Build filters for contributions
+            filters = {'chama': chama}
+            
+            if member_id:
+                member = ChamaMember.objects.get(pk=member_id)
+                filters['member'] = member
+                
+            if scheme_id:
+                contribution = Contribution.objects.get(pk=scheme_id)
+                filters['contribution'] = contribution
+                
+            # Get contribution records
+            contributions = ContributionRecord.objects.filter(**filters).order_by('-date_created')
 
-        # 2) Collect this member's contributions
-        contribution = Contribution.objects.filter(chama=chama,id=scheme_id).first()
-        contributions = []
+            # 3) Prepare PDF response
+            response = HttpResponse(content_type='application/pdf')
+            
+            # Generate filename based on filters
+            filename_parts = [chama.name.replace(' ', '_')]
+            if member_id:
+                member = ChamaMember.objects.get(pk=member_id)
+                filename_parts.append(member.name.replace(' ', '_'))
+            if scheme_id:
+                contribution = Contribution.objects.get(pk=scheme_id)
+                filename_parts.append(contribution.name.replace(' ', '_'))
+            filename_parts.append('contribution_report.pdf')
+            
+            response['Content-Disposition'] = (
+                f'attachment; filename="{"_".join(filename_parts)}"'
+            )
 
-        for contrib in contribution.records.all():
-            if contrib.member == member:
-                contributions.append(contrib)
-
-        # 3) Prepare PDF response
-        response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = (
-            f'attachment; filename="{chama.name}_{member.name}_contribution_report.pdf"'
-        )
-
-        # 4) Setup BaseDocTemplate with header on each page
-        doc = BaseDocTemplate(
+            # 4) Setup BaseDocTemplate with header on each page
+            doc = BaseDocTemplate(
             response,
             pagesize=letter,
             leftMargin=36, rightMargin=36,
             topMargin=72, bottomMargin=36
-        )
-        frame = Frame(
-            doc.leftMargin, doc.bottomMargin,
-            doc.width, doc.height,
-            id='normal'
-        )
-
-        # Header callback
-        def draw_header(canvas, doc):
-            canvas.saveState()
-            # Title line
-            canvas.setFont('Times-Bold', 14)
-            canvas.drawCentredString(
-                letter[0]/2, letter[1] - 40,
-                f"Member Contribution Report - {member.name} - for '{contribution.name}'"
             )
-            # Date line
-            canvas.setFont('Times-Roman', 10)
-            canvas.drawCentredString(
-                letter[0]/2, letter[1] - 55,
-                datetime.now().strftime('%Y-%m-%d')
+            frame = Frame(
+                doc.leftMargin, doc.bottomMargin,
+                doc.width, doc.height,
+                id='normal'
             )
-            canvas.restoreState()
 
-        doc.addPageTemplates([
-            PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
-        ])
+            # Header callback
+            def draw_header(canvas, doc):
+                canvas.saveState()
+                # Title line
+                canvas.setFont('Times-Bold', 14)
+                title = "Member Contribution Report"
+                if member_id:
+                    member = ChamaMember.objects.get(pk=member_id)
+                    title += f" - {member.name}"
+                if scheme_id:
+                    contribution = Contribution.objects.get(pk=scheme_id)
+                    title += f" - {contribution.name}"
+                canvas.drawCentredString(
+                    letter[0]/2, letter[1] - 40,
+                    title
+                )
+                # Date line
+                canvas.setFont('Times-Roman', 10)
+                canvas.drawCentredString(
+                    letter[0]/2, letter[1] - 55,
+                    datetime.now().strftime('%Y-%m-%d')
+                )
+                canvas.restoreState()
 
-        # 5) Build table data
-        data = [[
-            'Name', 'Contribution Type', 'Date',
-            'Expected Amount', 'Amount Paid', 'Balance'
-        ]]
-        for contrib in contributions:
-            data.append([
-                contrib.member.name,
-                contrib.contribution.name,
-                contrib.date_created.strftime('%Y-%m-%d'),
-                f'ksh {contrib.amount_expected}',
-                f'ksh {contrib.amount_paid}',
-                f'ksh {contrib.balance}'
+            doc.addPageTemplates([
+                PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
             ])
 
-        # 6) Create table with repeating header row
-        table = Table(data, repeatRows=1)
-        table.setStyle(TableStyle([
-            ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
-            ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
-            ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
-            ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
-            ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
-            ('GRID',         (0, 0), (-1, -1), 1, colors.black),
-        ]))
+            # 5) Build table data
+            if member_id and scheme_id:
+                # For specific member and scheme, don't show member and scheme columns
+                data = [['Date', 'Expected Amount', 'Amount Paid', 'Balance', 'Status']]
+            elif member_id:
+                # For specific member, don't show member column
+                data = [['Scheme', 'Date', 'Expected Amount', 'Amount Paid', 'Balance', 'Status']]
+            elif scheme_id:
+                # For specific scheme, don't show scheme column
+                data = [['Member', 'Date', 'Expected Amount', 'Amount Paid', 'Balance', 'Status']]
+            else:
+                # Show all columns
+                data = [['Member', 'Scheme', 'Date', 'Expected Amount', 'Amount Paid', 'Balance', 'Status']]
+            
+            # Check if there are contributions
+            if not contributions.exists():
+                # Add empty row
+                empty_row = ['No contributions found'] + ['-'] * (len(data[0]) - 1)
+                data.append(empty_row)
+            else:
+                for contrib in contributions:
+                    try:
+                        member_name = contrib.member.name if contrib.member else 'N/A'
+                        scheme_name = contrib.contribution.name if contrib.contribution else 'N/A'
+                        date_created = contrib.date_created.strftime('%Y-%m-%d') if contrib.date_created else 'N/A'
+                        amount_expected = f'ksh {contrib.amount_expected}' if contrib.amount_expected else 'ksh 0'
+                        amount_paid = f'ksh {contrib.amount_paid}' if contrib.amount_paid else 'ksh 0'
+                        balance = f'ksh {contrib.balance}' if contrib.balance else 'ksh 0'
+                        status = 'Fully Paid' if contrib.balance <= 0 else 'Partial' if contrib.amount_paid > 0 else 'Unpaid'
+                        
+                        if member_id and scheme_id:
+                            row = [date_created, amount_expected, amount_paid, balance, status]
+                        elif member_id:
+                            row = [scheme_name, date_created, amount_expected, amount_paid, balance, status]
+                        elif scheme_id:
+                            row = [member_name, date_created, amount_expected, amount_paid, balance, status]
+                        else:
+                            row = [member_name, scheme_name, date_created, amount_expected, amount_paid, balance, status]
+                        
+                        data.append(row)
+                    except Exception as e:
+                        # Add error row
+                        error_row = ['Error'] + [f'Error: {str(e)[:20]}'] * (len(data[0]) - 1)
+                        data.append(error_row)
 
-        # 7) Build story
-        story = [
-            Spacer(1, 40),
-            table
-        ]
-        doc.build(story)
-        return response
+            # 6) Create table with repeating header row
+            table = Table(data, repeatRows=1)
+            table.setStyle(TableStyle([
+                ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
+                ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
+                ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
+                ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
+                ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
+                ('GRID',         (0, 0), (-1, -1), 1, colors.black),
+            ]))
+
+            # 7) Build story
+            story = [
+                Spacer(1, 40),
+                table
+            ]
+            doc.build(story)
+            return response
+            
+        except Exception as e:
+            # Return error PDF if something goes wrong
+            response = HttpResponse(content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename="contribution_report_error.pdf"'
+            
+            error_doc = BaseDocTemplate(
+                response,
+                pagesize=letter,
+                leftMargin=36, rightMargin=36,
+                topMargin=72, bottomMargin=36
+            )
+            error_frame = Frame(
+                error_doc.leftMargin, error_doc.bottomMargin,
+                error_doc.width, error_doc.height,
+                id='normal'
+            )
+            
+            def draw_error_header(canvas, doc):
+                canvas.saveState()
+                canvas.setFont('Times-Bold', 16)
+                canvas.drawCentredString(letter[0]/2, letter[1]-40, "Error Generating Report")
+                canvas.setFont('Times-Roman', 12)
+                canvas.drawCentredString(letter[0]/2, letter[1]-60, f"Error: {str(e)}")
+                canvas.restoreState()
+            
+            error_doc.addPageTemplates([
+                PageTemplate(id='WithHeader', frames=error_frame, onPage=draw_error_header)
+            ])
+            
+            error_data = [['Error Type', 'Description'], ['Contribution Report Error', str(e)[:100]]]
+            error_table = Table(error_data)
+            error_doc.build([Spacer(1, 40), error_table])
+            return response
     
     @staticmethod
     def download_collected_fine_report(chama_id):

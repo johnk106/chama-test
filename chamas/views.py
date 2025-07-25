@@ -1289,8 +1289,25 @@ def download_group_contributions_report(request, chama_id,contribution_id):
 
 @login_required(login_url='/user/Login')
 @is_user_chama_member
-def download_member_contribution_report(request, chama_id, member_id,scheme_id):
-    return DownloadService.download_member_contribution_report(chama_id,member_id,scheme_id)
+def download_member_contribution_report(request, chama_id, member_id=None, scheme_id=None):
+    # Get parameters from URL path or query string
+    if member_id is None:
+        member_id = request.GET.get('member_id')
+    if scheme_id is None:
+        scheme_id = request.GET.get('scheme_id')
+        
+    try:
+        return DownloadService.download_member_contribution_report(chama_id, member_id, scheme_id)
+    except Exception as e:
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error downloading member contribution report for chama {chama_id}: {str(e)}")
+        
+        from django.http import JsonResponse
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Failed to generate contribution report: {str(e)}'
+        }, status=500)
     
 
 
@@ -1518,6 +1535,74 @@ def get_loan_repayment_schedule(request, chama_id):
                     'status': loan.status,
                     'monthly_payment': round(monthly_payment, 2),
                     'applied_on': loan.applied_on.strftime('%Y-%m-%d') if loan.applied_on else 'N/A'
+                })
+                
+            return JsonResponse({
+                'status': 'success',
+                'data': data,
+                'count': len(data)
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            })
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def get_member_contributions_data(request, chama_id):
+    """
+    AJAX endpoint to get member contributions data for filtering
+    """
+    if request.method == 'GET':
+        member_id = request.GET.get('member_id')
+        scheme_id = request.GET.get('scheme_id')
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+        
+        try:
+            chama = Chama.objects.get(pk=chama_id)
+            
+            # Build query filters
+            filters = {'chama': chama}
+            
+            # Filter by member if specified
+            if member_id:
+                member = ChamaMember.objects.get(pk=member_id)
+                filters['member'] = member
+                
+            # Filter by contribution scheme if specified
+            if scheme_id:
+                contribution = Contribution.objects.get(pk=scheme_id)
+                filters['contribution'] = contribution
+                
+            if start_date:
+                filters['date_created__gte'] = start_date
+            if end_date:
+                filters['date_created__lte'] = end_date
+                
+            # Get contribution records
+            contributions = ContributionRecord.objects.filter(**filters).order_by('-date_created')
+            
+            # Format data for JSON response
+            data = []
+            for contrib in contributions:
+                data.append({
+                    'id': contrib.id,
+                    'member_name': contrib.member.name if contrib.member else 'N/A',
+                    'member_id': contrib.member.id if contrib.member else None,
+                    'scheme_name': contrib.contribution.name if contrib.contribution else 'N/A',
+                    'scheme_id': contrib.contribution.id if contrib.contribution else None,
+                    'amount_expected': float(contrib.amount_expected) if contrib.amount_expected else 0,
+                    'amount_paid': float(contrib.amount_paid) if contrib.amount_paid else 0,
+                    'balance': float(contrib.balance) if contrib.balance else 0,
+                    'date_created': contrib.date_created.strftime('%Y-%m-%d') if contrib.date_created else 'N/A',
+                    'last_updated': contrib.last_updated.strftime('%Y-%m-%d') if contrib.last_updated else 'N/A',
+                    'payment_status': 'Fully Paid' if contrib.balance <= 0 else 'Partial' if contrib.amount_paid > 0 else 'Unpaid'
                 })
                 
             return JsonResponse({
