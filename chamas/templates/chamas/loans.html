@@ -124,7 +124,7 @@
                   <select id="mobile-member" name="member" class="form-input" required>
                     <option value="">Select member</option>
                     {% for member in members %}
-                    <option value="{{ member.id }}">{{ member.first_name }} {{ member.last_name }}</option>
+                    <option value="{{ member.id }}">{{ member.name }}</option>
                     {% endfor %}
                   </select>
                 </div>
@@ -189,6 +189,7 @@
                  </div>
                </div>
              </div>
+            <div id="mobile-apply-loan-feedback" class="alert" style="display: none; margin-top: 10px;"></div>
             <button type="submit" class="create-loan-btn beautiful-btn">
               Apply for Loan
             </button>
@@ -696,7 +697,7 @@
             <div class="application-beautiful-label">Application ID</div>
             <div class="application-beautiful-value">A{{application.id|stringformat:'03d'}}</div>
             <div class="application-beautiful-label">Member</div>
-            <div class="application-beautiful-value">{{application.member.first_name}}</div>
+            <div class="application-beautiful-value">{{application.member.name}}</div>
           </div>
           <div class="application-beautiful-row">
             <div class="application-beautiful-label">Amount</div>
@@ -1227,7 +1228,6 @@
               </div>
             </div>
 
-            <div id="mobile-apply-loan-feedback" class="alert" style="display: none; margin-top: 10px;"></div>
             <button class="btn btn-primary" onclick="applyLoan(event)" style="width: 100%">
               Apply
             </button>
