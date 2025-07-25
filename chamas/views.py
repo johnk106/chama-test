@@ -695,10 +695,18 @@ def expenses(request,chama_id):
     chama = Chama.objects.get(pk=chama_id)
 
     expenses = Expense.objects.filter(chama=chama).all()
+    
+    # Check if current user is admin
+    try:
+        user_membership = ChamaMember.objects.get(user=request.user, group=chama)
+        is_admin = user_membership.role and user_membership.role.name == 'admin'
+    except ChamaMember.DoesNotExist:
+        is_admin = False
   
 
     return render(request,'chamas/expenses.html',{
-        'expenses':expenses
+        'expenses':expenses,
+        'is_admin': is_admin
     })
 
 
@@ -934,7 +942,7 @@ def reports(request,chama_id):
         _group_contributions.append(contrib_data)
     group_contributions = json.dumps(_group_contributions)
     
-    chama_expenses = Paginator(Expense.objects.filter(chama=chama).order_by('-created_on'),10).page(1)
+    chama_expenses = Paginator(Expense.objects.filter(chama=chama).select_related('created_by').order_by('-created_on'),10).page(1)
     _chama_expenses = list(chama_expenses.object_list.values())
     expenses_tot = 0
     for expense in _chama_expenses:
@@ -943,9 +951,10 @@ def reports(request,chama_id):
 
         try:
             m = ChamaMember.objects.get(pk=int(expense['created_by_id']))
-            expense['created_by_id'] = m.name
+            expense['created_by_name'] = m.name  # Keep the name in a separate field
+            # Keep created_by_id as the actual ID for consistency
         except:
-            pass
+            expense['created_by_name'] = 'Unknown'
         expenses_tot += expense['amount']
     chama_expenses = json.dumps(_chama_expenses)
     

@@ -18,10 +18,15 @@
     <div class="mobile-expenses d-block d-lg-none">
         <!-- Tabs -->
         <div class="mobile-tabs">
+            {% if is_admin %}
             <button class="tab-btn admin active" data-tab="create-expenses">Create Expenses</button>
             <button class="tab-btn" data-tab="expense-history">Expense History</button>
+            {% else %}
+            <button class="tab-btn active" data-tab="expense-history">Expense History</button>
+            {% endif %}
         </div>
         <!-- Create Expenses Tab Content -->
+        {% if is_admin %}
         <div class="tab-content active" id="create-expenses">
             <div class="mobile-create-form admin">
                 <div class="create-expense-card" style="margin-top: 18px;">
@@ -53,8 +58,9 @@
                 </div>
             </div>
         </div>
+        {% endif %}
         <!-- Expense History Tab Content -->
-        <div class="tab-content" id="expense-history">
+        <div class="tab-content{% if not is_admin %} active{% endif %}" id="expense-history">
             <div class="mobile-expense-history-list">
                 {% for expense in expenses %}
                 <div class="expense-history-beautiful-card">
@@ -84,6 +90,7 @@
     <!-- Desktop View -->
     <div class="desktop-expenses d-none d-lg-block">
         <div class="row justify-content-center mt-3 text-capitalize">
+            {% if is_admin %}
             <div class="body-div admin">
                 <h5 class="mx-auto">Create Expense</h5>
                 <div class="div-header">            
@@ -109,6 +116,7 @@
                     <button class="btn btn-primary border-0" type="submit" style="width: 100%;">Create Expense</button>
                 </form>     
             </div>
+            {% endif %}
             <div class="body-div admin member">
                 <h5 class="mx-auto">All Expenses</h5>
                 <div class="div-header">

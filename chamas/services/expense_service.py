@@ -14,10 +14,21 @@ class ExpenseService:
         amount = data.get('amount')
         description = data.get('description')
 
-        for member in chama.member.all():
-            if member.user == request.user:
-                member = member
-                print(member)
+        # Get the current user's chama membership
+        try:
+            member = ChamaMember.objects.get(user=request.user, group=chama)
+        except ChamaMember.DoesNotExist:
+            return JsonResponse({
+                'status': 'failed',
+                'message': 'You are not a member of this chama'
+            }, status=403)
+
+        # Check if the member is an admin
+        if not member.role or member.role.name != 'admin':
+            return JsonResponse({
+                'status': 'failed',
+                'message': 'Only chama admins can create expenses'
+            }, status=403)
 
         try:
             new_expense = Expense.objects.create(
@@ -50,5 +61,5 @@ class ExpenseService:
                'status':'failed',
                'message':f'an error occurred:{e}' 
             }
-            return JsonResponse(data,status=200)
+            return JsonResponse(data,status=500)
 

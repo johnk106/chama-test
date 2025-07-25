@@ -1413,7 +1413,7 @@ function populateReportData() {
                             ${reportData.expenses.map(item => `
                                 <tr>
                                     <td>${item.name || 'N/A'}</td>
-                                    <td>${item.created_by_id || 'N/A'}</td>
+                                    <td>${item.created_by_name || 'N/A'}</td>
                                     <td class="text-brand-primary">Ksh ${item.amount?.toLocaleString() || '0'}</td>
                                     <td>${item.created_on || 'N/A'}</td>
                                 </tr>
