@@ -1327,14 +1327,14 @@ def download_member_contribution_report(request, chama_id, member_id=None, schem
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_collected_fine_report(request, chama_id):
-    return DownloadService.download_collected_fine_report(chama_id)
+    return DownloadService.download_collected_fine_report(request, chama_id)
     
 
 
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_uncollected_fines_report(request, chama_id):
-    return DownloadService.download_uncollected_fines_report(chama_id)
+    return DownloadService.download_uncollected_fines_report(request, chama_id)
     
 
 @login_required(login_url='/user/Login')
@@ -1960,6 +1960,120 @@ def get_my_saving_data(request, chama_id):
                     'amount': float(saving.amount),
                     'date': saving.date.strftime('%Y-%m-%d'),
                     'created_date': saving.date.strftime('%Y-%m-%d %H:%M:%S')
+                })
+                
+            return JsonResponse({
+                'status': 'success',
+                'data': data,
+                'count': len(data)
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            })
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def get_collected_fines_data(request, chama_id):
+    """AJAX endpoint to get filtered collected fines data"""
+    if request.method == 'GET':
+        try:
+            chama = Chama.objects.get(pk=chama_id)
+            
+            # Get filter parameters
+            start_date = request.GET.get('start_date')
+            end_date = request.GET.get('end_date')
+            
+            # Base queryset for collected fines (status = 'cleared')
+            queryset = FineItem.objects.filter(fine_type__chama=chama, status='cleared').select_related('member', 'fine_type')
+            
+            # Apply date filters
+            if start_date:
+                queryset = queryset.filter(created__date__gte=start_date)
+            if end_date:
+                queryset = queryset.filter(created__date__lte=end_date)
+            
+            # Order by most recent
+            queryset = queryset.order_by('-created')
+            
+            # Build response data
+            data = []
+            for fine in queryset:
+                data.append({
+                    'id': fine.id,
+                    'member_name': fine.member.name if fine.member else 'N/A',
+                    'member_id': fine.member.id if fine.member else None,
+                    'fine_type_name': fine.fine_type.name if fine.fine_type else 'N/A',
+                    'fine_type_id': fine.fine_type.id if fine.fine_type else None,
+                    'fine_amount': float(fine.fine_amount),
+                    'paid_fine_amount': float(fine.paid_fine_amount),
+                    'fine_balance': float(fine.fine_balance),
+                    'status': fine.status,
+                    'created': fine.created.strftime('%Y-%m-%d'),
+                    'created_datetime': fine.created.strftime('%Y-%m-%d %H:%M:%S'),
+                    'last_updated': fine.last_updated.strftime('%Y-%m-%d')
+                })
+                
+            return JsonResponse({
+                'status': 'success',
+                'data': data,
+                'count': len(data)
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            })
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def get_unpaid_fines_data(request, chama_id):
+    """AJAX endpoint to get filtered unpaid fines data"""
+    if request.method == 'GET':
+        try:
+            chama = Chama.objects.get(pk=chama_id)
+            
+            # Get filter parameters
+            start_date = request.GET.get('start_date')
+            end_date = request.GET.get('end_date')
+            
+            # Base queryset for unpaid fines (status = 'active')
+            queryset = FineItem.objects.filter(fine_type__chama=chama, status='active').select_related('member', 'fine_type')
+            
+            # Apply date filters
+            if start_date:
+                queryset = queryset.filter(created__date__gte=start_date)
+            if end_date:
+                queryset = queryset.filter(created__date__lte=end_date)
+            
+            # Order by most recent
+            queryset = queryset.order_by('-created')
+            
+            # Build response data
+            data = []
+            for fine in queryset:
+                data.append({
+                    'id': fine.id,
+                    'member_name': fine.member.name if fine.member else 'N/A',
+                    'member_id': fine.member.id if fine.member else None,
+                    'fine_type_name': fine.fine_type.name if fine.fine_type else 'N/A',
+                    'fine_type_id': fine.fine_type.id if fine.fine_type else None,
+                    'fine_amount': float(fine.fine_amount),
+                    'paid_fine_amount': float(fine.paid_fine_amount),
+                    'fine_balance': float(fine.fine_balance),
+                    'status': fine.status,
+                    'created': fine.created.strftime('%Y-%m-%d'),
+                    'created_datetime': fine.created.strftime('%Y-%m-%d %H:%M:%S'),
+                    'last_updated': fine.last_updated.strftime('%Y-%m-%d')
                 })
                 
             return JsonResponse({

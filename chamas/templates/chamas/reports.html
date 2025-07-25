@@ -957,6 +957,34 @@ document.addEventListener('DOMContentLoaded', function () {
                         url += `?${params.join('&')}`;
                     }
                 }
+                // Handle collected fines download with date filters
+                else if (selector.includes('collected-fines')) {
+                    const startDateInput = document.querySelector('#collected-fines-start');
+                    const endDateInput = document.querySelector('#collected-fines-end');
+                    const startDate = startDateInput?.value;
+                    const endDate = endDateInput?.value;
+                    
+                    let params = [];
+                    if (startDate) params.push(`start_date=${startDate}`);
+                    if (endDate) params.push(`end_date=${endDate}`);
+                    if (params.length > 0) {
+                        url += `?${params.join('&')}`;
+                    }
+                }
+                // Handle unpaid fines download with date filters
+                else if (selector.includes('unpaid-fines')) {
+                    const startDateInput = document.querySelector('#unpaid-fines-start');
+                    const endDateInput = document.querySelector('#unpaid-fines-end');
+                    const startDate = startDateInput?.value;
+                    const endDate = endDateInput?.value;
+                    
+                    let params = [];
+                    if (startDate) params.push(`start_date=${startDate}`);
+                    if (endDate) params.push(`end_date=${endDate}`);
+                    if (params.length > 0) {
+                        url += `?${params.join('&')}`;
+                    }
+                }
                 // Handle personal investment income download with date filters
                 else if (selector.includes('my-investment')) {
                     const startDateInput = document.querySelector('#my-incomes-start');
@@ -1472,6 +1500,10 @@ document.addEventListener('DOMContentLoaded', function() {
     filterIndividualSavings();
     filterGroupSavings();
     
+    // Load fines data initially
+    filterCollectedFines();
+    filterUnpaidFines();
+    
     // Add event listeners for filter interactions
     setupFilterListeners();
 });
@@ -1524,6 +1556,42 @@ function setupFilterListeners() {
         groupSavingEndDate.addEventListener('change', function() {
             const startDate = document.getElementById('group-saving-start')?.value;
             filterGroupSavings(startDate, this.value);
+        });
+    }
+    
+    // Collected fines date filters
+    const collectedFinesStartDate = document.getElementById('collected-fines-start');
+    const collectedFinesEndDate = document.getElementById('collected-fines-end');
+    
+    if (collectedFinesStartDate) {
+        collectedFinesStartDate.addEventListener('change', function() {
+            const endDate = document.getElementById('collected-fines-end')?.value;
+            filterCollectedFines(this.value, endDate);
+        });
+    }
+    
+    if (collectedFinesEndDate) {
+        collectedFinesEndDate.addEventListener('change', function() {
+            const startDate = document.getElementById('collected-fines-start')?.value;
+            filterCollectedFines(startDate, this.value);
+        });
+    }
+    
+    // Unpaid fines date filters
+    const unpaidFinesStartDate = document.getElementById('unpaid-fines-start');
+    const unpaidFinesEndDate = document.getElementById('unpaid-fines-end');
+    
+    if (unpaidFinesStartDate) {
+        unpaidFinesStartDate.addEventListener('change', function() {
+            const endDate = document.getElementById('unpaid-fines-end')?.value;
+            filterUnpaidFines(this.value, endDate);
+        });
+    }
+    
+    if (unpaidFinesEndDate) {
+        unpaidFinesEndDate.addEventListener('change', function() {
+            const startDate = document.getElementById('unpaid-fines-start')?.value;
+            filterUnpaidFines(startDate, this.value);
         });
     }
 
@@ -2621,6 +2689,196 @@ function filterGroupSavings(startDate = null, endDate = null) {
             </div>
         `;
         window.currentGroupSavingData = null;
+    });
+}
+
+// Function to filter collected fines with AJAX call
+function filterCollectedFines(startDate = null, endDate = null) {
+    const container = document.getElementById('collected-fines-items');
+    const chamaId = localStorage.getItem('groupId');
+    
+    // Show loading state
+    if (container) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-loader-alt bx-spin empty-state-icon"></i>
+                <p class="empty-state-message">Loading...</p>
+                <p class="empty-state-description">Fetching collected fines data</p>
+            </div>
+        `;
+    }
+    
+    // Build query parameters
+    let params = new URLSearchParams();
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    
+    // Make AJAX request
+    fetch(`/chamas-bookeeping/get-collected-fines-data/${chamaId}/?${params.toString()}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success' && data.data.length > 0) {
+            container.innerHTML = `
+                <div class="brand-table-responsive">
+                    <table class="brand-table">
+                        <thead>
+                            <tr>
+                                <th>Member</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Paid Amount</th>
+                                <th>Balance</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.data.map(item => `
+                                <tr>
+                                    <td>${item.member_name || 'N/A'}</td>
+                                    <td>${item.fine_type_name || 'N/A'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.fine_amount?.toLocaleString() || '0'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.paid_fine_amount?.toLocaleString() || '0'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.fine_balance?.toLocaleString() || '0'}</td>
+                                    <td>${item.created || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            // Store current filtered data for download
+            window.currentCollectedFinesData = {
+                data: data.data,
+                startDate: startDate,
+                endDate: endDate
+            };
+        } else {
+            const emptyMessage = startDate || endDate 
+                ? 'No collected fines data available in the specified date range'
+                : 'No collected fines data available';
+                
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="bx bx-file-blank empty-state-icon"></i>
+                    <p class="empty-state-message">No collected fines found</p>
+                    <p class="empty-state-description">${emptyMessage}</p>
+                </div>
+            `;
+            window.currentCollectedFinesData = null;
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching collected fines data:', error);
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-error empty-state-icon"></i>
+                <p class="empty-state-message">Error loading data</p>
+                <p class="empty-state-description">Failed to fetch collected fines data. Please try again.</p>
+            </div>
+        `;
+        window.currentCollectedFinesData = null;
+    });
+}
+
+// Function to filter unpaid fines with AJAX call
+function filterUnpaidFines(startDate = null, endDate = null) {
+    const container = document.getElementById('unpaid-fines-items');
+    const chamaId = localStorage.getItem('groupId');
+    
+    // Show loading state
+    if (container) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-loader-alt bx-spin empty-state-icon"></i>
+                <p class="empty-state-message">Loading...</p>
+                <p class="empty-state-description">Fetching unpaid fines data</p>
+            </div>
+        `;
+    }
+    
+    // Build query parameters
+    let params = new URLSearchParams();
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    
+    // Make AJAX request
+    fetch(`/chamas-bookeeping/get-unpaid-fines-data/${chamaId}/?${params.toString()}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success' && data.data.length > 0) {
+            container.innerHTML = `
+                <div class="brand-table-responsive">
+                    <table class="brand-table">
+                        <thead>
+                            <tr>
+                                <th>Member</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Paid Amount</th>
+                                <th>Balance</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.data.map(item => `
+                                <tr>
+                                    <td>${item.member_name || 'N/A'}</td>
+                                    <td>${item.fine_type_name || 'N/A'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.fine_amount?.toLocaleString() || '0'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.paid_fine_amount?.toLocaleString() || '0'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.fine_balance?.toLocaleString() || '0'}</td>
+                                    <td>${item.created || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            // Store current filtered data for download
+            window.currentUnpaidFinesData = {
+                data: data.data,
+                startDate: startDate,
+                endDate: endDate
+            };
+        } else {
+            const emptyMessage = startDate || endDate 
+                ? 'No unpaid fines data available in the specified date range'
+                : 'No unpaid fines data available';
+                
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="bx bx-file-blank empty-state-icon"></i>
+                    <p class="empty-state-message">No unpaid fines found</p>
+                    <p class="empty-state-description">${emptyMessage}</p>
+                </div>
+            `;
+            window.currentUnpaidFinesData = null;
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching unpaid fines data:', error);
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-error empty-state-icon"></i>
+                <p class="empty-state-message">Error loading data</p>
+                <p class="empty-state-description">Failed to fetch unpaid fines data. Please try again.</p>
+            </div>
+        `;
+        window.currentUnpaidFinesData = null;
     });
 }
 </script>

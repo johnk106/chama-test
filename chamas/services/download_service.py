@@ -1185,11 +1185,22 @@ class DownloadService:
             return response
     
     @staticmethod
-    def download_collected_fine_report(chama_id):
+    def download_collected_fine_report(request, chama_id):
         # 1) Fetch Chama and cleared fines
         chama = Chama.objects.get(pk=chama_id)
-        # Pull all fines with status 'cleared' in a single queryset
+        start_date = request.GET.get('start_date', None)
+        end_date = request.GET.get('end_date', None)
+        
+        # Base queryset for cleared fines
         fines = FineItem.objects.filter(fine_type__chama=chama, status='cleared')
+        
+        # Apply date filters
+        if start_date:
+            fines = fines.filter(created__date__gte=start_date)
+        if end_date:
+            fines = fines.filter(created__date__lte=end_date)
+            
+        fines = fines.order_by('-created')
 
         # 2) Prepare PDF response & BaseDocTemplate
         response = HttpResponse(content_type='application/pdf')
@@ -1272,10 +1283,22 @@ class DownloadService:
         return response
     
     @staticmethod
-    def download_uncollected_fines_report(chama_id):
+    def download_uncollected_fines_report(request, chama_id):
         # 1) Fetch Chama and active fines
         chama = Chama.objects.get(pk=chama_id)
+        start_date = request.GET.get('start_date', None)
+        end_date = request.GET.get('end_date', None)
+        
+        # Base queryset for active fines
         fines = FineItem.objects.filter(fine_type__chama=chama, status='active')
+        
+        # Apply date filters
+        if start_date:
+            fines = fines.filter(created__date__gte=start_date)
+        if end_date:
+            fines = fines.filter(created__date__lte=end_date)
+            
+        fines = fines.order_by('-created')
 
         # 2) Prepare PDF response & BaseDocTemplate
         response = HttpResponse(content_type='application/pdf')
