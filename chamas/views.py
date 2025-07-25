@@ -1236,7 +1236,8 @@ def download_loan_report(request, chama_id):
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_loan_repayment_schedule(request, chama_id):
-    return DownloadService.download_loan_repayment_schedule(chama_id)
+    member_id = request.GET.get('member_id')
+    return DownloadService.download_loan_repayment_schedule(chama_id, member_id)
     
 
     
@@ -1421,6 +1422,90 @@ def get_member_cashflow_data(request, chama_id):
                     'amount': float(report.amount),
                     'object_date': report.object_date.strftime('%Y-%m-%d'),
                     'date_created': report.date_created.strftime('%Y-%m-%d')
+                })
+                
+            return JsonResponse({
+                'status': 'success',
+                'data': data,
+                'count': len(data)
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            })
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def get_loan_repayment_schedule(request, chama_id):
+    """
+    AJAX endpoint to get loan repayment schedule data for filtering
+    """
+    if request.method == 'GET':
+        member_id = request.GET.get('member_id')
+        member_name = request.GET.get('member_name')
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+        
+        try:
+            chama = Chama.objects.get(pk=chama_id)
+            
+            # Build query filters
+            filters = {'chama': chama}
+            
+            # Filter by member if specified (by ID or name)
+            if member_id:
+                member = ChamaMember.objects.get(pk=member_id)
+                filters['member'] = member
+            elif member_name:
+                member = ChamaMember.objects.get(name=member_name, group=chama)
+                filters['member'] = member
+                
+            # Only get approved/active loans for repayment schedule
+            filters['status__in'] = ['approved', 'active', 'partially_paid']
+                
+            if start_date:
+                filters['start_date__gte'] = start_date
+            if end_date:
+                filters['end_date__lte'] = end_date
+                
+            # Get loan items
+            loans = LoanItem.objects.filter(**filters).order_by('-applied_on')
+            
+            # Format data for JSON response
+            data = []
+            for loan in loans:
+                # Calculate repayment details
+                monthly_payment = 0
+                if loan.schedule == 'monthly' and loan.total_amount_to_be_paid:
+                    # Calculate months between start and end date
+                    if loan.start_date and loan.end_date:
+                        months = ((loan.end_date.year - loan.start_date.year) * 12 + 
+                                loan.end_date.month - loan.start_date.month)
+                        if months > 0:
+                            monthly_payment = float(loan.total_amount_to_be_paid) / months
+                
+                data.append({
+                    'id': loan.id,
+                    'member_name': loan.member.name if loan.member else 'N/A',
+                    'member_id': loan.member.id if loan.member else None,
+                    'loan_type': loan.type.name if loan.type else 'N/A',
+                    'amount': float(loan.amount) if loan.amount else 0,
+                    'total_amount_to_be_paid': float(loan.total_amount_to_be_paid) if loan.total_amount_to_be_paid else 0,
+                    'balance': float(loan.balance) if loan.balance else 0,
+                    'total_paid': float(loan.total_paid) if loan.total_paid else 0,
+                    'interest_rate': loan.intrest_rate if loan.intrest_rate else 0,
+                    'start_date': loan.start_date.strftime('%Y-%m-%d') if loan.start_date else 'N/A',
+                    'end_date': loan.end_date.strftime('%Y-%m-%d') if loan.end_date else 'N/A',
+                    'next_due': loan.next_due.strftime('%Y-%m-%d') if loan.next_due else 'N/A',
+                    'schedule': loan.schedule,
+                    'status': loan.status,
+                    'monthly_payment': round(monthly_payment, 2),
+                    'applied_on': loan.applied_on.strftime('%Y-%m-%d') if loan.applied_on else 'N/A'
                 })
                 
             return JsonResponse({

@@ -98,16 +98,26 @@ class DownloadService:
         return response
     
     @staticmethod
-    def download_loan_repayment_schedule(chama_id):
+    def download_loan_repayment_schedule(chama_id, member_id=None):
         # 1) Fetch Chama and active Loans
         chama = Chama.objects.get(pk=chama_id)
-        loans = LoanItem.objects.filter(chama=chama, status='active')
+        
+        # Filter loans by member if specified
+        filters = {'chama': chama, 'status__in': ['approved', 'active', 'partially_paid']}
+        if member_id:
+            member = ChamaMember.objects.get(pk=member_id)
+            filters['member'] = member
+            
+        loans = LoanItem.objects.filter(**filters)
 
         # 2) Prepare PDF response & BaseDocTemplate
         response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = (
-            f'attachment; filename="{chama.name}_loan_repayment_schedule.pdf"'
-        )
+        filename = f"{chama.name}_loan_repayment_schedule"
+        if member_id:
+            member = ChamaMember.objects.get(pk=member_id)
+            filename += f"_{member.name}"
+        filename += ".pdf"
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
 
         doc = BaseDocTemplate(
             response,
@@ -132,9 +142,13 @@ class DownloadService:
             )
             # Subtitle and date
             canvas.setFont('Times-Bold', 12)
+            subtitle = "Loan Repayment Schedule"
+            if member_id:
+                member = ChamaMember.objects.get(pk=member_id)
+                subtitle += f" - {member.name}"
             canvas.drawCentredString(
                 letter[0]/2, letter[1]-60,
-                "Loan Repayment Schedule"
+                subtitle
             )
             canvas.setFont('Times-Roman', 10)
             canvas.drawCentredString(
@@ -148,23 +162,47 @@ class DownloadService:
         ])
 
         # 4) Build table data & style
-        data = [[
-            'Member Name', 'Loan Type', 'Start Date',
-            'Due Date', 'Amount', 'Total Paid',
-            'Balance', 'Status', 'Repayment Term'
-        ]]
-        for loan in loans:
-            data.append([
-                loan.member.name,
-                loan.type.name,
-                loan.start_date.strftime('%Y-%m-%d'),
-                loan.end_date.strftime('%Y-%m-%d'),
-                f'ksh {loan.amount}',
-                f'ksh {loan.total_paid}',
-                f'ksh {loan.balance}',
-                loan.status,
-                loan.due,
-            ])
+        if member_id:
+            # For specific member, don't show member name column
+            data = [[
+                'Loan Type', 'Amount', 'Total to Pay', 'Total Paid',
+                'Balance', 'Start Date', 'End Date', 'Next Due', 
+                'Schedule', 'Status'
+            ]]
+            for loan in loans:
+                data.append([
+                    loan.type.name if loan.type else 'N/A',
+                    f'ksh {loan.amount}' if loan.amount else 'ksh 0',
+                    f'ksh {loan.total_amount_to_be_paid}' if loan.total_amount_to_be_paid else 'ksh 0',
+                    f'ksh {loan.total_paid}' if loan.total_paid else 'ksh 0',
+                    f'ksh {loan.balance}' if loan.balance else 'ksh 0',
+                    loan.start_date.strftime('%Y-%m-%d') if loan.start_date else 'N/A',
+                    loan.end_date.strftime('%Y-%m-%d') if loan.end_date else 'N/A',
+                    loan.next_due.strftime('%Y-%m-%d') if loan.next_due else 'N/A',
+                    loan.schedule,
+                    loan.status,
+                ])
+        else:
+            # For all members, include member name column
+            data = [[
+                'Member Name', 'Loan Type', 'Amount', 'Total to Pay', 'Total Paid',
+                'Balance', 'Start Date', 'End Date', 'Next Due', 
+                'Schedule', 'Status'
+            ]]
+            for loan in loans:
+                data.append([
+                    loan.member.name if loan.member else 'N/A',
+                    loan.type.name if loan.type else 'N/A',
+                    f'ksh {loan.amount}' if loan.amount else 'ksh 0',
+                    f'ksh {loan.total_amount_to_be_paid}' if loan.total_amount_to_be_paid else 'ksh 0',
+                    f'ksh {loan.total_paid}' if loan.total_paid else 'ksh 0',
+                    f'ksh {loan.balance}' if loan.balance else 'ksh 0',
+                    loan.start_date.strftime('%Y-%m-%d') if loan.start_date else 'N/A',
+                    loan.end_date.strftime('%Y-%m-%d') if loan.end_date else 'N/A',
+                    loan.next_due.strftime('%Y-%m-%d') if loan.next_due else 'N/A',
+                    loan.schedule,
+                    loan.status,
+                ])
 
         table = Table(data, repeatRows=1)
         table.setStyle(TableStyle([

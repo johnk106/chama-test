@@ -337,20 +337,28 @@
                                 <div class="filter-field">
                                     <label for="repayment-owner" class="field-label">Select Member</label>
                                     <select class="field-input" id="repayment-owner">
-                                        <option value="" disabled selected>Select Member</option>
+                                        <option value="" selected>All Members</option>
                                         {%for member in members %}
-                                        <option value="{{member.name}}">{{member.name}}</option>
+                                        <option value="{{member.id}}">{{member.name}}</option>
                                         {%endfor%}
                                     </select>
+                                </div>
+                                <div class="filter-field">
+                                    <label for="repayment-start-date" class="field-label">Start Date</label>
+                                    <input type="date" class="field-input" id="repayment-start-date">
+                                </div>
+                                <div class="filter-field">
+                                    <label for="repayment-end-date" class="field-label">End Date</label>
+                                    <input type="date" class="field-input" id="repayment-end-date">
                                 </div>
                             </div>
                         </div>
                         <div class="report-data brand-card-body">
                             <div id="repayment-schedule-items" class="data-container">
                                 <div class="empty-state">
-                                    <i class="bx bx-file-blank empty-state-icon"></i>
-                                    <p class="empty-state-message">Nothing to show</p>
-                                    <p class="empty-state-description">Please select a member to view their repayment schedule</p>
+                                    <i class="bx bx-loader-alt bx-spin empty-state-icon"></i>
+                                    <p class="empty-state-message">Loading...</p>
+                                    <p class="empty-state-description">Loading loan repayment schedule data</p>
                                 </div>
                             </div>
                         </div>
@@ -934,17 +942,29 @@ document.addEventListener('DOMContentLoaded', function () {
                     } else if (selector.includes('contribution')) {
                         const memberSelect = document.querySelector('#member-contribution-owner');
                         memberId = memberSelect?.value;
+                    } else if (selector.includes('repayment')) {
+                        const memberSelect = document.querySelector('#repayment-owner');
+                        memberId = memberSelect?.value;
                     }
                     
                     // For member cashflow report, use the URL pattern with member_id
                     if (selector.includes('cashflow')) {
                         url = `${baseUrl}${chama_id}/${memberId}/`;
                     } else {
-                        if (memberId) {
-                            url += `?member-id=${memberId}`;
+                        // For repayment schedule, member selection is optional
+                        if (selector.includes('repayment')) {
+                            if (memberId) {
+                                url += `?member_id=${memberId}`;
+                            }
+                            // If no member selected, download all repayment schedules
                         } else {
-                            alert('Please select a member first');
-                            return;
+                            // For other reports, member selection is required
+                            if (memberId) {
+                                url += `?member-id=${memberId}`;
+                            } else {
+                                alert('Please select a member first');
+                                return;
+                            }
                         }
                     }
                 }
@@ -1308,6 +1328,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load all member cashflow data initially
     filterMemberCashflow();
     
+    // Load all loan repayment schedule data initially
+    filterLoanRepaymentSchedule();
+    
     // Add event listeners for filter interactions
     setupFilterListeners();
 });
@@ -1365,9 +1388,43 @@ function setupFilterListeners() {
             const memberId = document.getElementById('member-cashflow-owner')?.value || null;
             const startDate = document.getElementById('member-cashflow-report-start')?.value;
             // Always filter, even if no member is selected (will show all members with date filter)
-            filterMemberCashflow(memberId, startDate, this.value);
-        });
-    }
+                         filterMemberCashflow(memberId, startDate, this.value);
+         });
+     }
+     
+     // Loan repayment schedule selection
+     const repaymentOwnerSelect = document.getElementById('repayment-owner');
+     if (repaymentOwnerSelect) {
+         repaymentOwnerSelect.addEventListener('change', function() {
+             const startDate = document.getElementById('repayment-start-date')?.value;
+             const endDate = document.getElementById('repayment-end-date')?.value;
+             // Pass null if no member is selected (empty value) to show all members
+             const memberId = this.value || null;
+             filterLoanRepaymentSchedule(memberId, startDate, endDate);
+         });
+     }
+     
+     // Loan repayment schedule date filters
+     const repaymentStartDate = document.getElementById('repayment-start-date');
+     const repaymentEndDate = document.getElementById('repayment-end-date');
+     
+     if (repaymentStartDate) {
+         repaymentStartDate.addEventListener('change', function() {
+             const memberId = document.getElementById('repayment-owner')?.value || null;
+             const endDate = document.getElementById('repayment-end-date')?.value;
+             // Always filter, even if no member is selected (will show all members with date filter)
+             filterLoanRepaymentSchedule(memberId, this.value, endDate);
+         });
+     }
+     
+     if (repaymentEndDate) {
+         repaymentEndDate.addEventListener('change', function() {
+             const memberId = document.getElementById('repayment-owner')?.value || null;
+             const startDate = document.getElementById('repayment-start-date')?.value;
+             // Always filter, even if no member is selected (will show all members with date filter)
+             filterLoanRepaymentSchedule(memberId, startDate, this.value);
+         });
+     }
 }
 
 // Function to filter individual savings by member
@@ -1454,6 +1511,110 @@ function filterMemberInvestmentIncome(memberId) {
             </div>
         `;
     }
+}
+
+// Function to filter loan repayment schedule with AJAX call
+function filterLoanRepaymentSchedule(memberId = null, startDate = null, endDate = null) {
+    const container = document.getElementById('repayment-schedule-items');
+    const chamaId = localStorage.getItem('groupId');
+    
+    // Show loading state
+    if (container) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-loader-alt bx-spin empty-state-icon"></i>
+                <p class="empty-state-message">Loading...</p>
+                <p class="empty-state-description">Fetching loan repayment schedule data</p>
+            </div>
+        `;
+    }
+    
+    // Build query parameters
+    let params = new URLSearchParams();
+    if (memberId) params.append('member_id', memberId);
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    
+    // Make AJAX request
+    fetch(`/chamas-bookeeping/get-loan-repayment-schedule/${chamaId}/?${params.toString()}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success' && data.data.length > 0) {
+            // Show member column if displaying all members (no specific member selected)
+            const showMemberColumn = !memberId;
+            
+            container.innerHTML = `
+                <div class="brand-table-responsive">
+                    <table class="brand-table">
+                        <thead>
+                            <tr>
+                                ${showMemberColumn ? '<th>Member</th>' : ''}
+                                <th>Loan Type</th>
+                                <th>Amount</th>
+                                <th>Total to Pay</th>
+                                <th>Balance</th>
+                                <th>Monthly Payment</th>
+                                <th>Next Due</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.data.map(item => `
+                                <tr>
+                                    ${showMemberColumn ? `<td>${item.member_name || 'N/A'}</td>` : ''}
+                                    <td>${item.loan_type || 'N/A'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.amount?.toLocaleString() || '0'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.total_amount_to_be_paid?.toLocaleString() || '0'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.balance?.toLocaleString() || '0'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.monthly_payment?.toLocaleString() || '0'}</td>
+                                    <td>${item.next_due || 'N/A'}</td>
+                                    <td><span class="status-badge ${item.status}">${item.status || 'N/A'}</span></td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            // Store current filtered data for download
+            window.currentRepaymentScheduleData = {
+                memberId: memberId,
+                data: data.data,
+                startDate: startDate,
+                endDate: endDate
+            };
+        } else {
+            const emptyMessage = memberId 
+                ? `No loan repayment schedule available for the selected member${startDate || endDate ? ' in the specified date range' : ''}`
+                : `No loan repayment schedule data available${startDate || endDate ? ' in the specified date range' : ''}`;
+                
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="bx bx-file-blank empty-state-icon"></i>
+                    <p class="empty-state-message">No repayment schedule found</p>
+                    <p class="empty-state-description">${emptyMessage}</p>
+                </div>
+            `;
+            window.currentRepaymentScheduleData = null;
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching loan repayment schedule:', error);
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-error empty-state-icon"></i>
+                <p class="empty-state-message">Error loading data</p>
+                <p class="empty-state-description">Failed to fetch repayment schedule data. Please try again.</p>
+            </div>
+        `;
+        window.currentRepaymentScheduleData = null;
+    });
 }
 
 // Function to filter member cashflow with AJAX call

@@ -71,5 +71,6 @@ urlpatterns = [
 
     path('get_user_role/', views.get_user_role, name='get_user_role'),
     path('get-member-cashflow-data/<int:chama_id>/', views.get_member_cashflow_data, name='get-member-cashflow-data'),
+    path('get-loan-repayment-schedule/<int:chama_id>/', views.get_loan_repayment_schedule, name='get-loan-repayment-schedule'),
 
 ]
