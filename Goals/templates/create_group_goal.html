@@ -140,13 +140,13 @@
 
                             <p>Home</p>
                         </button>
-                        <button class="footer_button btn active">
-                            <img src="images/filter_active.png" alt="">
+                        <button class="footer_button btn" onclick="window.location.href='{% url 'my_goals' %}'">
+                            <img src="{% static 'images/filter_active.png' %}" alt="">
                             <p>Features</p>
                         </button>
-                        <button class="footer_button btn">
-                            <img src="images/wallet_alt_fill.png" alt="">
-                            <p>Account</p>
+                        <button class="footer_button btn" onclick="showComingSoonModal()">
+                            <img src="{% static 'images/wallet_alt_fill.png' %}" alt="">
+                            <p>Wallet</p>
                         </button>
                         <button class="footer_button btn">
                             <img src="images/setting.png" alt="">

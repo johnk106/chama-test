@@ -99,13 +99,13 @@
 
                             <p>Home</p>
                         </button>
-                        <button class="footer_button btn">
+                        <button class="footer_button btn" onclick="window.location.href='{% url 'my_goals' %}'">
                             <img src="{% static 'images/filter.png' %}" alt="">
                             <p>Features</p>
                         </button>
-                        <button class="footer_button btn">
+                        <button class="footer_button btn" onclick="showComingSoonModal()">
                             <img src="{% static 'images/wallet_alt_fill.png' %}" alt="">
-                            <p>Account</p>
+                            <p>Wallet</p>
                         </button>
                         <button class="footer_button btn">
                             <img src="{% static 'images/setting.png' %}" alt="">
@@ -185,8 +185,41 @@
                 </div>
             </div>
 
+        
+            
+            <!-- Coming Soon Modal -->
+            <div class="modal fade" id="comingSoonModal" tabindex="-1" role="dialog" aria-labelledby="comingSoonModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content" style="border-radius: 15px; border: none; box-shadow: 0 10px 30px rgba(34, 145, 165, 0.3);">
+                        <div class="modal-header" style="background: linear-gradient(135deg, #2291A5 0%, #1a7389 100%); color: white; border-radius: 15px 15px 0 0; border: none;">
+                            <h5 class="modal-title" id="comingSoonModalLabel" style="font-weight: 600;">🚀 Coming Soon</h5>
+                            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="opacity: 1;">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body text-center" style="padding: 30px;">
+                            <div style="color: #2291A5; font-size: 3rem; margin-bottom: 20px;">
+                                💳
+                            </div>
+                            <h6 style="color: #333; font-weight: 600; margin-bottom: 15px;">Wallet Feature</h6>
+                            <p style="color: #666; margin-bottom: 0;">This exciting feature is coming soon! Stay tuned for updates.</p>
+                        </div>
+                        <div class="modal-footer" style="border: none; padding: 20px 30px;">
+                            <button type="button" class="btn" data-dismiss="modal" style="background: #2291A5; color: white; border-radius: 25px; padding: 10px 30px; border: none; font-weight: 500;">Got it!</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 
+
+
+    <script>
+        // Function to show coming soon modal
+        function showComingSoonModal() {
+            $('#comingSoonModal').modal('show');
+        }
+    </script>
 
 {% endblock %}
