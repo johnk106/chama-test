@@ -906,31 +906,32 @@ def reports(request,chama_id):
     group_savings = json.dumps(_group_savings)
     c = ContributionRecord.objects.order_by('-id').all()
 
-    group_contributions = Paginator(ContributionRecord.objects.filter(chama=chama).order_by('-date_created').all(),30).page(1)
-    _group_contributions = list(group_contributions.object_list.values())
-    for contribution in _group_contributions:
-        contribution['date_created'] = contribution['date_created'].strftime("%Y-%m-%d")
-        contribution['last_updated'] = contribution['last_updated'].strftime("%Y-%m-%d")
-        contribution['amount_paid'] = float(contribution['amount_paid'])
-        contribution['balance'] = float(contribution['balance'])
-        contribution['amount_expected'] = float(contribution['amount_expected'])
-
-        try:
-            c = Contribution.objects.get(pk=int(contribution['contribution']))
-            contribution['contribution'] = c.id
-            contribution['scheme_name'] = c.name
-
-        except Exception as e:
-            # If we can't get the contribution, set a default scheme name
-            contribution['scheme_name'] = 'Unknown Scheme'
-
-        try:
-            m = ChamaMember.objects.get(pk=int(contribution['member_id']))
-            contribution['member_id'] = m.id
-            contribution['member_name'] = m.name
-
-        except:
-            pass
+    # Get contribution records with proper joins
+    contribution_records = ContributionRecord.objects.filter(chama=chama).select_related('contribution', 'member').order_by('-date_created')[:30]
+    
+    _group_contributions = []
+    for record in contribution_records:
+        # Simple, direct approach to get the data
+        contrib_data = {
+            'id': record.id,
+            'date_created': record.date_created.strftime("%Y-%m-%d"),
+            'last_updated': record.last_updated.strftime("%Y-%m-%d"),
+            'amount_paid': float(record.amount_paid),
+            'balance': float(record.balance),
+            'amount_expected': float(record.amount_expected),
+            'member_id': record.member.id if record.member else None,
+            'member_name': record.member.name if record.member else 'Unknown Member',
+        }
+        
+        # Handle contribution/scheme information
+        if record.contribution:
+            contrib_data['contribution'] = record.contribution.id
+            contrib_data['scheme_name'] = record.contribution.name
+        else:
+            contrib_data['contribution'] = None
+            contrib_data['scheme_name'] = 'No Scheme Linked'
+            
+        _group_contributions.append(contrib_data)
     group_contributions = json.dumps(_group_contributions)
     
     chama_expenses = Paginator(Expense.objects.filter(chama=chama).order_by('-created_on'),10).page(1)
