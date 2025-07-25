@@ -920,8 +920,9 @@ def reports(request,chama_id):
             contribution['contribution'] = c.id
             contribution['scheme_name'] = c.name
 
-        except:
-            pass
+        except Exception as e:
+            # If we can't get the contribution, set a default scheme name
+            contribution['scheme_name'] = 'Unknown Scheme'
 
         try:
             m = ChamaMember.objects.get(pk=int(contribution['member_id']))
@@ -1577,8 +1578,12 @@ def get_member_contributions_data(request, chama_id):
                 
             # Filter by contribution scheme if specified
             if scheme_id:
-                contribution = Contribution.objects.get(pk=scheme_id)
-                filters['contribution'] = contribution
+                try:
+                    contribution = Contribution.objects.get(pk=scheme_id)
+                    filters['contribution'] = contribution
+                except Contribution.DoesNotExist:
+                    # Log the error but continue without scheme filter
+                    pass
                 
             if start_date:
                 filters['date_created__gte'] = start_date

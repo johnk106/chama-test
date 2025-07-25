@@ -629,8 +629,8 @@
                                     </select>
                                 </div>
                                 <div class="filter-field">
-                                    <label for="member-contribution-scheme" class="field-label">Contribution Scheme</label>
-                                    <select class="field-input" id="member-contribution-scheme">
+                                    <label for="group-contribution-scheme" class="field-label">Contribution Scheme</label>
+                                    <select class="field-input" id="group-contribution-scheme">
                                         <option value="">All Schemes</option>
                                         {%for contribution in contributions%}
                                         <option value="{{contribution.id}}">{{contribution.name}}</option>
@@ -972,6 +972,16 @@ document.addEventListener('DOMContentLoaded', function () {
                         } else if (selector.includes('member-contributions')) {
                             // For member contributions, both member and scheme are optional
                             const schemeId = document.getElementById('member-contribution-scheme')?.value;
+                            let params = [];
+                            if (memberId) params.push(`member_id=${memberId}`);
+                            if (schemeId) params.push(`scheme_id=${schemeId}`);
+                            if (params.length > 0) {
+                                url += `?${params.join('&')}`;
+                            }
+                            // If no filters selected, download all contributions
+                        } else if (selector.includes('group-contributions')) {
+                            // For group contributions, both member and scheme are optional
+                            const schemeId = document.getElementById('group-contribution-scheme')?.value;
                             let params = [];
                             if (memberId) params.push(`member_id=${memberId}`);
                             if (schemeId) params.push(`scheme_id=${schemeId}`);
@@ -1378,6 +1388,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load all member contributions data initially
     filterMemberContributions();
     
+    // Load group contributions data initially (using static data)
+    filterGroupContributions();
+    
     // Add event listeners for filter interactions
     setupFilterListeners();
 });
@@ -1485,16 +1498,17 @@ function setupFilterListeners() {
          });
      }
      
-     const memberContributionSchemeSelect = document.getElementById('member-contribution-scheme');
-     if (memberContributionSchemeSelect) {
-         memberContributionSchemeSelect.addEventListener('change', function() {
-             const memberId = document.getElementById('member-contribution-owner')?.value || null;
-             const startDate = document.getElementById('member-contributions-start')?.value;
-             const endDate = document.getElementById('member-contributions-end')?.value;
-             const schemeId = this.value || null;
-             filterMemberContributions(memberId, schemeId, startDate, endDate);
-         });
-     }
+               const memberContributionSchemeSelect = document.getElementById('member-contribution-scheme');
+      if (memberContributionSchemeSelect) {
+          memberContributionSchemeSelect.addEventListener('change', function() {
+              const memberId = document.getElementById('member-contribution-owner')?.value || null;
+              const startDate = document.getElementById('member-contributions-start')?.value;
+              const endDate = document.getElementById('member-contributions-end')?.value;
+              const schemeId = this.value || null;
+ 
+              filterMemberContributions(memberId, schemeId, startDate, endDate);
+          });
+      }
      
      // Member contributions date filters
      const memberContributionsStartDate = document.getElementById('member-contributions-start');
@@ -1515,6 +1529,52 @@ function setupFilterListeners() {
              const schemeId = document.getElementById('member-contribution-scheme')?.value || null;
              const startDate = document.getElementById('member-contributions-start')?.value;
              filterMemberContributions(memberId, schemeId, startDate, this.value);
+         });
+     }
+     
+     // Group contributions filtering
+     const groupContributionMemberSelect = document.getElementById('member-contribution-owner-2');
+     if (groupContributionMemberSelect) {
+         groupContributionMemberSelect.addEventListener('change', function() {
+             const schemeId = document.getElementById('group-contribution-scheme')?.value || null;
+             const startDate = document.getElementById('group-contributions-start')?.value;
+             const endDate = document.getElementById('group-contributions-end')?.value;
+             const memberId = this.value || null;
+             filterGroupContributions(memberId, schemeId, startDate, endDate);
+         });
+     }
+     
+     const groupContributionSchemeSelect = document.getElementById('group-contribution-scheme');
+     if (groupContributionSchemeSelect) {
+         groupContributionSchemeSelect.addEventListener('change', function() {
+             const memberId = document.getElementById('member-contribution-owner-2')?.value || null;
+             const startDate = document.getElementById('group-contributions-start')?.value;
+             const endDate = document.getElementById('group-contributions-end')?.value;
+             const schemeId = this.value || null;
+             
+             filterGroupContributions(memberId, schemeId, startDate, endDate);
+         });
+     }
+     
+     // Group contributions date filters
+     const groupContributionsStartDate = document.getElementById('group-contributions-start');
+     const groupContributionsEndDate = document.getElementById('group-contributions-end');
+     
+     if (groupContributionsStartDate) {
+         groupContributionsStartDate.addEventListener('change', function() {
+             const memberId = document.getElementById('member-contribution-owner-2')?.value || null;
+             const schemeId = document.getElementById('group-contribution-scheme')?.value || null;
+             const endDate = document.getElementById('group-contributions-end')?.value;
+             filterGroupContributions(memberId, schemeId, this.value, endDate);
+         });
+     }
+     
+     if (groupContributionsEndDate) {
+         groupContributionsEndDate.addEventListener('change', function() {
+             const memberId = document.getElementById('member-contribution-owner-2')?.value || null;
+             const schemeId = document.getElementById('group-contribution-scheme')?.value || null;
+             const startDate = document.getElementById('group-contributions-start')?.value;
+             filterGroupContributions(memberId, schemeId, startDate, this.value);
          });
      }
 }
@@ -1605,8 +1665,88 @@ function filterMemberInvestmentIncome(memberId) {
     }
 }
 
+// Function to filter group contributions (using static data)
+function filterGroupContributions(memberId = null, schemeId = null, startDate = null, endDate = null) {
+
+    const container = document.getElementById('group-contributions-items');
+    
+    if (!reportData.groupContributions || reportData.groupContributions.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-file-blank empty-state-icon"></i>
+                <p class="empty-state-message">No contributions found</p>
+                <p class="empty-state-description">No group contributions data available</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // Filter the data based on parameters
+    let filteredData = reportData.groupContributions;
+    
+    if (memberId) {
+        filteredData = filteredData.filter(item => item.member_id == memberId);
+    }
+    
+    if (schemeId) {
+        filteredData = filteredData.filter(item => item.contribution == schemeId);
+    }
+    
+    if (startDate) {
+        filteredData = filteredData.filter(item => item.date_created >= startDate);
+    }
+    
+    if (endDate) {
+        filteredData = filteredData.filter(item => item.date_created <= endDate);
+    }
+    
+    if (filteredData.length > 0) {
+        // Show member and scheme columns based on filters
+        const showMemberColumn = !memberId;
+        const showSchemeColumn = !schemeId;
+        
+        container.innerHTML = `
+            <div class="brand-table-responsive">
+                <table class="brand-table">
+                    <thead>
+                        <tr>
+                            ${showMemberColumn ? '<th>Member</th>' : ''}
+                            ${showSchemeColumn ? '<th>Scheme</th>' : ''}
+                            <th>Amount Paid</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${filteredData.map(item => `
+                            <tr>
+                                ${showMemberColumn ? `<td>${item.member_name || 'N/A'}</td>` : ''}
+                                ${showSchemeColumn ? `<td>${item.scheme_name || 'N/A'}</td>` : ''}
+                                <td class="text-brand-primary">Ksh ${item.amount_paid?.toLocaleString() || '0'}</td>
+                                <td>${item.date_created || 'N/A'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    } else {
+        const emptyMessage = memberId || schemeId
+            ? `No contribution data available for the selected ${memberId ? 'member' : 'scheme'}${startDate || endDate ? ' in the specified date range' : ''}`
+            : `No group contribution data available${startDate || endDate ? ' in the specified date range' : ''}`;
+            
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-file-blank empty-state-icon"></i>
+                <p class="empty-state-message">No contributions found</p>
+                <p class="empty-state-description">${emptyMessage}</p>
+            </div>
+        `;
+    }
+}
+
 // Function to filter member contributions with AJAX call
 function filterMemberContributions(memberId = null, schemeId = null, startDate = null, endDate = null) {
+
     const container = document.getElementById('member-contributions-items');
     const chamaId = localStorage.getItem('groupId');
     
