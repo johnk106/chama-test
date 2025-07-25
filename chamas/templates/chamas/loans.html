@@ -1099,9 +1099,9 @@
               </div>
 
               <p style="display: none" id="application-id">{{application.id}}</p>
-              <div class="button-cluster">
-                <button class="cancel-button">Cancel</button>
-                <button class="approve-button">Approve</button>
+              <div class="application-actions">
+                <button class="approve-btn approve-button">Approve</button>
+                <button class="decline-btn cancel-button">Decline</button>
               </div>
             </div>
           {%endfor%}
@@ -1606,6 +1606,10 @@
         mobileAlertDiv.innerHTML = data.message;
         mobileAlertDiv.className = "alert alert-success";
         mobileAlertDiv.style.display = "block";
+        // Auto-hide after 5 seconds
+        setTimeout(function() {
+          mobileAlertDiv.style.display = "none";
+        }, 5000);
       }
     } else {
       // Desktop alert
@@ -1617,6 +1621,10 @@
         mobileAlertDiv.innerHTML = data.message;
         mobileAlertDiv.className = "alert alert-danger";
         mobileAlertDiv.style.display = "block";
+        // Auto-hide after 5 seconds
+        setTimeout(function() {
+          mobileAlertDiv.style.display = "none";
+        }, 5000);
       }
     }
   }
