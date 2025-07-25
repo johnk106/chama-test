@@ -379,15 +379,15 @@
 <footer class="mbl_footer" style="background: #2291A5 !important; background-color: #2291A5 !important; position: fixed; bottom: 0; left: 0; right: 0; z-index: 1000; padding: 10px 0; display: block;">
     <div class="container">
         <div class="footer_row d-flex flex-row justify-content-between align-items-center" style="padding: 0 15px;">
-            <a href="{% url 'my_goals' %}" class="footer_button btn" style="color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 8px 12px;">
+            <a href="{% url 'my_goals' %}" class="footer_button btn footer-home" style="color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 8px 12px;">
                 <img class="homer_white" src="{% static 'images/home_white.png' %}" alt="" style="width: 24px; height: 24px; margin-bottom: 4px; filter: brightness(0) invert(1);">
                 <p style="margin: 0; color: #fff; font-size: 12px; text-align: center;">Home</p>
             </a>
-            <a href="{% url 'chamas:chamas' %}" class="footer_button btn active" style="color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 8px 12px; background: rgba(255, 255, 255, 0.2); border-radius: 8px;">
+            <a href="{% url 'my_goals' %}" class="footer_button btn footer-features" style="color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 8px 12px;">
                 <img src="{% static 'images/filter_active.png' %}" alt="" style="width: 24px; height: 24px; margin-bottom: 4px; filter: brightness(0) invert(1);">
-                <p style="margin: 0; color: #fff; font-size: 12px; text-align: center; font-weight: 600;">Features</p>
+                <p style="margin: 0; color: #fff; font-size: 12px; text-align: center;">Features</p>
             </a>
-            <a href="{% url 'wallet_index' %}" class="footer_button btn" style="color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 8px 12px;">
+            <a href="#" class="footer_button btn footer-wallet" onclick="showComingSoonModal(event)" style="color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 8px 12px;">
                 <img src="{% static 'images/wallet_alt_fill.png' %}" alt="" style="width: 24px; height: 24px; margin-bottom: 4px; filter: brightness(0) invert(1);">
                 <p style="margin: 0; color: #fff; font-size: 12px; text-align: center;">Account</p>
             </a>
@@ -398,6 +398,78 @@
         </div>
     </div>
 </footer>
+
+<!-- Coming Soon Modal -->
+<div class="modal fade" id="comingSoonModal" tabindex="-1" role="dialog" aria-labelledby="comingSoonModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="comingSoonModalLabel">Coming Soon</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <i class="fas fa-rocket fa-3x text-primary mb-3"></i>
+                <h4>Wallet Feature</h4>
+                <p class="text-muted">This feature is coming soon! We're working hard to bring you an amazing wallet experience.</p>
+            </div>
+            <div class="modal-footer border-0 justify-content-center">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Got it!</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Function to show coming soon modal
+function showComingSoonModal(event) {
+    event.preventDefault();
+    var modal = new bootstrap.Modal(document.getElementById('comingSoonModal'));
+    modal.show();
+}
+
+// Function to set active footer button based on current page
+function setActiveFooterButton() {
+    // Remove active class from all footer buttons
+    document.querySelectorAll('.footer_button').forEach(btn => {
+        btn.classList.remove('active');
+        btn.style.background = 'transparent';
+        btn.style.borderRadius = 'initial';
+    });
+    
+    // Get current page URL
+    const currentPath = window.location.pathname;
+    
+    // Set active button based on current page
+    if (currentPath.includes('/chamas/') || currentPath.includes('/chamas-bookeeping/')) {
+        const featuresBtn = document.querySelector('.footer-features');
+        if (featuresBtn) {
+            featuresBtn.classList.add('active');
+            featuresBtn.style.background = 'rgba(255, 255, 255, 0.2)';
+            featuresBtn.style.borderRadius = '8px';
+            featuresBtn.querySelector('p').style.fontWeight = '600';
+        }
+    } else if (currentPath.includes('/my-goals/') || currentPath === '/') {
+        const homeBtn = document.querySelector('.footer-home');
+        if (homeBtn) {
+            homeBtn.classList.add('active');
+            homeBtn.style.background = 'rgba(255, 255, 255, 0.2)';
+            homeBtn.style.borderRadius = '8px';
+            homeBtn.querySelector('p').style.fontWeight = '600';
+        }
+    } else if (currentPath.includes('/settings/')) {
+        const settingsBtn = document.querySelector('.footer_button[href*="Setting"]');
+        if (settingsBtn) {
+            settingsBtn.classList.add('active');
+            settingsBtn.style.background = 'rgba(255, 255, 255, 0.2)';
+            settingsBtn.style.borderRadius = '8px';
+            settingsBtn.querySelector('p').style.fontWeight = '600';
+        }
+    }
+}
+
+// Run on page load
+document.addEventListener('DOMContentLoaded', setActiveFooterButton);
+</script>
 
   </body>
 </html>
