@@ -985,6 +985,20 @@ document.addEventListener('DOMContentLoaded', function () {
                         url += `?${params.join('&')}`;
                     }
                 }
+                // Handle expenses download with date filters
+                else if (selector.includes('expenses')) {
+                    const startDateInput = document.querySelector('#expenses-start');
+                    const endDateInput = document.querySelector('#expenses-end');
+                    const startDate = startDateInput?.value;
+                    const endDate = endDateInput?.value;
+                    
+                    let params = [];
+                    if (startDate) params.push(`start_date=${startDate}`);
+                    if (endDate) params.push(`end_date=${endDate}`);
+                    if (params.length > 0) {
+                        url += `?${params.join('&')}`;
+                    }
+                }
                 // Handle personal investment income download with date filters
                 else if (selector.includes('my-investment')) {
                     const startDateInput = document.querySelector('#my-incomes-start');
@@ -1504,6 +1518,9 @@ document.addEventListener('DOMContentLoaded', function() {
     filterCollectedFines();
     filterUnpaidFines();
     
+    // Load expenses data initially
+    filterExpenses();
+    
     // Add event listeners for filter interactions
     setupFilterListeners();
 });
@@ -1592,6 +1609,24 @@ function setupFilterListeners() {
         unpaidFinesEndDate.addEventListener('change', function() {
             const startDate = document.getElementById('unpaid-fines-start')?.value;
             filterUnpaidFines(startDate, this.value);
+        });
+    }
+    
+    // Expenses date filters
+    const expensesStartDate = document.getElementById('expenses-start');
+    const expensesEndDate = document.getElementById('expenses-end');
+    
+    if (expensesStartDate) {
+        expensesStartDate.addEventListener('change', function() {
+            const endDate = document.getElementById('expenses-end')?.value;
+            filterExpenses(this.value, endDate);
+        });
+    }
+    
+    if (expensesEndDate) {
+        expensesEndDate.addEventListener('change', function() {
+            const startDate = document.getElementById('expenses-start')?.value;
+            filterExpenses(startDate, this.value);
         });
     }
 
@@ -2879,6 +2914,99 @@ function filterUnpaidFines(startDate = null, endDate = null) {
             </div>
         `;
         window.currentUnpaidFinesData = null;
+    });
+}
+
+// Function to filter expenses with AJAX call
+function filterExpenses(startDate = null, endDate = null) {
+    const container = document.getElementById('expenses-items');
+    const chamaId = localStorage.getItem('groupId');
+    
+    // Show loading state
+    if (container) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-loader-alt bx-spin empty-state-icon"></i>
+                <p class="empty-state-message">Loading...</p>
+                <p class="empty-state-description">Fetching expenses data</p>
+            </div>
+        `;
+    }
+    
+    // Build query parameters
+    let params = new URLSearchParams();
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    
+    // Make AJAX request
+    fetch(`/chamas-bookeeping/get-expenses-data/${chamaId}/?${params.toString()}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success' && data.data.length > 0) {
+            container.innerHTML = `
+                <div class="brand-table-responsive">
+                    <table class="brand-table">
+                        <thead>
+                            <tr>
+                                <th>Expense</th>
+                                <th>Description</th>
+                                <th>Created By</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.data.map(item => `
+                                <tr>
+                                    <td>${item.name || 'N/A'}</td>
+                                    <td>${item.description || 'N/A'}</td>
+                                    <td>${item.created_by_name || 'N/A'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.amount?.toLocaleString() || '0'}</td>
+                                    <td>${item.created_on || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            // Store current filtered data for download
+            window.currentExpensesData = {
+                data: data.data,
+                startDate: startDate,
+                endDate: endDate
+            };
+        } else {
+            const emptyMessage = startDate || endDate 
+                ? 'No expenses data available in the specified date range'
+                : 'No expenses data available';
+                
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="bx bx-file-blank empty-state-icon"></i>
+                    <p class="empty-state-message">No expenses found</p>
+                    <p class="empty-state-description">${emptyMessage}</p>
+                </div>
+            `;
+            window.currentExpensesData = null;
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching expenses data:', error);
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-error empty-state-icon"></i>
+                <p class="empty-state-message">Error loading data</p>
+                <p class="empty-state-description">Failed to fetch expenses data. Please try again.</p>
+            </div>
+        `;
+        window.currentExpensesData = null;
     });
 }
 </script>

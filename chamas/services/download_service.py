@@ -1617,10 +1617,22 @@ class DownloadService:
         return response
     
     @staticmethod
-    def download_expense_report(chama_id):
+    def download_expense_report(request, chama_id):
         # 1) Retrieve Chama and expenses
         chama = Chama.objects.get(pk=chama_id)
-        expenses = Expense.objects.filter(chama=chama).order_by('-created_on')
+        start_date = request.GET.get('start_date', None)
+        end_date = request.GET.get('end_date', None)
+        
+        # Base queryset for expenses
+        expenses = Expense.objects.filter(chama=chama)
+        
+        # Apply date filters
+        if start_date:
+            expenses = expenses.filter(created_on__date__gte=start_date)
+        if end_date:
+            expenses = expenses.filter(created_on__date__lte=end_date)
+            
+        expenses = expenses.order_by('-created_on')
 
         # 2) Create PDF response
         response = HttpResponse(content_type='application/pdf')

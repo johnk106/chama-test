@@ -83,5 +83,6 @@ urlpatterns = [
     path('get-my-saving-data/<int:chama_id>/', views.get_my_saving_data, name='get-my-saving-data'),
     path('get-collected-fines-data/<int:chama_id>/', views.get_collected_fines_data, name='get-collected-fines-data'),
     path('get-unpaid-fines-data/<int:chama_id>/', views.get_unpaid_fines_data, name='get-unpaid-fines-data'),
+    path('get-expenses-data/<int:chama_id>/', views.get_expenses_data, name='get-expenses-data'),
 
 ]

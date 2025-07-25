@@ -1360,7 +1360,7 @@ def download_my_cashflow_report(request, chama_id):
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_expense_report(request, chama_id):
-    return DownloadService.download_expense_report(chama_id)
+    return DownloadService.download_expense_report(request, chama_id)
     
 
 
@@ -2074,6 +2074,59 @@ def get_unpaid_fines_data(request, chama_id):
                     'created': fine.created.strftime('%Y-%m-%d'),
                     'created_datetime': fine.created.strftime('%Y-%m-%d %H:%M:%S'),
                     'last_updated': fine.last_updated.strftime('%Y-%m-%d')
+                })
+                
+            return JsonResponse({
+                'status': 'success',
+                'data': data,
+                'count': len(data)
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            })
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def get_expenses_data(request, chama_id):
+    """AJAX endpoint to get filtered expenses data"""
+    if request.method == 'GET':
+        try:
+            chama = Chama.objects.get(pk=chama_id)
+            
+            # Get filter parameters
+            start_date = request.GET.get('start_date')
+            end_date = request.GET.get('end_date')
+            
+            # Base queryset for expenses
+            queryset = Expense.objects.filter(chama=chama).select_related('created_by')
+            
+            # Apply date filters
+            if start_date:
+                queryset = queryset.filter(created_on__date__gte=start_date)
+            if end_date:
+                queryset = queryset.filter(created_on__date__lte=end_date)
+            
+            # Order by most recent
+            queryset = queryset.order_by('-created_on')
+            
+            # Build response data
+            data = []
+            for expense in queryset:
+                data.append({
+                    'id': expense.id,
+                    'name': expense.name,
+                    'description': expense.description,
+                    'amount': float(expense.amount),
+                    'created_by_name': expense.created_by.name if expense.created_by else 'N/A',
+                    'created_by_id': expense.created_by.id if expense.created_by else None,
+                    'created_on': expense.created_on.strftime('%Y-%m-%d'),
+                    'created_on_datetime': expense.created_on.strftime('%Y-%m-%d %H:%M:%S')
                 })
                 
             return JsonResponse({
