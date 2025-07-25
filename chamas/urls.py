@@ -57,6 +57,7 @@ urlpatterns = [
     path('download-my-investment-income/<int:chama_id>/',views.download_my_investment_income,name='download-my-investment-income'),
     path('download-individual-saving-report/<int:chama_id>/',views.download_individual_saving_report,name='download-individual-saving-report'),
     path('download-group-saving-report/<int:chama_id>/',views.download_group_saving_report,name='download-group-saving-report'),
+    path('download-my-saving-report/<int:chama_id>/',views.download_my_saving_report,name='download-my-saving-report'),
     path('download-group-contributions-report/<int:chama_id>/<int:contribution_id>/',views.download_group_contributions_report,name='download-group-contributions-report'),
     path('download-member-contributions-report/<int:chama_id>/<int:member_id>/<int:scheme_id>/',views.download_member_contribution_report,name='download-member-contribution-report'),
     path('download-collected-fines-report/<int:chama_id>/',views.download_collected_fine_report,name='download-collected-fines-report'),
@@ -77,5 +78,8 @@ urlpatterns = [
     path('get-group-investment-income-data/<int:chama_id>/', views.get_group_investment_income_data, name='get-group-investment-income-data'),
     path('get-member-investment-income-data/<int:chama_id>/', views.get_member_investment_income_data, name='get-member-investment-income-data'),
     path('get-my-investment-income-data/<int:chama_id>/', views.get_my_investment_income_data, name='get-my-investment-income-data'),
+    path('get-individual-saving-data/<int:chama_id>/', views.get_individual_saving_data, name='get-individual-saving-data'),
+    path('get-group-saving-data/<int:chama_id>/', views.get_group_saving_data, name='get-group-saving-data'),
+    path('get-my-saving-data/<int:chama_id>/', views.get_my_saving_data, name='get-my-saving-data'),
 
 ]

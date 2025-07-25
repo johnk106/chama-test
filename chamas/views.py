@@ -1285,6 +1285,11 @@ def download_individual_saving_report(request, chama_id):
 @is_user_chama_member
 def download_group_saving_report(request, chama_id):
     return DownloadService.download_group_saving_report(request,chama_id)
+
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def download_my_saving_report(request, chama_id):
+    return DownloadService.download_my_saving_report(request, chama_id)
     
 
 
@@ -1786,6 +1791,175 @@ def get_my_investment_income_data(request, chama_id):
                     'amount': float(income.amount),
                     'date': income.user_date.strftime('%Y-%m-%d'),
                     'created_date': income.date.strftime('%Y-%m-%d %H:%M:%S')
+                })
+                
+            return JsonResponse({
+                'status': 'success',
+                'data': data,
+                'count': len(data)
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            })
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def get_individual_saving_data(request, chama_id):
+    """AJAX endpoint to get filtered individual saving data"""
+    if request.method == 'GET':
+        try:
+            chama = Chama.objects.get(pk=chama_id)
+            
+            # Get filter parameters
+            member_id = request.GET.get('member_id')
+            start_date = request.GET.get('start_date')
+            end_date = request.GET.get('end_date')
+            
+            # Base queryset for individual savings
+            queryset = Saving.objects.filter(chama=chama, forGroup=False).select_related('owner', 'saving_type')
+            
+            # Apply member filter
+            if member_id:
+                queryset = queryset.filter(owner_id=member_id)
+            
+            # Apply date filters
+            if start_date:
+                queryset = queryset.filter(date__date__gte=start_date)
+            if end_date:
+                queryset = queryset.filter(date__date__lte=end_date)
+            
+            # Order by most recent
+            queryset = queryset.order_by('-date')
+            
+            # Build response data
+            data = []
+            for saving in queryset:
+                data.append({
+                    'id': saving.id,
+                    'member_name': saving.owner.name if saving.owner else 'N/A',
+                    'member_id': saving.owner.id if saving.owner else None,
+                    'saving_type_name': saving.saving_type.name if saving.saving_type else 'N/A',
+                    'saving_type_id': saving.saving_type.id if saving.saving_type else None,
+                    'amount': float(saving.amount),
+                    'date': saving.date.strftime('%Y-%m-%d'),
+                    'created_date': saving.date.strftime('%Y-%m-%d %H:%M:%S')
+                })
+                
+            return JsonResponse({
+                'status': 'success',
+                'data': data,
+                'count': len(data)
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            })
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def get_group_saving_data(request, chama_id):
+    """AJAX endpoint to get filtered group saving data"""
+    if request.method == 'GET':
+        try:
+            chama = Chama.objects.get(pk=chama_id)
+            
+            # Get filter parameters
+            start_date = request.GET.get('start_date')
+            end_date = request.GET.get('end_date')
+            
+            # Base queryset for group savings
+            queryset = Saving.objects.filter(chama=chama, forGroup=True).select_related('saving_type')
+            
+            # Apply date filters
+            if start_date:
+                queryset = queryset.filter(date__date__gte=start_date)
+            if end_date:
+                queryset = queryset.filter(date__date__lte=end_date)
+            
+            # Order by most recent
+            queryset = queryset.order_by('-date')
+            
+            # Build response data
+            data = []
+            for saving in queryset:
+                data.append({
+                    'id': saving.id,
+                    'saving_type_name': saving.saving_type.name if saving.saving_type else 'N/A',
+                    'saving_type_id': saving.saving_type.id if saving.saving_type else None,
+                    'amount': float(saving.amount),
+                    'date': saving.date.strftime('%Y-%m-%d'),
+                    'created_date': saving.date.strftime('%Y-%m-%d %H:%M:%S')
+                })
+                
+            return JsonResponse({
+                'status': 'success',
+                'data': data,
+                'count': len(data)
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            })
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def get_my_saving_data(request, chama_id):
+    """AJAX endpoint to get filtered personal saving data"""
+    if request.method == 'GET':
+        try:
+            chama = Chama.objects.get(pk=chama_id)
+            
+            # Get current user's member record
+            try:
+                member = ChamaMember.objects.get(user=request.user, group=chama)
+            except ChamaMember.DoesNotExist:
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'You are not a member of this chama'
+                })
+            
+            # Get filter parameters
+            start_date = request.GET.get('start_date')
+            end_date = request.GET.get('end_date')
+            
+            # Base queryset for personal savings
+            queryset = Saving.objects.filter(chama=chama, forGroup=False, owner=member).select_related('saving_type')
+            
+            # Apply date filters
+            if start_date:
+                queryset = queryset.filter(date__date__gte=start_date)
+            if end_date:
+                queryset = queryset.filter(date__date__lte=end_date)
+            
+            # Order by most recent
+            queryset = queryset.order_by('-date')
+            
+            # Build response data
+            data = []
+            for saving in queryset:
+                data.append({
+                    'id': saving.id,
+                    'saving_type_name': saving.saving_type.name if saving.saving_type else 'N/A',
+                    'saving_type_id': saving.saving_type.id if saving.saving_type else None,
+                    'amount': float(saving.amount),
+                    'date': saving.date.strftime('%Y-%m-%d'),
+                    'created_date': saving.date.strftime('%Y-%m-%d %H:%M:%S')
                 })
                 
             return JsonResponse({

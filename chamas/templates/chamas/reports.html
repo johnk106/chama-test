@@ -943,6 +943,20 @@ document.addEventListener('DOMContentLoaded', function () {
                         url += `?${params.join('&')}`;
                     }
                 }
+                // Handle group savings download with date filters
+                else if (selector.includes('group-saving')) {
+                    const startDateInput = document.querySelector('#group-saving-start');
+                    const endDateInput = document.querySelector('#group-saving-end');
+                    const startDate = startDateInput?.value;
+                    const endDate = endDateInput?.value;
+                    
+                    let params = [];
+                    if (startDate) params.push(`start_date=${startDate}`);
+                    if (endDate) params.push(`end_date=${endDate}`);
+                    if (params.length > 0) {
+                        url += `?${params.join('&')}`;
+                    }
+                }
                 // Handle personal investment income download with date filters
                 else if (selector.includes('my-investment')) {
                     const startDateInput = document.querySelector('#my-incomes-start');
@@ -988,10 +1002,25 @@ document.addEventListener('DOMContentLoaded', function () {
                             if (params.length > 0) {
                                 url += `?${params.join('&')}`;
                             }
-                        } else if (selector.includes('saving')) {
-                        const memberSelect = document.querySelector('#saving-owner');
-                        memberId = memberSelect?.value;
-                    } else if (selector.includes('contribution')) {
+                                                } else if (selector.includes('saving')) {
+                            const memberSelect = document.querySelector('#saving-owner');
+                            memberId = memberSelect?.value;
+                            
+                            // Get date filters for saving reports
+                            const startDateInput = document.querySelector('#individual-saving-start');
+                            const endDateInput = document.querySelector('#individual-saving-end');
+                            const startDate = startDateInput?.value;
+                            const endDate = endDateInput?.value;
+                            
+                            // Add date parameters to URL
+                            let params = [];
+                            if (memberId) params.push(`member_id=${memberId}`);
+                            if (startDate) params.push(`start_date=${startDate}`);
+                            if (endDate) params.push(`end_date=${endDate}`);
+                            if (params.length > 0) {
+                                url += `?${params.join('&')}`;
+                            }
+                        } else if (selector.includes('contribution')) {
                         const memberSelect = document.querySelector('#member-contribution-owner');
                         memberId = memberSelect?.value;
                     } else if (selector.includes('repayment')) {
@@ -1439,6 +1468,10 @@ document.addEventListener('DOMContentLoaded', function() {
     filterMemberInvestmentIncome();
     filterMyInvestmentIncome();
     
+    // Load savings data initially
+    filterIndividualSavings();
+    filterGroupSavings();
+    
     // Add event listeners for filter interactions
     setupFilterListeners();
 });
@@ -1449,10 +1482,48 @@ function setupFilterListeners() {
     const savingOwnerSelect = document.getElementById('saving-owner');
     if (savingOwnerSelect) {
         savingOwnerSelect.addEventListener('change', function() {
-            if (this.value) {
-                // Filter and show individual savings for selected member
-                filterIndividualSavings(this.value);
-            }
+            const startDate = document.getElementById('individual-saving-start')?.value;
+            const endDate = document.getElementById('individual-saving-end')?.value;
+            const memberId = this.value || null;
+            filterIndividualSavings(memberId, startDate, endDate);
+        });
+    }
+    
+    // Individual savings date filters
+    const individualSavingStartDate = document.getElementById('individual-saving-start');
+    const individualSavingEndDate = document.getElementById('individual-saving-end');
+    
+    if (individualSavingStartDate) {
+        individualSavingStartDate.addEventListener('change', function() {
+            const memberId = document.getElementById('saving-owner')?.value || null;
+            const endDate = document.getElementById('individual-saving-end')?.value;
+            filterIndividualSavings(memberId, this.value, endDate);
+        });
+    }
+    
+    if (individualSavingEndDate) {
+        individualSavingEndDate.addEventListener('change', function() {
+            const memberId = document.getElementById('saving-owner')?.value || null;
+            const startDate = document.getElementById('individual-saving-start')?.value;
+            filterIndividualSavings(memberId, startDate, this.value);
+        });
+    }
+    
+    // Group savings date filters
+    const groupSavingStartDate = document.getElementById('group-saving-start');
+    const groupSavingEndDate = document.getElementById('group-saving-end');
+    
+    if (groupSavingStartDate) {
+        groupSavingStartDate.addEventListener('change', function() {
+            const endDate = document.getElementById('group-saving-end')?.value;
+            filterGroupSavings(this.value, endDate);
+        });
+    }
+    
+    if (groupSavingEndDate) {
+        groupSavingEndDate.addEventListener('change', function() {
+            const startDate = document.getElementById('group-saving-start')?.value;
+            filterGroupSavings(startDate, this.value);
         });
     }
 
@@ -1684,47 +1755,100 @@ function setupFilterListeners() {
      }
 }
 
-// Function to filter individual savings by member
-function filterIndividualSavings(memberId) {
-    const filteredSavings = reportData.individualSavings.filter(item => 
-        item.owner_id == memberId || item.owner_id === memberId
-    );
-    
+// Function to filter individual savings with AJAX call
+function filterIndividualSavings(memberId = null, startDate = null, endDate = null) {
     const container = document.getElementById('individual-saving-items');
-    if (container && filteredSavings.length > 0) {
-        container.innerHTML = `
-            <div class="brand-table-responsive">
-                <table class="brand-table">
-                    <thead>
-                        <tr>
-                            <th>Member</th>
-                            <th>Saving Type</th>
-                            <th>Amount</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${filteredSavings.map(item => `
-                            <tr>
-                                <td>${item.owner_id || 'N/A'}</td>
-                                <td>${item.saving_type_id || 'N/A'}</td>
-                                <td class="text-brand-primary">Ksh ${item.amount?.toLocaleString() || '0'}</td>
-                                <td>${item.date || 'N/A'}</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            </div>
-        `;
-    } else if (container) {
+    const chamaId = localStorage.getItem('groupId');
+    
+    // Show loading state
+    if (container) {
         container.innerHTML = `
             <div class="empty-state">
-                <i class="bx bx-file-blank empty-state-icon"></i>
-                <p class="empty-state-message">No savings data found</p>
-                <p class="empty-state-description">No savings data available for the selected member</p>
+                <i class="bx bx-loader-alt bx-spin empty-state-icon"></i>
+                <p class="empty-state-message">Loading...</p>
+                <p class="empty-state-description">Fetching savings data</p>
             </div>
         `;
     }
+    
+    // Build query parameters
+    let params = new URLSearchParams();
+    if (memberId) params.append('member_id', memberId);
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    
+    // Make AJAX request
+    fetch(`/chamas-bookeeping/get-individual-saving-data/${chamaId}/?${params.toString()}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success' && data.data.length > 0) {
+            // Show member column if displaying all members (no specific member selected)
+            const showMemberColumn = !memberId;
+            
+            container.innerHTML = `
+                <div class="brand-table-responsive">
+                    <table class="brand-table">
+                        <thead>
+                            <tr>
+                                ${showMemberColumn ? '<th>Member</th>' : ''}
+                                <th>Saving Type</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.data.map(item => `
+                                <tr>
+                                    ${showMemberColumn ? `<td>${item.member_name || 'N/A'}</td>` : ''}
+                                    <td>${item.saving_type_name || 'N/A'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.amount?.toLocaleString() || '0'}</td>
+                                    <td>${item.date || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            // Store current filtered data for download
+            window.currentIndividualSavingData = {
+                memberId: memberId,
+                data: data.data,
+                startDate: startDate,
+                endDate: endDate
+            };
+        } else {
+            const emptyMessage = memberId 
+                ? `No savings data available for the selected member${startDate || endDate ? ' in the specified date range' : ''}`
+                : `No individual savings data available${startDate || endDate ? ' in the specified date range' : ''}`;
+                
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="bx bx-file-blank empty-state-icon"></i>
+                    <p class="empty-state-message">No savings data found</p>
+                    <p class="empty-state-description">${emptyMessage}</p>
+                </div>
+            `;
+            window.currentIndividualSavingData = null;
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching individual savings data:', error);
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-error empty-state-icon"></i>
+                <p class="empty-state-message">Error loading data</p>
+                <p class="empty-state-description">Failed to fetch savings data. Please try again.</p>
+            </div>
+        `;
+        window.currentIndividualSavingData = null;
+    });
 }
 
 // Function to filter member investment income with AJAX call
@@ -2408,6 +2532,95 @@ function filterMyInvestmentIncome(startDate = null, endDate = null) {
             </div>
         `;
         window.currentMyInvestmentData = null;
+    });
+}
+
+// Function to filter group savings with AJAX call
+function filterGroupSavings(startDate = null, endDate = null) {
+    const container = document.getElementById('group-saving-items');
+    const chamaId = localStorage.getItem('groupId');
+    
+    // Show loading state
+    if (container) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-loader-alt bx-spin empty-state-icon"></i>
+                <p class="empty-state-message">Loading...</p>
+                <p class="empty-state-description">Fetching group savings data</p>
+            </div>
+        `;
+    }
+    
+    // Build query parameters
+    let params = new URLSearchParams();
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    
+    // Make AJAX request
+    fetch(`/chamas-bookeeping/get-group-saving-data/${chamaId}/?${params.toString()}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success' && data.data.length > 0) {
+            container.innerHTML = `
+                <div class="brand-table-responsive">
+                    <table class="brand-table">
+                        <thead>
+                            <tr>
+                                <th>Saving Type</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.data.map(item => `
+                                <tr>
+                                    <td>${item.saving_type_name || 'N/A'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.amount?.toLocaleString() || '0'}</td>
+                                    <td>${item.date || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            // Store current filtered data for download
+            window.currentGroupSavingData = {
+                data: data.data,
+                startDate: startDate,
+                endDate: endDate
+            };
+        } else {
+            const emptyMessage = startDate || endDate 
+                ? 'No group savings data available in the specified date range'
+                : 'No group savings data available';
+                
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="bx bx-file-blank empty-state-icon"></i>
+                    <p class="empty-state-message">No savings data found</p>
+                    <p class="empty-state-description">${emptyMessage}</p>
+                </div>
+            `;
+            window.currentGroupSavingData = null;
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching group savings data:', error);
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-error empty-state-icon"></i>
+                <p class="empty-state-message">Error loading data</p>
+                <p class="empty-state-description">Failed to fetch savings data. Please try again.</p>
+            </div>
+        `;
+        window.currentGroupSavingData = null;
     });
 }
 </script>

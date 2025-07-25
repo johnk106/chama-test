@@ -629,13 +629,25 @@ class DownloadService:
     def download_individual_saving_report(request,chama_id):
         # 1) Fetch Chama and individual saving data
         chama = Chama.objects.get(pk=chama_id)
-        member_id = request.GET.get('member-id', None)
+        member_id = request.GET.get('member_id', None)
+        start_date = request.GET.get('start_date', None)
+        end_date = request.GET.get('end_date', None)
 
+        # Base queryset
+        savings = Saving.objects.filter(chama=chama, forGroup=False)
+        
+        # Apply member filter
         if member_id:
-            member  = ChamaMember.objects.get(pk=int(member_id))
-            savings = Saving.objects.filter(chama=chama, forGroup=False, owner=member)
-        else:
-            savings = Saving.objects.filter(chama=chama, forGroup=False)
+            member = ChamaMember.objects.get(pk=int(member_id))
+            savings = savings.filter(owner=member)
+            
+        # Apply date filters
+        if start_date:
+            savings = savings.filter(date__date__gte=start_date)
+        if end_date:
+            savings = savings.filter(date__date__lte=end_date)
+            
+        savings = savings.order_by('-date')
 
         # 2) Prepare PDF response & BaseDocTemplate
         response = HttpResponse(content_type='application/pdf')
@@ -715,7 +727,19 @@ class DownloadService:
     def download_group_saving_report(request,chama_id):
         # 1) Fetch Chama and group Saving data
         chama   = Chama.objects.get(pk=chama_id)
+        start_date = request.GET.get('start_date', None)
+        end_date = request.GET.get('end_date', None)
+        
+        # Base queryset
         savings = Saving.objects.filter(chama=chama, forGroup=True)
+        
+        # Apply date filters
+        if start_date:
+            savings = savings.filter(date__date__gte=start_date)
+        if end_date:
+            savings = savings.filter(date__date__lte=end_date)
+            
+        savings = savings.order_by('-date')
 
         # 2) Prepare PDF response & BaseDocTemplate
         response = HttpResponse(content_type='application/pdf')
@@ -769,6 +793,104 @@ class DownloadService:
             data.append([
                 f'ksh {s.amount}',
                 s.saving_type.name,
+                s.date.strftime('%Y-%m-%d')
+            ])
+
+        table = Table(data, repeatRows=1)
+        table.setStyle(TableStyle([
+            ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
+            ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
+            ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
+            ('GRID',         (0, 0), (-1, -1), 1, colors.black),
+        ]))
+
+        # 5) Assemble & build
+        story = [
+            Spacer(1, 40),  # space below header
+            table
+        ]
+        doc.build(story)
+        return response
+    
+    @staticmethod
+    def download_my_saving_report(request, chama_id):
+        # 1) Fetch Chama and personal Saving data
+        chama = Chama.objects.get(pk=chama_id)
+        start_date = request.GET.get('start_date', None)
+        end_date = request.GET.get('end_date', None)
+        
+        # Get current user's member record
+        try:
+            member = ChamaMember.objects.get(user=request.user, group=chama)
+        except ChamaMember.DoesNotExist:
+            # Return empty PDF if user is not a member
+            response = HttpResponse(content_type='application/pdf')
+            response['Content-Disposition'] = f'attachment; filename="{chama.name}_my_savings_report.pdf"'
+            return response
+        
+        # Base queryset for personal savings
+        savings = Saving.objects.filter(chama=chama, forGroup=False, owner=member)
+        
+        # Apply date filters
+        if start_date:
+            savings = savings.filter(date__date__gte=start_date)
+        if end_date:
+            savings = savings.filter(date__date__lte=end_date)
+            
+        savings = savings.order_by('-date')
+
+        # 2) Prepare PDF response & BaseDocTemplate
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="{chama.name}_my_savings_report.pdf"'
+
+        doc = BaseDocTemplate(
+            response,
+            pagesize=letter,
+            leftMargin=36, rightMargin=36,
+            topMargin=72, bottomMargin=36
+        )
+        frame = Frame(
+            doc.leftMargin, doc.bottomMargin,
+            doc.width, doc.height,
+            id='normal'
+        )
+
+        # 3) Header callback for every page
+        def draw_header(canvas, doc):
+            canvas.saveState()
+            # Main title
+            canvas.setFont('Times-Bold', 16)
+            canvas.drawCentredString(
+                letter[0]/2, letter[1]-40,
+                chama.name
+            )
+            # Subtitle and date
+            canvas.setFont('Times-Bold', 12)
+            canvas.drawCentredString(
+                letter[0]/2, letter[1]-60,
+                "My Savings Report"
+            )
+            canvas.setFont('Times-Roman', 10)
+            canvas.drawCentredString(
+                letter[0]/2, letter[1]-75,
+                datetime.now().strftime('%Y-%m-%d')
+            )
+            canvas.restoreState()
+
+        doc.addPageTemplates([
+            PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
+        ])
+
+        # 4) Build table data & style
+        data = [[
+            'Amount', 'Type', 'Date'
+        ]]
+        for s in savings:
+            data.append([
+                f'ksh {s.amount}',
+                s.saving_type.name if s.saving_type else 'N/A',
                 s.date.strftime('%Y-%m-%d')
             ])
 
