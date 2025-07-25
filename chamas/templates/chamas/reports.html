@@ -942,11 +942,17 @@ document.addEventListener('DOMContentLoaded', function () {
                             alert('Please select a specific member to download their cashflow report');
                             return;
                         }
-                    } else if (selector.includes('investment')) {
-                        const memberSelect = document.querySelector('#investment-owner');
+                    } else if (selector.includes('member-investment-income')) {
+                        const memberSelect = document.querySelector('#member-investment-income-owner');
                         memberId = memberSelect?.value;
-                    } else if (selector.includes('saving')) {
-                        const memberSelect = document.querySelector('#saving-owner');
+                    } else if (selector.includes('individual-saving')) {
+                        const memberSelect = document.querySelector('#individual-savings-owner');
+                        memberId = memberSelect?.value;
+                    } else if (selector.includes('collected-fines')) {
+                        const memberSelect = document.querySelector('#collected-fines-owner');
+                        memberId = memberSelect?.value;
+                    } else if (selector.includes('unpaid-fines')) {
+                        const memberSelect = document.querySelector('#unpaid-fines-owner');
                         memberId = memberSelect?.value;
                     } else if (selector.includes('contribution')) {
                         const memberSelect = document.querySelector('#member-contribution-owner');
@@ -989,6 +995,12 @@ document.addEventListener('DOMContentLoaded', function () {
                                 url += `?${params.join('&')}`;
                             }
                             // If no filters selected, download all contributions
+                        } else if (selector.includes('individual-saving') || selector.includes('member-investment-income') || selector.includes('collected-fines') || selector.includes('unpaid-fines')) {
+                            // For these reports, member selection is optional
+                            if (memberId) {
+                                url += `?member_id=${memberId}`;
+                            }
+                            // If no member selected, download all records
                         } else {
                             // For other reports, member selection is required
                             if (memberId) {
@@ -1391,6 +1403,27 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load group contributions data initially (using static data)
     filterGroupContributions();
     
+    // Load all group investment income data initially
+    filterGroupInvestmentIncome();
+    
+    // Load all member investment income data initially
+    filterMemberInvestmentIncome();
+    
+    // Load all individual savings data initially
+    filterIndividualSavings();
+    
+    // Load all group savings data initially
+    filterGroupSavings();
+    
+    // Load all collected fines data initially
+    filterCollectedFines();
+    
+    // Load all unpaid fines data initially
+    filterUnpaidFines();
+    
+    // Load all expenses data initially
+    filterExpenses();
+    
     // Add event listeners for filter interactions
     setupFilterListeners();
 });
@@ -1575,6 +1608,191 @@ function setupFilterListeners() {
              const schemeId = document.getElementById('group-contribution-scheme')?.value || null;
              const startDate = document.getElementById('group-contributions-start')?.value;
              filterGroupContributions(memberId, schemeId, startDate, this.value);
+         });
+     }
+     
+     // Group investment income date filters
+     const groupInvestmentIncomesStartDate = document.getElementById('group-investment-incomes-start');
+     const groupInvestmentIncomesEndDate = document.getElementById('group-investment-incomes-end');
+     
+     if (groupInvestmentIncomesStartDate) {
+         groupInvestmentIncomesStartDate.addEventListener('change', function() {
+             const endDate = document.getElementById('group-investment-incomes-end')?.value;
+             filterGroupInvestmentIncome(this.value, endDate);
+         });
+     }
+     
+     if (groupInvestmentIncomesEndDate) {
+         groupInvestmentIncomesEndDate.addEventListener('change', function() {
+             const startDate = document.getElementById('group-investment-incomes-start')?.value;
+             filterGroupInvestmentIncome(startDate, this.value);
+         });
+     }
+     
+     // Member investment income filters
+     const memberInvestmentOwnerSelect = document.getElementById('member-investment-income-owner');
+     if (memberInvestmentOwnerSelect) {
+         memberInvestmentOwnerSelect.addEventListener('change', function() {
+             const startDate = document.getElementById('member-investment-incomes-start')?.value;
+             const endDate = document.getElementById('member-investment-incomes-end')?.value;
+             const memberId = this.value || null;
+             filterMemberInvestmentIncome(memberId, startDate, endDate);
+         });
+     }
+     
+     const memberInvestmentIncomesStartDate = document.getElementById('member-investment-incomes-start');
+     const memberInvestmentIncomesEndDate = document.getElementById('member-investment-incomes-end');
+     
+     if (memberInvestmentIncomesStartDate) {
+         memberInvestmentIncomesStartDate.addEventListener('change', function() {
+             const memberId = document.getElementById('member-investment-income-owner')?.value || null;
+             const endDate = document.getElementById('member-investment-incomes-end')?.value;
+             filterMemberInvestmentIncome(memberId, this.value, endDate);
+         });
+     }
+     
+     if (memberInvestmentIncomesEndDate) {
+         memberInvestmentIncomesEndDate.addEventListener('change', function() {
+             const memberId = document.getElementById('member-investment-income-owner')?.value || null;
+             const startDate = document.getElementById('member-investment-incomes-start')?.value;
+             filterMemberInvestmentIncome(memberId, startDate, this.value);
+         });
+     }
+     
+     // Individual savings filters
+     const individualSavingsOwnerSelect = document.getElementById('individual-savings-owner');
+     if (individualSavingsOwnerSelect) {
+         individualSavingsOwnerSelect.addEventListener('change', function() {
+             const startDate = document.getElementById('individual-savings-start')?.value;
+             const endDate = document.getElementById('individual-savings-end')?.value;
+             const memberId = this.value || null;
+             filterIndividualSavings(memberId, startDate, endDate);
+         });
+     }
+     
+     const individualSavingsStartDate = document.getElementById('individual-savings-start');
+     const individualSavingsEndDate = document.getElementById('individual-savings-end');
+     
+     if (individualSavingsStartDate) {
+         individualSavingsStartDate.addEventListener('change', function() {
+             const memberId = document.getElementById('individual-savings-owner')?.value || null;
+             const endDate = document.getElementById('individual-savings-end')?.value;
+             filterIndividualSavings(memberId, this.value, endDate);
+         });
+     }
+     
+     if (individualSavingsEndDate) {
+         individualSavingsEndDate.addEventListener('change', function() {
+             const memberId = document.getElementById('individual-savings-owner')?.value || null;
+             const startDate = document.getElementById('individual-savings-start')?.value;
+             filterIndividualSavings(memberId, startDate, this.value);
+         });
+     }
+     
+     // Group savings date filters
+     const groupSavingsStartDate = document.getElementById('group-savings-start');
+     const groupSavingsEndDate = document.getElementById('group-savings-end');
+     
+     if (groupSavingsStartDate) {
+         groupSavingsStartDate.addEventListener('change', function() {
+             const endDate = document.getElementById('group-savings-end')?.value;
+             filterGroupSavings(this.value, endDate);
+         });
+     }
+     
+     if (groupSavingsEndDate) {
+         groupSavingsEndDate.addEventListener('change', function() {
+             const startDate = document.getElementById('group-savings-start')?.value;
+             filterGroupSavings(startDate, this.value);
+         });
+     }
+     
+     // Collected fines filters
+     const collectedFinesOwnerSelect = document.getElementById('collected-fines-owner');
+     if (collectedFinesOwnerSelect) {
+         collectedFinesOwnerSelect.addEventListener('change', function() {
+             const startDate = document.getElementById('collected-fines-start')?.value;
+             const endDate = document.getElementById('collected-fines-end')?.value;
+             const memberId = this.value || null;
+             filterCollectedFines(memberId, startDate, endDate);
+         });
+     }
+     
+     const collectedFinesStartDate = document.getElementById('collected-fines-start');
+     const collectedFinesEndDate = document.getElementById('collected-fines-end');
+     
+     if (collectedFinesStartDate) {
+         collectedFinesStartDate.addEventListener('change', function() {
+             const memberId = document.getElementById('collected-fines-owner')?.value || null;
+             const endDate = document.getElementById('collected-fines-end')?.value;
+             filterCollectedFines(memberId, this.value, endDate);
+         });
+     }
+     
+     if (collectedFinesEndDate) {
+         collectedFinesEndDate.addEventListener('change', function() {
+             const memberId = document.getElementById('collected-fines-owner')?.value || null;
+             const startDate = document.getElementById('collected-fines-start')?.value;
+             filterCollectedFines(memberId, startDate, this.value);
+         });
+     }
+     
+     // Unpaid fines filters
+     const unpaidFinesOwnerSelect = document.getElementById('unpaid-fines-owner');
+     if (unpaidFinesOwnerSelect) {
+         unpaidFinesOwnerSelect.addEventListener('change', function() {
+             const startDate = document.getElementById('unpaid-fines-start')?.value;
+             const endDate = document.getElementById('unpaid-fines-end')?.value;
+             const memberId = this.value || null;
+             filterUnpaidFines(memberId, startDate, endDate);
+         });
+     }
+     
+     const unpaidFinesStartDate = document.getElementById('unpaid-fines-start');
+     const unpaidFinesEndDate = document.getElementById('unpaid-fines-end');
+     
+     if (unpaidFinesStartDate) {
+         unpaidFinesStartDate.addEventListener('change', function() {
+             const memberId = document.getElementById('unpaid-fines-owner')?.value || null;
+             const endDate = document.getElementById('unpaid-fines-end')?.value;
+             filterUnpaidFines(memberId, this.value, endDate);
+         });
+     }
+     
+     if (unpaidFinesEndDate) {
+         unpaidFinesEndDate.addEventListener('change', function() {
+             const memberId = document.getElementById('unpaid-fines-owner')?.value || null;
+             const startDate = document.getElementById('unpaid-fines-start')?.value;
+             filterUnpaidFines(memberId, startDate, this.value);
+         });
+     }
+     
+     // Expenses filters
+     const expensesStartDate = document.getElementById('expenses-start');
+     const expensesEndDate = document.getElementById('expenses-end');
+     const expensesTypeSelect = document.getElementById('expenses-type');
+     
+     if (expensesStartDate) {
+         expensesStartDate.addEventListener('change', function() {
+             const endDate = document.getElementById('expenses-end')?.value;
+             const expenseType = document.getElementById('expenses-type')?.value;
+             filterExpenses(this.value, endDate, expenseType);
+         });
+     }
+     
+     if (expensesEndDate) {
+         expensesEndDate.addEventListener('change', function() {
+             const startDate = document.getElementById('expenses-start')?.value;
+             const expenseType = document.getElementById('expenses-type')?.value;
+             filterExpenses(startDate, this.value, expenseType);
+         });
+     }
+     
+     if (expensesTypeSelect) {
+         expensesTypeSelect.addEventListener('change', function() {
+             const startDate = document.getElementById('expenses-start')?.value;
+             const endDate = document.getElementById('expenses-end')?.value;
+             filterExpenses(startDate, endDate, this.value);
          });
      }
 }
@@ -2050,6 +2268,669 @@ function filterMemberCashflow(memberId = null, startDate = null, endDate = null)
             </div>
         `;
         window.currentMemberCashflowData = null;
+    });
+}
+
+// Function to filter group investment income with AJAX call
+function filterGroupInvestmentIncome(startDate = null, endDate = null) {
+    const container = document.getElementById('group-investment-incomes-items');
+    const chamaId = localStorage.getItem('groupId');
+    
+    // Show loading state
+    if (container) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-loader-alt bx-spin empty-state-icon"></i>
+                <p class="empty-state-message">Loading...</p>
+                <p class="empty-state-description">Fetching group investment income data</p>
+            </div>
+        `;
+    }
+    
+    // Build query parameters
+    let params = new URLSearchParams();
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    
+    // Make AJAX request
+    fetch(`/chamas-bookeeping/get-group-investment-income-data/${chamaId}/?${params.toString()}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success' && data.data.length > 0) {
+            container.innerHTML = `
+                <div class="brand-table-responsive">
+                    <table class="brand-table">
+                        <thead>
+                            <tr>
+                                <th>Investment</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.data.map(item => `
+                                <tr>
+                                    <td>${item.investment_name || 'N/A'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.amount?.toLocaleString() || '0'}</td>
+                                    <td>${item.date_created || 'N/A'}</td>
+                                    <td>${item.description || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            // Store current filtered data for download
+            window.currentGroupInvestmentData = {
+                data: data.data,
+                startDate: startDate,
+                endDate: endDate
+            };
+        } else {
+            const emptyMessage = `No group investment income data available${startDate || endDate ? ' in the specified date range' : ''}`;
+                
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="bx bx-file-blank empty-state-icon"></i>
+                    <p class="empty-state-message">No investment income found</p>
+                    <p class="empty-state-description">${emptyMessage}</p>
+                </div>
+            `;
+            window.currentGroupInvestmentData = null;
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching group investment income data:', error);
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-error empty-state-icon"></i>
+                <p class="empty-state-message">Error loading data</p>
+                <p class="empty-state-description">Failed to fetch investment income data. Please try again.</p>
+            </div>
+        `;
+        window.currentGroupInvestmentData = null;
+    });
+}
+
+// Function to filter member investment income with AJAX call
+function filterMemberInvestmentIncome(memberId = null, startDate = null, endDate = null) {
+    const container = document.getElementById('member-investment-income-items');
+    const chamaId = localStorage.getItem('groupId');
+    
+    // Show loading state
+    if (container) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-loader-alt bx-spin empty-state-icon"></i>
+                <p class="empty-state-message">Loading...</p>
+                <p class="empty-state-description">Fetching member investment income data</p>
+            </div>
+        `;
+    }
+    
+    // Build query parameters
+    let params = new URLSearchParams();
+    if (memberId) params.append('member_id', memberId);
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    
+    // Make AJAX request
+    fetch(`/chamas-bookeeping/get-member-investment-income-data/${chamaId}/?${params.toString()}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success' && data.data.length > 0) {
+            // Show member column if displaying all members (no specific member selected)
+            const showMemberColumn = !memberId;
+            
+            container.innerHTML = `
+                <div class="brand-table-responsive">
+                    <table class="brand-table">
+                        <thead>
+                            <tr>
+                                <th>Investment</th>
+                                ${showMemberColumn ? '<th>Member</th>' : ''}
+                                <th>Amount</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.data.map(item => `
+                                <tr>
+                                    <td>${item.investment_name || 'N/A'}</td>
+                                    ${showMemberColumn ? `<td>${item.member_name || 'N/A'}</td>` : ''}
+                                    <td class="text-brand-primary">Ksh ${item.amount?.toLocaleString() || '0'}</td>
+                                    <td>${item.date_created || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            // Store current filtered data for download
+            window.currentMemberInvestmentData = {
+                memberId: memberId,
+                data: data.data,
+                startDate: startDate,
+                endDate: endDate
+            };
+        } else {
+            const emptyMessage = memberId 
+                ? `No investment income data available for the selected member${startDate || endDate ? ' in the specified date range' : ''}`
+                : `No member investment income data available${startDate || endDate ? ' in the specified date range' : ''}`;
+                
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="bx bx-file-blank empty-state-icon"></i>
+                    <p class="empty-state-message">No investment income found</p>
+                    <p class="empty-state-description">${emptyMessage}</p>
+                </div>
+            `;
+            window.currentMemberInvestmentData = null;
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching member investment income data:', error);
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-error empty-state-icon"></i>
+                <p class="empty-state-message">Error loading data</p>
+                <p class="empty-state-description">Failed to fetch investment income data. Please try again.</p>
+            </div>
+        `;
+        window.currentMemberInvestmentData = null;
+    });
+}
+
+// Function to filter individual savings with AJAX call
+function filterIndividualSavings(memberId = null, startDate = null, endDate = null) {
+    const container = document.getElementById('individual-savings-items');
+    const chamaId = localStorage.getItem('groupId');
+    
+    // Show loading state
+    if (container) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-loader-alt bx-spin empty-state-icon"></i>
+                <p class="empty-state-message">Loading...</p>
+                <p class="empty-state-description">Fetching individual savings data</p>
+            </div>
+        `;
+    }
+    
+    // Build query parameters
+    let params = new URLSearchParams();
+    if (memberId) params.append('member_id', memberId);
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    
+    // Make AJAX request
+    fetch(`/chamas-bookeeping/get-individual-savings-data/${chamaId}/?${params.toString()}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success' && data.data.length > 0) {
+            // Show member column if displaying all members (no specific member selected)
+            const showMemberColumn = !memberId;
+            
+            container.innerHTML = `
+                <div class="brand-table-responsive">
+                    <table class="brand-table">
+                        <thead>
+                            <tr>
+                                ${showMemberColumn ? '<th>Member</th>' : ''}
+                                <th>Saving Type</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.data.map(item => `
+                                <tr>
+                                    ${showMemberColumn ? `<td>${item.member_name || 'N/A'}</td>` : ''}
+                                    <td>${item.saving_type || 'N/A'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.amount?.toLocaleString() || '0'}</td>
+                                    <td>${item.date_created || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            // Store current filtered data for download
+            window.currentIndividualSavingsData = {
+                memberId: memberId,
+                data: data.data,
+                startDate: startDate,
+                endDate: endDate
+            };
+        } else {
+            const emptyMessage = memberId 
+                ? `No savings data available for the selected member${startDate || endDate ? ' in the specified date range' : ''}`
+                : `No individual savings data available${startDate || endDate ? ' in the specified date range' : ''}`;
+                
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="bx bx-file-blank empty-state-icon"></i>
+                    <p class="empty-state-message">No savings data found</p>
+                    <p class="empty-state-description">${emptyMessage}</p>
+                </div>
+            `;
+            window.currentIndividualSavingsData = null;
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching individual savings data:', error);
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-error empty-state-icon"></i>
+                <p class="empty-state-message">Error loading data</p>
+                <p class="empty-state-description">Failed to fetch savings data. Please try again.</p>
+            </div>
+        `;
+        window.currentIndividualSavingsData = null;
+    });
+}
+
+// Function to filter group savings with AJAX call
+function filterGroupSavings(startDate = null, endDate = null) {
+    const container = document.getElementById('group-savings-items');
+    const chamaId = localStorage.getItem('groupId');
+    
+    // Show loading state
+    if (container) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-loader-alt bx-spin empty-state-icon"></i>
+                <p class="empty-state-message">Loading...</p>
+                <p class="empty-state-description">Fetching group savings data</p>
+            </div>
+        `;
+    }
+    
+    // Build query parameters
+    let params = new URLSearchParams();
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    
+    // Make AJAX request
+    fetch(`/chamas-bookeeping/get-group-savings-data/${chamaId}/?${params.toString()}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success' && data.data.length > 0) {
+            container.innerHTML = `
+                <div class="brand-table-responsive">
+                    <table class="brand-table">
+                        <thead>
+                            <tr>
+                                <th>Member</th>
+                                <th>Saving Type</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.data.map(item => `
+                                <tr>
+                                    <td>${item.member_name || 'Group'}</td>
+                                    <td>${item.saving_type || 'N/A'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.amount?.toLocaleString() || '0'}</td>
+                                    <td>${item.date_created || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            // Store current filtered data for download
+            window.currentGroupSavingsData = {
+                data: data.data,
+                startDate: startDate,
+                endDate: endDate
+            };
+        } else {
+            const emptyMessage = `No group savings data available${startDate || endDate ? ' in the specified date range' : ''}`;
+                
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="bx bx-file-blank empty-state-icon"></i>
+                    <p class="empty-state-message">No savings data found</p>
+                    <p class="empty-state-description">${emptyMessage}</p>
+                </div>
+            `;
+            window.currentGroupSavingsData = null;
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching group savings data:', error);
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-error empty-state-icon"></i>
+                <p class="empty-state-message">Error loading data</p>
+                <p class="empty-state-description">Failed to fetch savings data. Please try again.</p>
+            </div>
+        `;
+        window.currentGroupSavingsData = null;
+    });
+}
+
+// Function to filter collected fines with AJAX call
+function filterCollectedFines(memberId = null, startDate = null, endDate = null) {
+    const container = document.getElementById('collected-fines-items');
+    const chamaId = localStorage.getItem('groupId');
+    
+    // Show loading state
+    if (container) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-loader-alt bx-spin empty-state-icon"></i>
+                <p class="empty-state-message">Loading...</p>
+                <p class="empty-state-description">Fetching collected fines data</p>
+            </div>
+        `;
+    }
+    
+    // Build query parameters
+    let params = new URLSearchParams();
+    if (memberId) params.append('member_id', memberId);
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    
+    // Make AJAX request
+    fetch(`/chamas-bookeeping/get-collected-fines-data/${chamaId}/?${params.toString()}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success' && data.data.length > 0) {
+            // Show member column if displaying all members (no specific member selected)
+            const showMemberColumn = !memberId;
+            
+            container.innerHTML = `
+                <div class="brand-table-responsive">
+                    <table class="brand-table">
+                        <thead>
+                            <tr>
+                                ${showMemberColumn ? '<th>Member</th>' : ''}
+                                <th>Fine Type</th>
+                                <th>Amount</th>
+                                <th>Date Created</th>
+                                <th>Date Paid</th>
+                                <th>Reason</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.data.map(item => `
+                                <tr>
+                                    ${showMemberColumn ? `<td>${item.member_name || 'N/A'}</td>` : ''}
+                                    <td>${item.fine_type || 'N/A'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.amount?.toLocaleString() || '0'}</td>
+                                    <td>${item.date_created || 'N/A'}</td>
+                                    <td>${item.date_paid || 'N/A'}</td>
+                                    <td>${item.reason || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            // Store current filtered data for download
+            window.currentCollectedFinesData = {
+                memberId: memberId,
+                data: data.data,
+                startDate: startDate,
+                endDate: endDate
+            };
+        } else {
+            const emptyMessage = memberId 
+                ? `No collected fines data available for the selected member${startDate || endDate ? ' in the specified date range' : ''}`
+                : `No collected fines data available${startDate || endDate ? ' in the specified date range' : ''}`;
+                
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="bx bx-file-blank empty-state-icon"></i>
+                    <p class="empty-state-message">No collected fines found</p>
+                    <p class="empty-state-description">${emptyMessage}</p>
+                </div>
+            `;
+            window.currentCollectedFinesData = null;
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching collected fines data:', error);
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-error empty-state-icon"></i>
+                <p class="empty-state-message">Error loading data</p>
+                <p class="empty-state-description">Failed to fetch collected fines data. Please try again.</p>
+            </div>
+        `;
+        window.currentCollectedFinesData = null;
+    });
+}
+
+// Function to filter unpaid fines with AJAX call
+function filterUnpaidFines(memberId = null, startDate = null, endDate = null) {
+    const container = document.getElementById('unpaid-fines-items');
+    const chamaId = localStorage.getItem('groupId');
+    
+    // Show loading state
+    if (container) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-loader-alt bx-spin empty-state-icon"></i>
+                <p class="empty-state-message">Loading...</p>
+                <p class="empty-state-description">Fetching unpaid fines data</p>
+            </div>
+        `;
+    }
+    
+    // Build query parameters
+    let params = new URLSearchParams();
+    if (memberId) params.append('member_id', memberId);
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    
+    // Make AJAX request
+    fetch(`/chamas-bookeeping/get-unpaid-fines-data/${chamaId}/?${params.toString()}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success' && data.data.length > 0) {
+            // Show member column if displaying all members (no specific member selected)
+            const showMemberColumn = !memberId;
+            
+            container.innerHTML = `
+                <div class="brand-table-responsive">
+                    <table class="brand-table">
+                        <thead>
+                            <tr>
+                                ${showMemberColumn ? '<th>Member</th>' : ''}
+                                <th>Fine Type</th>
+                                <th>Amount</th>
+                                <th>Date Created</th>
+                                <th>Due Date</th>
+                                <th>Reason</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.data.map(item => `
+                                <tr>
+                                    ${showMemberColumn ? `<td>${item.member_name || 'N/A'}</td>` : ''}
+                                    <td>${item.fine_type || 'N/A'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.amount?.toLocaleString() || '0'}</td>
+                                    <td>${item.date_created || 'N/A'}</td>
+                                    <td>${item.due_date || 'N/A'}</td>
+                                    <td>${item.reason || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            // Store current filtered data for download
+            window.currentUnpaidFinesData = {
+                memberId: memberId,
+                data: data.data,
+                startDate: startDate,
+                endDate: endDate
+            };
+        } else {
+            const emptyMessage = memberId 
+                ? `No unpaid fines data available for the selected member${startDate || endDate ? ' in the specified date range' : ''}`
+                : `No unpaid fines data available${startDate || endDate ? ' in the specified date range' : ''}`;
+                
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="bx bx-file-blank empty-state-icon"></i>
+                    <p class="empty-state-message">No unpaid fines found</p>
+                    <p class="empty-state-description">${emptyMessage}</p>
+                </div>
+            `;
+            window.currentUnpaidFinesData = null;
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching unpaid fines data:', error);
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-error empty-state-icon"></i>
+                <p class="empty-state-message">Error loading data</p>
+                <p class="empty-state-description">Failed to fetch unpaid fines data. Please try again.</p>
+            </div>
+        `;
+        window.currentUnpaidFinesData = null;
+    });
+}
+
+// Function to filter expenses with AJAX call
+function filterExpenses(startDate = null, endDate = null, expenseType = null) {
+    const container = document.getElementById('expenses-items');
+    const chamaId = localStorage.getItem('groupId');
+    
+    // Show loading state
+    if (container) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-loader-alt bx-spin empty-state-icon"></i>
+                <p class="empty-state-message">Loading...</p>
+                <p class="empty-state-description">Fetching expenses data</p>
+            </div>
+        `;
+    }
+    
+    // Build query parameters
+    let params = new URLSearchParams();
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    if (expenseType) params.append('expense_type', expenseType);
+    
+    // Make AJAX request
+    fetch(`/chamas-bookeeping/get-expenses-data/${chamaId}/?${params.toString()}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success' && data.data.length > 0) {
+            container.innerHTML = `
+                <div class="brand-table-responsive">
+                    <table class="brand-table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Description</th>
+                                <th>Date</th>
+                                <th>Created By</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.data.map(item => `
+                                <tr>
+                                    <td>${item.type || 'N/A'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.amount?.toLocaleString() || '0'}</td>
+                                    <td>${item.description || 'N/A'}</td>
+                                    <td>${item.created_on || 'N/A'}</td>
+                                    <td>${item.created_by || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            // Store current filtered data for download
+            window.currentExpensesData = {
+                data: data.data,
+                startDate: startDate,
+                endDate: endDate,
+                expenseType: expenseType
+            };
+        } else {
+            const emptyMessage = `No expenses data available${startDate || endDate ? ' in the specified date range' : ''}`;
+                
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="bx bx-file-blank empty-state-icon"></i>
+                    <p class="empty-state-message">No expenses found</p>
+                    <p class="empty-state-description">${emptyMessage}</p>
+                </div>
+            `;
+            window.currentExpensesData = null;
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching expenses data:', error);
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bx bx-error empty-state-icon"></i>
+                <p class="empty-state-message">Error loading data</p>
+                <p class="empty-state-description">Failed to fetch expenses data. Please try again.</p>
+            </div>
+        `;
+        window.currentExpensesData = null;
     });
 }
 

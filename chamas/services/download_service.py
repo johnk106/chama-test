@@ -414,11 +414,10 @@ class DownloadService:
         return response
     
     @staticmethod
-    def download_member_investment_income(request,chama_id):
+    def download_member_investment_income(request, chama_id, member_id=None):
         # 1) Fetch Chama and Income data
         chama = Chama.objects.get(pk=chama_id)
-        member_id = request.GET.get('member-id', None)
-
+        
         if member_id:
             member = ChamaMember.objects.get(pk=int(member_id))
             incomes = Income.objects.filter(chama=chama, forGroup=False, owner=member)
@@ -502,13 +501,12 @@ class DownloadService:
         return response
     
     @staticmethod
-    def download_individual_saving_report(request,chama_id):
+    def download_individual_saving_report(request, chama_id, member_id=None):
         # 1) Fetch Chama and individual saving data
         chama = Chama.objects.get(pk=chama_id)
-        member_id = request.GET.get('member-id', None)
-
+        
         if member_id:
-            member  = ChamaMember.objects.get(pk=int(member_id))
+            member = ChamaMember.objects.get(pk=int(member_id))
             savings = Saving.objects.filter(chama=chama, forGroup=False, owner=member)
         else:
             savings = Saving.objects.filter(chama=chama, forGroup=False)
@@ -939,11 +937,15 @@ class DownloadService:
             return response
     
     @staticmethod
-    def download_collected_fine_report(chama_id):
+    def download_collected_fine_report(chama_id, member_id=None):
         # 1) Fetch Chama and cleared fines
         chama = Chama.objects.get(pk=chama_id)
         # Pull all fines with status 'cleared' in a single queryset
-        fines = FineItem.objects.filter(fine_type__chama=chama, status='cleared')
+        filters = {'fine_type__chama': chama, 'status': 'cleared'}
+        if member_id:
+            member = ChamaMember.objects.get(pk=int(member_id))
+            filters['member'] = member
+        fines = FineItem.objects.filter(**filters)
 
         # 2) Prepare PDF response & BaseDocTemplate
         response = HttpResponse(content_type='application/pdf')
@@ -1026,10 +1028,14 @@ class DownloadService:
         return response
     
     @staticmethod
-    def download_uncollected_fines_report(chama_id):
+    def download_uncollected_fines_report(chama_id, member_id=None):
         # 1) Fetch Chama and active fines
         chama = Chama.objects.get(pk=chama_id)
-        fines = FineItem.objects.filter(fine_type__chama=chama, status='active')
+        filters = {'fine_type__chama': chama, 'status': 'active'}
+        if member_id:
+            member = ChamaMember.objects.get(pk=int(member_id))
+            filters['member'] = member
+        fines = FineItem.objects.filter(**filters)
 
         # 2) Prepare PDF response & BaseDocTemplate
         response = HttpResponse(content_type='application/pdf')

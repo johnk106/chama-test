@@ -73,5 +73,12 @@ urlpatterns = [
     path('get-member-cashflow-data/<int:chama_id>/', views.get_member_cashflow_data, name='get-member-cashflow-data'),
     path('get-loan-repayment-schedule/<int:chama_id>/', views.get_loan_repayment_schedule, name='get-loan-repayment-schedule'),
     path('get-member-contributions-data/<int:chama_id>/', views.get_member_contributions_data, name='get-member-contributions-data'),
+    path('get-group-investment-income-data/<int:chama_id>/', views.get_group_investment_income_data, name='get-group-investment-income-data'),
+    path('get-member-investment-income-data/<int:chama_id>/', views.get_member_investment_income_data, name='get-member-investment-income-data'),
+    path('get-individual-savings-data/<int:chama_id>/', views.get_individual_savings_data, name='get-individual-savings-data'),
+    path('get-group-savings-data/<int:chama_id>/', views.get_group_savings_data, name='get-group-savings-data'),
+    path('get-collected-fines-data/<int:chama_id>/', views.get_collected_fines_data, name='get-collected-fines-data'),
+    path('get-unpaid-fines-data/<int:chama_id>/', views.get_unpaid_fines_data, name='get-unpaid-fines-data'),
+    path('get-expenses-data/<int:chama_id>/', views.get_expenses_data, name='get-expenses-data'),
 
 ]

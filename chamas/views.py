@@ -1265,14 +1265,36 @@ def download_group_investment_income(request, chama_id):
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_member_investment_income(request, chama_id):
-    return DownloadService.download_member_investment_income(request,chama_id)
+    member_id = request.GET.get('member_id')
+    try:
+        return DownloadService.download_member_investment_income(request, chama_id, member_id)
+    except Exception as e:
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error downloading member investment income report for chama {chama_id}: {str(e)}")
+        from django.http import JsonResponse
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Failed to generate investment income report: {str(e)}'
+        }, status=500)
     
 
 
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_individual_saving_report(request, chama_id):
-    return DownloadService.download_individual_saving_report(request,chama_id)
+    member_id = request.GET.get('member_id')
+    try:
+        return DownloadService.download_individual_saving_report(request, chama_id, member_id)
+    except Exception as e:
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error downloading individual saving report for chama {chama_id}: {str(e)}")
+        from django.http import JsonResponse
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Failed to generate saving report: {str(e)}'
+        }, status=500)
     
 
 
@@ -1317,14 +1339,36 @@ def download_member_contribution_report(request, chama_id, member_id=None, schem
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_collected_fine_report(request, chama_id):
-    return DownloadService.download_collected_fine_report(chama_id)
+    member_id = request.GET.get('member_id')
+    try:
+        return DownloadService.download_collected_fine_report(chama_id, member_id)
+    except Exception as e:
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error downloading collected fines report for chama {chama_id}: {str(e)}")
+        from django.http import JsonResponse
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Failed to generate collected fines report: {str(e)}'
+        }, status=500)
     
 
 
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_uncollected_fines_report(request, chama_id):
-    return DownloadService.download_uncollected_fines_report(chama_id)
+    member_id = request.GET.get('member_id')
+    try:
+        return DownloadService.download_uncollected_fines_report(chama_id, member_id)
+    except Exception as e:
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error downloading uncollected fines report for chama {chama_id}: {str(e)}")
+        from django.http import JsonResponse
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Failed to generate uncollected fines report: {str(e)}'
+        }, status=500)
     
 
 @login_required(login_url='/user/Login')
@@ -1350,7 +1394,17 @@ def download_my_cashflow_report(request, chama_id):
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_expense_report(request, chama_id):
-    return DownloadService.download_expense_report(chama_id)
+    try:
+        return DownloadService.download_expense_report(chama_id)
+    except Exception as e:
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error downloading expense report for chama {chama_id}: {str(e)}")
+        from django.http import JsonResponse
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Failed to generate expense report: {str(e)}'
+        }, status=500)
     
 
 
@@ -1620,6 +1674,404 @@ def get_member_contributions_data(request, chama_id):
         except Exception as e:
             return JsonResponse({
                 'status': 'error',
+                'message': str(e)
+            })
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def debug_contributions(request, chama_id):
+    """
+    Debug endpoint to check contribution data
+    """
+    try:
+        chama = Chama.objects.get(pk=chama_id)
+        
+        # Get first 5 contribution records
+        records = ContributionRecord.objects.filter(chama=chama)[:5]
+        
+        debug_data = []
+        for record in records:
+            debug_info = {
+                'record_id': record.id,
+                'contribution_id_field': getattr(record, 'contribution_id', 'No field'),
+                'contribution_object': str(record.contribution) if record.contribution else 'None',
+                'contribution_name': record.contribution.name if record.contribution else 'No contribution',
+                'member_name': record.member.name if record.member else 'No member',
+                'amount_paid': float(record.amount_paid),
+            }
+            debug_data.append(debug_info)
+            
+        return JsonResponse({
+            'status': 'success',
+            'debug_data': debug_data,
+            'total_records': ContributionRecord.objects.filter(chama=chama).count(),
+            'total_contributions': Contribution.objects.filter(chama=chama).count()
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        })
+
+
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def get_group_investment_income_data(request, chama_id):
+    """
+    AJAX endpoint to get filtered group investment income data
+    """
+    if request.method == 'GET':
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+        
+        try:
+            chama = Chama.objects.get(pk=chama_id)
+            filters = {'chama': chama}
+            
+            if start_date:
+                filters['date_created__gte'] = start_date
+            if end_date:
+                filters['date_created__lte'] = end_date
+                
+            incomes = Income.objects.filter(**filters).order_by('-date_created')
+            
+            data = []
+            for income in incomes:
+                data.append({
+                    'id': income.id,
+                    'investment_name': income.investment.name if income.investment else 'N/A',
+                    'investment_id': income.investment.id if income.investment else None,
+                    'amount': float(income.amount) if income.amount else 0,
+                    'date_created': income.date_created.strftime('%Y-%m-%d') if income.date_created else 'N/A',
+                    'description': income.description or 'N/A'
+                })
+                
+            return JsonResponse({
+                'status': 'success', 
+                'data': data, 
+                'count': len(data)
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error', 
+                'message': str(e)
+            })
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def get_member_investment_income_data(request, chama_id):
+    """
+    AJAX endpoint to get filtered member investment income data
+    """
+    if request.method == 'GET':
+        member_id = request.GET.get('member_id')
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+        
+        try:
+            chama = Chama.objects.get(pk=chama_id)
+            filters = {'chama': chama}
+            
+            if member_id:
+                member = ChamaMember.objects.get(pk=member_id)
+                filters['owner'] = member
+            if start_date:
+                filters['date_created__gte'] = start_date
+            if end_date:
+                filters['date_created__lte'] = end_date
+                
+            incomes = Income.objects.filter(**filters).order_by('-date_created')
+            
+            data = []
+            for income in incomes:
+                data.append({
+                    'id': income.id,
+                    'investment_name': income.investment.name if income.investment else 'N/A',
+                    'investment_id': income.investment.id if income.investment else None,
+                    'member_name': income.owner.name if income.owner else 'N/A',
+                    'member_id': income.owner.id if income.owner else None,
+                    'amount': float(income.amount) if income.amount else 0,
+                    'date_created': income.date_created.strftime('%Y-%m-%d') if income.date_created else 'N/A',
+                    'description': income.description or 'N/A'
+                })
+                
+            return JsonResponse({
+                'status': 'success', 
+                'data': data, 
+                'count': len(data)
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error', 
+                'message': str(e)
+            })
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def get_individual_savings_data(request, chama_id):
+    """
+    AJAX endpoint to get filtered individual savings data
+    """
+    if request.method == 'GET':
+        member_id = request.GET.get('member_id')
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+        
+        try:
+            chama = Chama.objects.get(pk=chama_id)
+            filters = {'chama': chama}
+            
+            if member_id:
+                member = ChamaMember.objects.get(pk=member_id)
+                filters['owner'] = member
+            if start_date:
+                filters['date_created__gte'] = start_date
+            if end_date:
+                filters['date_created__lte'] = end_date
+                
+            savings = Saving.objects.filter(**filters).order_by('-date_created')
+            
+            data = []
+            for saving in savings:
+                data.append({
+                    'id': saving.id,
+                    'member_name': saving.owner.name if saving.owner else 'N/A',
+                    'member_id': saving.owner.id if saving.owner else None,
+                    'saving_type': saving.saving_type.name if saving.saving_type else 'N/A',
+                    'saving_type_id': saving.saving_type.id if saving.saving_type else None,
+                    'amount': float(saving.amount) if saving.amount else 0,
+                    'date_created': saving.date_created.strftime('%Y-%m-%d') if saving.date_created else 'N/A',
+                    'description': saving.description or 'N/A'
+                })
+                
+            return JsonResponse({
+                'status': 'success', 
+                'data': data, 
+                'count': len(data)
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error', 
+                'message': str(e)
+            })
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def get_group_savings_data(request, chama_id):
+    """
+    AJAX endpoint to get filtered group savings data
+    """
+    if request.method == 'GET':
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+        
+        try:
+            chama = Chama.objects.get(pk=chama_id)
+            filters = {'chama': chama}
+            
+            if start_date:
+                filters['date_created__gte'] = start_date
+            if end_date:
+                filters['date_created__lte'] = end_date
+                
+            savings = Saving.objects.filter(**filters).order_by('-date_created')
+            
+            data = []
+            for saving in savings:
+                data.append({
+                    'id': saving.id,
+                    'member_name': saving.owner.name if saving.owner else 'Group',
+                    'member_id': saving.owner.id if saving.owner else None,
+                    'saving_type': saving.saving_type.name if saving.saving_type else 'N/A',
+                    'saving_type_id': saving.saving_type.id if saving.saving_type else None,
+                    'amount': float(saving.amount) if saving.amount else 0,
+                    'date_created': saving.date_created.strftime('%Y-%m-%d') if saving.date_created else 'N/A',
+                    'description': saving.description or 'N/A'
+                })
+                
+            return JsonResponse({
+                'status': 'success', 
+                'data': data, 
+                'count': len(data)
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error', 
+                'message': str(e)
+            })
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def get_collected_fines_data(request, chama_id):
+    """
+    AJAX endpoint to get filtered collected fines data
+    """
+    if request.method == 'GET':
+        member_id = request.GET.get('member_id')
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+        
+        try:
+            chama = Chama.objects.get(pk=chama_id)
+            filters = {'chama': chama, 'paid': True}
+            
+            if member_id:
+                member = ChamaMember.objects.get(pk=member_id)
+                filters['member'] = member
+            if start_date:
+                filters['date_created__gte'] = start_date
+            if end_date:
+                filters['date_created__lte'] = end_date
+                
+            fines = FineItem.objects.filter(**filters).order_by('-created')
+            
+            data = []
+            for fine in fines:
+                data.append({
+                    'id': fine.id,
+                    'member_name': fine.member.name if fine.member else 'N/A',
+                    'member_id': fine.member.id if fine.member else None,
+                    'fine_type': fine.fine_type.name if fine.fine_type else 'N/A',
+                    'fine_type_id': fine.fine_type.id if fine.fine_type else None,
+                    'amount': float(fine.fine_amount),
+                    'date_created': fine.created.strftime('%Y-%m-%d') if fine.created else 'N/A',
+                    'date_paid': fine.last_updated.strftime('%Y-%m-%d') if fine.last_updated else 'N/A',
+                    'reason': fine.reason or 'N/A'
+                })
+                
+            return JsonResponse({
+                'status': 'success', 
+                'data': data, 
+                'count': len(data)
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error', 
+                'message': str(e)
+            })
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def get_unpaid_fines_data(request, chama_id):
+    """
+    AJAX endpoint to get filtered unpaid fines data
+    """
+    if request.method == 'GET':
+        member_id = request.GET.get('member_id')
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+        
+        try:
+            chama = Chama.objects.get(pk=chama_id)
+            filters = {'chama': chama, 'paid': False}
+            
+            if member_id:
+                member = ChamaMember.objects.get(pk=member_id)
+                filters['member'] = member
+            if start_date:
+                filters['created__gte'] = start_date
+            if end_date:
+                filters['created__lte'] = end_date
+                
+            fines = FineItem.objects.filter(**filters).order_by('-created')
+            
+            data = []
+            for fine in fines:
+                data.append({
+                    'id': fine.id,
+                    'member_name': fine.member.name if fine.member else 'N/A',
+                    'member_id': fine.member.id if fine.member else None,
+                    'fine_type': fine.fine_type.name if fine.fine_type else 'N/A',
+                    'fine_type_id': fine.fine_type.id if fine.fine_type else None,
+                    'amount': float(fine.fine_amount),
+                    'date_created': fine.created.strftime('%Y-%m-%d') if fine.created else 'N/A',
+                    'due_date': fine.last_updated.strftime('%Y-%m-%d') if fine.last_updated else 'N/A',
+                    'reason': fine.reason or 'N/A'
+                })
+                
+            return JsonResponse({
+                'status': 'success', 
+                'data': data, 
+                'count': len(data)
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error', 
+                'message': str(e)
+            })
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def get_expenses_data(request, chama_id):
+    """
+    AJAX endpoint to get filtered expenses data
+    """
+    if request.method == 'GET':
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+        expense_type = request.GET.get('expense_type')
+        
+        try:
+            chama = Chama.objects.get(pk=chama_id)
+            filters = {'chama': chama}
+            
+            if start_date:
+                filters['created_on__gte'] = start_date
+            if end_date:
+                filters['created_on__lte'] = end_date
+            if expense_type:
+                filters['type__icontains'] = expense_type
+                
+            expenses = Expense.objects.filter(**filters).order_by('-created_on')
+            
+            data = []
+            for expense in expenses:
+                data.append({
+                    'id': expense.id,
+                    'type': expense.type or 'N/A',
+                    'amount': float(expense.amount) if expense.amount else 0,
+                    'description': expense.description or 'N/A',
+                    'created_on': expense.created_on.strftime('%Y-%m-%d') if expense.created_on else 'N/A',
+                    'created_by': expense.created_by.username if expense.created_by else 'N/A'
+                })
+                
+            return JsonResponse({
+                'status': 'success', 
+                'data': data, 
+                'count': len(data)
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error', 
                 'message': str(e)
             })
     
