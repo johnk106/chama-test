@@ -1215,7 +1215,8 @@ def reports(request,chama_id):
         'my_tot_contributions':tot,
         'chama_expense_reports':chama_expenses,
         'expenses_tot':expenses_tot,
-        'schemes':contribution_schemes
+        'schemes':contribution_schemes,
+        'contributions':contribution_schemes
         
     }
 
@@ -1381,6 +1382,58 @@ def create_notif(request,chama_id):
         return JsonResponse(data,status=405)
 
 
-
-
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def get_member_cashflow_data(request, chama_id):
+    """
+    AJAX endpoint to get member cashflow data for filtering
+    """
+    if request.method == 'GET':
+        member_id = request.GET.get('member_id')
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+        
+        try:
+            chama = Chama.objects.get(pk=chama_id)
+            
+            # Build query filters
+            filters = {'chama': chama}
+            if member_id:
+                member = ChamaMember.objects.get(pk=member_id)
+                filters['member'] = member
+                
+            if start_date:
+                filters['object_date__gte'] = start_date
+            if end_date:
+                filters['object_date__lte'] = end_date
+                
+            # Get cashflow reports
+            reports = CashflowReport.objects.filter(**filters).order_by('-date_created')
+            
+            # Format data for JSON response
+            data = []
+            for report in reports:
+                data.append({
+                    'id': report.id,
+                    'member_name': report.member.name if report.member else 'Group',
+                    'member_id': report.member.id if report.member else None,
+                    'type': report.type,
+                    'amount': float(report.amount),
+                    'object_date': report.object_date.strftime('%Y-%m-%d'),
+                    'date_created': report.date_created.strftime('%Y-%m-%d')
+                })
+                
+            return JsonResponse({
+                'status': 'success',
+                'data': data,
+                'count': len(data)
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            })
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 

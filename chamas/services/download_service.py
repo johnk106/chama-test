@@ -8,6 +8,7 @@ from reportlab.platypus             import (
     BaseDocTemplate, Frame, PageTemplate,
     Paragraph, Table, TableStyle, Spacer
 )
+from datetime import datetime
 
 class DownloadService:
     @staticmethod
@@ -951,7 +952,7 @@ class DownloadService:
         return response
     
     @staticmethod
-    def download_member_cahsflow_report(chama_id,member_id):
+    def download_member_cashflow_report(chama_id,member_id):
         # 1) Fetch Chama, Member, and Cashflow Report data
         chama  = Chama.objects.get(pk=chama_id)
         member = ChamaMember.objects.get(pk=member_id)
