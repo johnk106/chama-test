@@ -1258,7 +1258,7 @@ def download_loan_repayment_schedule(request, chama_id):
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_group_investment_income(request, chama_id):
-    return DownloadService.download_group_investment_income(chama_id)
+    return DownloadService.download_group_investment_income(request, chama_id)
    
 
     
@@ -1266,6 +1266,11 @@ def download_group_investment_income(request, chama_id):
 @is_user_chama_member
 def download_member_investment_income(request, chama_id):
     return DownloadService.download_member_investment_income(request,chama_id)
+
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def download_my_investment_income(request, chama_id):
+    return DownloadService.download_my_investment_income(request, chama_id)
     
 
 
@@ -1609,6 +1614,178 @@ def get_member_contributions_data(request, chama_id):
                     'date_created': contrib.date_created.strftime('%Y-%m-%d') if contrib.date_created else 'N/A',
                     'last_updated': contrib.last_updated.strftime('%Y-%m-%d') if contrib.last_updated else 'N/A',
                     'payment_status': 'Fully Paid' if contrib.balance <= 0 else 'Partial' if contrib.amount_paid > 0 else 'Unpaid'
+                })
+                
+            return JsonResponse({
+                'status': 'success',
+                'data': data,
+                'count': len(data)
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            })
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def get_group_investment_income_data(request, chama_id):
+    """AJAX endpoint to get filtered group investment income data"""
+    if request.method == 'GET':
+        try:
+            chama = Chama.objects.get(pk=chama_id)
+            
+            # Get filter parameters
+            start_date = request.GET.get('start_date')
+            end_date = request.GET.get('end_date')
+            
+            # Base queryset for group investment incomes
+            queryset = Income.objects.filter(chama=chama, forGroup=True).select_related('investment')
+            
+            # Apply date filters
+            if start_date:
+                queryset = queryset.filter(user_date__gte=start_date)
+            if end_date:
+                queryset = queryset.filter(user_date__lte=end_date)
+            
+            # Order by most recent
+            queryset = queryset.order_by('-date')
+            
+            # Build response data
+            data = []
+            for income in queryset:
+                data.append({
+                    'id': income.id,
+                    'name': income.name,
+                    'investment_name': income.investment.name if income.investment else 'N/A',
+                    'investment_id': income.investment.id if income.investment else None,
+                    'amount': float(income.amount),
+                    'date': income.user_date.strftime('%Y-%m-%d'),
+                    'created_date': income.date.strftime('%Y-%m-%d %H:%M:%S')
+                })
+                
+            return JsonResponse({
+                'status': 'success',
+                'data': data,
+                'count': len(data)
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            })
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def get_member_investment_income_data(request, chama_id):
+    """AJAX endpoint to get filtered member investment income data"""
+    if request.method == 'GET':
+        try:
+            chama = Chama.objects.get(pk=chama_id)
+            
+            # Get filter parameters
+            member_id = request.GET.get('member_id')
+            start_date = request.GET.get('start_date')
+            end_date = request.GET.get('end_date')
+            
+            # Base queryset for member investment incomes
+            queryset = Income.objects.filter(chama=chama, forGroup=False).select_related('investment', 'owner')
+            
+            # Apply member filter
+            if member_id:
+                queryset = queryset.filter(owner_id=member_id)
+            
+            # Apply date filters
+            if start_date:
+                queryset = queryset.filter(user_date__gte=start_date)
+            if end_date:
+                queryset = queryset.filter(user_date__lte=end_date)
+            
+            # Order by most recent
+            queryset = queryset.order_by('-date')
+            
+            # Build response data
+            data = []
+            for income in queryset:
+                data.append({
+                    'id': income.id,
+                    'name': income.name,
+                    'investment_name': income.investment.name if income.investment else 'N/A',
+                    'investment_id': income.investment.id if income.investment else None,
+                    'member_name': income.owner.name if income.owner else 'N/A',
+                    'member_id': income.owner.id if income.owner else None,
+                    'amount': float(income.amount),
+                    'date': income.user_date.strftime('%Y-%m-%d'),
+                    'created_date': income.date.strftime('%Y-%m-%d %H:%M:%S')
+                })
+                
+            return JsonResponse({
+                'status': 'success',
+                'data': data,
+                'count': len(data)
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            })
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def get_my_investment_income_data(request, chama_id):
+    """AJAX endpoint to get filtered personal investment income data"""
+    if request.method == 'GET':
+        try:
+            chama = Chama.objects.get(pk=chama_id)
+            
+            # Get current user's member record
+            try:
+                member = ChamaMember.objects.get(user=request.user, group=chama)
+            except ChamaMember.DoesNotExist:
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'You are not a member of this chama'
+                })
+            
+            # Get filter parameters
+            start_date = request.GET.get('start_date')
+            end_date = request.GET.get('end_date')
+            
+            # Base queryset for personal investment incomes
+            queryset = Income.objects.filter(chama=chama, forGroup=False, owner=member).select_related('investment')
+            
+            # Apply date filters
+            if start_date:
+                queryset = queryset.filter(user_date__gte=start_date)
+            if end_date:
+                queryset = queryset.filter(user_date__lte=end_date)
+            
+            # Order by most recent
+            queryset = queryset.order_by('-date')
+            
+            # Build response data
+            data = []
+            for income in queryset:
+                data.append({
+                    'id': income.id,
+                    'name': income.name,
+                    'investment_name': income.investment.name if income.investment else 'N/A',
+                    'investment_id': income.investment.id if income.investment else None,
+                    'amount': float(income.amount),
+                    'date': income.user_date.strftime('%Y-%m-%d'),
+                    'created_date': income.date.strftime('%Y-%m-%d %H:%M:%S')
                 })
                 
             return JsonResponse({

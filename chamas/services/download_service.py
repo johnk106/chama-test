@@ -333,10 +333,22 @@ class DownloadService:
         return response
     
     @staticmethod
-    def download_group_investment_income(chama_id):
+    def download_group_investment_income(request, chama_id):
         # 1) Fetch Chama and group Income data
         chama   = Chama.objects.get(pk=chama_id)
+        start_date = request.GET.get('start_date', None)
+        end_date = request.GET.get('end_date', None)
+        
+        # Base queryset
         incomes = Income.objects.filter(chama=chama, forGroup=True)
+        
+        # Apply date filters
+        if start_date:
+            incomes = incomes.filter(user_date__gte=start_date)
+        if end_date:
+            incomes = incomes.filter(user_date__lte=end_date)
+            
+        incomes = incomes.order_by('-date')
 
         # 2) Prepare PDF response & BaseDocTemplate
         response = HttpResponse(content_type='application/pdf')
@@ -417,13 +429,25 @@ class DownloadService:
     def download_member_investment_income(request,chama_id):
         # 1) Fetch Chama and Income data
         chama = Chama.objects.get(pk=chama_id)
-        member_id = request.GET.get('member-id', None)
+        member_id = request.GET.get('member_id', None)
+        start_date = request.GET.get('start_date', None)
+        end_date = request.GET.get('end_date', None)
 
+        # Base queryset
+        incomes = Income.objects.filter(chama=chama, forGroup=False)
+        
+        # Apply member filter
         if member_id:
             member = ChamaMember.objects.get(pk=int(member_id))
-            incomes = Income.objects.filter(chama=chama, forGroup=False, owner=member)
-        else:
-            incomes = Income.objects.filter(chama=chama, forGroup=False)
+            incomes = incomes.filter(owner=member)
+            
+        # Apply date filters
+        if start_date:
+            incomes = incomes.filter(user_date__gte=start_date)
+        if end_date:
+            incomes = incomes.filter(user_date__lte=end_date)
+            
+        incomes = incomes.order_by('-date')
 
         # 2) Prepare PDF response & BaseDocTemplate
         response = HttpResponse(content_type='application/pdf')
@@ -481,6 +505,106 @@ class DownloadService:
                 income.investment.name,
                 f'ksh {income.amount}',
                 income.date.strftime('%Y-%m-%d')
+            ])
+
+        table = Table(data, repeatRows=1)
+        table.setStyle(TableStyle([
+            ('BACKGROUND',   (0, 0), (-1, 0), colors.grey),
+            ('TEXTCOLOR',    (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN',        (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME',     (0, 0), (-1, 0), 'Times-Bold'),
+            ('BOTTOMPADDING',(0, 0), (-1, 0), 12),
+            ('GRID',         (0, 0), (-1, -1), 1, colors.black),
+        ]))
+
+        # 5) Assemble & build
+        story = [
+            Spacer(1, 40),  # space below header
+            table
+        ]
+        doc.build(story)
+        return response
+    
+    @staticmethod
+    def download_my_investment_income(request, chama_id):
+        # 1) Fetch Chama and personal Income data
+        chama = Chama.objects.get(pk=chama_id)
+        start_date = request.GET.get('start_date', None)
+        end_date = request.GET.get('end_date', None)
+        
+        # Get current user's member record
+        try:
+            member = ChamaMember.objects.get(user=request.user, group=chama)
+        except ChamaMember.DoesNotExist:
+            # Return empty PDF if user is not a member
+            response = HttpResponse(content_type='application/pdf')
+            response['Content-Disposition'] = f'attachment; filename="{chama.name}_my_investment_income.pdf"'
+            return response
+        
+        # Base queryset for personal investment incomes
+        incomes = Income.objects.filter(chama=chama, forGroup=False, owner=member)
+        
+        # Apply date filters
+        if start_date:
+            incomes = incomes.filter(user_date__gte=start_date)
+        if end_date:
+            incomes = incomes.filter(user_date__lte=end_date)
+            
+        incomes = incomes.order_by('-date')
+
+        # 2) Prepare PDF response & BaseDocTemplate
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="{chama.name}_my_investment_income.pdf"'
+
+        doc = BaseDocTemplate(
+            response,
+            pagesize=letter,
+            leftMargin=36, rightMargin=36,
+            topMargin=72, bottomMargin=36
+        )
+        frame = Frame(
+            doc.leftMargin, doc.bottomMargin,
+            doc.width, doc.height,
+            id='normal'
+        )
+
+        # 3) Header callback for every page
+        def draw_header(canvas, doc):
+            canvas.saveState()
+            # Main title
+            canvas.setFont('Times-Bold', 16)
+            canvas.drawCentredString(
+                letter[0] / 2, letter[1] - 40,
+                chama.name
+            )
+            # Subtitle and date
+            canvas.setFont('Times-Bold', 12)
+            canvas.drawCentredString(
+                letter[0] / 2, letter[1] - 60,
+                "My Investment Income"
+            )
+            canvas.setFont('Times-Roman', 10)
+            canvas.drawCentredString(
+                letter[0] / 2, letter[1] - 75,
+                datetime.now().strftime("%Y-%m-%d")
+            )
+            canvas.restoreState()
+
+        doc.addPageTemplates([
+            PageTemplate(id='WithHeader', frames=frame, onPage=draw_header)
+        ])
+
+        # 4) Build table data & style
+        data = [[
+            'Income Name', 'Investment',
+            'Amount', 'Date'
+        ]]
+        for income in incomes:
+            data.append([
+                income.name,
+                income.investment.name if income.investment else 'N/A',
+                f'ksh {income.amount}',
+                income.user_date.strftime('%Y-%m-%d')
             ])
 
         table = Table(data, repeatRows=1)

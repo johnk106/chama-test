@@ -54,6 +54,7 @@ urlpatterns = [
     path('download-loan-repayment-schedule/<int:chama_id>/',views.download_loan_repayment_schedule,name='download-loan-repayment-schedule'),
     path('download-group-investment-income/<int:chama_id>/',views.download_group_investment_income,name='download-group-investment-income'),
     path('download-member-investment-income/<int:chama_id>/',views.download_member_investment_income,name='download-member-investment-income'),
+    path('download-my-investment-income/<int:chama_id>/',views.download_my_investment_income,name='download-my-investment-income'),
     path('download-individual-saving-report/<int:chama_id>/',views.download_individual_saving_report,name='download-individual-saving-report'),
     path('download-group-saving-report/<int:chama_id>/',views.download_group_saving_report,name='download-group-saving-report'),
     path('download-group-contributions-report/<int:chama_id>/<int:contribution_id>/',views.download_group_contributions_report,name='download-group-contributions-report'),
@@ -73,5 +74,8 @@ urlpatterns = [
     path('get-member-cashflow-data/<int:chama_id>/', views.get_member_cashflow_data, name='get-member-cashflow-data'),
     path('get-loan-repayment-schedule/<int:chama_id>/', views.get_loan_repayment_schedule, name='get-loan-repayment-schedule'),
     path('get-member-contributions-data/<int:chama_id>/', views.get_member_contributions_data, name='get-member-contributions-data'),
+    path('get-group-investment-income-data/<int:chama_id>/', views.get_group_investment_income_data, name='get-group-investment-income-data'),
+    path('get-member-investment-income-data/<int:chama_id>/', views.get_member_investment_income_data, name='get-member-investment-income-data'),
+    path('get-my-investment-income-data/<int:chama_id>/', views.get_my_investment_income_data, name='get-my-investment-income-data'),
 
 ]
