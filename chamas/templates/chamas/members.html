@@ -837,18 +837,12 @@ let allMembers = [];
 
 // Define edit member functions inline for immediate availability
 window.openEditMemberModal = function(memberId) {
-    console.log('[DEBUG] Opening edit modal for member:', memberId);
-    
     try {
         const memberCard = document.querySelector(`[data-member-id="${memberId}"]`);
         if (!memberCard) {
             alert('Member not found');
             return;
         }
-
-        // Debug: Check all attributes on the member card
-        console.log('[DEBUG] Member card element:', memberCard);
-        console.log('[DEBUG] Member card innerHTML:', memberCard.innerHTML.substring(0, 200) + '...');
         
         // Extract member data from data attributes
         const memberName = memberCard.getAttribute('data-member-name') || '';
@@ -1020,7 +1014,6 @@ function fetchMemberDataAndPopulateForm(memberId) {
         }
     })
     .then(response => {
-        console.log('[DEBUG] Member detail response status:', response.status);
         return response.json();
     })
     .then(data => {
@@ -1058,7 +1051,6 @@ function populateEditForm(memberId, memberData) {
         }
         
         if (missingFields.length > 0) {
-            console.error('[ERROR] Missing form fields:', missingFields);
             alert('Form fields are missing: ' + missingFields.join(', '));
             return;
         }
@@ -1102,7 +1094,6 @@ function populateEditForm(memberId, memberData) {
 // Helper function to show the modal
 function showEditModal() {
     const modal = document.getElementById('adminEditMemberModal');
-    console.log('[DEBUG] Showing modal:', modal);
     
     // Force modal to be visible with inline styles
     modal.style.display = 'flex';
@@ -1138,8 +1129,6 @@ function showEditModal() {
     setTimeout(() => {
         document.getElementById('editMemberName').focus();
     }, 100);
-    
-    console.log('[DEBUG] Modal shown successfully');
 }
 
 // Initialize page
@@ -1147,11 +1136,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeMembers();
     setupEventListeners();
     
-    // Debug: Check if edit functions are available
-    console.log('[DEBUG] Edit functions availability:');
-    console.log('openEditMemberModal:', typeof window.openEditMemberModal);
-    console.log('closeEditMemberModal:', typeof window.closeEditMemberModal);
-    console.log('submitEditMember:', typeof window.submitEditMember);
+
 });
 
 function initializeMembers() {
@@ -1334,7 +1319,6 @@ function loadMemberDetails(memberId) {
         }
     })
     .catch(error => {
-        console.error('Failed to load member details:', error);
         modalBody.innerHTML = `
             <div class="admin-empty-state">
                 <div class="admin-empty-icon">
@@ -1648,8 +1632,6 @@ function submitAddMember(event) {
         });
     })
     .catch(error => {
-        console.error('Failed to add member:', error);
-        
         // Show more specific error message
         let errorMessage = error.message;
         if (errorMessage.includes('Failed to fetch')) {
@@ -1688,7 +1670,6 @@ function removeMember(memberId, memberName = 'Unknown Member') {
     
     // Validate required parameters
     if (!memberId || !chamaId) {
-        console.error('Missing required parameters for member removal');
         showAlert('Missing required parameters for member removal', 'error');
         return;
     }
@@ -1760,7 +1741,6 @@ function removeMember(memberId, memberName = 'Unknown Member') {
         }
     })
     .catch(error => {
-        console.error(`Failed to remove member ${memberName}:`, error);
         showAlert(`Failed to remove ${memberName}: ${error.message}`, 'error');
         
         // Restore member card state
@@ -1814,7 +1794,6 @@ function closeAlert(alertId) {
 function getCsrfToken() {
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
     if (!csrfToken) {
-        console.error('CSRF token not found');
         return '';
     }
     return csrfToken.value;
