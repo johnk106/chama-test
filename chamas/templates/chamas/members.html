@@ -674,6 +674,13 @@
                             title="Edit {{ member.name }}'s details">
                         <i class="fas fa-edit"></i>
                     </button>
+                    <!-- Debug button to check member data -->
+                    <button class="admin" 
+                            onclick="event.stopPropagation(); checkMemberData({{ member.id }})" 
+                            title="Debug: Check {{ member.name }}'s data"
+                            style="background: #28a745; color: white; border: none; border-radius: 4px; padding: 0.5rem; cursor: pointer; font-size: 0.875rem; margin-left: 0.25rem;">
+                        <i class="fas fa-bug"></i>
+                    </button>
                     <button class="admin admin-remove-member" 
                             onclick="event.stopPropagation(); confirmRemoveMember({{ member.id }}, '{{ member.name|escapejs }}')" 
                             title="{% if member.user and member.user == group.created_by %}Cannot remove chama creator{% else %}Remove {{ member.name }} from chama{% endif %}"
@@ -805,10 +812,12 @@
                     <label for="editMemberPhone" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Phone Number</label>
                     <input type="tel" id="editMemberPhone" name="mobile" required style="width: 100%; padding: 0.75rem; border: 2px solid var(--brand-gray-200); border-radius: var(--brand-border-radius);">
                 </div>
-                <div style="margin-bottom: 1rem;">
-                    <label for="editMemberIdNumber" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">ID Number (Optional)</label>
-                    <input type="text" id="editMemberIdNumber" name="id_number" style="width: 100%; padding: 0.75rem; border: 2px solid var(--brand-gray-200); border-radius: var(--brand-border-radius);" placeholder="Enter member's ID number if known">
-                </div>
+                            <div style="margin-bottom: 1rem;">
+                <label for="editMemberIdNumber" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">ID Number (Optional)</label>
+                <input type="text" id="editMemberIdNumber" name="id_number" style="width: 100%; padding: 0.75rem; border: 2px solid var(--brand-gray-200); border-radius: var(--brand-border-radius);" placeholder="Enter member's ID number if known">
+                <!-- Test button for debugging -->
+                <button type="button" onclick="testIdField()" style="margin-top: 0.5rem; padding: 0.25rem 0.5rem; background: #007bff; color: white; border: none; border-radius: 4px; font-size: 0.875rem;">Test ID Field</button>
+            </div>
                 <div style="margin-bottom: 2rem;">
                     <label for="editMemberRole" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Role</label>
                     <select id="editMemberRole" name="role" required style="width: 100%; padding: 0.75rem; border: 2px solid var(--brand-gray-200); border-radius: var(--brand-border-radius);">
@@ -866,6 +875,14 @@ window.openEditMemberModal = function(memberId) {
         for (let attr of memberCard.attributes) {
             console.log(`  ${attr.name}: ${attr.value}`);
         }
+        
+        // Special focus on the ID attribute
+        const rawIdAttr = memberCard.getAttribute('data-member-id-number');
+        console.log('[DEBUG] Raw ID attribute value:', JSON.stringify(rawIdAttr));
+        console.log('[DEBUG] Raw ID attribute type:', typeof rawIdAttr);
+        console.log('[DEBUG] Raw ID attribute === null:', rawIdAttr === null);
+        console.log('[DEBUG] Raw ID attribute === "":', rawIdAttr === '');
+        console.log('[DEBUG] Raw ID attribute length:', rawIdAttr ? rawIdAttr.length : 'NULL');
         
         console.log('[DEBUG] Extracted member data:', {
             name: memberName,
@@ -1036,6 +1053,55 @@ function getCsrfToken() {
            '';
 }
 
+// Test function to verify the ID field works
+window.testIdField = function() {
+    const field = document.getElementById('editMemberIdNumber');
+    console.log('[TEST] ID field element:', field);
+    console.log('[TEST] Current value:', field ? field.value : 'FIELD NOT FOUND');
+    
+    if (field) {
+        const testValue = 'TEST12345';
+        field.value = testValue;
+        console.log('[TEST] Set test value:', testValue);
+        console.log('[TEST] Field value after setting:', field.value);
+        
+        field.focus();
+        field.style.backgroundColor = '#ffff99'; // Highlight the field
+        
+        alert(`ID Field Test:\nFound: ${!!field}\nSet Value: ${testValue}\nActual Value: ${field.value}`);
+    } else {
+        alert('ID field not found!');
+    }
+};
+
+// Function to manually check member data from backend
+window.checkMemberData = function(memberId) {
+    const chamaId = getChamaIdFromUrl() || document.querySelector('.admin-members-container')?.dataset?.chamaId;
+    if (!chamaId) {
+        alert('Cannot determine chama ID');
+        return;
+    }
+    
+    console.log('[CHECK] Fetching member data for:', memberId, 'in chama:', chamaId);
+    
+    fetch(`/chamas-bookeeping/member-detail/${memberId}/${chamaId}/`)
+        .then(response => response.json())
+        .then(data => {
+            console.log('[CHECK] Full member data response:', data);
+            if (data.status === 'success') {
+                console.log('[CHECK] Member object:', data.member);
+                console.log('[CHECK] Member ID specifically:', data.member.member_id);
+                alert(`Member Data Check:\nName: ${data.member.name}\nEmail: ${data.member.email}\nMember ID: ${data.member.member_id || 'NULL/EMPTY'}\nType: ${typeof data.member.member_id}`);
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('[CHECK] Error:', error);
+            alert('Error fetching member data: ' + error.message);
+        });
+};
+
 // Helper function to fetch member data from backend
 function fetchMemberDataAndPopulateForm(memberId) {
     // Get chama ID from URL or data attribute
@@ -1137,6 +1203,13 @@ function populateEditForm(memberId, memberData) {
         
         console.log('[DEBUG] Processed member ID value:', memberIdValue);
         
+        // TEMPORARY TEST: Set a hardcoded value to see if field works
+        const hardcodedTest = 'HARDCODED123';
+        console.log('[TEST] Setting hardcoded value:', hardcodedTest);
+        formFields.editMemberIdNumber.value = hardcodedTest;
+        console.log('[TEST] Field value after hardcoded:', formFields.editMemberIdNumber.value);
+        
+        // Now try the actual value
         formFields.editMemberIdNumber.value = memberIdValue;
         
         console.log('[DEBUG] ID field after setting:', formFields.editMemberIdNumber.value);
