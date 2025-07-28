@@ -837,7 +837,6 @@ let allMembers = [];
 // Define edit member functions inline for immediate availability
 window.openEditMemberModal = function(memberId) {
     console.log('[DEBUG] Opening edit modal for member:', memberId);
-    alert('[DEBUG] Edit button clicked for member: ' + memberId); // Temporary debug alert
     
     try {
         const memberCard = document.querySelector(`[data-member-id="${memberId}"]`);
@@ -846,12 +845,21 @@ window.openEditMemberModal = function(memberId) {
             return;
         }
 
+        // Debug: Check all attributes on the member card
+        console.log('[DEBUG] Member card element:', memberCard);
+        console.log('[DEBUG] Member card innerHTML:', memberCard.innerHTML.substring(0, 200) + '...');
+        
         // Extract member data from data attributes
         const memberName = memberCard.getAttribute('data-member-name') || '';
         const memberEmail = memberCard.getAttribute('data-member-email') || '';
         const memberPhone = memberCard.getAttribute('data-member-mobile') || '';
         const memberIdNumber = memberCard.getAttribute('data-member-id-number') || '';
         const memberRoleId = memberCard.getAttribute('data-member-role-id') || '';
+        
+        console.log('[DEBUG] All member card attributes:');
+        for (let attr of memberCard.attributes) {
+            console.log(`  ${attr.name}: ${attr.value}`);
+        }
         
         console.log('[DEBUG] Extracted member data:', {
             name: memberName,
@@ -861,62 +869,22 @@ window.openEditMemberModal = function(memberId) {
             roleId: memberRoleId
         });
 
-        // Populate form
-        document.getElementById('editMemberId').value = memberId;
-        document.getElementById('editMemberName').value = memberName;
-        document.getElementById('editMemberEmail').value = memberEmail;
-        document.getElementById('editMemberPhone').value = memberPhone;
-        document.getElementById('editMemberIdNumber').value = memberIdNumber;
-        
-        // Set role
-        const roleSelect = document.getElementById('editMemberRole');
-        if (memberRoleId) {
-            roleSelect.value = memberRoleId;
+        // If data attributes are empty, fetch from backend
+        if (!memberName || !memberEmail || !memberPhone) {
+            console.log('[DEBUG] Data attributes incomplete, fetching from backend...');
+            fetchMemberDataAndPopulateForm(memberId);
+        } else {
+            // Populate form with extracted data
+            populateEditForm(memberId, {
+                name: memberName,
+                email: memberEmail,
+                mobile: memberPhone,
+                member_id: memberIdNumber,
+                role_id: memberRoleId
+            });
         }
 
-        // Show modal
-        const modal = document.getElementById('adminEditMemberModal');
-        console.log('[DEBUG] Modal element found:', modal);
-        
-        // Force modal to be visible with inline styles for debugging
-        modal.style.display = 'flex';
-        modal.style.position = 'fixed';
-        modal.style.top = '0';
-        modal.style.left = '0';
-        modal.style.width = '100%';
-        modal.style.height = '100%';
-        modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-        modal.style.zIndex = '99999';
-        modal.style.justifyContent = 'center';
-        modal.style.alignItems = 'center';
-        modal.style.opacity = '1';
-        
-        modal.classList.add('active');
-        
-        // Also ensure modal content is visible
-        const modalContent = modal.querySelector('.admin-modal-content');
-        if (modalContent) {
-            modalContent.style.background = 'white';
-            modalContent.style.borderRadius = '8px';
-            modalContent.style.maxWidth = '800px';
-            modalContent.style.width = '90%';
-            modalContent.style.maxHeight = '90vh';
-            modalContent.style.overflowY = 'auto';
-            modalContent.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
-            modalContent.style.transform = 'scale(1)';
-            console.log('[DEBUG] Modal content styled:', modalContent);
-        }
-        
-        console.log('[DEBUG] Modal classes after adding active:', modal.className);
-        console.log('[DEBUG] Modal computed style display:', window.getComputedStyle(modal).display);
-        console.log('[DEBUG] Modal computed style z-index:', window.getComputedStyle(modal).zIndex);
-        document.body.style.overflow = 'hidden';
-        
-        setTimeout(() => {
-            document.getElementById('editMemberName').focus();
-        }, 100);
-
-        console.log('[DEBUG] Edit modal opened successfully');
+        // Modal will be shown by the populate functions
 
     } catch (error) {
         console.error('Error opening edit member modal:', error);
@@ -1001,6 +969,172 @@ window.submitEditMember = function(event) {
         alert('Error: ' + error.message);
     }
 };
+
+// Simple function to get chama ID from URL if getChamaIdFromUrl doesn't exist
+function getChamaIdFromUrl() {
+    try {
+        const pathSegments = window.location.pathname.split('/');
+        const membersIndex = pathSegments.indexOf('members');
+        if (membersIndex !== -1 && pathSegments[membersIndex + 1]) {
+            return parseInt(pathSegments[membersIndex + 1]);
+        }
+        return null;
+    } catch (error) {
+        console.error('Error getting chama ID from URL:', error);
+        return null;
+    }
+}
+
+// Simple function to get CSRF token
+function getCsrfToken() {
+    return document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
+           document.querySelector('meta[name=csrf-token]')?.getAttribute('content') || 
+           '';
+}
+
+// Helper function to fetch member data from backend
+function fetchMemberDataAndPopulateForm(memberId) {
+    // Get chama ID from URL or data attribute
+    const chamaId = getChamaIdFromUrl() || document.querySelector('.admin-members-container')?.dataset?.chamaId;
+    
+    if (!chamaId) {
+        alert('Unable to determine chama ID');
+        return;
+    }
+    
+    console.log('[DEBUG] Fetching member data for ID:', memberId, 'in chama:', chamaId);
+    
+    fetch(`/chamas-bookeeping/member-detail/${memberId}/${chamaId}/`, {
+        method: 'GET',
+        headers: {
+            'X-CSRFToken': getCsrfToken(),
+        }
+    })
+    .then(response => {
+        console.log('[DEBUG] Member detail response status:', response.status);
+        return response.json();
+    })
+    .then(data => {
+        console.log('[DEBUG] Member detail response data:', data);
+        
+        if (data.status === 'success') {
+            populateEditForm(memberId, data.member);
+        } else {
+            alert('Error loading member details: ' + (data.message || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching member details:', error);
+        alert('Error loading member details. Please try again.');
+    });
+}
+
+// Helper function to populate the edit form
+function populateEditForm(memberId, memberData) {
+    console.log('[DEBUG] Populating form with data:', memberData);
+    
+    try {
+        // Check if all form elements exist
+        const formFields = {
+            editMemberId: document.getElementById('editMemberId'),
+            editMemberName: document.getElementById('editMemberName'),
+            editMemberEmail: document.getElementById('editMemberEmail'),
+            editMemberPhone: document.getElementById('editMemberPhone'),
+            editMemberIdNumber: document.getElementById('editMemberIdNumber'),
+            editMemberRole: document.getElementById('editMemberRole')
+        };
+        
+        // Check for missing elements
+        const missingFields = [];
+        for (const [fieldName, element] of Object.entries(formFields)) {
+            if (!element) {
+                missingFields.push(fieldName);
+            }
+        }
+        
+        if (missingFields.length > 0) {
+            console.error('[ERROR] Missing form fields:', missingFields);
+            alert('Form fields are missing: ' + missingFields.join(', '));
+            return;
+        }
+        
+        // Populate form fields
+        formFields.editMemberId.value = memberId;
+        formFields.editMemberName.value = memberData.name || '';
+        formFields.editMemberEmail.value = memberData.email || '';
+        formFields.editMemberPhone.value = memberData.mobile || '';
+        formFields.editMemberIdNumber.value = memberData.member_id || '';
+        
+        console.log('[DEBUG] Basic fields populated:', {
+            id: formFields.editMemberId.value,
+            name: formFields.editMemberName.value,
+            email: formFields.editMemberEmail.value,
+            phone: formFields.editMemberPhone.value,
+            idNumber: formFields.editMemberIdNumber.value
+        });
+        
+        // Set role
+        if (memberData.role_id) {
+            formFields.editMemberRole.value = memberData.role_id;
+            console.log('[DEBUG] Set role to:', memberData.role_id);
+        } else {
+            console.log('[DEBUG] No role_id provided in member data');
+        }
+        
+        console.log('[DEBUG] Final role select value:', formFields.editMemberRole.value);
+        console.log('[DEBUG] Form populated successfully');
+        
+        // Show the modal after populating
+        showEditModal();
+        
+    } catch (error) {
+        console.error('Error populating form:', error);
+        alert('Error populating form: ' + error.message);
+    }
+}
+
+// Helper function to show the modal
+function showEditModal() {
+    const modal = document.getElementById('adminEditMemberModal');
+    console.log('[DEBUG] Showing modal:', modal);
+    
+    // Force modal to be visible with inline styles
+    modal.style.display = 'flex';
+    modal.style.position = 'fixed';
+    modal.style.top = '0';
+    modal.style.left = '0';
+    modal.style.width = '100%';
+    modal.style.height = '100%';
+    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    modal.style.zIndex = '99999';
+    modal.style.justifyContent = 'center';
+    modal.style.alignItems = 'center';
+    modal.style.opacity = '1';
+    
+    modal.classList.add('active');
+    
+    // Also ensure modal content is visible
+    const modalContent = modal.querySelector('.admin-modal-content');
+    if (modalContent) {
+        modalContent.style.background = 'white';
+        modalContent.style.borderRadius = '8px';
+        modalContent.style.maxWidth = '800px';
+        modalContent.style.width = '90%';
+        modalContent.style.maxHeight = '90vh';
+        modalContent.style.overflowY = 'auto';
+        modalContent.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
+        modalContent.style.transform = 'scale(1)';
+    }
+    
+    document.body.style.overflow = 'hidden';
+    
+    // Focus on first field
+    setTimeout(() => {
+        document.getElementById('editMemberName').focus();
+    }, 100);
+    
+    console.log('[DEBUG] Modal shown successfully');
+}
 
 // Initialize page
 document.addEventListener('DOMContentLoaded', function() {
