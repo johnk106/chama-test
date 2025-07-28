@@ -33,9 +33,20 @@ from .services.member_service import MemberService
 
 # Create your views here.
 def get_user_role(request):
-    group_id = request.GET.get('group_id')
-    chama_member = ChamaMember.objects.get(user=request.user, group_id=group_id)
-    return JsonResponse({'role': chama_member.role.name})
+    try:
+        group_id = request.GET.get('group_id')
+        if not group_id:
+            return JsonResponse({'role': 'member', 'error': 'No group_id provided'})
+        
+        chama_member = ChamaMember.objects.get(user=request.user, group_id=group_id, active=True)
+        role_name = chama_member.role.name if chama_member.role else 'member'
+        return JsonResponse({'role': role_name})
+    except ChamaMember.DoesNotExist:
+        # User is not a member of this chama or has been deactivated
+        return JsonResponse({'role': 'member', 'error': 'User not found in this chama'})
+    except Exception as e:
+        # Any other error - default to member role for security
+        return JsonResponse({'role': 'member', 'error': 'Unable to determine role'})
 
 
 @login_required(login_url='/user/Login')

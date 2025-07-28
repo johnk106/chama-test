@@ -851,8 +851,21 @@ function submitAddMember(event) {
         // Add loading spinner
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
         
-        // Add chama_id to the data
-        const chamaId = getChamaIdFromUrl();
+        // Add chama_id to the data - with multiple fallback methods
+        let chamaId = memberData.chama_id; // First, try from form hidden input
+        if (!chamaId) {
+            chamaId = getChamaIdFromUrl(); // Fallback to URL extraction
+        }
+        if (!chamaId) {
+            // Additional fallback: try to get from global variables or page context
+            chamaId = window.chamaId || document.querySelector('[data-chama-id]')?.dataset.chamaId;
+        }
+        
+        if (!chamaId) {
+            showAlert('Error: Unable to determine which chama to add member to. Please refresh the page and try again.', 'error');
+            return;
+        }
+        
         memberData.chama_id = chamaId;
         
         // Make AJAX call to add member

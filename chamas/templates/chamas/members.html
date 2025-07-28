@@ -719,6 +719,8 @@
         </div>
         <div class="admin-modal-body">
             <form id="adminAddMemberForm" onsubmit="submitAddMember(event)">
+                <!-- Hidden input for chama_id -->
+                <input type="hidden" id="memberChamaId" name="chama_id" value="{{ chama.id }}">
                 <div style="margin-bottom: 1rem;">
                     <label for="memberName" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Full Name</label>
                     <input type="text" id="memberName" name="name" required style="width: 100%; padding: 0.75rem; border: 2px solid var(--brand-gray-200); border-radius: var(--brand-border-radius);">
@@ -730,6 +732,10 @@
                 <div style="margin-bottom: 1rem;">
                     <label for="memberPhone" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Phone Number</label>
                     <input type="tel" id="memberPhone" name="mobile" required style="width: 100%; padding: 0.75rem; border: 2px solid var(--brand-gray-200); border-radius: var(--brand-border-radius);">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label for="memberIdNumber" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">ID Number (Optional)</label>
+                    <input type="text" id="memberIdNumber" name="id_number" style="width: 100%; padding: 0.75rem; border: 2px solid var(--brand-gray-200); border-radius: var(--brand-border-radius);" placeholder="Enter member's ID number if known">
                 </div>
                 <div style="margin-bottom: 2rem;">
                     <label for="memberRole" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Role</label>

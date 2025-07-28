@@ -654,6 +654,9 @@ $(document).ready(function() {
   // 2) IMMEDIATELY hide all admin‐only elements on page load
   //    (so that nothing flashes on the screen before AJAX finishes)
   $(".admin, #remove-user, #add-member-button").hide();
+  
+  // 2.1) IMMEDIATELY hide the "View as admin" option for all users until verified
+  $(".view-option[data-view='admin']").hide();
 
   // 3) Initialize the toggle text based on savedView
   if (savedView === "member") {
@@ -677,15 +680,20 @@ $(document).ready(function() {
     data: { group_id: groupId },
     dataType: 'json',
     success: function(data) {
-      // If the server says I’m not an admin here:
-      if (data.role !== "admin") {
+      // If the server says I'm not an admin here or there's an error:
+      if (data.role !== "admin" || data.error) {
         // Force member mode, hide the admin toggle entirely
         savedView = "member";
         $(".view-option[data-view='admin']").hide();
         // Re‐apply member‐only UI
         updateView("member");
-        // Overwrite localStorage in case it was “admin” before
+        // Overwrite localStorage in case it was "admin" before
         localStorage.setItem(storageKey, "member");
+        
+        // Log any errors for debugging
+        if (data.error) {
+          console.log("Role verification error:", data.error);
+        }
       } else {
         // I am admin. Show the admin toggle now (it may have been hidden)
         $(".view-option[data-view='admin']").show();
