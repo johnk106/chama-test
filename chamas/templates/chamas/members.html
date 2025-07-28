@@ -856,6 +856,12 @@ window.openEditMemberModal = function(memberId) {
         const memberIdNumber = memberCard.getAttribute('data-member-id-number') || '';
         const memberRoleId = memberCard.getAttribute('data-member-role-id') || '';
         
+        console.log('[DEBUG] Raw attribute values:', {
+            'data-member-id-number': memberCard.getAttribute('data-member-id-number'),
+            'memberIdNumber': memberIdNumber,
+            'memberIdNumberType': typeof memberIdNumber
+        });
+        
         console.log('[DEBUG] All member card attributes:');
         for (let attr of memberCard.attributes) {
             console.log(`  ${attr.name}: ${attr.value}`);
@@ -1054,6 +1060,8 @@ function fetchMemberDataAndPopulateForm(memberId) {
     })
     .then(data => {
         console.log('[DEBUG] Member detail response data:', data);
+        console.log('[DEBUG] Member ID from backend:', data.member?.member_id);
+        console.log('[DEBUG] Member ID type from backend:', typeof data.member?.member_id);
         
         if (data.status === 'success') {
             populateEditForm(memberId, data.member);
@@ -1112,7 +1120,44 @@ function populateEditForm(memberId, memberData) {
         formFields.editMemberName.value = memberData.name || '';
         formFields.editMemberEmail.value = memberData.email || '';
         formFields.editMemberPhone.value = memberData.mobile || '';
-        formFields.editMemberIdNumber.value = memberData.member_id || '';
+        
+        // Debug the member_id specifically
+        console.log('[DEBUG] Member ID from data:', memberData.member_id);
+        console.log('[DEBUG] Member ID type:', typeof memberData.member_id);
+        console.log('[DEBUG] Member ID value:', JSON.stringify(memberData.member_id));
+        console.log('[DEBUG] Member ID is null?:', memberData.member_id === null);
+        console.log('[DEBUG] Member ID is undefined?:', memberData.member_id === undefined);
+        console.log('[DEBUG] Member ID is empty string?:', memberData.member_id === '');
+        
+        // Handle various null/undefined/empty cases
+        let memberIdValue = '';
+        if (memberData.member_id !== null && memberData.member_id !== undefined && memberData.member_id !== 'null' && memberData.member_id !== 'None') {
+            memberIdValue = String(memberData.member_id).trim();
+        }
+        
+        console.log('[DEBUG] Processed member ID value:', memberIdValue);
+        
+        formFields.editMemberIdNumber.value = memberIdValue;
+        
+        console.log('[DEBUG] ID field after setting:', formFields.editMemberIdNumber.value);
+        console.log('[DEBUG] ID field element:', formFields.editMemberIdNumber);
+        
+        // Verify the field is actually visible and editable
+        console.log('[DEBUG] ID field display:', window.getComputedStyle(formFields.editMemberIdNumber).display);
+        console.log('[DEBUG] ID field visibility:', window.getComputedStyle(formFields.editMemberIdNumber).visibility);
+        console.log('[DEBUG] ID field disabled?:', formFields.editMemberIdNumber.disabled);
+        console.log('[DEBUG] ID field readonly?:', formFields.editMemberIdNumber.readOnly);
+        
+        // Force update using multiple methods
+        formFields.editMemberIdNumber.setAttribute('value', memberIdValue);
+        formFields.editMemberIdNumber.defaultValue = memberIdValue;
+        
+        // Trigger input event to ensure any listeners are notified
+        formFields.editMemberIdNumber.dispatchEvent(new Event('input', { bubbles: true }));
+        formFields.editMemberIdNumber.dispatchEvent(new Event('change', { bubbles: true }));
+        
+        console.log('[DEBUG] After force update - field value:', formFields.editMemberIdNumber.value);
+        console.log('[DEBUG] After force update - field attribute:', formFields.editMemberIdNumber.getAttribute('value'));
         
         console.log('[DEBUG] Basic fields populated:', {
             memberId: formFields.editMemberId.value,
@@ -1120,7 +1165,8 @@ function populateEditForm(memberId, memberData) {
             name: formFields.editMemberName.value,
             email: formFields.editMemberEmail.value,
             phone: formFields.editMemberPhone.value,
-            idNumber: formFields.editMemberIdNumber.value
+            idNumber: formFields.editMemberIdNumber.value,
+            rawMemberId: memberData.member_id
         });
         
         // Set role
