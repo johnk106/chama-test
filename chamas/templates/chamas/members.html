@@ -649,6 +649,9 @@
              data-member-name="{{ member.name }}"
              data-member-email="{{ member.email }}"
              data-member-mobile="{{ member.mobile }}"
+             data-member-id-number="{{ member.member_id|default:'' }}"
+             data-member-role="{{ member.role.name|default:'member' }}"
+             data-member-role-id="{{ member.role.id|default:'' }}"
              data-is-creator="{% if member.user and member.user == group.created_by %}true{% else %}false{% endif %}"
              onclick="openMemberModal({{ member.id }})">
             <div class="admin-member-header">
@@ -831,10 +834,144 @@ const membersPerPage = 12;
 let filteredMembers = [];
 let allMembers = [];
 
+// Define edit member functions inline for immediate availability
+window.openEditMemberModal = function(memberId) {
+    console.log('[DEBUG] Opening edit modal for member:', memberId);
+    
+    try {
+        const memberCard = document.querySelector(`[data-member-id="${memberId}"]`);
+        if (!memberCard) {
+            alert('Member not found');
+            return;
+        }
+
+        // Extract member data from data attributes
+        const memberName = memberCard.getAttribute('data-member-name') || '';
+        const memberEmail = memberCard.getAttribute('data-member-email') || '';
+        const memberPhone = memberCard.getAttribute('data-member-mobile') || '';
+        const memberIdNumber = memberCard.getAttribute('data-member-id-number') || '';
+        const memberRoleId = memberCard.getAttribute('data-member-role-id') || '';
+        
+        console.log('[DEBUG] Extracted member data:', {
+            name: memberName,
+            email: memberEmail,
+            phone: memberPhone,
+            idNumber: memberIdNumber,
+            roleId: memberRoleId
+        });
+
+        // Populate form
+        document.getElementById('editMemberId').value = memberId;
+        document.getElementById('editMemberName').value = memberName;
+        document.getElementById('editMemberEmail').value = memberEmail;
+        document.getElementById('editMemberPhone').value = memberPhone;
+        document.getElementById('editMemberIdNumber').value = memberIdNumber;
+        
+        // Set role
+        const roleSelect = document.getElementById('editMemberRole');
+        if (memberRoleId) {
+            roleSelect.value = memberRoleId;
+        }
+
+        // Show modal
+        document.getElementById('adminEditMemberModal').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+        
+        setTimeout(() => {
+            document.getElementById('editMemberName').focus();
+        }, 100);
+
+        console.log('[DEBUG] Edit modal opened successfully');
+
+    } catch (error) {
+        console.error('Error opening edit member modal:', error);
+        alert('Error opening edit form: ' + error.message);
+    }
+};
+
+window.closeEditMemberModal = function() {
+    try {
+        document.getElementById('adminEditMemberModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+        document.getElementById('adminEditMemberForm').reset();
+        console.log('[DEBUG] Edit modal closed');
+    } catch (error) {
+        console.error('Error closing edit member modal:', error);
+    }
+};
+
+window.submitEditMember = function(event) {
+    event.preventDefault();
+    console.log('[DEBUG] Submit edit member called');
+    
+    try {
+        const form = event.target;
+        const formData = new FormData(form);
+        const memberData = Object.fromEntries(formData.entries());
+        
+        console.log('[DEBUG] Form data:', memberData);
+        
+        // Basic validation
+        if (!memberData.name || !memberData.email || !memberData.mobile || !memberData.role) {
+            alert('Please fill in all required fields');
+            return;
+        }
+        
+        // Show loading
+        const submitBtn = form.querySelector('[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Updating...';
+        submitBtn.disabled = true;
+        
+        // Make request
+        fetch('/chamas-bookeeping/edit-member/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCsrfToken(),
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(memberData)
+        })
+        .then(response => {
+            console.log('[DEBUG] Response status:', response.status);
+            return response.json();
+        })
+        .then(data => {
+            console.log('[DEBUG] Response data:', data);
+            
+            if (data.status === 'success') {
+                showAlert(data.message, 'success');
+                window.closeEditMemberModal();
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                showAlert(data.message || 'Failed to update member', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('Error updating member: ' + error.message, 'error');
+        })
+        .finally(() => {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        });
+        
+    } catch (error) {
+        console.error('Error in submitEditMember:', error);
+        alert('Error: ' + error.message);
+    }
+};
+
 // Initialize page
 document.addEventListener('DOMContentLoaded', function() {
     initializeMembers();
     setupEventListeners();
+    
+    // Debug: Check if edit functions are available
+    console.log('[DEBUG] Edit functions availability:');
+    console.log('openEditMemberModal:', typeof window.openEditMemberModal);
+    console.log('closeEditMemberModal:', typeof window.closeEditMemberModal);
+    console.log('submitEditMember:', typeof window.submitEditMember);
 });
 
 function initializeMembers() {
@@ -858,11 +995,18 @@ function setupEventListeners() {
         }
     });
     
+    document.getElementById('adminEditMemberModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeEditMemberModal();
+        }
+    });
+    
     // Keyboard navigation
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeMemberModal();
             closeAddMemberModal();
+            closeEditMemberModal();
         }
     });
 }

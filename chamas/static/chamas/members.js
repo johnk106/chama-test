@@ -74,6 +74,12 @@ function setupEventListeners() {
             addMemberForm.addEventListener('submit', submitAddMember);
         }
         
+        // Edit member form submission
+        const editMemberForm = document.getElementById('adminEditMemberForm');
+        if (editMemberForm) {
+            editMemberForm.addEventListener('submit', submitEditMember);
+        }
+        
         // Window resize handler for responsive pagination
         window.addEventListener('resize', debounce(updatePagination, 250));
         
@@ -1291,52 +1297,54 @@ function formatDate(dateString) {
 /**
  * Open edit member modal and populate with member data
  */
-function openEditMemberModal(memberId) {
+window.openEditMemberModal = function(memberId) {
     try {
+        console.log('[DEBUG] Opening edit modal for member:', memberId);
+        
         const memberCard = document.querySelector(`[data-member-id="${memberId}"]`);
         if (!memberCard) {
             showAlert('Member not found', 'error');
             return;
         }
 
-        // Get member details via AJAX for complete data
-        fetch(`/chamas-bookeeping/member-detail/${memberId}/${getChamaIdFromUrl()}/`, {
-            method: 'GET',
-            headers: {
-                'X-CSRFToken': getCsrfToken(),
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                // Populate form with member data
-                document.getElementById('editMemberId').value = memberId;
-                document.getElementById('editMemberName').value = data.member.name || '';
-                document.getElementById('editMemberEmail').value = data.member.email || '';
-                document.getElementById('editMemberPhone').value = data.member.mobile || '';
-                document.getElementById('editMemberIdNumber').value = data.member.member_id || '';
-                
-                // Set role
-                const roleSelect = document.getElementById('editMemberRole');
-                const roleValue = data.member.role_id || '';
-                if (roleValue) {
-                    roleSelect.value = roleValue;
-                }
-
-                // Show modal
-                document.getElementById('adminEditMemberModal').style.display = 'block';
-                document.body.style.overflow = 'hidden';
-                
-                // Focus on first field
-                document.getElementById('editMemberName').focus();
-            } else {
-                showAlert('Error loading member details: ' + (data.message || 'Unknown error'), 'error');
-            }
-        })
-        .catch(error => {
-            console.error('Error loading member details:', error);
-            showAlert('Error loading member details. Please try again.', 'error');
+        // Extract member data from the card data attributes
+        const memberName = memberCard.getAttribute('data-member-name') || '';
+        const memberEmail = memberCard.getAttribute('data-member-email') || '';
+        const memberPhone = memberCard.getAttribute('data-member-mobile') || '';
+        const memberIdNumber = memberCard.getAttribute('data-member-id-number') || '';
+        const memberRoleId = memberCard.getAttribute('data-member-role-id') || '';
+        
+        console.log('[DEBUG] Extracted member data:', {
+            name: memberName,
+            email: memberEmail,
+            phone: memberPhone,
+            idNumber: memberIdNumber,
+            roleId: memberRoleId
         });
+
+        // Populate form with member data
+        document.getElementById('editMemberId').value = memberId;
+        document.getElementById('editMemberName').value = memberName;
+        document.getElementById('editMemberEmail').value = memberEmail;
+        document.getElementById('editMemberPhone').value = memberPhone;
+        document.getElementById('editMemberIdNumber').value = memberIdNumber;
+        
+        // Set role using role ID
+        const roleSelect = document.getElementById('editMemberRole');
+        if (memberRoleId) {
+            roleSelect.value = memberRoleId;
+        }
+
+        // Show modal
+        document.getElementById('adminEditMemberModal').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+        
+        // Focus on first field
+        setTimeout(() => {
+            document.getElementById('editMemberName').focus();
+        }, 100);
+
+        console.log('[DEBUG] Edit modal opened successfully');
 
     } catch (error) {
         console.error('Error opening edit member modal:', error);
@@ -1347,7 +1355,7 @@ function openEditMemberModal(memberId) {
 /**
  * Close edit member modal
  */
-function closeEditMemberModal() {
+window.closeEditMemberModal = function() {
     try {
         document.getElementById('adminEditMemberModal').style.display = 'none';
         document.body.style.overflow = 'auto';
@@ -1366,7 +1374,7 @@ function closeEditMemberModal() {
 /**
  * Submit edited member data
  */
-function submitEditMember(event) {
+window.submitEditMember = function(event) {
     event.preventDefault();
     
     try {
@@ -1378,8 +1386,11 @@ function submitEditMember(event) {
         
         // Validate form data
         if (!validateEditMemberForm(memberData)) {
+            console.log('[DEBUG] Form validation failed');
             return;
         }
+        
+        console.log('[DEBUG] Form validation passed, making AJAX request');
         
         // Show loading state
         const submitBtn = form.querySelector('[type="submit"]');
@@ -1439,7 +1450,7 @@ function submitEditMember(event) {
 /**
  * Validate edit member form data
  */
-function validateEditMemberForm(data) {
+window.validateEditMemberForm = function(data) {
     try {
         const errors = [];
         
