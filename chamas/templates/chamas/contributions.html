@@ -358,6 +358,23 @@
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
+// Function to apply admin visibility rules to newly generated content
+function applyAdminVisibility() {
+    // Check if any existing admin elements are visible to determine current state
+    // This works because the base template handles the admin verification
+    const existingAdminElement = $(".create-contribution-section.admin");
+    
+    if (existingAdminElement.length > 0 && existingAdminElement.is(':visible')) {
+        // Admin mode is active, show admin elements
+        $(".admin").show();
+        $(".member").hide();
+    } else {
+        // Member mode is active, hide admin elements  
+        $(".admin").hide();
+        $(".member").show();
+    }
+}
+
 $(document).ready(function () {
 
 
@@ -621,6 +638,9 @@ $(document).ready(function () {
                  }
 
                  recordsContainer.html(recordsHtml);
+                 
+                 // Apply admin visibility to newly generated mobile content
+                 applyAdminVisibility();
              },
              error: function () {
                  console.error("Failed to load contribution records for mobile view");
@@ -823,6 +843,9 @@ $(document).ready(function () {
 
                     tbody.append(rowHtml);
                 });
+                
+                // Apply admin visibility to newly generated content
+                applyAdminVisibility();
             },
             error: function () {
                 alert("Failed to retrieve contribution details. Please try again.");
@@ -1150,6 +1173,12 @@ $(document).ready(function () {
              firstContributionItem.addClass('selected');
          }
      }
+     
+     // Apply admin visibility rules on initial page load with a slight delay
+     // to ensure the base template admin system has initialized
+     setTimeout(function() {
+         applyAdminVisibility();
+     }, 500);
  });
 </script>
 {%endblock%}
