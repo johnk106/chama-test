@@ -10,6 +10,7 @@ urlpatterns = [
     path('create-new-chama-type/',views.create_chama_type,name='new-chama-type'),
     
     path('add-member/',views.add_member_to_chama,name='add-member'),
+    path('edit-member/',views.edit_member_in_chama,name='edit-member'),
     path('members/<int:chama_id>/',views.members,name='members'),
     path('remove-member-from-chama/<int:member_id>/<int:chama_id>/',views.remove_member_from_chama,name='remove-member-from-chama'),
     path('member-detail/<int:chama_member_id>/<int:group>/',views.member_details,name='member-details'),
@@ -84,5 +85,8 @@ urlpatterns = [
     path('get-collected-fines-data/<int:chama_id>/', views.get_collected_fines_data, name='get-collected-fines-data'),
     path('get-unpaid-fines-data/<int:chama_id>/', views.get_unpaid_fines_data, name='get-unpaid-fines-data'),
     path('get-expenses-data/<int:chama_id>/', views.get_expenses_data, name='get-expenses-data'),
+    
+    # My Chamas view
+    path('my-chamas/', views.my_chamas_view, name='my-chamas'),
 
 ]

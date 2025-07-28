@@ -1288,6 +1288,231 @@ function formatDate(dateString) {
     }
 }
 
+/**
+ * Open edit member modal and populate with member data
+ */
+function openEditMemberModal(memberId) {
+    try {
+        const memberCard = document.querySelector(`[data-member-id="${memberId}"]`);
+        if (!memberCard) {
+            showAlert('Member not found', 'error');
+            return;
+        }
+
+        // Get member details via AJAX for complete data
+        fetch(`/chamas-bookeeping/member-detail/${memberId}/${getChamaIdFromUrl()}/`, {
+            method: 'GET',
+            headers: {
+                'X-CSRFToken': getCsrfToken(),
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // Populate form with member data
+                document.getElementById('editMemberId').value = memberId;
+                document.getElementById('editMemberName').value = data.member.name || '';
+                document.getElementById('editMemberEmail').value = data.member.email || '';
+                document.getElementById('editMemberPhone').value = data.member.mobile || '';
+                document.getElementById('editMemberIdNumber').value = data.member.member_id || '';
+                
+                // Set role
+                const roleSelect = document.getElementById('editMemberRole');
+                const roleValue = data.member.role_id || '';
+                if (roleValue) {
+                    roleSelect.value = roleValue;
+                }
+
+                // Show modal
+                document.getElementById('adminEditMemberModal').style.display = 'block';
+                document.body.style.overflow = 'hidden';
+                
+                // Focus on first field
+                document.getElementById('editMemberName').focus();
+            } else {
+                showAlert('Error loading member details: ' + (data.message || 'Unknown error'), 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error loading member details:', error);
+            showAlert('Error loading member details. Please try again.', 'error');
+        });
+
+    } catch (error) {
+        console.error('Error opening edit member modal:', error);
+        showAlert('Error opening edit form. Please try again.', 'error');
+    }
+}
+
+/**
+ * Close edit member modal
+ */
+function closeEditMemberModal() {
+    try {
+        document.getElementById('adminEditMemberModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+        
+        // Reset form
+        document.getElementById('adminEditMemberForm').reset();
+        
+        // Clear any error messages
+        document.querySelectorAll('.error-message').forEach(el => el.remove());
+        
+    } catch (error) {
+        console.error('Error closing edit member modal:', error);
+    }
+}
+
+/**
+ * Submit edited member data
+ */
+function submitEditMember(event) {
+    event.preventDefault();
+    
+    try {
+        const form = event.target;
+        const formData = new FormData(form);
+        const memberData = Object.fromEntries(formData.entries());
+        
+        console.log('[DEBUG] Submitting edited member data:', memberData);
+        
+        // Validate form data
+        if (!validateEditMemberForm(memberData)) {
+            return;
+        }
+        
+        // Show loading state
+        const submitBtn = form.querySelector('[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Updating...';
+        submitBtn.disabled = true;
+        
+        // Add loading spinner
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+        
+        // Make AJAX call to update member
+        fetch('/chamas-bookeeping/edit-member/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCsrfToken(),
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(memberData)
+        })
+        .then(response => {
+            console.log(`[DEBUG] Edit member response status: ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            console.log('[DEBUG] Edit member response:', data);
+            
+            if (data.status === 'success') {
+                showAlert(data.message, 'success');
+                closeEditMemberModal();
+                
+                // Refresh the page to show updated member
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+                
+                announceToScreenReader('Member details updated successfully');
+            } else {
+                showAlert(data.message || 'Failed to update member. Please try again.', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error updating member:', error);
+            showAlert('Error updating member. Please try again.', 'error');
+        })
+        .finally(() => {
+            // Reset button state
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        });
+        
+    } catch (error) {
+        console.error('Error submitting edit member form:', error);
+        showAlert('Error updating member. Please try again.', 'error');
+    }
+}
+
+/**
+ * Validate edit member form data
+ */
+function validateEditMemberForm(data) {
+    try {
+        const errors = [];
+        
+        // Clear previous errors
+        document.querySelectorAll('.error-message').forEach(el => el.remove());
+        
+        // Validate name
+        if (!data.name || data.name.trim().length < 2) {
+            errors.push({ field: 'editMemberName', message: 'Name must be at least 2 characters long' });
+        }
+        
+        // Validate email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!data.email || !emailRegex.test(data.email)) {
+            errors.push({ field: 'editMemberEmail', message: 'Please enter a valid email address' });
+        }
+        
+        // Validate phone
+        const phoneRegex = /^[\+]?[0-9\s\-\(\)]{10,}$/;
+        if (!data.mobile || !phoneRegex.test(data.mobile)) {
+            errors.push({ field: 'editMemberPhone', message: 'Please enter a valid phone number' });
+        }
+        
+        // Validate role
+        if (!data.role) {
+            errors.push({ field: 'editMemberRole', message: 'Please select a role' });
+        }
+        
+        // Display errors
+        errors.forEach(error => {
+            const field = document.getElementById(error.field);
+            if (field) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.style.color = 'var(--admin-error)';
+                errorDiv.style.fontSize = '0.875rem';
+                errorDiv.style.marginTop = '0.25rem';
+                errorDiv.textContent = error.message;
+                errorDiv.setAttribute('role', 'alert');
+                
+                field.parentNode.appendChild(errorDiv);
+                
+                // Add error styling to field
+                field.style.borderColor = 'var(--admin-error)';
+                
+                // Remove error styling on input
+                field.addEventListener('input', function() {
+                    this.style.borderColor = '';
+                    const errorMsg = this.parentNode.querySelector('.error-message');
+                    if (errorMsg) {
+                        errorMsg.remove();
+                    }
+                }, { once: true });
+            }
+        });
+        
+        // Focus on first error field
+        if (errors.length > 0) {
+            const firstErrorField = document.getElementById(errors[0].field);
+            if (firstErrorField) {
+                firstErrorField.focus();
+            }
+            return false;
+        }
+        
+        return true;
+        
+    } catch (error) {
+        console.error('Error validating edit member form:', error);
+        return false;
+    }
+}
+
 // Export functions for testing (if in a module environment)
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {

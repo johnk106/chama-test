@@ -156,13 +156,15 @@ class ChamaService:
                                 member_id=member_data.get('id_number') or user.username
                             )
                         else:
+                            # Create member without user association but store ID for future linking
                             new_member = ChamaMember.objects.create(
                                 name=member_data['name'],
                                 mobile=mobile,
                                 email=member_data['email'],
                                 group=new_chama,
                                 role=member_role,
-                                member_id=member_data.get('id_number')
+                                member_id=member_data.get('id_number'),  # Store ID for future linking
+                                user=None  # Will be linked when user registers
                             )
                         
                         added_members.append({

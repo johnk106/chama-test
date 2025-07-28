@@ -134,13 +134,15 @@ class MemberService:
                     member_id=id_number or user.username
                 )
             else:
+                # Create member without user association but store ID for future linking
                 new_member = ChamaMember.objects.create(
                     name=name,
                     mobile=mobile,
                     email=email,
                     group=group,
                     role=role,
-                    member_id=id_number
+                    member_id=id_number,  # Store ID number for future user linking
+                    user=None  # Will be linked when user registers
                 )
             
 
@@ -227,6 +229,205 @@ class MemberService:
                 'status': 'failed',
                 'message': 'An unexpected error occurred while removing the member'
             }, status=500)
+    
+    @staticmethod
+    def edit_member_in_chama(request):
+        """
+        Edit an existing member's details in a chama.
+        Only admin users can edit member details.
+        """
+        try:
+            if not request.body:
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': 'Empty request body'
+                }, status=400)
+            
+            try:
+                data = json.loads(request.body)
+            except json.JSONDecodeError as e:
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': f'Invalid JSON data: {str(e)}'
+                }, status=400)
         
-        
+            # Extract data
+            member_id = data.get('member_id')
+            name = data.get('name', '').strip()
+            email = data.get('email', '').strip()
+            mobile = data.get('mobile', '').strip()
+            role_id = data.get('role')
+            chama_id = data.get('chama_id')
+            id_number = data.get('id_number', '').strip()
+            
+            # Validate required fields
+            if not all([member_id, name, email, mobile, role_id, chama_id]):
+                missing_fields = []
+                if not member_id: missing_fields.append('member_id')
+                if not name: missing_fields.append('name')
+                if not email: missing_fields.append('email')
+                if not mobile: missing_fields.append('mobile')
+                if not role_id: missing_fields.append('role')
+                if not chama_id: missing_fields.append('chama_id')
+                
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': f'Missing required fields: {", ".join(missing_fields)}'
+                }, status=400)
+            
+            # Validate email format
+            import re
+            email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+            if not re.match(email_pattern, email):
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': 'Please enter a valid email address'
+                }, status=400)
+            
+            # Get the chama and member
+            try:
+                chama = Chama.objects.get(pk=int(chama_id))
+                member = ChamaMember.objects.get(pk=int(member_id), group=chama, active=True)
+            except (Chama.DoesNotExist, ChamaMember.DoesNotExist):
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': 'Member or chama not found'
+                }, status=404)
+            except ValueError:
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': 'Invalid member or chama ID'
+                }, status=400)
+            
+            # Check if requesting user is admin
+            try:
+                requesting_user_membership = ChamaMember.objects.get(
+                    user=request.user, 
+                    group=chama, 
+                    active=True
+                )
+                if not requesting_user_membership.role or requesting_user_membership.role.name != 'admin':
+                    return JsonResponse({
+                        'status': 'failed',
+                        'message': 'Only admin users can edit member details'
+                    }, status=403)
+            except ChamaMember.DoesNotExist:
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': 'You are not a member of this chama'
+                }, status=403)
+            
+            # Get role
+            try:
+                role = Role.objects.get(pk=int(role_id))
+            except Role.DoesNotExist:
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': f'Role with ID {role_id} not found'
+                }, status=400)
+            except ValueError:
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': f'Invalid role ID: {role_id}'
+                }, status=400)
+            
+            # Format phone number if needed
+            if mobile and not mobile.startswith('+'):
+                if mobile.startswith('0'):
+                    mobile = '+254' + mobile[1:]
+                elif mobile.startswith('254'):
+                    mobile = '+' + mobile
+                else:
+                    mobile = '+254' + mobile
+            
+            # Check for existing member with same email or mobile in this chama (excluding current member)
+            existing_member = ChamaMember.objects.filter(
+                group=chama,
+                active=True
+            ).filter(
+                models.Q(email__iexact=email) | models.Q(mobile=mobile)
+            ).exclude(pk=member.pk).first()
+            
+            if existing_member:
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': 'Another member with this email or phone number already exists in this chama'
+                }, status=400)
+            
+            # Check if we need to update user association
+            old_member_id = member.member_id
+            user_to_link = None
+            
+            if id_number and id_number != old_member_id:
+                # Check if user exists with this ID
+                user_to_link = User.objects.filter(username=id_number).first()
+                
+                if user_to_link:
+                    # Check if this user is already associated with another member in this chama
+                    existing_user_member = ChamaMember.objects.filter(
+                        group=chama,
+                        user=user_to_link,
+                        active=True
+                    ).exclude(pk=member.pk).first()
+                    
+                    if existing_user_member:
+                        return JsonResponse({
+                            'status': 'failed',
+                            'message': f'User with ID {id_number} is already a member of this chama'
+                        }, status=400)
+            
+            # Update member details
+            member.name = name
+            member.email = email
+            member.mobile = mobile
+            member.role = role
+            member.member_id = id_number if id_number else member.member_id
+            
+            # Update user association if needed
+            if user_to_link:
+                member.user = user_to_link
+                # Update with user's actual information if available
+                try:
+                    from authentication.models import Profile
+                    profile = Profile.objects.get(owner=user_to_link)
+                    if profile.picture:
+                        member.profile = profile.picture
+                    actual_name = f"{user_to_link.first_name} {user_to_link.last_name}".strip()
+                    if actual_name:
+                        member.name = actual_name
+                    member.email = user_to_link.email
+                    if profile.phone:
+                        member.mobile = profile.phone
+                except Profile.DoesNotExist:
+                    pass
+            elif not id_number:
+                # If ID number is cleared, unlink user
+                member.user = None
+            
+            member.save()
+            
+            # Return updated member data
+            member_data = {
+                'id': member.id,
+                'name': member.name,
+                'email': member.email,
+                'mobile': member.mobile,
+                'role': member.role.name,
+                'member_id': member.member_id,
+                'user_linked': member.user is not None
+            }
+            
+            return JsonResponse({
+                'status': 'success',
+                'message': f'{member.name} has been updated successfully',
+                'member': member_data
+            }, status=200)
+            
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            return JsonResponse({
+                'status': 'failed',
+                'message': 'An error occurred while updating the member'
+            }, status=500)
 

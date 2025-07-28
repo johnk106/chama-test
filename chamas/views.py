@@ -1,5 +1,5 @@
 import json
-from django.shortcuts import render,get_object_or_404
+from django.shortcuts import render,get_object_or_404, redirect
 
 from chamas.decorators import is_user_chama_member
 from .models import *
@@ -234,6 +234,19 @@ def add_member_to_chama(request):
         return JsonResponse(data,status=405)
 
 
+@login_required(login_url='/user/Login')
+def edit_member_in_chama(request):
+    """
+    View to edit an existing member's details in a chama.
+    Only accessible by admin users.
+    """
+    if request.method == 'POST':
+        return MemberService.edit_member_in_chama(request)
+    else:
+        return JsonResponse({
+            'status': 'failed',
+            'message': 'Invalid HTTP method'
+        }, status=405)
 
 
 @login_required(login_url='/user/Login')    
@@ -379,6 +392,7 @@ def member_details(request, chama_member_id, group):
             'mobile': member.mobile,
             'member_id': member.member_id,
             'role': member.role.name if member.role else 'Member',
+            'role_id': member.role.id if member.role else None,
             'member_since': member.member_since.strftime('%d/%m/%Y'),
             'active': member.active,
             'profile': member.profile.url if member.profile else None,
@@ -2162,4 +2176,47 @@ def get_expenses_data(request, chama_id):
             })
     
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+@login_required(login_url='/user/Login')
+def my_chamas_view(request):
+    """
+    View to display all chamas that the current user is a member of.
+    This includes both linked and unlinked memberships.
+    """
+    try:
+        from authentication.models import Profile
+        user_profile = Profile.objects.get(owner=request.user)
+        
+        # Get all chama memberships for this user
+        user_memberships = ChamaMember.objects.filter(
+            user=request.user,
+            active=True
+        ).select_related('group', 'role').order_by('-member_since')
+        
+        # Format the data for template
+        chamas_data = []
+        for membership in user_memberships:
+            chamas_data.append({
+                'chama': membership.group,
+                'role': membership.role.name if membership.role else 'Member',
+                'member_since': membership.member_since,
+                'is_admin': membership.role and membership.role.name == 'admin'
+            })
+        
+        context = {
+            'user_profile': user_profile,
+            'user_chamas': chamas_data,
+            'chamas_count': len(chamas_data)
+        }
+        
+        return render(request, 'chamas/my-chamas.html', context)
+        
+    except Profile.DoesNotExist:
+        from django.contrib import messages
+        messages.error(request, 'User profile not found. Please complete your profile setup.')
+        return redirect('Setting')
+    except Exception as e:
+        from django.contrib import messages
+        messages.error(request, f'Error loading your chamas: {str(e)}')
+        return redirect('Dashboard')
 
