@@ -643,11 +643,11 @@ $(document).ready(function () {
                          
                          if (hasBalance) {
                              recordsHtml += `
-                                 <div class="mobile-record-actions">
-                                     <button class="mobile-fine-btn" data-bs-toggle="modal" data-bs-target="#fineContribution" data-record-id="${record.id}">
+                                 <div class="mobile-record-actions admin">
+                                     <button class="mobile-fine-btn admin" data-bs-toggle="modal" data-bs-target="#fineContribution" data-record-id="${record.id}">
                                          <i class='bx bx-error-circle'></i> Fine
                                      </button>
-                                     <button class="mobile-pay-btn" data-bs-toggle="modal" data-bs-target="#exampleModal" data-record-id="${record.id}">
+                                     <button class="mobile-pay-btn admin" data-bs-toggle="modal" data-bs-target="#exampleModal" data-record-id="${record.id}">
                                          <i class='bx bx-money-withdraw'></i> Pay
                                      </button>
                                  </div>`;
@@ -680,7 +680,15 @@ $(document).ready(function () {
         const amountSelect = $("#amount").val();
         const customAmount = $("#custom-amount").val();
         
-        if (amountSelect === "custom" && customAmount) {
+        if (amountSelect === "custom") {
+            if (!customAmount || customAmount <= 0) {
+                $(".create-contribution-alert-hub").html(`
+                    <div class="alert alert-danger" role="alert">
+                        Please enter a valid custom amount.
+                    </div>
+                `);
+                return;
+            }
             $("#amount").val(customAmount);
         }
         
@@ -742,7 +750,15 @@ $(document).ready(function () {
         const mobileAmountSelect = $("#mobile-target-amount").val();
         const mobileCustomAmount = $("#mobile-custom-amount").val();
         
-        if (mobileAmountSelect === "custom" && mobileCustomAmount) {
+        if (mobileAmountSelect === "custom") {
+            if (!mobileCustomAmount || mobileCustomAmount <= 0) {
+                $("#mobile-alert-div").html(`
+                    <div class="alert alert-danger" role="alert">
+                        Please enter a valid custom amount.
+                    </div>
+                `).show();
+                return;
+            }
             $("#mobile-target-amount").val(mobileCustomAmount);
         }
         
@@ -837,13 +853,13 @@ $(document).ready(function () {
                     // Only show buttons if there's a balance
                     if (hasBalance) {
                         rowHtml += `
-                            <div class="action-buttons d-flex justify-content-center align-items-center">
-                                <button type="button" class="btn btn-sm btn-outline-danger table-fine-button me-2" 
+                            <div class="action-buttons d-flex justify-content-center align-items-center admin">
+                                <button type="button" class="btn btn-sm btn-outline-danger table-fine-button me-2 admin" 
                                         data-bs-toggle="modal" data-bs-target="#fineContribution"
                                         title="Apply fine for late payment">
                                     <i class='bx bx-error-circle'></i>
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline-success table-pay-button" 
+                                <button type="button" class="btn btn-sm btn-outline-success table-pay-button admin" 
                                         data-bs-toggle="modal" data-bs-target="#exampleModal"
                                         title="Record payment for this contribution">
                                     <i class='bx bx-money-withdraw'></i>
