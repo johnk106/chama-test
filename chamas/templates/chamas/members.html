@@ -791,7 +791,7 @@
             <form id="adminEditMemberForm" onsubmit="submitEditMember(event)">
                 <!-- Hidden input for member ID -->
                 <input type="hidden" id="editMemberId" name="member_id">
-                <input type="hidden" id="editMemberChamaId" name="chama_id" value="{{ chama.id }}">
+                <input type="hidden" id="editMemberChamaId" name="chama_id" value="">
                 
                 <div style="margin-bottom: 1rem;">
                     <label for="editMemberName" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Full Name</label>
@@ -917,11 +917,33 @@ window.submitEditMember = function(event) {
         const formData = new FormData(form);
         const memberData = Object.fromEntries(formData.entries());
         
-        console.log('[DEBUG] Form data:', memberData);
+        console.log('[DEBUG] Raw form data:', memberData);
+        
+        // Ensure chama_id is always present
+        if (!memberData.chama_id) {
+            // Try to get chama_id from URL or data attribute as fallback
+            const chamaId = getChamaIdFromUrl() || document.querySelector('.admin-members-container')?.dataset?.chamaId;
+            if (chamaId) {
+                memberData.chama_id = chamaId;
+                console.log('[DEBUG] Added chama_id from fallback:', chamaId);
+            } else {
+                alert('Error: Unable to determine chama ID. Please refresh the page and try again.');
+                return;
+            }
+        }
+        
+        console.log('[DEBUG] Final form data with chama_id:', memberData);
         
         // Basic validation
-        if (!memberData.name || !memberData.email || !memberData.mobile || !memberData.role) {
-            alert('Please fill in all required fields');
+        if (!memberData.name || !memberData.email || !memberData.mobile || !memberData.role || !memberData.chama_id) {
+            const missingFields = [];
+            if (!memberData.name) missingFields.push('name');
+            if (!memberData.email) missingFields.push('email');
+            if (!memberData.mobile) missingFields.push('mobile');
+            if (!memberData.role) missingFields.push('role');
+            if (!memberData.chama_id) missingFields.push('chama_id');
+            
+            alert('Please fill in all required fields. Missing: ' + missingFields.join(', '));
             return;
         }
         
@@ -932,6 +954,10 @@ window.submitEditMember = function(event) {
         submitBtn.disabled = true;
         
         // Make request
+        console.log('[DEBUG] About to send request with data:', JSON.stringify(memberData, null, 2));
+        console.log('[DEBUG] Request URL:', '/chamas-bookeeping/edit-member/');
+        console.log('[DEBUG] CSRF Token:', getCsrfToken());
+        
         fetch('/chamas-bookeeping/edit-member/', {
             method: 'POST',
             headers: {
@@ -952,7 +978,8 @@ window.submitEditMember = function(event) {
                 window.closeEditMemberModal();
                 setTimeout(() => location.reload(), 1500);
             } else {
-                showAlert(data.message || 'Failed to update member', 'error');
+                console.error('[ERROR] Backend error:', data);
+                showAlert('Error: ' + (data.message || 'Failed to update member'), 'error');
             }
         })
         .catch(error => {
@@ -973,11 +1000,22 @@ window.submitEditMember = function(event) {
 // Simple function to get chama ID from URL if getChamaIdFromUrl doesn't exist
 function getChamaIdFromUrl() {
     try {
-        const pathSegments = window.location.pathname.split('/');
+        const currentURL = window.location.pathname;
+        const pathSegments = currentURL.split('/');
+        
+        console.log('[DEBUG] Current URL:', currentURL);
+        console.log('[DEBUG] Path segments:', pathSegments);
+        
         const membersIndex = pathSegments.indexOf('members');
+        console.log('[DEBUG] Members index:', membersIndex);
+        
         if (membersIndex !== -1 && pathSegments[membersIndex + 1]) {
-            return parseInt(pathSegments[membersIndex + 1]);
+            const chamaId = parseInt(pathSegments[membersIndex + 1]);
+            console.log('[DEBUG] Extracted chama ID from URL:', chamaId);
+            return chamaId;
         }
+        
+        console.log('[DEBUG] Could not extract chama ID from URL path');
         return null;
     } catch (error) {
         console.error('Error getting chama ID from URL:', error);
@@ -1037,6 +1075,7 @@ function populateEditForm(memberId, memberData) {
         // Check if all form elements exist
         const formFields = {
             editMemberId: document.getElementById('editMemberId'),
+            editMemberChamaId: document.getElementById('editMemberChamaId'),
             editMemberName: document.getElementById('editMemberName'),
             editMemberEmail: document.getElementById('editMemberEmail'),
             editMemberPhone: document.getElementById('editMemberPhone'),
@@ -1060,13 +1099,24 @@ function populateEditForm(memberId, memberData) {
         
         // Populate form fields
         formFields.editMemberId.value = memberId;
+        
+        // Ensure chama_id is set
+        const chamaId = getChamaIdFromUrl() || document.querySelector('.admin-members-container')?.dataset?.chamaId;
+        if (chamaId) {
+            formFields.editMemberChamaId.value = chamaId;
+            console.log('[DEBUG] Set chama_id in form:', chamaId);
+        } else {
+            console.error('[ERROR] Could not determine chama_id for form');
+        }
+        
         formFields.editMemberName.value = memberData.name || '';
         formFields.editMemberEmail.value = memberData.email || '';
         formFields.editMemberPhone.value = memberData.mobile || '';
         formFields.editMemberIdNumber.value = memberData.member_id || '';
         
         console.log('[DEBUG] Basic fields populated:', {
-            id: formFields.editMemberId.value,
+            memberId: formFields.editMemberId.value,
+            chamaId: formFields.editMemberChamaId.value,
             name: formFields.editMemberName.value,
             email: formFields.editMemberEmail.value,
             phone: formFields.editMemberPhone.value,
