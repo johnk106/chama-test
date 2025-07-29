@@ -30,6 +30,7 @@
             <i class='bx bx-error-circle'></i>
             <span>Create Fine Type</span>
           </div>
+          <div class="mobile-alert-hub"></div>
           <form id="mobile-create-fine-form" class="fine-card-form">
             <div class="row">
               <div class="col-md-6">
@@ -63,6 +64,7 @@
 
     <!-- Impose Fine Tab Content -->
     <div class="tab-content admin" id="impose-fine">
+      <div class="mobile-impose-alerts-hub"></div>
       <div class="mobile-fines-list">
         {% for loan in loans %}
         <div class="fine-member-card">
@@ -112,6 +114,7 @@
 
     <!-- Loan Fines Tab Content -->
     <div class="tab-content admin" id="loan-fines">
+      <div class="mobile-update-alerts-hub"></div>
       <div class="mobile-fines-list">
         {% for fine in fines %}
         <div class="fine-payment-card">
@@ -175,6 +178,7 @@
 
     <!-- Contribution Fines Tab Content -->
     <div class="tab-content admin" id="contribution-fines">
+      <div class="mobile-contribution-update-alerts-hub"></div>
       <div class="mobile-fines-list">
         {% for fine in contribution_fines %}
         <div class="fine-payment-card">
@@ -914,6 +918,18 @@
       createFineForm.addEventListener("submit", function (event) {
         event.preventDefault();
 
+        // Get the submit button and disable it to prevent multiple submissions
+        var submitButton = createFineForm.querySelector('button[type="submit"], .btn');
+        var originalButtonText = submitButton.textContent;
+        submitButton.disabled = true;
+        submitButton.textContent = "Creating...";
+
+        // Clear any existing alerts
+        var alertHub = document.querySelector(".alert-hub");
+        if (alertHub) {
+          alertHub.innerHTML = "";
+        }
+
         // Extract form values
         var name = document.getElementById("name").value;
         var amount = document.getElementById("amount").value;
@@ -947,6 +963,15 @@
           })
           .catch((error) => {
             console.error("Error:", error);
+            // Show error message
+            if (alertHub) {
+              alertHub.innerHTML = '<div class="alert alert-danger" role="alert">An error occurred while creating the fine type. Please try again.</div>';
+            }
+          })
+          .finally(() => {
+            // Re-enable the button
+            submitButton.disabled = false;
+            submitButton.textContent = originalButtonText;
           });
       });
     }
@@ -957,6 +982,18 @@
     if (mobileCreateFineForm) {
       mobileCreateFineForm.addEventListener("submit", function (event) {
         event.preventDefault();
+
+        // Get the submit button and disable it to prevent multiple submissions
+        var submitButton = mobileCreateFineForm.querySelector('button[type="submit"]');
+        var originalButtonText = submitButton.textContent;
+        submitButton.disabled = true;
+        submitButton.textContent = "Creating...";
+
+        // Clear any existing alerts
+        var mobileAlertHub = document.querySelector(".mobile-alert-hub");
+        if (mobileAlertHub) {
+          mobileAlertHub.innerHTML = "";
+        }
 
         // Extract form values
         var name = document.getElementById("mobile-fine-name").value;
@@ -991,6 +1028,15 @@
           })
           .catch((error) => {
             console.error("Error:", error);
+            // Show error message
+            if (mobileAlertHub) {
+              mobileAlertHub.innerHTML = '<div class="alert alert-danger" role="alert">An error occurred while creating the fine type. Please try again.</div>';
+            }
+          })
+          .finally(() => {
+            // Re-enable the button
+            submitButton.disabled = false;
+            submitButton.textContent = originalButtonText;
           });
       });
     }
@@ -998,12 +1044,35 @@
 
   function handleFineTypeResponse(data) {
     var alertHub = document.querySelector(".alert-hub");
+    var mobileAlertHub = document.querySelector(".mobile-alert-hub");
 
+    var alertHTML = "";
     if (data.status === "success") {
-      alertHub.innerHTML = `<div class="alert alert-success" role="alert">${data.message}</div>`;
-      // You can update the UI or perform any other actions here
+      alertHTML = `<div class="alert alert-success" role="alert">${data.message}</div>`;
+      // Clear form inputs on success in mobile view
+      if (mobileAlertHub) {
+        document.getElementById("mobile-fine-name").value = "";
+        document.getElementById("mobile-fine-amount").value = "";
+        document.getElementById("mobile-fine-description").value = "";
+      }
+      // Clear form inputs on success in desktop view
+      if (alertHub) {
+        document.getElementById("name").value = "";
+        document.getElementById("amount").value = "";
+        document.getElementById("description").value = "";
+      }
     } else {
-      alertHub.innerHTML = `<div class="alert alert-danger" role="alert">${data.message}</div>`;
+      alertHTML = `<div class="alert alert-danger" role="alert">${data.message}</div>`;
+    }
+
+    // Display alert in desktop view if element exists
+    if (alertHub) {
+      alertHub.innerHTML = alertHTML;
+    }
+    
+    // Display alert in mobile view if element exists
+    if (mobileAlertHub) {
+      mobileAlertHub.innerHTML = alertHTML;
     }
   }
 
@@ -1029,6 +1098,17 @@
 
     imposeFineButtons.forEach(function (button) {
       button.addEventListener('click', function () {
+        // Disable button to prevent multiple submissions
+        var originalButtonText = this.textContent;
+        this.disabled = true;
+        this.textContent = "Imposing...";
+
+        // Clear any existing alerts
+        var alertHub = document.querySelector('.impose-alerts-hub');
+        var mobileAlertHub = document.querySelector('.mobile-impose-alerts-hub');
+        if (alertHub) alertHub.innerHTML = "";
+        if (mobileAlertHub) mobileAlertHub.innerHTML = "";
+
         var loanId = this.closest('.loan-single, .fine-member-content').querySelector('.loan-id').value;
         var fineType = this.closest('.loan-single, .fine-member-content').querySelector('.fine-type').value;
 
@@ -1040,6 +1120,8 @@
           loan_id: loanId,
           fine_type: fineType
         };
+
+        var currentButton = this;
 
         // Send data to the server
         fetch(url, {
@@ -1056,6 +1138,15 @@
           })
           .catch(error => {
             console.error('Error:', error);
+            // Show error message
+            var errorHTML = '<div class="alert alert-danger" role="alert">An error occurred while imposing the fine. Please try again.</div>';
+            if (alertHub) alertHub.innerHTML = errorHTML;
+            if (mobileAlertHub) mobileAlertHub.innerHTML = errorHTML;
+          })
+          .finally(() => {
+            // Re-enable button
+            currentButton.disabled = false;
+            currentButton.textContent = originalButtonText;
           });
       });
     });
@@ -1063,12 +1154,23 @@
 
   function handleImposeFineResponse(data) {
     var alertHub = document.querySelector('.impose-alerts-hub');
+    var mobileAlertHub = document.querySelector('.mobile-impose-alerts-hub');
 
+    var alertHTML = "";
     if (data.status === 'success') {
-      alertHub.innerHTML = `<div class="alert alert-success" role="alert">${data.message}</div>`;
-      // You can update the UI or perform any other actions here
+      alertHTML = `<div class="alert alert-success" role="alert">${data.message}</div>`;
     } else {
-      alertHub.innerHTML = `<div class="alert alert-danger" role="alert">${data.message}</div>`;
+      alertHTML = `<div class="alert alert-danger" role="alert">${data.message}</div>`;
+    }
+
+    // Display alert in desktop view if element exists
+    if (alertHub) {
+      alertHub.innerHTML = alertHTML;
+    }
+    
+    // Display alert in mobile view if element exists
+    if (mobileAlertHub) {
+      mobileAlertHub.innerHTML = alertHTML;
     }
   }
 
@@ -1085,6 +1187,19 @@
 
     updateFineButtons.forEach(function (button) {
       button.addEventListener('click', function () {
+        // Disable button to prevent multiple submissions
+        var originalButtonText = this.textContent;
+        this.disabled = true;
+        this.textContent = "Updating...";
+
+        // Clear any existing alerts
+        var alertHub = document.querySelector('.pay-fine-alerts-hub');
+        var mobileUpdateAlertHub = document.querySelector('.mobile-update-alerts-hub');
+        var mobileContributionUpdateAlertHub = document.querySelector('.mobile-contribution-update-alerts-hub');
+        if (alertHub) alertHub.innerHTML = "";
+        if (mobileUpdateAlertHub) mobileUpdateAlertHub.innerHTML = "";
+        if (mobileContributionUpdateAlertHub) mobileContributionUpdateAlertHub.innerHTML = "";
+
         var fineId = this.closest('.loan-single, .fine-payment-content').querySelector('#fine-id').value;
         var fineAmountInput = this.closest('.loan-single, .fine-payment-content').querySelector('#amount, .form-input[name="fine-amount"]');
         var fineAmount = fineAmountInput ? fineAmountInput.value : '';
@@ -1098,6 +1213,8 @@
           'fine-amount': fineAmount
         };
 
+        var currentButton = this;
+
         // Send data to the server
         fetch(url, {
           method: 'POST',
@@ -1110,9 +1227,23 @@
           .then(response => response.json())
           .then(data => {
             handleUpdateFineResponse(data);
+            // Clear input field on success
+            if (data.status === 'success' && fineAmountInput) {
+              fineAmountInput.value = '';
+            }
           })
           .catch(error => {
             console.error('Error:', error);
+            // Show error message
+            var errorHTML = '<div class="alert alert-danger" role="alert">An error occurred while updating the fine. Please try again.</div>';
+            if (alertHub) alertHub.innerHTML = errorHTML;
+            if (mobileUpdateAlertHub) mobileUpdateAlertHub.innerHTML = errorHTML;
+            if (mobileContributionUpdateAlertHub) mobileContributionUpdateAlertHub.innerHTML = errorHTML;
+          })
+          .finally(() => {
+            // Re-enable button
+            currentButton.disabled = false;
+            currentButton.textContent = originalButtonText;
           });
       });
     });
@@ -1120,12 +1251,29 @@
 
   function handleUpdateFineResponse(data) {
     var alertHub = document.querySelector('.pay-fine-alerts-hub');
+    var mobileUpdateAlertHub = document.querySelector('.mobile-update-alerts-hub');
+    var mobileContributionUpdateAlertHub = document.querySelector('.mobile-contribution-update-alerts-hub');
 
+    var alertHTML = "";
     if (data.status === 'success') {
-      alertHub.innerHTML = `<div class="alert alert-success" role="alert">${data.message}</div>`;
-      // You can update the UI or perform any other actions here
+      alertHTML = `<div class="alert alert-success" role="alert">${data.message}</div>`;
     } else {
-      alertHub.innerHTML = `<div class="alert alert-danger" role="alert">${data.message}</div>`;
+      alertHTML = `<div class="alert alert-danger" role="alert">${data.message}</div>`;
+    }
+
+    // Display alert in desktop view if element exists
+    if (alertHub) {
+      alertHub.innerHTML = alertHTML;
+    }
+    
+    // Display alert in mobile loan fines view if element exists
+    if (mobileUpdateAlertHub) {
+      mobileUpdateAlertHub.innerHTML = alertHTML;
+    }
+
+    // Display alert in mobile contribution fines view if element exists
+    if (mobileContributionUpdateAlertHub) {
+      mobileContributionUpdateAlertHub.innerHTML = alertHTML;
     }
   }
 
