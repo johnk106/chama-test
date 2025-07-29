@@ -365,7 +365,22 @@ class ContributionService:
     @staticmethod
     def update_contribution(request, contribution_id):
         try:
+            # Validate contribution_id
+            if not contribution_id or not str(contribution_id).isdigit():
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': 'Invalid contribution ID'
+                }, status=400)
+            
             contribution = Contribution.objects.get(pk=contribution_id)
+            
+            # Ensure user has access to this contribution (belongs to their chama)
+            user_chamas = request.user.membership.filter(active=True).values_list('group_id', flat=True)
+            if contribution.chama_id not in user_chamas:
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': 'Access denied to this contribution'
+                }, status=403)
             
             # Check if contribution has records - prevent editing if it does
             if ContributionRecord.objects.filter(contribution=contribution).exists():
@@ -375,16 +390,40 @@ class ContributionService:
                 }, status=400)
             
             # Get form data
-            name = request.POST.get('name')
-            amount = request.POST.get('amount')
-            start_date = request.POST.get('start_date')
-            description = request.POST.get('description', '')
+            name = request.POST.get('name', '').strip()
+            amount = request.POST.get('amount', '').strip()
+            start_date = request.POST.get('start_date', '').strip()
+            description = request.POST.get('description', '').strip()
             
             # Validate required fields
             if not name or not amount or not start_date:
                 return JsonResponse({
                     'status': 'failed',
                     'message': 'Name, amount, and start date are required'
+                }, status=400)
+            
+            # Validate amount
+            try:
+                amount_decimal = Decimal(str(amount))
+                if amount_decimal <= 0:
+                    return JsonResponse({
+                        'status': 'failed',
+                        'message': 'Amount must be greater than zero'
+                    }, status=400)
+            except (ValueError, TypeError, Decimal.InvalidOperation):
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': 'Please enter a valid amount'
+                }, status=400)
+            
+            # Validate date format
+            try:
+                from datetime import datetime
+                datetime.strptime(start_date, '%Y-%m-%d')
+            except ValueError:
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': 'Please enter a valid date in YYYY-MM-DD format'
                 }, status=400)
             
             # Check for duplicate name (excluding current contribution)
@@ -401,7 +440,7 @@ class ContributionService:
             
             # Update the contribution
             contribution.name = name
-            contribution.amount = Decimal(str(amount))
+            contribution.amount = amount_decimal
             contribution.start_date = start_date
             contribution.description = description
             contribution.save()
@@ -423,22 +462,38 @@ class ContributionService:
                 'status': 'failed',
                 'message': 'Contribution not found'
             }, status=404)
-        except (ValueError, TypeError) as e:
+        except ValueError as e:
+            print(f"ValueError in update_contribution: {e}")
             return JsonResponse({
                 'status': 'failed',
-                'message': f'Invalid amount provided: {str(e)}'
+                'message': 'Invalid data format provided'
             }, status=400)
         except Exception as e:
-            print(f"Error updating contribution: {e}")
+            print(f"Unexpected error in update_contribution: {e}")
             return JsonResponse({
                 'status': 'failed',
-                'message': f'An error occurred: {str(e)}'
+                'message': 'An unexpected error occurred. Please try again.'
             }, status=500)
 
     @staticmethod
     def get_contribution_details(request, contribution_id):
         try:
+            # Validate contribution_id
+            if not contribution_id or not str(contribution_id).isdigit():
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': 'Invalid contribution ID'
+                }, status=400)
+            
             contribution = Contribution.objects.get(pk=contribution_id)
+            
+            # Ensure user has access to this contribution (belongs to their chama)
+            user_chamas = request.user.membership.filter(active=True).values_list('group_id', flat=True)
+            if contribution.chama_id not in user_chamas:
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': 'Access denied to this contribution'
+                }, status=403)
             
             return JsonResponse({
                 'status': 'success',
@@ -446,8 +501,8 @@ class ContributionService:
                     'id': contribution.id,
                     'name': contribution.name,
                     'amount': float(contribution.amount),
-                    'start_date': contribution.start_date.strftime('%Y-%m-%d'),
-                    'description': contribution.description
+                    'start_date': contribution.start_date.strftime('%Y-%m-%d') if contribution.start_date else '',
+                    'description': contribution.description or ''
                 }
             }, status=200)
             
@@ -456,10 +511,17 @@ class ContributionService:
                 'status': 'failed',
                 'message': 'Contribution not found'
             }, status=404)
-        except Exception as e:
+        except ValueError as e:
+            print(f"ValueError in get_contribution_details: {e}")
             return JsonResponse({
                 'status': 'failed',
-                'message': f'An error occurred: {str(e)}'
+                'message': 'Invalid data format'
+            }, status=400)
+        except Exception as e:
+            print(f"Unexpected error in get_contribution_details: {e}")
+            return JsonResponse({
+                'status': 'failed',
+                'message': 'An unexpected error occurred. Please try again.'
             }, status=500)
 
     @staticmethod

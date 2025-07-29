@@ -511,7 +511,6 @@ def pay_contribution(request, contribution_id):
     return ContributionService.pay_contribution(request,contribution_id)
 
 @login_required(login_url='/user/Login')
-@is_user_chama_member
 def update_contribution(request, contribution_id):
     if request.method == 'POST':
         return ContributionService.update_contribution(request, contribution_id)
@@ -522,7 +521,6 @@ def update_contribution(request, contribution_id):
         }, status=405)
 
 @login_required(login_url='/user/Login')
-@is_user_chama_member  
 def get_contribution_details(request, contribution_id):
     if request.method == 'GET':
         return ContributionService.get_contribution_details(request, contribution_id)

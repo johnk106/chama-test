@@ -351,7 +351,7 @@
 <script>
 // Pagination and contribution list management
 const contributionPagination = {
-    itemsPerPage: 6,
+    itemsPerPage: 5,
     currentPage: 1,
     contributions: [],
     
@@ -578,20 +578,30 @@ $(document).on('click', '.pagination-btn:not(.disabled)', function() {
 // Edit contribution functionality
 const editContribution = {
     openEditModal: function(contributionId) {
+        // Validate contribution ID
+        if (!contributionId || contributionId === 'undefined') {
+            alert('Invalid contribution selected. Please try again.');
+            return;
+        }
+        
+        // Show loading state
+        const loadingHtml = '<div class="text-center"><i class="bx bx-loader-alt bx-spin"></i> Loading...</div>';
+        
         // Get contribution details
         $.ajax({
             url: `/chamas-bookeeping/get-contribution/${contributionId}/`,
             type: 'GET',
+            timeout: 10000, // 10 second timeout
             success: function(response) {
-                if (response.status === 'success') {
+                if (response && response.status === 'success' && response.contribution) {
                     const contribution = response.contribution;
                     
                     // Populate the form
-                    $('#edit-contribution-id').val(contribution.id);
-                    $('#edit-contribution-name').val(contribution.name);
-                    $('#edit-contribution-amount').val(contribution.amount);
-                    $('#edit-contribution-start-date').val(contribution.start_date);
-                    $('#edit-contribution-description').val(contribution.description);
+                    $('#edit-contribution-id').val(contribution.id || '');
+                    $('#edit-contribution-name').val(contribution.name || '');
+                    $('#edit-contribution-amount').val(contribution.amount || '');
+                    $('#edit-contribution-start-date').val(contribution.start_date || '');
+                    $('#edit-contribution-description').val(contribution.description || '');
                     
                     // Clear any previous alerts
                     $('.edit-contribution-alerts').empty();
@@ -599,55 +609,115 @@ const editContribution = {
                     // Show the modal
                     $('#editContributionModal').modal('show');
                 } else {
-                    alert('Failed to load contribution details: ' + response.message);
+                    const errorMessage = response && response.message ? response.message : 'Unknown error occurred';
+                    alert('Failed to load contribution details: ' + errorMessage);
                 }
             },
-            error: function() {
-                alert('Failed to load contribution details. Please try again.');
+            error: function(xhr, status, error) {
+                console.error('Edit modal error:', {xhr, status, error});
+                
+                let errorMessage = 'Failed to load contribution details. ';
+                
+                if (status === 'timeout') {
+                    errorMessage += 'The request timed out. Please check your connection and try again.';
+                } else if (xhr.status === 403) {
+                    errorMessage += 'You do not have permission to edit this contribution.';
+                } else if (xhr.status === 404) {
+                    errorMessage += 'Contribution not found.';
+                } else if (xhr.status === 500) {
+                    errorMessage += 'Server error occurred. Please try again later.';
+                } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage += xhr.responseJSON.message;
+                } else {
+                    errorMessage += 'Please check your connection and try again.';
+                }
+                
+                alert(errorMessage);
             }
         });
     },
     
     saveChanges: function() {
         const contributionId = $('#edit-contribution-id').val();
-        const formData = $('#edit-contribution-form').serialize();
+        
+        // Validate contribution ID
+        if (!contributionId || contributionId === 'undefined') {
+            $('.edit-contribution-alerts').html(`
+                <div class="alert alert-danger" role="alert">
+                    Invalid contribution ID. Please refresh and try again.
+                </div>
+            `);
+            return;
+        }
         
         // Validate required fields
         const name = $('#edit-contribution-name').val().trim();
-        const amount = $('#edit-contribution-amount').val();
-        const startDate = $('#edit-contribution-start-date').val();
+        const amount = $('#edit-contribution-amount').val().trim();
+        const startDate = $('#edit-contribution-start-date').val().trim();
         
-        if (!name || !amount || !startDate) {
+        if (!name) {
             $('.edit-contribution-alerts').html(`
                 <div class="alert alert-danger" role="alert">
-                    Please fill in all required fields.
+                    Contribution name is required.
                 </div>
             `);
+            $('#edit-contribution-name').focus();
             return;
         }
         
-        if (parseFloat(amount) <= 0) {
+        if (!amount) {
             $('.edit-contribution-alerts').html(`
                 <div class="alert alert-danger" role="alert">
-                    Amount must be greater than zero.
+                    Amount is required.
                 </div>
             `);
+            $('#edit-contribution-amount').focus();
             return;
         }
+        
+        if (!startDate) {
+            $('.edit-contribution-alerts').html(`
+                <div class="alert alert-danger" role="alert">
+                    Start date is required.
+                </div>
+            `);
+            $('#edit-contribution-start-date').focus();
+            return;
+        }
+        
+        // Validate amount
+        const amountFloat = parseFloat(amount);
+        if (isNaN(amountFloat) || amountFloat <= 0) {
+            $('.edit-contribution-alerts').html(`
+                <div class="alert alert-danger" role="alert">
+                    Please enter a valid amount greater than zero.
+                </div>
+            `);
+            $('#edit-contribution-amount').focus();
+            return;
+        }
+        
+        // Show saving state
+        const saveButton = $('#save-contribution-changes');
+        const originalText = saveButton.text();
+        saveButton.prop('disabled', true).html('<i class="bx bx-loader-alt bx-spin"></i> Saving...');
+        
+        const formData = $('#edit-contribution-form').serialize();
         
         // Send update request
         $.ajax({
             url: `/chamas-bookeeping/update-contribution/${contributionId}/`,
             type: 'POST',
             data: formData,
+            timeout: 15000, // 15 second timeout
             headers: {
                 'X-CSRFToken': getCookie('csrftoken')
             },
             success: function(response) {
-                if (response.status === 'success') {
+                if (response && response.status === 'success') {
                     $('.edit-contribution-alerts').html(`
                         <div class="alert alert-success" role="alert">
-                            ${response.message}
+                            <i class="bx bx-check-circle"></i> ${response.message || 'Contribution updated successfully!'}
                         </div>
                     `);
                     
@@ -657,23 +727,49 @@ const editContribution = {
                         location.reload();
                     }, 1500);
                 } else {
+                    const errorMessage = response && response.message ? response.message : 'Update failed';
                     $('.edit-contribution-alerts').html(`
                         <div class="alert alert-danger" role="alert">
-                            ${response.message}
+                            <i class="bx bx-error-circle"></i> ${errorMessage}
                         </div>
                     `);
+                    // Re-enable button
+                    saveButton.prop('disabled', false).text(originalText);
                 }
             },
-            error: function(xhr) {
-                let errorMessage = 'Failed to update contribution. Please try again.';
-                if (xhr.responseJSON && xhr.responseJSON.message) {
+            error: function(xhr, status, error) {
+                console.error('Save changes error:', {xhr, status, error});
+                
+                let errorMessage = 'Failed to update contribution. ';
+                
+                if (status === 'timeout') {
+                    errorMessage += 'The request timed out. Please try again.';
+                } else if (xhr.status === 400) {
+                    errorMessage = xhr.responseJSON && xhr.responseJSON.message ? 
+                        xhr.responseJSON.message : 'Invalid data provided.';
+                } else if (xhr.status === 403) {
+                    errorMessage += 'You do not have permission to edit this contribution.';
+                } else if (xhr.status === 404) {
+                    errorMessage += 'Contribution not found.';
+                } else if (xhr.status === 409) {
+                    errorMessage = xhr.responseJSON && xhr.responseJSON.message ? 
+                        xhr.responseJSON.message : 'Contribution name already exists.';
+                } else if (xhr.status === 500) {
+                    errorMessage += 'Server error occurred. Please try again later.';
+                } else if (xhr.responseJSON && xhr.responseJSON.message) {
                     errorMessage = xhr.responseJSON.message;
+                } else {
+                    errorMessage += 'Please check your connection and try again.';
                 }
+                
                 $('.edit-contribution-alerts').html(`
                     <div class="alert alert-danger" role="alert">
-                        ${errorMessage}
+                        <i class="bx bx-error-circle"></i> ${errorMessage}
                     </div>
                 `);
+                
+                // Re-enable button
+                saveButton.prop('disabled', false).text(originalText);
             }
         });
     }
