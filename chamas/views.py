@@ -510,8 +510,14 @@ def create_contribution_record(request, chama_id):
 def pay_contribution(request, contribution_id):
     return ContributionService.pay_contribution(request,contribution_id)
 
-@login_required(login_url='/user/Login')
 def update_contribution(request, contribution_id):
+    # Temporary bypass for debugging
+    if not request.user.is_authenticated:
+        return JsonResponse({
+            'status': 'failed',
+            'message': 'Authentication required'
+        }, status=401)
+        
     if request.method == 'POST':
         return ContributionService.update_contribution(request, contribution_id)
     else:
@@ -520,8 +526,14 @@ def update_contribution(request, contribution_id):
             'message': 'Invalid HTTP method'
         }, status=405)
 
-@login_required(login_url='/user/Login')
 def get_contribution_details(request, contribution_id):
+    # Temporary bypass for debugging
+    if not request.user.is_authenticated:
+        return JsonResponse({
+            'status': 'failed',
+            'message': 'Authentication required'
+        }, status=401)
+        
     if request.method == 'GET':
         return ContributionService.get_contribution_details(request, contribution_id)
     else:
