@@ -19,6 +19,7 @@ urlpatterns = [
     path('chama-dashboard/<int:chama_id>/',views.dashboard,name='chama-dashboard'),
     path('upload-document/<int:chama_id>/',views.upload_document,name='upload-document'),
     path('download-document/<int:chama_id>/<int:document_id>/',views.download_document,name='download-document'),
+    path('delete-document/<int:chama_id>/<int:document_id>/',views.delete_document,name='delete-document'),
 
     path('contributions/<int:chama_id>/',views.contributions,name='contributions'),
     path('create-contribution-record/<int:chama_id>/',views.create_contribution_record,name='create-contribution-record'),

@@ -6,7 +6,7 @@ from .models import *
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
 from django.utils import timezone
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.db.models import Sum
@@ -59,8 +59,17 @@ def dashboard(request,chama_id):
     total_fines = FineItem.objects.filter(member__group=chama).aggregate(total_fines=Sum('fine_amount'))['total_fines'] or 0
     total_loans_issued = LoanItem.objects.filter(member__group=chama).exclude(status__in=['declined', 'application']).aggregate(total_loans_issued=Sum('amount'))['total_loans_issued'] or 0
     contributions_data, loans_data, fines_data = get_monthly_data(chama_id)
-    documents = Paginator(Document.objects.filter(chama=chama).order_by('-upload_date').all(),4)
-    documents = documents.page(1)
+    # Handle pagination for documents - get page number from request
+    page_number = request.GET.get('page', 1)
+    documents_list = Document.objects.filter(chama=chama).order_by('-upload_date')
+    documents_paginator = Paginator(documents_list, 10)  # 10 documents per page
+    
+    try:
+        documents = documents_paginator.page(page_number)
+    except PageNotAnInteger:
+        documents = documents_paginator.page(1)
+    except EmptyPage:
+        documents = documents_paginator.page(documents_paginator.num_pages)
 
     # Convert Decimal values to float
     contributions_data_float = {k: float(v) for k, v in contributions_data.items()}
@@ -136,15 +145,42 @@ def get_monthly_data(chama_id):
 def upload_document(request, chama_id):
     if request.method == 'POST' and request.FILES.get('documentFile'):
         document = request.FILES['documentFile']
-        name = document.name
+        name = request.POST.get('documentName', document.name)
+        
         try:
             chama = Chama.objects.get(pk=chama_id)
         except Chama.DoesNotExist:
             return JsonResponse({'error': 'Chama not found'}, status=404)
 
-        new_document = Document.objects.create(file=document, name=name, chama=chama)
+        # Get file extension and size
+        file_extension = document.name.split('.')[-1].lower() if '.' in document.name else 'unknown'
+        file_size = document.size
 
-        return JsonResponse({'message': 'Document uploaded successfully'}, status=200)
+        # Validate file type (only allow specific document types)
+        allowed_types = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'csv', 'txt', 'jpg', 'jpeg', 'png']
+        if file_extension not in allowed_types:
+            return JsonResponse({'error': f'File type .{file_extension} not allowed. Allowed types: {", ".join(allowed_types)}'}, status=400)
+
+        # Check file size (max 10MB)
+        max_size = 10 * 1024 * 1024  # 10MB in bytes
+        if file_size > max_size:
+            return JsonResponse({'error': 'File size exceeds 10MB limit'}, status=400)
+
+        new_document = Document.objects.create(
+            file=document, 
+            name=name, 
+            chama=chama,
+            file_type=file_extension,
+            file_size=file_size
+        )
+
+        return JsonResponse({
+            'message': 'Document uploaded successfully',
+            'document_id': new_document.id,
+            'document_name': new_document.name,
+            'file_type': new_document.get_file_type(),
+            'upload_date': new_document.upload_date.strftime('%B %d, %Y')
+        }, status=200)
     else:
         return JsonResponse({'error': 'No document provided'}, status=400)
 
@@ -158,7 +194,46 @@ def download_document(request, document_id,chama_id):
         response['Content-Disposition'] = f'attachment; filename="{document.name}"'
         return response
     else:
-        return JsonResponse({'error': 'File not found'}, status=404) 
+        return JsonResponse({'error': 'File not found'}, status=404)
+
+@login_required(login_url='/user/Login')
+def delete_document(request, chama_id, document_id):
+    """Delete a document - only accessible by admin users"""
+    if request.method == 'POST':
+        try:
+            chama = Chama.objects.get(pk=chama_id)
+            document = Document.objects.get(id=document_id, chama=chama)
+            
+            # Check if user is admin (you may need to adjust this based on your admin check logic)
+            member = None
+            for chama_member in chama.member.all():
+                if chama_member.user == request.user:
+                    member = chama_member
+                    break
+            
+            if member and member.role and member.role.name.lower() in ['admin', 'administrator', 'chairman', 'secretary']:
+                # Delete the file from filesystem if it exists
+                if document.file and os.path.exists(document.file.path):
+                    os.remove(document.file.path)
+                
+                # Delete the document record
+                document_name = document.name
+                document.delete()
+                
+                return JsonResponse({
+                    'message': f'Document "{document_name}" deleted successfully'
+                }, status=200)
+            else:
+                return JsonResponse({'error': 'Unauthorized. Admin access required.'}, status=403)
+                
+        except Chama.DoesNotExist:
+            return JsonResponse({'error': 'Chama not found'}, status=404)
+        except Document.DoesNotExist:
+            return JsonResponse({'error': 'Document not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': f'Error deleting document: {str(e)}'}, status=500)
+    else:
+        return JsonResponse({'error': 'Only POST method allowed'}, status=405) 
 
 
 @login_required(login_url='/user/Login')

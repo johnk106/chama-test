@@ -286,9 +286,44 @@ class Document(models.Model):
     file = models.FileField(upload_to='documents/')
     upload_date = models.DateTimeField(auto_now_add=True)
     chama = models.ForeignKey(Chama,on_delete=models.CASCADE,related_name = 'documents')
+    file_type = models.CharField(max_length=10, blank=True, null=True)  # Stores file extension like 'pdf', 'xlsx', etc.
+    file_size = models.BigIntegerField(blank=True, null=True)  # Stores file size in bytes
 
     def __str__(self):
         return self.name
+    
+    def get_file_type(self):
+        """Returns the file extension based on the file name"""
+        if self.file_type:
+            return self.file_type
+        if self.file and self.file.name:
+            return self.file.name.split('.')[-1].lower()
+        return 'unknown'
+    
+    def get_file_icon(self):
+        """Returns appropriate icon class based on file type"""
+        file_type = self.get_file_type().lower()
+        if file_type in ['pdf']:
+            return 'bx-file-pdf'
+        elif file_type in ['xls', 'xlsx', 'csv']:
+            return 'bx-spreadsheet'
+        elif file_type in ['doc', 'docx']:
+            return 'bx-file-doc'
+        elif file_type in ['jpg', 'jpeg', 'png', 'gif']:
+            return 'bx-image'
+        else:
+            return 'bx-file-blank'
+    
+    def get_formatted_size(self):
+        """Returns human readable file size"""
+        if not self.file_size:
+            return 'Unknown size'
+        
+        for unit in ['B', 'KB', 'MB', 'GB']:
+            if self.file_size < 1024.0:
+                return f"{self.file_size:.1f} {unit}"
+            self.file_size /= 1024.0
+        return f"{self.file_size:.1f} TB"
 
 class CashflowReport(models.Model):
     object_date = models.DateTimeField()

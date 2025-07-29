@@ -104,6 +104,15 @@
                 <span class="nav-label">Manage Notifications</span>
                 <i class='bx bx-chevron-right nav-arrow'></i>
             </a>
+            
+            <a href="#documents-mobile" onclick="scrollToDocuments()" class="nav-item">
+                <div class="nav-icon">
+                    <i class='bx bx-file'></i>
+                </div>
+                <span class="nav-label">Documents</span>
+                <i class='bx bx-chevron-right nav-arrow'></i>
+            </a>
+            
             <a href="{% url 'bot:bot-records' chama.id %}" class="nav-item admin">
                 <div class="nav-icon">
                     <i class='bx bx-bot'></i>
@@ -240,39 +249,114 @@
             </div>
 
             <!-- Documents Section -->
-            <div class="documents-section">
+            <div class="documents-section" id="documents-mobile">
                 <div class="documents-card brand-card">
                     <div class="documents-header">
-                        <h3 class="documents-title text-brand-primary">Recent Documents</h3>
-                        <a href="#" class="documents-action text-brand-primary">View All</a>
+                        <h3 class="documents-title text-brand-primary">Documents</h3>
+                        <div class="documents-actions">
+                            <button class="btn btn-primary admin add-document-btn-admin" onclick="openUploadModal()">
+                                <i class='bx bx-plus'></i> Add Document
+                            </button>
+                        </div>
                     </div>
                     <div class="documents-content">
-                        <div class="documents-grid">
-                            {% for document in documents %}
-                            <div class="document-item">
-                                <div class="document-icon">
-                                    <i class='bx bx-file-blank'></i>
-                                </div>
-                                <div class="document-info">
-                                    <h4 class="document-name">{{document.title}}</h4>
-                                    <p class="document-date">{{document.upload_date|date:"M d, Y"}}</p>
-                                </div>
-                                <div class="document-actions">
-                                    <a href="{{document.file.url}}" target="_blank" class="btn-document-view">
-                                        <i class='bx bx-show'></i>
-                                    </a>
-                                    <a href="{{document.file.url}}" download class="btn-document-download">
-                                        <i class='bx bx-download'></i>
-                                    </a>
-                                </div>
+                        <div class="documents-table-container">
+                            {% if documents %}
+                            <table class="documents-table">
+                                <thead>
+                                    <tr>
+                                        <th>Document</th>
+                                        <th>Type</th>
+                                        <th>Size</th>
+                                        <th>Date Uploaded</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for document in documents %}
+                                    <tr class="document-row">
+                                        <td class="document-info-cell">
+                                            <div class="document-item-info">
+                                                <div class="document-icon">
+                                                    <i class='bx {{document.get_file_icon}}'></i>
+                                                </div>
+                                                <div class="document-details">
+                                                    <h4 class="document-name">{{document.name}}</h4>
+                                                    <p class="document-filename">{{document.file.name|cut:"documents/"}}</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="document-type">
+                                            <span class="type-badge type-{{document.get_file_type}}">{{document.get_file_type|upper}}</span>
+                                        </td>
+                                        <td class="document-size">{{document.get_formatted_size}}</td>
+                                        <td class="document-date">{{document.upload_date|date:"M d, Y"}}</td>
+                                        <td class="document-actions">
+                                            <div class="action-buttons">
+                                                <a href="{% url 'chamas:download-document' chama.id document.id %}" 
+                                                   class="btn-document-action btn-download" 
+                                                   title="Download">
+                                                    <i class='bx bx-download'></i>
+                                                </a>
+                                                <button class="btn-document-action btn-delete admin delete-document-btn-admin" 
+                                                        onclick="deleteDocument({{document.id}}, '{{document.name}}')"
+                                                        title="Delete">
+                                                    <i class='bx bx-trash'></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            
+                            <!-- Pagination -->
+                            {% if documents.has_other_pages %}
+                            <div class="pagination-container">
+                                <nav aria-label="Documents pagination">
+                                    <ul class="pagination">
+                                        {% if documents.has_previous %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ documents.previous_page_number }}" aria-label="Previous">
+                                                    <span aria-hidden="true">&laquo;</span>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                        
+                                        {% for num in documents.paginator.page_range %}
+                                            {% if documents.number == num %}
+                                                <li class="page-item active">
+                                                    <span class="page-link">{{ num }}</span>
+                                                </li>
+                                            {% elif num > documents.number|add:'-3' and num < documents.number|add:'3' %}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                        
+                                        {% if documents.has_next %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ documents.next_page_number }}" aria-label="Next">
+                                                    <span aria-hidden="true">&raquo;</span>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </nav>
                             </div>
-                            {% empty %}
+                            {% endif %}
+                            
+                            {% else %}
                             <div class="empty-state">
                                 <i class="bx bx-file-blank empty-state-icon"></i>
-                                <p class="empty-state-message">Nothing to show</p>
-                                <p class="empty-state-description">No documents uploaded yet</p>
+                                <p class="empty-state-message">No documents uploaded yet</p>
+                                <p class="empty-state-description">Upload your first document to get started</p>
+                                <button class="btn btn-primary admin add-document-btn-admin" onclick="openUploadModal()">
+                                    <i class='bx bx-plus'></i> Add Document
+                                </button>
                             </div>
-                            {% endfor %}
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -551,5 +635,188 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// Document management functions
+function scrollToDocuments() {
+    document.getElementById('documents-mobile').scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+    });
+}
+
+function openUploadModal() {
+    document.getElementById('uploadDocumentModal').style.display = 'block';
+}
+
+function closeUploadModal() {
+    document.getElementById('uploadDocumentModal').style.display = 'none';
+    document.getElementById('uploadForm').reset();
+    document.getElementById('uploadStatus').innerHTML = '';
+    document.getElementById('fileInfo').innerHTML = '';
+}
+
+function handleFileSelect(input) {
+    const fileInfo = document.getElementById('fileInfo');
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const fileSize = (file.size / 1024 / 1024).toFixed(2); // Size in MB
+        const fileType = file.name.split('.').pop().toLowerCase();
+        
+        // Check file type
+        const allowedTypes = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'csv', 'txt', 'jpg', 'jpeg', 'png'];
+        if (!allowedTypes.includes(fileType)) {
+            fileInfo.innerHTML = `<div class="alert alert-danger">File type .${fileType} not allowed</div>`;
+            input.value = '';
+            return;
+        }
+        
+        // Check file size (10MB limit)
+        if (file.size > 10 * 1024 * 1024) {
+            fileInfo.innerHTML = `<div class="alert alert-danger">File size exceeds 10MB limit</div>`;
+            input.value = '';
+            return;
+        }
+        
+        fileInfo.innerHTML = `
+            <div class="file-preview">
+                <div class="file-icon">
+                    <i class='bx ${getFileIcon(fileType)}'></i>
+                </div>
+                <div class="file-details">
+                    <strong>${file.name}</strong><br>
+                    <small>${fileSize} MB • ${fileType.toUpperCase()}</small>
+                </div>
+            </div>
+        `;
+    }
+}
+
+function getFileIcon(fileType) {
+    switch(fileType.toLowerCase()) {
+        case 'pdf': return 'bx-file-pdf';
+        case 'xls':
+        case 'xlsx':
+        case 'csv': return 'bx-spreadsheet';
+        case 'doc':
+        case 'docx': return 'bx-file-doc';
+        case 'jpg':
+        case 'jpeg':
+        case 'png':
+        case 'gif': return 'bx-image';
+        default: return 'bx-file-blank';
+    }
+}
+
+function uploadDocument() {
+    const form = document.getElementById('uploadForm');
+    const formData = new FormData(form);
+    const statusDiv = document.getElementById('uploadStatus');
+    const submitBtn = document.querySelector('#uploadForm button[type="submit"]');
+    
+    // Disable submit button
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Uploading...';
+    
+    statusDiv.innerHTML = '<div class="alert alert-info">Uploading document...</div>';
+    
+    fetch('{% url "chamas:upload-document" chama.id %}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            statusDiv.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
+            setTimeout(() => {
+                closeUploadModal();
+                location.reload(); // Refresh to show new document
+            }, 1500);
+        } else {
+            statusDiv.innerHTML = `<div class="alert alert-danger">${data.error || 'Upload failed'}</div>`;
+        }
+    })
+    .catch(error => {
+        statusDiv.innerHTML = `<div class="alert alert-danger">Error uploading document</div>`;
+    })
+    .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="bx bx-upload"></i> Upload Document';
+    });
+}
+
+function deleteDocument(documentId, documentName) {
+    if (confirm(`Are you sure you want to delete "${documentName}"? This action cannot be undone.`)) {
+        fetch(`{% url "chamas:delete-document" chama.id 0 %}`.replace('0', documentId), {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                alert(data.message);
+                location.reload(); // Refresh to update document list
+            } else {
+                alert(data.error || 'Failed to delete document');
+            }
+        })
+        .catch(error => {
+            alert('Error deleting document');
+        });
+    }
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('uploadDocumentModal');
+    if (event.target == modal) {
+        closeUploadModal();
+    }
+}
 </script>
+
+<!-- Upload Document Modal -->
+<div id="uploadDocumentModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Upload Document</h3>
+            <span class="modal-close" onclick="closeUploadModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="uploadForm" onsubmit="event.preventDefault(); uploadDocument();">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="documentName">Document Name:</label>
+                    <input type="text" id="documentName" name="documentName" class="form-control" 
+                           placeholder="Enter document name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="documentFile">Select File:</label>
+                    <input type="file" id="documentFile" name="documentFile" class="form-control" 
+                           onchange="handleFileSelect(this)" required>
+                    <small class="form-text text-muted">
+                        Allowed types: PDF, DOC, DOCX, XLS, XLSX, CSV, TXT, JPG, PNG (Max: 10MB)
+                    </small>
+                </div>
+                
+                <div id="fileInfo"></div>
+                <div id="uploadStatus"></div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeUploadModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bx bx-upload"></i> Upload Document
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
