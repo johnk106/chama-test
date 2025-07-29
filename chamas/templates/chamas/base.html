@@ -674,7 +674,7 @@ $(document).ready(function() {
       .text("Switch to member view");
   }
 
-  // 4) Now call the server to see “am I admin in this group?”
+  // 4) Now call the server to see "am I admin in this group?"
   $.ajax({
     url: '/chamas-bookeeping/get_user_role/',
     data: { group_id: groupId },
@@ -698,7 +698,7 @@ $(document).ready(function() {
         // I am admin. Show the admin toggle now (it may have been hidden)
         $(".view-option[data-view='admin']").show();
 
-        // If they had last‐saved “admin,” now we can safely flip on admin features:
+        // If they had last‐saved "admin," now we can safely flip on admin features:
         if (savedView === "admin") {
           updateView("admin");
           $(".view-option[data-view='admin']")
@@ -706,7 +706,7 @@ $(document).ready(function() {
           $(".view-option[data-view='member']")
             .text("Switch to member view");
         } else {
-          // They last‐saved “member,” so keep member view
+          // They last‐saved "member," so keep member view
           updateView("member");
           $(".view-option[data-view='member']")
             .text("Viewing as member");
@@ -723,12 +723,12 @@ $(document).ready(function() {
     }
   });
 
-  // 5) Click handler: whenever they click “member” or “admin,” re‐verify if necessary
+  // 5) Click handler: whenever they click "member" or "admin," re‐verify if necessary
   $(".view-option").on("click", function() {
     var view = $(this).data("view");
 
     if (view === "admin") {
-      // If they click “Switch to admin,” do one more AJAX check:
+      // If they click "Switch to admin," do one more AJAX check:
       $.ajax({
         url: '/chamas-bookeeping/get_user_role/',
         data: { group_id: groupId },
@@ -742,7 +742,7 @@ $(document).ready(function() {
             localStorage.setItem(storageKey, "admin");
           } else {
             // Not an admin—show alert and revert to member
-            alert("You don’t have permission to view as admin here.");
+            alert("You don't have permission to view as admin here.");
             updateView("member");
             $(".view-option[data-view='member']").text("Viewing as member");
             $(".view-option[data-view='admin']").text("Switch to admin view");
@@ -760,7 +760,7 @@ $(document).ready(function() {
       });
 
     } else {
-      // They clicked “member”—just switch immediately (no need to re‐verify)
+      // They clicked "member"—just switch immediately (no need to re‐verify)
       updateView("member");
       $(".view-option[data-view='member']").text("Viewing as member");
       $(".view-option[data-view='admin']").text("Switch to admin view");
@@ -771,11 +771,15 @@ $(document).ready(function() {
   // 6) show/hide logic for each view
   function updateView(view) {
     if (view === "member") {
+      // Remove admin class from body/html and hide admin elements
+      $("body, html").removeClass("user-is-admin");
       $(".admin, #remove-user, #add-member-button").hide();
       $(".member").show();
       $(".view-option[data-view='member']").text("Viewing as member");
       $(".view-option[data-view='admin']").text("Switch to admin view");
     } else {
+      // Add admin class to body/html and show admin elements
+      $("body, html").addClass("user-is-admin");
       $(".member").hide();
       $(".admin, #remove-user, #add-member-button").show();
       $(".view-option[data-view='admin']").text("Viewing as admin");
@@ -793,9 +797,11 @@ $(document).ready(function() {
     
     // Apply the same logic as updateView but just for admin/member elements
     if (currentView === "member") {
+      $("body, html").removeClass("user-is-admin");
       $(".admin, #remove-user, #add-member-button").hide();
       $(".member").show();
     } else {
+      $("body, html").addClass("user-is-admin");
       $(".member").hide();
       $(".admin, #remove-user, #add-member-button").show();
     }
