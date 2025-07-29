@@ -1191,6 +1191,24 @@ html.user-is-admin .admin {
     display: flex !important;
 }
 
+/* Specific styling for admin metric cards */
+body.user-is-admin .metric-card.admin,
+html.user-is-admin .metric-card.admin {
+    display: block !important;
+    background: var(--color-white) !important;
+    border-radius: var(--border-radius) !important;
+    padding: 20px !important;
+    box-shadow: var(--shadow) !important;
+    transition: all 0.2s ease !important;
+}
+
+/* Admin metric card hover effect */
+body.user-is-admin .metric-card.admin:hover,
+html.user-is-admin .metric-card.admin:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: var(--shadow-lg) !important;
+}
+
 /* Specific styling for admin buttons in mobile/desktop */
 body.user-is-admin .admin.add-document-btn-admin,
 body.user-is-admin .admin.delete-document-btn-admin,
