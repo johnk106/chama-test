@@ -462,7 +462,7 @@ def contributions(request,chama_id):
     # Add first round status for each contribution
     contributions_with_status = []
     for contribution in contributions:
-        has_first_round = ContributionService.has_first_round_records(contribution, chama)
+        has_first_round = ContributionService.has_any_records(contribution, chama)
         contributions_with_status.append({
             'contribution': contribution,
             'has_first_round_records': has_first_round

@@ -363,24 +363,13 @@ class ContributionService:
             return JsonResponse(data, status=500)
         
     @staticmethod
-    def has_first_round_records(contribution, chama):
+    def has_any_records(contribution, chama):
         """
-        Check if a contribution scheme has first round of records for all active members.
-        Returns True if all active members have at least one contribution record for this scheme.
+        Check if a contribution scheme has any records at all.
+        Returns True if there are any contribution records for this scheme.
         """
-        active_members = ChamaMember.objects.filter(group=chama, active=True)
-        active_member_count = active_members.count()
-        
-        if active_member_count == 0:
-            return False
-            
-        # Get unique members who have contributed to this scheme
-        members_with_records = ContributionRecord.objects.filter(
-            contribution=contribution
-        ).values_list('member', flat=True).distinct()
-        
-        # Check if all active members have at least one record
-        return len(members_with_records) >= active_member_count
+        # Simply check if any records exist for this contribution scheme
+        return ContributionRecord.objects.filter(contribution=contribution).exists()
 
     @staticmethod
     def contribution_details(request,chama_id):
@@ -393,8 +382,8 @@ class ContributionService:
             _records = Paginator(ContributionRecord.objects.filter(contribution=contribution).order_by('-date_created').all(),(chama.member.count()*5))
             records_page = _records.page(1)
 
-            # Check if this contribution has first round records for all members
-            has_first_round = ContributionService.has_first_round_records(contribution, chama)
+            # Check if this contribution has any records
+            has_first_round = ContributionService.has_any_records(contribution, chama)
 
             data = {
                 'status': 'success',
