@@ -1001,6 +1001,11 @@
         grid-template-columns: 1fr 1fr;
         gap: 24px;
     }
+    
+    /* When member update card is hidden, records card takes full width */
+    .details-grid.full-width {
+        grid-template-columns: 1fr;
+    }
 
             @media (max-width: 1200px) {
         .details-grid {
