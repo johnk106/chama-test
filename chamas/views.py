@@ -166,13 +166,22 @@ def upload_document(request, chama_id):
         if file_size > max_size:
             return JsonResponse({'error': 'File size exceeds 10MB limit'}, status=400)
 
-        new_document = Document.objects.create(
-            file=document, 
-            name=name, 
-            chama=chama,
-            file_type=file_extension,
-            file_size=file_size
-        )
+        # Create document with backwards compatibility
+        try:
+            new_document = Document.objects.create(
+                file=document, 
+                name=name, 
+                chama=chama,
+                file_type=file_extension,
+                file_size=file_size
+            )
+        except Exception as e:
+            # Fallback for when new fields don't exist yet
+            new_document = Document.objects.create(
+                file=document, 
+                name=name, 
+                chama=chama
+            )
 
         return JsonResponse({
             'message': 'Document uploaded successfully',

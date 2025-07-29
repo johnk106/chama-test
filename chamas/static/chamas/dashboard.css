@@ -1135,6 +1135,15 @@
     display: none;
 }
 
+/* Fix for mobile navigation spacing */
+.navigation-menu {
+    padding-bottom: 1rem; /* Add bottom padding to prevent cut-off */
+}
+
+.navigation-menu .nav-item:last-child {
+    margin-bottom: 0.5rem; /* Ensure last item has proper spacing */
+}
+
 /* Mobile Documents Section */
 .mobile-documents-section {
     margin: 1rem;

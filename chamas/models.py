@@ -294,7 +294,7 @@ class Document(models.Model):
     
     def get_file_type(self):
         """Returns the file extension based on the file name"""
-        if self.file_type:
+        if hasattr(self, 'file_type') and self.file_type:
             return self.file_type
         if self.file and self.file.name:
             return self.file.name.split('.')[-1].lower()
@@ -316,10 +316,19 @@ class Document(models.Model):
     
     def get_formatted_size(self):
         """Returns human readable file size"""
-        if not self.file_size:
-            return 'Unknown size'
+        if not hasattr(self, 'file_size') or not self.file_size:
+            # Fallback: try to get size from file field
+            try:
+                if self.file and hasattr(self.file, 'size'):
+                    size = float(self.file.size)
+                else:
+                    return 'Unknown size'
+            except:
+                return 'Unknown size'
+        else:
+            size = float(self.file_size)
         
-        size = float(self.file_size)  # Create a copy to avoid modifying the original
+        # Create a copy to avoid modifying the original
         for unit in ['B', 'KB', 'MB', 'GB']:
             if size < 1024.0:
                 return f"{size:.1f} {unit}"
