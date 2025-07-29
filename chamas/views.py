@@ -458,7 +458,22 @@ def contributions(request,chama_id):
     contributions = Contribution.objects.filter(chama=chama.id).all()
     members = ChamaMember.objects.filter(group=chama).all()
     fines = FineType.objects.filter(chama=chama).all()
-    return render(request,'chamas/contributions.html',{'contributions':contributions,'members':members,'fine_types':fines})
+    
+    # Add first round status for each contribution
+    contributions_with_status = []
+    for contribution in contributions:
+        has_first_round = ContributionService.has_first_round_records(contribution, chama)
+        contributions_with_status.append({
+            'contribution': contribution,
+            'has_first_round_records': has_first_round
+        })
+    
+    return render(request,'chamas/contributions.html',{
+        'contributions':contributions,
+        'contributions_with_status': contributions_with_status,
+        'members':members,
+        'fine_types':fines
+    })
 
 
 @login_required(login_url='/user/Login')

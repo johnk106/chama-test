@@ -85,7 +85,7 @@
                     </div>
                     
                     <div class="accordion-content">
-                        <div class="members-table-header">
+                        <div class="members-table-header" id="mobile-header-{{contribution.id}}">
                             <span>Members Name</span>
                             <span>Balance</span>
                             <span>Enter amount</span>
@@ -94,7 +94,7 @@
                             <!-- Will be populated by JavaScript -->
                         </div>
                         <div id="mobile-contribution-feedback-{{contribution.id}}" class="alert" style="display: none; margin-top: 10px;"></div>
-                        <button class="update-contribution-btn admin" data-contribution-id="{{contribution.id}}">
+                        <button class="update-contribution-btn admin" data-contribution-id="{{contribution.id}}" id="mobile-update-btn-{{contribution.id}}">
                             Update contribution
                         </button>
                         
@@ -637,14 +637,30 @@ $(document).ready(function () {
                      recordsHtml = '<div class="no-mobile-records">No contribution records found</div>';
                  }
 
-                 recordsContainer.html(recordsHtml);
-                 
-                 // Apply admin visibility to newly generated mobile content
-                 applyAdminVisibility();
-             },
-             error: function () {
-                 console.error("Failed to load contribution records for mobile view");
-             }
+                                 recordsContainer.html(recordsHtml);
+                
+                // Show/hide mobile update form based on first round records status
+                const hasFirstRound = response.has_first_round_records;
+                const mobileUpdateBtn = $(`#mobile-update-btn-${contributionId}`);
+                const membersList = $(`#members-list-${contributionId}`);
+                const mobileHeader = $(`#mobile-header-${contributionId}`);
+                
+                if (hasFirstRound) {
+                    mobileUpdateBtn.hide();
+                    membersList.hide();
+                    mobileHeader.hide();
+                } else {
+                    mobileUpdateBtn.show();
+                    membersList.show();
+                    mobileHeader.show();
+                }
+                
+                // Apply admin visibility to newly generated mobile content
+                applyAdminVisibility();
+            },
+            error: function () {
+                console.error("Failed to load contribution records for mobile view");
+            }
          });
      }
 
@@ -793,6 +809,16 @@ $(document).ready(function () {
                 $("#contribution-details-name").text(response.contribution.name);
                 $("#contribution-id").text(response.contribution.id);
                 $(".contribution-details-amount").text(response.contribution.amount);
+
+                // Show/hide the contribution form based on first round records status
+                const hasFirstRound = response.has_first_round_records;
+                const memberUpdateCard = $(".member-update-card");
+                
+                if (hasFirstRound) {
+                    memberUpdateCard.hide();
+                } else {
+                    memberUpdateCard.show();
+                }
 
                 const tbody = $("#contribution-records tbody");
                 tbody.empty();
