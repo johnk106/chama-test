@@ -982,6 +982,7 @@
 }
 
 /* Upload Modal */
+/* Upload Modal - Hidden by default */
 #uploadDocumentModal.modal-overlay {
     position: fixed !important;
     top: 0 !important;
@@ -990,13 +991,18 @@
     height: 100vh !important;
     background: rgba(0, 0, 0, 0.6) !important;
     z-index: 10000 !important;
-    display: flex !important;
+    display: none !important; /* Hidden by default */
     align-items: center !important;
     justify-content: center !important;
     padding: 1rem !important;
     backdrop-filter: blur(2px) !important;
     margin: 0 !important;
     box-sizing: border-box !important;
+}
+
+/* When modal is shown */
+#uploadDocumentModal.modal-overlay.show {
+    display: flex !important;
 }
 
 .modal-overlay {
@@ -1007,7 +1013,7 @@
     height: 100vh !important;
     background: rgba(0, 0, 0, 0.6) !important;
     z-index: 10000 !important;
-    display: flex !important;
+    display: none !important; /* Hidden by default */
     align-items: center !important;
     justify-content: center !important;
     padding: 1rem !important;

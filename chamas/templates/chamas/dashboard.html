@@ -732,19 +732,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function openUploadModal() {
     const modal = document.getElementById('uploadDocumentModal');
+    modal.classList.add('show');
     modal.style.display = 'flex';
-    modal.style.position = 'fixed';
-    modal.style.top = '0';
-    modal.style.left = '0';
-    modal.style.width = '100vw';
-    modal.style.height = '100vh';
-    modal.style.alignItems = 'center';
-    modal.style.justifyContent = 'center';
-    modal.style.zIndex = '10000';
 }
 
 function closeUploadModal() {
-    document.getElementById('uploadDocumentModal').style.display = 'none';
+    const modal = document.getElementById('uploadDocumentModal');
+    modal.classList.remove('show');
+    modal.style.display = 'none';
     document.getElementById('uploadForm').reset();
     document.getElementById('uploadStatus').innerHTML = '';
     document.getElementById('fileInfo').innerHTML = '';
@@ -887,16 +882,30 @@ function deleteDocument(documentId, documentName) {
 }
 
 // Close modal when clicking outside
-window.onclick = function(event) {
+document.addEventListener('click', function(event) {
     const modal = document.getElementById('uploadDocumentModal');
-    if (event.target == modal) {
+    if (event.target === modal) {
         closeUploadModal();
     }
-}
+});
+
+// Ensure modal is hidden on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('uploadDocumentModal');
+    if (modal) {
+        modal.style.display = 'none';
+        modal.classList.remove('show');
+        
+        // Double check that modal stays hidden
+        setTimeout(function() {
+            modal.style.display = 'none';
+        }, 100);
+    }
+});
 </script>
 
 <!-- Upload Document Modal -->
-<div id="uploadDocumentModal" class="modal-overlay" style="display: none;">
+<div id="uploadDocumentModal" class="modal-overlay" style="display: none !important;">
     <div class="modal-content">
         <div class="modal-header">
             <h3>Upload Document</h3>
