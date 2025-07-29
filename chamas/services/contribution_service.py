@@ -374,12 +374,13 @@ class ContributionService:
             
             contribution = Contribution.objects.get(pk=contribution_id)
             
-            # Basic access check - ensure user is authenticated
-            if not request.user.is_authenticated:
+            # Ensure user has access to this contribution (belongs to their chama)
+            user_chamas = request.user.membership.filter(active=True).values_list('group_id', flat=True)
+            if contribution.chama_id not in user_chamas:
                 return JsonResponse({
                     'status': 'failed',
-                    'message': 'Authentication required'
-                }, status=401)
+                    'message': 'Access denied to this contribution'
+                }, status=403)
             
             # Check if contribution has records - prevent editing if it does
             if ContributionRecord.objects.filter(contribution=contribution).exists():
@@ -488,12 +489,13 @@ class ContributionService:
             
             contribution = Contribution.objects.get(pk=contribution_id)
             
-            # Basic access check - ensure user is authenticated
-            if not request.user.is_authenticated:
+            # Ensure user has access to this contribution (belongs to their chama)
+            user_chamas = request.user.membership.filter(active=True).values_list('group_id', flat=True)
+            if contribution.chama_id not in user_chamas:
                 return JsonResponse({
                     'status': 'failed',
-                    'message': 'Authentication required'
-                }, status=401)
+                    'message': 'Access denied to this contribution'
+                }, status=403)
             
             return JsonResponse({
                 'status': 'success',

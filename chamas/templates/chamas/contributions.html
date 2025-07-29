@@ -584,12 +584,19 @@ const editContribution = {
             return;
         }
         
+        // Get chama ID
+        const chamaId = localStorage.getItem("groupId");
+        if (!chamaId) {
+            alert('Error: No chama selected. Please refresh the page.');
+            return;
+        }
+        
         // Show loading state
         const loadingHtml = '<div class="text-center"><i class="bx bx-loader-alt bx-spin"></i> Loading...</div>';
         
         // Get contribution details
         $.ajax({
-            url: `/chamas-bookeeping/get-contribution/${contributionId}/`,
+            url: `/chamas-bookeeping/get-contribution/${chamaId}/${contributionId}/`,
             type: 'GET',
             timeout: 10000, // 10 second timeout
             success: function(response) {
@@ -639,12 +646,23 @@ const editContribution = {
     
     saveChanges: function() {
         const contributionId = $('#edit-contribution-id').val();
+        const chamaId = localStorage.getItem("groupId");
         
         // Validate contribution ID
         if (!contributionId || contributionId === 'undefined') {
             $('.edit-contribution-alerts').html(`
                 <div class="alert alert-danger" role="alert">
                     Invalid contribution ID. Please refresh and try again.
+                </div>
+            `);
+            return;
+        }
+        
+        // Validate chama ID
+        if (!chamaId) {
+            $('.edit-contribution-alerts').html(`
+                <div class="alert alert-danger" role="alert">
+                    Error: No chama selected. Please refresh the page.
                 </div>
             `);
             return;
@@ -706,7 +724,7 @@ const editContribution = {
         
         // Send update request
         $.ajax({
-            url: `/chamas-bookeeping/update-contribution/${contributionId}/`,
+            url: `/chamas-bookeeping/update-contribution/${chamaId}/${contributionId}/`,
             type: 'POST',
             data: formData,
             timeout: 15000, // 15 second timeout

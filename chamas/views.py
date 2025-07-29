@@ -465,14 +465,16 @@ def contributions(request,chama_id):
         has_first_round = ContributionService.has_any_records(contribution, chama)
         contributions_with_status.append({
             'contribution': contribution,
-            'has_first_round_records': has_first_round
+            'has_any_records': has_first_round
         })
     
     return render(request,'chamas/contributions.html',{
         'contributions':contributions,
         'contributions_with_status': contributions_with_status,
         'members':members,
-        'fine_types':fines
+        'fine_types':fines,
+        'chama': chama,
+        'chama_id': chama_id
     })
 
 
@@ -510,14 +512,9 @@ def create_contribution_record(request, chama_id):
 def pay_contribution(request, contribution_id):
     return ContributionService.pay_contribution(request,contribution_id)
 
-def update_contribution(request, contribution_id):
-    # Temporary bypass for debugging
-    if not request.user.is_authenticated:
-        return JsonResponse({
-            'status': 'failed',
-            'message': 'Authentication required'
-        }, status=401)
-        
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def update_contribution(request, chama_id, contribution_id):
     if request.method == 'POST':
         return ContributionService.update_contribution(request, contribution_id)
     else:
@@ -526,14 +523,9 @@ def update_contribution(request, contribution_id):
             'message': 'Invalid HTTP method'
         }, status=405)
 
-def get_contribution_details(request, contribution_id):
-    # Temporary bypass for debugging
-    if not request.user.is_authenticated:
-        return JsonResponse({
-            'status': 'failed',
-            'message': 'Authentication required'
-        }, status=401)
-        
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def get_contribution_details(request, chama_id, contribution_id):
     if request.method == 'GET':
         return ContributionService.get_contribution_details(request, contribution_id)
     else:
