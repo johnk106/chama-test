@@ -830,18 +830,25 @@ $(document).on('click', '#save-contribution-changes', function() {
 
 // Function to apply admin visibility rules to newly generated content
 function applyAdminVisibility() {
-    // Check if any existing admin elements are visible to determine current state
-    // This works because the base template handles the admin verification
-    const existingAdminElement = $(".create-contribution-section.admin");
-    
-    if (existingAdminElement.length > 0 && existingAdminElement.is(':visible')) {
-        // Admin mode is active, show admin elements
-        $(".admin").show();
-        $(".member").hide();
+    // Use the global function from base template for consistency
+    if (window.syncAdminVisibility) {
+        window.syncAdminVisibility();
     } else {
-        // Member mode is active, hide admin elements  
-        $(".admin").hide();
-        $(".member").show();
+        // Fallback if base template function isn't available yet
+        var groupId = localStorage.getItem('groupId');
+        if (!groupId) return;
+        
+        var storageKey = "selectedView_" + groupId;
+        var savedView = localStorage.getItem(storageKey) || "member";
+        
+        // Apply the view based on the stored preference
+        if (savedView === "admin") {
+            $(".admin").show();
+            $(".member").hide();
+        } else {
+            $(".admin").hide();
+            $(".member").show();
+        }
     }
 }
 
@@ -1679,20 +1686,20 @@ $(document).ready(function () {
          }
      }, 100);
      
-     // Apply admin visibility rules on initial page load with a slight delay
-     // to ensure the base template admin system has initialized
-     setTimeout(function() {
-         applyAdminVisibility();
-         
-         // Also ensure proper layout on initial load
-         const contributionFormCard = $(".contribution-form-card");
-         const detailsGrid = $(".details-grid");
-         if (contributionFormCard.hasClass('force-hidden')) {
-             detailsGrid.addClass('full-width');
-         } else {
-             detailsGrid.removeClass('full-width');
-         }
-     }, 500);
+         // Apply admin visibility rules on initial page load with a delay
+    // to ensure the base template admin system has initialized
+    setTimeout(function() {
+        applyAdminVisibility();
+        
+        // Also ensure proper layout on initial load
+        const contributionFormCard = $(".contribution-form-card");
+        const detailsGrid = $(".details-grid");
+        if (contributionFormCard.hasClass('force-hidden')) {
+            detailsGrid.addClass('full-width');
+        } else {
+            detailsGrid.removeClass('full-width');
+        }
+    }, 1000);
  });
 </script>
 {%endblock%}

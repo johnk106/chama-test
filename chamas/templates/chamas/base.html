@@ -782,6 +782,24 @@ $(document).ready(function() {
       $(".view-option[data-view='member']").text("Switch to member view");
     }
   }
+  
+  // 7) Global function for pages to sync their visibility with current view state
+  window.syncAdminVisibility = function() {
+    var groupId = localStorage.getItem('groupId');
+    if (!groupId) return;
+    
+    var storageKey = "selectedView_" + groupId;
+    var currentView = localStorage.getItem(storageKey) || "member";
+    
+    // Apply the same logic as updateView but just for admin/member elements
+    if (currentView === "member") {
+      $(".admin, #remove-user, #add-member-button").hide();
+      $(".member").show();
+    } else {
+      $(".member").hide();
+      $(".admin, #remove-user, #add-member-button").show();
+    }
+  };
 });
 </script>
 
