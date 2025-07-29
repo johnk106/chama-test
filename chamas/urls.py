@@ -24,6 +24,8 @@ urlpatterns = [
     path('create-contribution-record/<int:chama_id>/',views.create_contribution_record,name='create-contribution-record'),
     path('create-contribution/<int:chama_id>/',views.create_contribution,name='create-contribution'),
     path('retrieve-contribution/<int:chama_id>/',views.contributions_details,name='contribution-details'),
+    path('update-contribution/<int:contribution_id>/',views.update_contribution,name='update-contribution'),
+    path('get-contribution/<int:contribution_id>/',views.get_contribution_details,name='get-contribution-details'),
     path('pay-contribution/<int:contribution_id>/',views.pay_contribution,name='pay-contribution'),
 
     path('chama-loans/<int:chama_id>/',views.chama_loans,name='chama-loans'),

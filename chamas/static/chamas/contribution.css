@@ -497,11 +497,53 @@
     color: #374151;
 }
 
-.accordion-toggle {
-    font-size: 20px;
-    color: #64748b;
-    transition: transform 0.2s;
-}
+    .mobile-contribution-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .mobile-edit-contribution-btn {
+        background: white;
+        border: 1px solid #e5e7eb;
+        color: #2191a5;
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+    }
+    
+    .mobile-edit-contribution-btn:hover:not(.disabled) {
+        background: #f0f9ff;
+        border-color: #2191a5;
+        color: #1e7d8a;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(33, 145, 165, 0.2);
+    }
+    
+    .mobile-edit-contribution-btn.disabled {
+        background: #f9fafb;
+        border-color: #e5e7eb;
+        color: #9ca3af;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+    
+    .mobile-edit-contribution-btn.disabled:hover {
+        transform: none;
+        box-shadow: none;
+    }
+    
+    .accordion-toggle {
+        font-size: 20px;
+        color: #64748b;
+        transition: transform 0.2s;
+    }
 
 .accordion-content {
     display: none;
@@ -980,6 +1022,57 @@
         cursor: pointer;
         transition: all 0.2s;
         border: 1px solid #e5e7eb;
+        position: relative;
+    }
+    
+    .contribution-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex: 1;
+        margin-right: 12px;
+    }
+    
+    .contribution-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .edit-contribution-btn {
+        background: white;
+        border: 1px solid #e5e7eb;
+        color: #2191a5;
+        width: 36px;
+        height: 36px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+    }
+    
+    .edit-contribution-btn:hover:not(.disabled) {
+        background: #f0f9ff;
+        border-color: #2191a5;
+        color: #1e7d8a;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(33, 145, 165, 0.2);
+    }
+    
+    .edit-contribution-btn.disabled {
+        background: #f9fafb;
+        border-color: #e5e7eb;
+        color: #9ca3af;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+    
+    .edit-contribution-btn.disabled:hover {
+        transform: none;
+        box-shadow: none;
     }
 
     .contribution-item:hover {

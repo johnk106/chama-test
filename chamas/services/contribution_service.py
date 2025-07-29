@@ -363,6 +363,106 @@ class ContributionService:
             return JsonResponse(data, status=500)
         
     @staticmethod
+    def update_contribution(request, contribution_id):
+        try:
+            contribution = Contribution.objects.get(pk=contribution_id)
+            
+            # Check if contribution has records - prevent editing if it does
+            if ContributionRecord.objects.filter(contribution=contribution).exists():
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': 'Cannot edit contribution scheme that already has records'
+                }, status=400)
+            
+            # Get form data
+            name = request.POST.get('name')
+            amount = request.POST.get('amount')
+            start_date = request.POST.get('start_date')
+            description = request.POST.get('description', '')
+            
+            # Validate required fields
+            if not name or not amount or not start_date:
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': 'Name, amount, and start date are required'
+                }, status=400)
+            
+            # Check for duplicate name (excluding current contribution)
+            existing_contribution = Contribution.objects.filter(
+                name=name, 
+                chama=contribution.chama
+            ).exclude(pk=contribution_id).first()
+            
+            if existing_contribution:
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': 'A contribution with that name already exists in this chama'
+                }, status=409)
+            
+            # Update the contribution
+            contribution.name = name
+            contribution.amount = Decimal(str(amount))
+            contribution.start_date = start_date
+            contribution.description = description
+            contribution.save()
+            
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Contribution scheme updated successfully',
+                'contribution': {
+                    'id': contribution.id,
+                    'name': contribution.name,
+                    'amount': float(contribution.amount),
+                    'start_date': contribution.start_date.strftime('%Y-%m-%d'),
+                    'description': contribution.description
+                }
+            }, status=200)
+            
+        except Contribution.DoesNotExist:
+            return JsonResponse({
+                'status': 'failed',
+                'message': 'Contribution not found'
+            }, status=404)
+        except (ValueError, TypeError) as e:
+            return JsonResponse({
+                'status': 'failed',
+                'message': f'Invalid amount provided: {str(e)}'
+            }, status=400)
+        except Exception as e:
+            print(f"Error updating contribution: {e}")
+            return JsonResponse({
+                'status': 'failed',
+                'message': f'An error occurred: {str(e)}'
+            }, status=500)
+
+    @staticmethod
+    def get_contribution_details(request, contribution_id):
+        try:
+            contribution = Contribution.objects.get(pk=contribution_id)
+            
+            return JsonResponse({
+                'status': 'success',
+                'contribution': {
+                    'id': contribution.id,
+                    'name': contribution.name,
+                    'amount': float(contribution.amount),
+                    'start_date': contribution.start_date.strftime('%Y-%m-%d'),
+                    'description': contribution.description
+                }
+            }, status=200)
+            
+        except Contribution.DoesNotExist:
+            return JsonResponse({
+                'status': 'failed',
+                'message': 'Contribution not found'
+            }, status=404)
+        except Exception as e:
+            return JsonResponse({
+                'status': 'failed',
+                'message': f'An error occurred: {str(e)}'
+            }, status=500)
+
+    @staticmethod
     def has_any_records(contribution, chama):
         """
         Check if a contribution scheme has any records at all.

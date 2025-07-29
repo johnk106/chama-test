@@ -305,11 +305,53 @@
     </div>
 </div>
 
+<!-- Edit Contribution Modal -->
+<div class="modal fade" id="editContributionModal" tabindex="-1" aria-labelledby="editContributionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="editContributionModalLabel">Edit Contribution Scheme</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="edit-contribution-alerts"></div>
+                <form id="edit-contribution-form">
+                    <input type="hidden" id="edit-contribution-id" name="contribution_id">
+                    
+                    <div class="mb-3">
+                        <label for="edit-contribution-name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="edit-contribution-name" name="name" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="edit-contribution-amount" class="form-label">Amount</label>
+                        <input type="number" class="form-control" id="edit-contribution-amount" name="amount" min="1" step="0.01" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="edit-contribution-start-date" class="form-label">Start Date</label>
+                        <input type="date" class="form-control" id="edit-contribution-start-date" name="start_date" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="edit-contribution-description" class="form-label">Description</label>
+                        <textarea class="form-control" id="edit-contribution-description" name="description" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" style="background-color: #2191a5;" id="save-contribution-changes">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
 // Pagination and contribution list management
 const contributionPagination = {
-    itemsPerPage: 8,
+    itemsPerPage: 6,
     currentPage: 1,
     contributions: [],
     
@@ -338,13 +380,27 @@ const contributionPagination = {
         } else {
             contributions.forEach(contribution => {
                 const truncatedDescription = this.truncateText(contribution.description, 80);
+                const hasRecords = contribution.has_records || false;
+                const editButtonClass = hasRecords ? 'disabled' : '';
+                const editButtonTitle = hasRecords ? 'Cannot edit - scheme has records' : 'Edit contribution scheme';
+                
                 html += `
                     <div class="contribution-item" data-contribution-name="${contribution.name}">
-                        <div class="contribution-name">
-                            <h4>${contribution.name}</h4>
-                            <p class="contribution-description">${truncatedDescription}</p>
+                        <div class="contribution-content">
+                            <div class="contribution-name">
+                                <h4>${contribution.name}</h4>
+                                <p class="contribution-description">${truncatedDescription}</p>
+                            </div>
+                            <div class="contribution-amount">Ksh ${this.formatNumber(contribution.amount)}</div>
                         </div>
-                        <div class="contribution-amount">Ksh ${this.formatNumber(contribution.amount)}</div>
+                        <div class="contribution-actions">
+                            <button class="edit-contribution-btn admin ${editButtonClass}" 
+                                    data-contribution-id="${contribution.id}"
+                                    title="${editButtonTitle}"
+                                    ${hasRecords ? 'disabled' : ''}>
+                                <i class='bx bx-edit'></i>
+                            </button>
+                        </div>
                     </div>
                 `;
             });
@@ -362,6 +418,10 @@ const contributionPagination = {
         } else {
             contributions.forEach(contribution => {
                 const truncatedDescription = this.truncateText(contribution.description, 60);
+                const hasRecords = contribution.has_records || false;
+                const editButtonClass = hasRecords ? 'disabled' : '';
+                const editButtonTitle = hasRecords ? 'Cannot edit - scheme has records' : 'Edit contribution scheme';
+                
                 html += `
                     <div class="mobile-accordion-item" data-contribution-name="${contribution.name}">
                         <div class="accordion-header" data-contribution-id="${contribution.id}">
@@ -382,7 +442,15 @@ const contributionPagination = {
                                     <span class="amount-value">Ksh${this.formatNumber(contribution.amount)}</span>
                                 </div>
                             </div>
-                            <i class='bx bx-chevron-down accordion-toggle'></i>
+                            <div class="mobile-contribution-actions">
+                                <button class="mobile-edit-contribution-btn admin ${editButtonClass}" 
+                                        data-contribution-id="${contribution.id}"
+                                        title="${editButtonTitle}"
+                                        ${hasRecords ? 'disabled' : ''}>
+                                    <i class='bx bx-edit'></i>
+                                </button>
+                                <i class='bx bx-chevron-down accordion-toggle'></i>
+                            </div>
                         </div>
                         
                         <div class="accordion-content">
@@ -507,6 +575,128 @@ $(document).on('click', '.pagination-btn:not(.disabled)', function() {
     }
 });
 
+// Edit contribution functionality
+const editContribution = {
+    openEditModal: function(contributionId) {
+        // Get contribution details
+        $.ajax({
+            url: `/chamas-bookeeping/get-contribution/${contributionId}/`,
+            type: 'GET',
+            success: function(response) {
+                if (response.status === 'success') {
+                    const contribution = response.contribution;
+                    
+                    // Populate the form
+                    $('#edit-contribution-id').val(contribution.id);
+                    $('#edit-contribution-name').val(contribution.name);
+                    $('#edit-contribution-amount').val(contribution.amount);
+                    $('#edit-contribution-start-date').val(contribution.start_date);
+                    $('#edit-contribution-description').val(contribution.description);
+                    
+                    // Clear any previous alerts
+                    $('.edit-contribution-alerts').empty();
+                    
+                    // Show the modal
+                    $('#editContributionModal').modal('show');
+                } else {
+                    alert('Failed to load contribution details: ' + response.message);
+                }
+            },
+            error: function() {
+                alert('Failed to load contribution details. Please try again.');
+            }
+        });
+    },
+    
+    saveChanges: function() {
+        const contributionId = $('#edit-contribution-id').val();
+        const formData = $('#edit-contribution-form').serialize();
+        
+        // Validate required fields
+        const name = $('#edit-contribution-name').val().trim();
+        const amount = $('#edit-contribution-amount').val();
+        const startDate = $('#edit-contribution-start-date').val();
+        
+        if (!name || !amount || !startDate) {
+            $('.edit-contribution-alerts').html(`
+                <div class="alert alert-danger" role="alert">
+                    Please fill in all required fields.
+                </div>
+            `);
+            return;
+        }
+        
+        if (parseFloat(amount) <= 0) {
+            $('.edit-contribution-alerts').html(`
+                <div class="alert alert-danger" role="alert">
+                    Amount must be greater than zero.
+                </div>
+            `);
+            return;
+        }
+        
+        // Send update request
+        $.ajax({
+            url: `/chamas-bookeeping/update-contribution/${contributionId}/`,
+            type: 'POST',
+            data: formData,
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            success: function(response) {
+                if (response.status === 'success') {
+                    $('.edit-contribution-alerts').html(`
+                        <div class="alert alert-success" role="alert">
+                            ${response.message}
+                        </div>
+                    `);
+                    
+                    // Close modal after a short delay and refresh the page
+                    setTimeout(function() {
+                        $('#editContributionModal').modal('hide');
+                        location.reload();
+                    }, 1500);
+                } else {
+                    $('.edit-contribution-alerts').html(`
+                        <div class="alert alert-danger" role="alert">
+                            ${response.message}
+                        </div>
+                    `);
+                }
+            },
+            error: function(xhr) {
+                let errorMessage = 'Failed to update contribution. Please try again.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                }
+                $('.edit-contribution-alerts').html(`
+                    <div class="alert alert-danger" role="alert">
+                        ${errorMessage}
+                    </div>
+                `);
+            }
+        });
+    }
+};
+
+// Edit button click handlers
+$(document).on('click', '.edit-contribution-btn:not(.disabled)', function(e) {
+    e.stopPropagation();
+    const contributionId = $(this).data('contribution-id');
+    editContribution.openEditModal(contributionId);
+});
+
+$(document).on('click', '.mobile-edit-contribution-btn:not(.disabled)', function(e) {
+    e.stopPropagation();
+    const contributionId = $(this).data('contribution-id');
+    editContribution.openEditModal(contributionId);
+});
+
+// Save changes button
+$(document).on('click', '#save-contribution-changes', function() {
+    editContribution.saveChanges();
+});
+
 // Function to apply admin visibility rules to newly generated content
 function applyAdminVisibility() {
     // Check if any existing admin elements are visible to determine current state
@@ -527,13 +717,14 @@ function applyAdminVisibility() {
 $(document).ready(function () {
     // Initialize contributions pagination
     const contributions = [
-        {% for contribution in contributions %}
+        {% for contribution_data in contributions_with_status %}
         {
-            id: {{ contribution.id }},
-            name: "{{ contribution.name|escapejs }}",
-            description: "{{ contribution.description|escapejs }}",
-            amount: {{ contribution.amount }},
-            start_date: "{{ contribution.start_date|date:'Y-m-d' }}"
+            id: {{ contribution_data.contribution.id }},
+            name: "{{ contribution_data.contribution.name|escapejs }}",
+            description: "{{ contribution_data.contribution.description|escapejs }}",
+            amount: {{ contribution_data.contribution.amount }},
+            start_date: "{{ contribution_data.contribution.start_date|date:'Y-m-d' }}",
+            has_records: {{ contribution_data.has_first_round_records|yesno:"true,false" }}
         }{% if not forloop.last %},{% endif %}
         {% endfor %}
     ];
@@ -1045,7 +1236,12 @@ $(document).ready(function () {
     }
 
          // Click handlers for contribution items
-     $(document).on('click', '.contribution-item', function() {
+     $(document).on('click', '.contribution-item', function(e) {
+         // Don't trigger if clicking on edit button
+         if ($(e.target).closest('.edit-contribution-btn, .contribution-actions').length > 0) {
+             return;
+         }
+         
          const contributionName = $(this).data('contribution-name') || $(this).find('#contribution-name').text();
          fetchAndRenderContributionDetails(contributionName);
          
