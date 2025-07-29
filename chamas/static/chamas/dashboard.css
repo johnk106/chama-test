@@ -1202,6 +1202,66 @@ html.user-is-admin .metric-card.admin {
     transition: all 0.2s ease !important;
 }
 
+/* Ensure metric card children maintain proper layout inside admin cards */
+body.user-is-admin .metric-card.admin .metric-header,
+html.user-is-admin .metric-card.admin .metric-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 16px !important;
+}
+
+body.user-is-admin .metric-card.admin .metric-icon,
+html.user-is-admin .metric-card.admin .metric-icon {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: var(--border-radius) !important;
+    color: var(--color-white) !important;
+    font-size: 1.5rem !important;
+}
+
+body.user-is-admin .metric-card.admin .metric-trend,
+html.user-is-admin .metric-card.admin .metric-trend {
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    padding: 4px 8px !important;
+    border-radius: 12px !important;
+}
+
+body.user-is-admin .metric-card.admin .metric-content,
+html.user-is-admin .metric-card.admin .metric-content {
+    display: block !important;
+}
+
+body.user-is-admin .metric-card.admin .metric-content h3.metric-value,
+html.user-is-admin .metric-card.admin .metric-content h3.metric-value {
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    margin: 0 0 4px 0 !important;
+    color: var(--color-gray-900) !important;
+}
+
+body.user-is-admin .metric-card.admin .metric-content p.metric-label,
+html.user-is-admin .metric-card.admin .metric-content p.metric-label {
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    color: var(--color-gray-700) !important;
+    margin: 0 0 4px 0 !important;
+}
+
+body.user-is-admin .metric-card.admin .metric-content p.metric-description,
+html.user-is-admin .metric-card.admin .metric-content p.metric-description {
+    font-size: 0.75rem !important;
+    color: var(--color-gray-500) !important;
+    margin: 0 !important;
+}
+
 /* Admin metric card hover effect */
 body.user-is-admin .metric-card.admin:hover,
 html.user-is-admin .metric-card.admin:hover {
