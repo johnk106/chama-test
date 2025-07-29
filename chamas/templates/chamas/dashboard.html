@@ -24,22 +24,22 @@
     <div class="dashboard-content">
         <!-- Mobile View: Navigation Menu -->
         <div class="navigation-menu d-block d-lg-none">
-            <!-- Total Cash Card -->
+            <!-- Total Contributions Card -->
             <div class="total-cash-card brand-card">
                 <div class="cash-info">
-                    <p class="cash-label">Total Cash</p>
-                    <h1 class="breakdown-value">Ksh {{total_savings|intcomma}}</h1>
+                    <p class="cash-label">Total Contributions</p>
+                    <h1 class="breakdown-value">Ksh {{total_contributions|intcomma}}</h1>
                     <div class="growth-indicator">
                         <i class='bx bx-trending-up'></i>
-                        <span>15%</span>
+                        <span>100%</span>
                     </div>
                     <div class="cash-breakdown">
                         <div class="breakdown-item">
-                            <span class="breakdown-label">Total contribution:</span>
-                            <span class="breakdown-value">Ksh{{total_contributions|intcomma}}</span>
+                            <span class="breakdown-label">Available Cash:</span>
+                            <span class="breakdown-value">Ksh{{total_savings|intcomma}}</span>
                         </div>
                         <div class="breakdown-item">
-                            <span class="breakdown-label">Total Loan:</span>
+                            <span class="breakdown-label">Total Loans:</span>
                             <span class="breakdown-value">Ksh{{total_loans|intcomma}}</span>
                         </div>
                     </div>
@@ -228,17 +228,17 @@
                 <div class="metric-card brand-card">
                     <div class="metric-header">
                         <div class="metric-icon bg-brand-primary">
-                            <i class='bx bx-wallet'></i>
+                            <i class='bx bx-credit-card'></i>
                         </div>
                         <div class="metric-trend positive">
                             <i class='bx bx-trending-up'></i>
-                            <span>15%</span>
+                            <span>100%</span>
                         </div>
                     </div>
                     <div class="metric-content">
-                        <h3 class="metric-value text-brand-primary">Ksh {{total_savings|intcomma}}</h3>
-                        <p class="metric-label">Total Cash</p>
-                        <p class="metric-description">Available group funds</p>
+                        <h3 class="metric-value text-brand-primary">Ksh {{total_contributions|intcomma}}</h3>
+                        <p class="metric-label">Total Contributions</p>
+                        <p class="metric-description">All member contributions</p>
                     </div>
                 </div>
 
@@ -453,36 +453,7 @@
                     </div>
                 </div>
 
-                <!-- Recent Activity (Admin Only) -->
-                <div class="activity-section admin">
-                <div class="activity-card brand-card">
-                    <div class="activity-header">
-                        <h3 class="activity-title text-brand-primary">Recent Activity</h3>
-                        <a href="{% url 'chamas:notifications' chama.id %}" class="activity-action text-brand-primary">Manage</a>
-                    </div>
-                    <div class="activity-content">
-                        <div class="activity-list">
-                            {% for notification in notifications %}
-                            <div class="activity-item">
-                                <div class="activity-icon">
-                                    <i class='bx bx-bell'></i>
-                                </div>
-                                <div class="activity-details">
-                                    <p class="activity-message">{{notification.message}}</p>
-                                    <span class="activity-time">{{notification.date|date:"M d, Y"}}</span>
-                                </div>
-                            </div>
-                            {% empty %}
-                            <div class="empty-state">
-                                <i class="bx bx-bell empty-state-icon"></i>
-                                <p class="empty-state-message">Nothing to show</p>
-                                <p class="empty-state-description">No recent activity</p>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            </div>
+
             <!-- Close documents-activity-row -->
         </div>
     </div>
