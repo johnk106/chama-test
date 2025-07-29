@@ -1004,7 +1004,12 @@
     
     /* When member update card is hidden, records card takes full width */
     .details-grid.full-width {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important;
+    }
+    
+    /* Force hide contribution form when it has records - this overrides admin visibility */
+    .contribution-form-card.force-hidden {
+        display: none !important;
     }
 
             @media (max-width: 1200px) {

@@ -247,7 +247,7 @@
 
                     <div class="details-grid">
                         <!-- Member Update Table -->
-                        <div class="member-update-card admin">
+                        <div class="member-update-card admin contribution-form-card">
                             <h4 class="card-subtitle">Update Member Contributions</h4>
                             <div class="table-responsive">
                                 <table class="table" id="member-list">
@@ -812,14 +812,14 @@ $(document).ready(function () {
 
                 // Show/hide the contribution form based on first round records status
                 const hasFirstRound = response.has_first_round_records;
-                const memberUpdateCard = $(".member-update-card");
+                const contributionFormCard = $(".contribution-form-card");
                 const detailsGrid = $(".details-grid");
                 
                 if (hasFirstRound) {
-                    memberUpdateCard.hide();
+                    contributionFormCard.addClass('force-hidden');
                     detailsGrid.addClass('full-width');
                 } else {
-                    memberUpdateCard.show();
+                    contributionFormCard.removeClass('force-hidden');
                     detailsGrid.removeClass('full-width');
                 }
 
@@ -1209,9 +1209,9 @@ $(document).ready(function () {
          applyAdminVisibility();
          
          // Also ensure proper layout on initial load
-         const memberUpdateCard = $(".member-update-card");
+         const contributionFormCard = $(".contribution-form-card");
          const detailsGrid = $(".details-grid");
-         if (memberUpdateCard.is(':hidden')) {
+         if (contributionFormCard.hasClass('force-hidden')) {
              detailsGrid.addClass('full-width');
          } else {
              detailsGrid.removeClass('full-width');
