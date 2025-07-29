@@ -85,9 +85,13 @@ def dashboard(request,chama_id):
 
     notifications = Paginator(NotificationItem.objects.filter(forGroup=True,chama=chama).order_by('-date'),3).page(1)
     member = None
-    for member in chama.member.all():
-        if member.user == request.user:
-            member = member
+    is_admin = False
+    for chama_member in chama.member.all():
+        if chama_member.user == request.user:
+            member = chama_member
+            # Check if user is admin
+            if member.role and member.role.name.lower() in ['admin', 'administrator', 'chairman', 'secretary']:
+                is_admin = True
             break
     my_notifications = Paginator(NotificationItem.objects.filter(forGroup=False,chama=chama,member=member).order_by('-date'),3).page(1)
 
@@ -104,7 +108,8 @@ def dashboard(request,chama_id):
                    'fines_data': fines_data_json,
                    'remaining_count': remaining_count,
                    'notifications':notifications,
-                   'my_notifications':my_notifications
+                   'my_notifications':my_notifications,
+                   'is_admin': is_admin
                     })
 
 def get_monthly_data(chama_id):

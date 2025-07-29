@@ -13,6 +13,13 @@
 
 {% block body %}
 <div class="modern-dashboard">
+<script>
+    // Add admin class to body if user is admin
+    {% if is_admin %}
+        document.body.classList.add('user-is-admin');
+        document.documentElement.classList.add('user-is-admin');
+    {% endif %}
+</script>
     <!-- Main Dashboard Content -->
     <div class="dashboard-content">
         <!-- Mobile View: Navigation Menu -->

@@ -838,8 +838,12 @@
     justify-content: center;
     border-radius: var(--border-radius);
     background: var(--color-primary);
-    color: white;
+    color: white !important;
     font-size: 1.25rem;
+}
+
+.document-icon i {
+    color: white !important;
 }
 
 .document-details h4 {
@@ -900,13 +904,17 @@
 
 .btn-download {
     background: var(--color-primary);
-    color: white;
+    color: white !important;
 }
 
 .btn-download:hover {
     background: var(--color-primary-light);
-    color: white;
+    color: white !important;
     text-decoration: none;
+}
+
+.btn-download i {
+    color: white !important;
 }
 
 .btn-delete {
@@ -1132,7 +1140,26 @@
 
 /* Admin-only elements visibility */
 .admin {
-    display: none;
+    display: none !important;
+}
+
+/* When user is admin, show admin elements with proper styling */
+body.user-is-admin .admin,
+html.user-is-admin .admin {
+    display: flex !important;
+}
+
+/* Specific styling for admin buttons in mobile/desktop */
+body.user-is-admin .admin.add-document-btn-admin,
+body.user-is-admin .admin.delete-document-btn-admin,
+html.user-is-admin .admin.add-document-btn-admin,
+html.user-is-admin .admin.delete-document-btn-admin {
+    display: inline-flex !important;
+}
+
+/* Ensure admin nav items have proper spacing */
+.navigation-menu .nav-item.admin {
+    margin-bottom: 8px;
 }
 
 /* Fix for mobile navigation spacing */
@@ -1140,8 +1167,12 @@
     padding-bottom: 1rem; /* Add bottom padding to prevent cut-off */
 }
 
+.navigation-menu .nav-item {
+    margin-bottom: 8px; /* Consistent spacing for all nav items */
+}
+
 .navigation-menu .nav-item:last-child {
-    margin-bottom: 0.5rem; /* Ensure last item has proper spacing */
+    margin-bottom: 8px; /* Ensure last item has same spacing as others */
 }
 
 /* Mobile Documents Section */
@@ -1202,9 +1233,13 @@
     justify-content: center;
     border-radius: var(--border-radius);
     background: var(--color-primary);
-    color: white;
+    color: white !important;
     font-size: 1.25rem;
     flex-shrink: 0;
+}
+
+.mobile-document-icon i {
+    color: white !important;
 }
 
 .mobile-document-details {
@@ -1266,13 +1301,17 @@
 
 .mobile-btn-download {
     background: var(--color-primary);
-    color: white;
+    color: white !important;
 }
 
 .mobile-btn-download:hover {
     background: var(--color-primary-light);
-    color: white;
+    color: white !important;
     text-decoration: none;
+}
+
+.mobile-btn-download i {
+    color: white !important;
 }
 
 .mobile-btn-delete {
