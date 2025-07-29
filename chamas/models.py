@@ -319,11 +319,12 @@ class Document(models.Model):
         if not self.file_size:
             return 'Unknown size'
         
+        size = float(self.file_size)  # Create a copy to avoid modifying the original
         for unit in ['B', 'KB', 'MB', 'GB']:
-            if self.file_size < 1024.0:
-                return f"{self.file_size:.1f} {unit}"
-            self.file_size /= 1024.0
-        return f"{self.file_size:.1f} TB"
+            if size < 1024.0:
+                return f"{size:.1f} {unit}"
+            size /= 1024.0
+        return f"{size:.1f} TB"
 
 class CashflowReport(models.Model):
     object_date = models.DateTimeField()

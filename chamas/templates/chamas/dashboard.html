@@ -105,13 +105,7 @@
                 <i class='bx bx-chevron-right nav-arrow'></i>
             </a>
             
-            <a href="#documents-mobile" onclick="scrollToDocuments()" class="nav-item">
-                <div class="nav-icon">
-                    <i class='bx bx-file'></i>
-                </div>
-                <span class="nav-label">Documents</span>
-                <i class='bx bx-chevron-right nav-arrow'></i>
-            </a>
+
             
             <a href="{% url 'bot:bot-records' chama.id %}" class="nav-item admin">
                 <div class="nav-icon">
@@ -120,6 +114,97 @@
                 <span class="nav-label">Bot Management</span>
                 <i class='bx bx-chevron-right nav-arrow'></i>
             </a>
+        </div>
+
+        <!-- Mobile Documents Section -->
+        <div class="mobile-documents-section d-block d-lg-none">
+            <div class="mobile-documents-card brand-card">
+                <div class="mobile-documents-header">
+                    <h3 class="mobile-documents-title text-brand-primary">Documents</h3>
+                    <button class="btn btn-primary btn-sm admin add-document-btn-admin" onclick="openUploadModal()">
+                        <i class='bx bx-plus'></i> Add
+                    </button>
+                </div>
+                <div class="mobile-documents-content">
+                    {% if documents %}
+                        {% for document in documents %}
+                        <div class="mobile-document-item">
+                            <div class="mobile-document-info">
+                                <div class="mobile-document-icon">
+                                    <i class='bx {{document.get_file_icon}}'></i>
+                                </div>
+                                <div class="mobile-document-details">
+                                    <h4 class="mobile-document-name">{{document.name}}</h4>
+                                    <div class="mobile-document-meta">
+                                        <span class="mobile-type-badge type-{{document.get_file_type}}">{{document.get_file_type|upper}}</span>
+                                        <span class="mobile-document-size">{{document.get_formatted_size}}</span>
+                                        <span class="mobile-document-date">{{document.upload_date|date:"M d, Y"}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mobile-document-actions">
+                                <a href="{% url 'chamas:download-document' chama.id document.id %}" 
+                                   class="mobile-btn-action mobile-btn-download" 
+                                   title="Download">
+                                    <i class='bx bx-download'></i>
+                                </a>
+                                <button class="mobile-btn-action mobile-btn-delete admin delete-document-btn-admin" 
+                                        onclick="deleteDocument({{document.id}}, '{{document.name}}')"
+                                        title="Delete">
+                                    <i class='bx bx-trash'></i>
+                                </button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                        <!-- Mobile Pagination -->
+                        {% if documents.has_other_pages %}
+                        <div class="mobile-pagination-container">
+                            <nav aria-label="Documents pagination">
+                                <ul class="mobile-pagination">
+                                    {% if documents.has_previous %}
+                                        <li class="mobile-page-item">
+                                            <a class="mobile-page-link" href="?page={{ documents.previous_page_number }}" aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    
+                                    {% for num in documents.paginator.page_range %}
+                                        {% if documents.number == num %}
+                                            <li class="mobile-page-item active">
+                                                <span class="mobile-page-link">{{ num }}</span>
+                                            </li>
+                                        {% elif num > documents.number|add:'-2' and num < documents.number|add:'2' %}
+                                            <li class="mobile-page-item">
+                                                <a class="mobile-page-link" href="?page={{ num }}">{{ num }}</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    
+                                    {% if documents.has_next %}
+                                        <li class="mobile-page-item">
+                                            <a class="mobile-page-link" href="?page={{ documents.next_page_number }}" aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        </div>
+                        {% endif %}
+                        
+                    {% else %}
+                        <div class="mobile-empty-state">
+                            <i class="bx bx-file-blank mobile-empty-icon"></i>
+                            <p class="mobile-empty-message">No documents uploaded yet</p>
+                            <button class="btn btn-primary btn-sm admin add-document-btn-admin" onclick="openUploadModal()">
+                                <i class='bx bx-plus'></i> Add Document
+                            </button>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
 
         <!-- Desktop View: Dashboard Stats and Charts -->
@@ -637,12 +722,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Document management functions
-function scrollToDocuments() {
-    document.getElementById('documents-mobile').scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-    });
-}
 
 function openUploadModal() {
     document.getElementById('uploadDocumentModal').style.display = 'block';
@@ -713,6 +792,20 @@ function uploadDocument() {
     const statusDiv = document.getElementById('uploadStatus');
     const submitBtn = document.querySelector('#uploadForm button[type="submit"]');
     
+    // Validate form
+    const fileInput = document.getElementById('documentFile');
+    const nameInput = document.getElementById('documentName');
+    
+    if (!fileInput.files.length) {
+        statusDiv.innerHTML = '<div class="alert alert-danger">Please select a file</div>';
+        return;
+    }
+    
+    if (!nameInput.value.trim()) {
+        statusDiv.innerHTML = '<div class="alert alert-danger">Please enter a document name</div>';
+        return;
+    }
+    
     // Disable submit button
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Uploading...';
@@ -726,7 +819,12 @@ function uploadDocument() {
             'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.message) {
             statusDiv.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
@@ -739,7 +837,8 @@ function uploadDocument() {
         }
     })
     .catch(error => {
-        statusDiv.innerHTML = `<div class="alert alert-danger">Error uploading document</div>`;
+        console.error('Upload error:', error);
+        statusDiv.innerHTML = `<div class="alert alert-danger">Error uploading document: ${error.message}</div>`;
     })
     .finally(() => {
         submitBtn.disabled = false;
