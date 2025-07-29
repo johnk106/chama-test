@@ -416,10 +416,10 @@ class ContributionService:
                     'message': 'Please enter a valid amount'
                 }, status=400)
             
-            # Validate date format
+            # Validate and convert date format
             try:
                 from datetime import datetime
-                datetime.strptime(start_date, '%Y-%m-%d')
+                start_date_obj = datetime.strptime(start_date, '%Y-%m-%d').date()
             except ValueError:
                 return JsonResponse({
                     'status': 'failed',
@@ -441,7 +441,7 @@ class ContributionService:
             # Update the contribution
             contribution.name = name
             contribution.amount = amount_decimal
-            contribution.start_date = start_date
+            contribution.start_date = start_date_obj
             contribution.description = description
             contribution.save()
             
@@ -452,8 +452,8 @@ class ContributionService:
                     'id': contribution.id,
                     'name': contribution.name,
                     'amount': float(contribution.amount),
-                    'start_date': contribution.start_date.strftime('%Y-%m-%d'),
-                    'description': contribution.description
+                    'start_date': contribution.start_date.strftime('%Y-%m-%d') if contribution.start_date else '',
+                    'description': contribution.description or ''
                 }
             }, status=200)
             
@@ -468,6 +468,12 @@ class ContributionService:
                 'status': 'failed',
                 'message': 'Invalid data format provided'
             }, status=400)
+        except AttributeError as e:
+            print(f"AttributeError in update_contribution: {e}")
+            return JsonResponse({
+                'status': 'failed',
+                'message': 'Data processing error. Please try again.'
+            }, status=500)
         except Exception as e:
             import traceback
             print(f"Unexpected error in update_contribution: {e}")
