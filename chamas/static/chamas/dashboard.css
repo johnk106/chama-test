@@ -758,10 +758,24 @@
    ENHANCED DOCUMENT MANAGEMENT STYLES
    ================================ */
 
-/* Documents Section */
-.documents-section {
+/* Documents and Activity Row Layout */
+.documents-activity-row {
+    display: flex;
+    gap: 2rem;
     margin-bottom: 2rem;
     width: 100%;
+}
+
+/* Documents Section */
+.documents-section {
+    flex: 2; /* Takes up 2/3 of the width */
+    min-width: 0; /* Allow flex shrinking */
+}
+
+/* Activity Section */
+.activity-section {
+    flex: 1; /* Takes up 1/3 of the width */
+    min-width: 0; /* Allow flex shrinking */
 }
 
 .documents-header {
@@ -968,31 +982,54 @@
 }
 
 /* Upload Modal */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.6);
-    z-index: 10000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-    backdrop-filter: blur(2px);
+#uploadDocumentModal.modal-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+    z-index: 10000 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 1rem !important;
+    backdrop-filter: blur(2px) !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
 }
 
+.modal-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+    z-index: 10000 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 1rem !important;
+    backdrop-filter: blur(2px) !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+}
+
+#uploadDocumentModal .modal-content,
 .modal-content {
-    background: white;
-    border-radius: var(--border-radius);
-    max-width: 500px;
-    width: 100%;
-    max-height: 80vh;
-    overflow-y: auto;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    animation: modalSlideIn 0.3s ease-out;
-    transform-origin: center;
+    background: white !important;
+    border-radius: var(--border-radius) !important;
+    max-width: 500px !important;
+    width: 100% !important;
+    max-height: 80vh !important;
+    overflow-y: auto !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+    animation: modalSlideIn 0.3s ease-out !important;
+    transform-origin: center !important;
+    margin: auto !important;
+    position: relative !important;
+    flex-shrink: 0 !important;
 }
 
 @keyframes modalSlideIn {
@@ -1384,8 +1421,17 @@ html.user-is-admin .admin.delete-document-btn-admin {
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
+    .documents-activity-row {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
     .documents-section {
         display: none !important; /* Hide desktop documents section on mobile */
+    }
+    
+    .activity-section {
+        flex: none;
     }
     
     .modal-overlay {

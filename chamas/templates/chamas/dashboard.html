@@ -338,17 +338,19 @@
                 </div>
             </div>
 
-            <!-- Documents Section -->
-            <div class="documents-section" id="documents-mobile">
-                <div class="documents-card brand-card">
-                    <div class="documents-header">
-                        <h3 class="documents-title text-brand-primary">Documents</h3>
-                        <div class="documents-actions">
-                            <button class="btn btn-primary admin add-document-btn-admin" onclick="openUploadModal()">
-                                <i class='bx bx-plus'></i> Add Document
-                            </button>
+            <!-- Documents and Activity Row -->
+            <div class="documents-activity-row">
+                <!-- Documents Section -->
+                <div class="documents-section" id="documents-mobile">
+                    <div class="documents-card brand-card">
+                        <div class="documents-header">
+                            <h3 class="documents-title text-brand-primary">Documents</h3>
+                            <div class="documents-actions">
+                                <button class="btn btn-primary admin add-document-btn-admin" onclick="openUploadModal()">
+                                    <i class='bx bx-plus'></i> Add Document
+                                </button>
+                            </div>
                         </div>
-                    </div>
                     <div class="documents-content">
                         <div class="documents-table-container">
                             {% if documents %}
@@ -450,10 +452,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Recent Activity (Admin Only) -->
-            <div class="activity-section admin">
+                <!-- Recent Activity (Admin Only) -->
+                <div class="activity-section admin">
                 <div class="activity-card brand-card">
                     <div class="activity-header">
                         <h3 class="activity-title text-brand-primary">Recent Activity</h3>
@@ -482,6 +483,7 @@
                     </div>
                 </div>
             </div>
+            <!-- Close documents-activity-row -->
         </div>
     </div>
 </div>
@@ -729,7 +731,16 @@ document.addEventListener('DOMContentLoaded', function() {
 // Document management functions
 
 function openUploadModal() {
-    document.getElementById('uploadDocumentModal').style.display = 'block';
+    const modal = document.getElementById('uploadDocumentModal');
+    modal.style.display = 'flex';
+    modal.style.position = 'fixed';
+    modal.style.top = '0';
+    modal.style.left = '0';
+    modal.style.width = '100vw';
+    modal.style.height = '100vh';
+    modal.style.alignItems = 'center';
+    modal.style.justifyContent = 'center';
+    modal.style.zIndex = '10000';
 }
 
 function closeUploadModal() {
