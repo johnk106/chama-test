@@ -316,6 +316,7 @@
             <div class="modal-body">
                 <div class="edit-contribution-alerts"></div>
                 <form id="edit-contribution-form">
+                    {% csrf_token %}
                     <input type="hidden" id="edit-contribution-id" name="contribution_id">
                     
                     <div class="mb-3">
@@ -576,6 +577,22 @@ $(document).on('click', '.pagination-btn:not(.disabled)', function() {
 });
 
 // Edit contribution functionality
+// Function to get the value of a cookie by name
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+        var cookies = document.cookie.split(";");
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === name + "=") {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 const editContribution = {
     openEditModal: function(contributionId) {
         // Validate contribution ID
@@ -838,7 +855,7 @@ $(document).ready(function () {
             description: "{{ contribution_data.contribution.description|escapejs }}",
             amount: {{ contribution_data.contribution.amount }},
             start_date: "{{ contribution_data.contribution.start_date|date:'Y-m-d' }}",
-            has_records: {{ contribution_data.has_first_round_records|yesno:"true,false" }}
+            has_records: {{ contribution_data.has_any_records|yesno:"true,false" }}
         }{% if not forloop.last %},{% endif %}
         {% endfor %}
     ];
@@ -1457,21 +1474,7 @@ $(document).ready(function () {
          });
      });
 
-    // Function to get the value of a cookie by name
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie !== "") {
-            var cookies = document.cookie.split(";");
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === name + "=") {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
+
 
     // Update contributions functionality
     $("#update-contributions").click(function () {
