@@ -850,6 +850,20 @@ function applyAdminVisibility() {
             $(".member").show();
         }
     }
+    
+    // Ensure proper layout after applying visibility - 
+    // force-hidden should still work even in admin mode
+    setTimeout(function() {
+        const contributionFormCard = $(".contribution-form-card");
+        const detailsGrid = $(".details-grid");
+        
+        if (contributionFormCard.hasClass('force-hidden')) {
+            detailsGrid.addClass('full-width');
+        } else if (contributionFormCard.hasClass('admin') && $("body").hasClass("user-is-admin")) {
+            // Only show form if in admin mode and form doesn't have records
+            detailsGrid.removeClass('full-width');
+        }
+    }, 100);
 }
 
 $(document).ready(function () {
@@ -1674,19 +1688,7 @@ $(document).ready(function () {
          });
      });
 
-     // Auto-load first contribution details on page load (like original)
-     setTimeout(function() {
-         var firstContributionItem = $(".contribution-item").first();
-         if (firstContributionItem.length > 0) {
-             var firstContributionName = firstContributionItem.data('contribution-name');
-             if (firstContributionName) {
-                 fetchAndRenderContributionDetails(firstContributionName);
-                 firstContributionItem.addClass('selected');
-             }
-         }
-     }, 100);
-     
-         // Apply admin visibility rules on initial page load with a delay
+     // Apply admin visibility rules on initial page load with a delay
     // to ensure the base template admin system has initialized
     setTimeout(function() {
         applyAdminVisibility();
@@ -1699,6 +1701,18 @@ $(document).ready(function () {
         } else {
             detailsGrid.removeClass('full-width');
         }
+        
+        // Auto-load first contribution details after admin visibility is set
+        setTimeout(function() {
+            var firstContributionItem = $(".contribution-item").first();
+            if (firstContributionItem.length > 0) {
+                var firstContributionName = firstContributionItem.data('contribution-name');
+                if (firstContributionName) {
+                    fetchAndRenderContributionDetails(firstContributionName);
+                    firstContributionItem.addClass('selected');
+                }
+            }
+        }, 100);
     }, 1000);
  });
 </script>

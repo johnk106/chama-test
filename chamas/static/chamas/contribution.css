@@ -358,6 +358,23 @@
     width: 100%;
 }
 
+/* Mobile tab content should contain its children properly */
+.mobile-contributions .tab-content {
+    display: flex;
+    flex-direction: column;
+    min-height: fit-content;
+}
+
+.mobile-contributions .tab-content.active {
+    display: flex;
+}
+
+/* Ensure accordion doesn't interfere with pagination */
+.mobile-contributions-accordion {
+    flex: 1;
+    margin-bottom: 0;
+}
+
 /* Mobile Tabs */
 .mobile-tabs {
     background: white;
@@ -926,6 +943,25 @@
         gap: 24px;
         margin-bottom: 24px;
     }
+    
+    /* When create section is hidden (member view), contribution list takes full width */
+    .desktop-top-row:has(.create-contribution-section:not(.user-is-admin *)) {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Alternative approach for browsers that don't support :has() */
+    .desktop-top-row .contribution-list-section {
+        grid-column: span 1;
+    }
+    
+    /* When admin elements are hidden, adjust the layout */
+    body:not(.user-is-admin) .desktop-top-row {
+        grid-template-columns: 1fr;
+    }
+    
+    body:not(.user-is-admin) .desktop-top-row .contribution-list-section {
+        grid-column: 1;
+    }
 
     .desktop-bottom-row {
         display: flex;
@@ -1141,7 +1177,9 @@
     }
     
     /* Force hide contribution form when it has records - this overrides admin visibility */
-    .contribution-form-card.force-hidden {
+    .contribution-form-card.force-hidden,
+    body.user-is-admin .contribution-form-card.force-hidden,
+    html.user-is-admin .contribution-form-card.force-hidden {
         display: none !important;
     }
     
@@ -1216,7 +1254,12 @@
         .mobile-pagination {
             gap: 6px;
             margin-top: 16px;
-            padding: 12px 0;
+            margin-bottom: 16px;
+            padding: 12px 16px;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            width: 100%;
+            box-sizing: border-box;
         }
         
         .mobile-pagination .pagination-btn {
@@ -1224,11 +1267,13 @@
             height: 36px;
             padding: 6px 10px;
             font-size: 13px;
+            margin: 0 2px;
         }
         
         .mobile-pagination .pagination-info {
             font-size: 11px;
             margin: 0 8px;
+            white-space: nowrap;
         }
     }
 
