@@ -360,16 +360,22 @@
 <script>
 // Function to apply admin visibility rules to newly generated content
 function applyAdminVisibility() {
-    // Check if any existing admin elements are visible to determine current state
-    // This works because the base template handles the admin verification
-    const existingAdminElement = $(".create-contribution-section.admin");
+    // Check the current view state from localStorage instead of element visibility
+    // to avoid circular dependency issues
+    const groupId = localStorage.getItem("groupId");
+    const storageKey = "selectedView_" + groupId;
+    const currentView = localStorage.getItem(storageKey) || "member";
     
-    if (existingAdminElement.length > 0 && existingAdminElement.is(':visible')) {
-        // Admin mode is active, show admin elements
+    // Also check if the user is verified as admin by looking for the admin toggle visibility
+    const adminToggle = $(".view-option[data-view='admin']");
+    const isVerifiedAdmin = adminToggle.length > 0 && adminToggle.is(':visible');
+    
+    if (currentView === "admin" && isVerifiedAdmin) {
+        // Admin mode is active and user is verified admin, show admin elements
         $(".admin").show();
         $(".member").hide();
     } else {
-        // Member mode is active, hide admin elements  
+        // Member mode is active or user is not verified admin, hide admin elements  
         $(".admin").hide();
         $(".member").show();
     }
@@ -1179,6 +1185,28 @@ $(document).ready(function () {
      setTimeout(function() {
          applyAdminVisibility();
      }, 500);
+     
+     // Listen for view changes and update visibility accordingly
+     // Wait for the base template to define updateView, then override it
+     const originalUpdateViewInterval = setInterval(function() {
+         if (typeof updateView === 'function' && typeof window.originalUpdateView === 'undefined') {
+             window.originalUpdateView = updateView;
+             window.updateView = function(view) {
+                 // Call the original updateView function
+                 window.originalUpdateView(view);
+                 // Then apply our custom visibility rules
+                 setTimeout(applyAdminVisibility, 100);
+             };
+             clearInterval(originalUpdateViewInterval);
+         }
+     }, 100);
+     
+     // Also listen for localStorage changes (for cross-tab synchronization)
+     window.addEventListener('storage', function(e) {
+         if (e.key && e.key.includes('selectedView_')) {
+             setTimeout(applyAdminVisibility, 100);
+         }
+     });
  });
 </script>
 {%endblock%}

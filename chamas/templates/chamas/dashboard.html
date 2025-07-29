@@ -244,7 +244,12 @@
                 <div class="documents-card brand-card">
                     <div class="documents-header">
                         <h3 class="documents-title text-brand-primary">Recent Documents</h3>
-                        <a href="#" class="documents-action text-brand-primary">View All</a>
+                        <div class="documents-actions">
+                            <button class="btn-add-document admin" style="display: none;">
+                                <i class='bx bx-plus'></i> Add Document
+                            </button>
+                            <a href="#" class="documents-action text-brand-primary">View All</a>
+                        </div>
                     </div>
                     <div class="documents-content">
                         <div class="documents-grid">
@@ -264,6 +269,13 @@
                                     <a href="{{document.file.url}}" download class="btn-document-download">
                                         <i class='bx bx-download'></i>
                                     </a>
+                                    <!-- Add admin-only document management buttons if they exist -->
+                                    <button class="btn-document-delete admin" style="display: none;">
+                                        <i class='bx bx-trash'></i>
+                                    </button>
+                                    <button class="btn-document-edit admin" style="display: none;">
+                                        <i class='bx bx-edit'></i>
+                                    </button>
                                 </div>
                             </div>
                             {% empty %}
@@ -314,7 +326,26 @@
 
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
+// Function to apply admin visibility rules (same as in contributions page)
+function applyAdminVisibility() {
+    const groupId = localStorage.getItem("groupId");
+    const storageKey = "selectedView_" + groupId;
+    const currentView = localStorage.getItem(storageKey) || "member";
+    
+    const adminToggle = $(".view-option[data-view='admin']");
+    const isVerifiedAdmin = adminToggle.length > 0 && adminToggle.is(':visible');
+    
+    if (currentView === "admin" && isVerifiedAdmin) {
+        $(".admin").show();
+        $(".member").hide();
+    } else {
+        $(".admin").hide();
+        $(".member").show();
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // Data from Django context
     const totalContributions = {{ total_contributions|default:0 }};
@@ -548,6 +579,18 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('resize', function() {
         if (window.innerWidth > 768) {
             closeNav();
+        }
+    });
+    
+    // Apply admin visibility rules on initial page load
+    setTimeout(function() {
+        applyAdminVisibility();
+    }, 500);
+    
+    // Listen for view changes
+    window.addEventListener('storage', function(e) {
+        if (e.key && e.key.includes('selectedView_')) {
+            setTimeout(applyAdminVisibility, 100);
         }
     });
 });
