@@ -61,58 +61,13 @@
         <!-- All Contributions Tab Content -->
         <div class="tab-content active" id="all-contributions">
             <!-- Contributions Accordion -->
-            <div class="mobile-contributions-accordion">
-                {%for contribution in contributions%}
-                <div class="mobile-accordion-item" data-contribution-name="{{contribution.name}}">
-                    <div class="accordion-header" data-contribution-id="{{contribution.id}}">
-                        <div class="contribution-summary">
-                            <div class="contribution-info">
-                                <div class="contribution-type">
-                                    <span class="type-label">Type</span>
-                                    <span class="type-value">{{contribution.name}}</span>
-                                </div>
-                                <div class="contribution-due">
-                                    <span class="due-label">Due date</span>
-                                    <span class="due-value">{{contribution.end_date|date:"d/m/Y"}}</span>
-                                </div>
-                            </div>
-                            <div class="contribution-amount">
-                                <span class="amount-label">Target Amount</span>
-                                <span class="amount-value">Ksh{{contribution.amount|intcomma}}</span>
-                            </div>
-                        </div>
-                        <i class='bx bx-chevron-down accordion-toggle'></i>
-                    </div>
-                    
-                    <div class="accordion-content">
-                        <div class="members-table-header" id="mobile-header-{{contribution.id}}">
-                            <span>Members Name</span>
-                            <span>Balance</span>
-                            <span>Enter amount</span>
-                        </div>
-                        <div class="members-list" id="members-list-{{contribution.id}}">
-                            <!-- Will be populated by JavaScript -->
-                        </div>
-                        <div id="mobile-contribution-feedback-{{contribution.id}}" class="alert" style="display: none; margin-top: 10px;"></div>
-                        <button class="update-contribution-btn admin" data-contribution-id="{{contribution.id}}" id="mobile-update-btn-{{contribution.id}}">
-                            Update contribution
-                        </button>
-                        
-                        <!-- Mobile Contribution Records Section -->
-                        <div class="mobile-contribution-records" style="margin-top: 20px;">
-                            <h4 class="mobile-records-title">Contribution Records</h4>
-                            <div class="mobile-records-container" id="mobile-records-{{contribution.id}}">
-                                <!-- Will be populated by JavaScript -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {%empty%}
-                <div class="no-contributions">
-                    <i class='bx bx-inbox'></i>
-                    <p>No contributions found</p>
-                </div>
-                {%endfor%}
+            <div class="mobile-contributions-accordion" id="mobile-contributions-container">
+                <!-- Contributions will be populated by JavaScript -->
+            </div>
+            
+            <!-- Mobile Pagination -->
+            <div class="mobile-pagination" id="mobile-pagination">
+                <!-- Pagination will be populated by JavaScript -->
             </div>
         </div>
 
@@ -217,19 +172,13 @@
                 <div class="contribution-list-section">
                     <div class="contribution-list-card">
                         <h3 class="card-title">Contribution List</h3>
-                        <div class="contributions-grid">
-                            {%for contribution in contributions%}
-                            <div class="contribution-item" data-contribution-name="{{contribution.name}}">
-                                <div class="contribution-name">
-                                    <p id="contribution-name">{{contribution.name}}</p>
-                                </div>
-                                <div class="contribution-amount">Ksh {{contribution.amount|intcomma}}</div>
-                            </div>
-                            {%empty%}
-                            <div class="no-contributions">
-                                <p>No contributions found</p>
-                            </div>
-                            {%endfor%}
+                        <div class="contributions-grid" id="desktop-contributions-container">
+                            <!-- Contributions will be populated by JavaScript -->
+                        </div>
+                        
+                        <!-- Desktop Pagination -->
+                        <div class="desktop-pagination" id="desktop-pagination">
+                            <!-- Pagination will be populated by JavaScript -->
                         </div>
                     </div>
                 </div>
@@ -358,6 +307,206 @@
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
+// Pagination and contribution list management
+const contributionPagination = {
+    itemsPerPage: 8,
+    currentPage: 1,
+    contributions: [],
+    
+    init: function(contributions) {
+        this.contributions = contributions;
+        this.currentPage = 1;
+        this.renderContributions();
+        this.renderPagination();
+    },
+    
+    renderContributions: function() {
+        const start = (this.currentPage - 1) * this.itemsPerPage;
+        const end = start + this.itemsPerPage;
+        const pageContributions = this.contributions.slice(start, end);
+        
+        this.renderDesktopContributions(pageContributions);
+        this.renderMobileContributions(pageContributions);
+    },
+    
+    renderDesktopContributions: function(contributions) {
+        const container = $('#desktop-contributions-container');
+        let html = '';
+        
+        if (contributions.length === 0) {
+            html = '<div class="no-contributions"><p>No contributions found</p></div>';
+        } else {
+            contributions.forEach(contribution => {
+                const truncatedDescription = this.truncateText(contribution.description, 80);
+                html += `
+                    <div class="contribution-item" data-contribution-name="${contribution.name}">
+                        <div class="contribution-name">
+                            <h4>${contribution.name}</h4>
+                            <p class="contribution-description">${truncatedDescription}</p>
+                        </div>
+                        <div class="contribution-amount">Ksh ${this.formatNumber(contribution.amount)}</div>
+                    </div>
+                `;
+            });
+        }
+        
+        container.html(html);
+    },
+    
+    renderMobileContributions: function(contributions) {
+        const container = $('#mobile-contributions-container');
+        let html = '';
+        
+        if (contributions.length === 0) {
+            html = '<div class="no-contributions"><i class="bx bx-inbox"></i><p>No contributions found</p></div>';
+        } else {
+            contributions.forEach(contribution => {
+                const truncatedDescription = this.truncateText(contribution.description, 60);
+                html += `
+                    <div class="mobile-accordion-item" data-contribution-name="${contribution.name}">
+                        <div class="accordion-header" data-contribution-id="${contribution.id}">
+                            <div class="contribution-summary">
+                                <div class="contribution-info">
+                                    <div class="contribution-type">
+                                        <span class="type-label">Type</span>
+                                        <span class="type-value">${contribution.name}</span>
+                                        <div class="mobile-contribution-description">${truncatedDescription}</div>
+                                    </div>
+                                    <div class="contribution-due">
+                                        <span class="due-label">Start Date</span>
+                                        <span class="due-value">${this.formatDate(contribution.start_date)}</span>
+                                    </div>
+                                </div>
+                                <div class="contribution-amount">
+                                    <span class="amount-label">Target Amount</span>
+                                    <span class="amount-value">Ksh${this.formatNumber(contribution.amount)}</span>
+                                </div>
+                            </div>
+                            <i class='bx bx-chevron-down accordion-toggle'></i>
+                        </div>
+                        
+                        <div class="accordion-content">
+                            <div class="members-table-header" id="mobile-header-${contribution.id}">
+                                <span>Members Name</span>
+                                <span>Balance</span>
+                                <span>Enter amount</span>
+                            </div>
+                            <div class="members-list" id="members-list-${contribution.id}">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                            <div id="mobile-contribution-feedback-${contribution.id}" class="alert" style="display: none; margin-top: 10px;"></div>
+                            <button class="update-contribution-btn admin" data-contribution-id="${contribution.id}" id="mobile-update-btn-${contribution.id}">
+                                Update contribution
+                            </button>
+                            
+                            <!-- Mobile Contribution Records Section -->
+                            <div class="mobile-contribution-records" style="margin-top: 20px;">
+                                <h4 class="mobile-records-title">Contribution Records</h4>
+                                <div class="mobile-records-container" id="mobile-records-${contribution.id}">
+                                    <!-- Will be populated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        
+        container.html(html);
+    },
+    
+    renderPagination: function() {
+        const totalPages = Math.ceil(this.contributions.length / this.itemsPerPage);
+        
+        if (totalPages <= 1) {
+            $('#desktop-pagination, #mobile-pagination').hide();
+            return;
+        }
+        
+        $('#desktop-pagination, #mobile-pagination').show();
+        
+        const paginationHtml = this.generatePaginationHtml(totalPages);
+        $('#desktop-pagination').html(paginationHtml);
+        $('#mobile-pagination').html(paginationHtml);
+    },
+    
+    generatePaginationHtml: function(totalPages) {
+        let html = '';
+        
+        // Previous button
+        html += `<button class="pagination-btn ${this.currentPage === 1 ? 'disabled' : ''}" data-page="${this.currentPage - 1}">
+                    <i class='bx bx-chevron-left'></i>
+                 </button>`;
+        
+        // Page numbers
+        const startPage = Math.max(1, this.currentPage - 2);
+        const endPage = Math.min(totalPages, this.currentPage + 2);
+        
+        if (startPage > 1) {
+            html += `<button class="pagination-btn" data-page="1">1</button>`;
+            if (startPage > 2) {
+                html += '<span class="pagination-info">...</span>';
+            }
+        }
+        
+        for (let i = startPage; i <= endPage; i++) {
+            html += `<button class="pagination-btn ${i === this.currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+        }
+        
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                html += '<span class="pagination-info">...</span>';
+            }
+            html += `<button class="pagination-btn" data-page="${totalPages}">${totalPages}</button>`;
+        }
+        
+        // Next button
+        html += `<button class="pagination-btn ${this.currentPage === totalPages ? 'disabled' : ''}" data-page="${this.currentPage + 1}">
+                    <i class='bx bx-chevron-right'></i>
+                 </button>`;
+        
+        // Info
+        const start = (this.currentPage - 1) * this.itemsPerPage + 1;
+        const end = Math.min(this.currentPage * this.itemsPerPage, this.contributions.length);
+        html += `<span class="pagination-info">${start}-${end} of ${this.contributions.length}</span>`;
+        
+        return html;
+    },
+    
+    goToPage: function(page) {
+        const totalPages = Math.ceil(this.contributions.length / this.itemsPerPage);
+        if (page < 1 || page > totalPages) return;
+        
+        this.currentPage = page;
+        this.renderContributions();
+        this.renderPagination();
+    },
+    
+    truncateText: function(text, maxLength) {
+        if (!text) return '';
+        if (text.length <= maxLength) return text;
+        return text.substring(0, maxLength).trim() + '...';
+    },
+    
+    formatNumber: function(number) {
+        return new Intl.NumberFormat().format(number);
+    },
+    
+    formatDate: function(dateString) {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-GB');
+    }
+};
+
+// Pagination click handler
+$(document).on('click', '.pagination-btn:not(.disabled)', function() {
+    const page = parseInt($(this).data('page'));
+    if (!isNaN(page)) {
+        contributionPagination.goToPage(page);
+    }
+});
+
 // Function to apply admin visibility rules to newly generated content
 function applyAdminVisibility() {
     // Check if any existing admin elements are visible to determine current state
@@ -376,7 +525,20 @@ function applyAdminVisibility() {
 }
 
 $(document).ready(function () {
-
+    // Initialize contributions pagination
+    const contributions = [
+        {% for contribution in contributions %}
+        {
+            id: {{ contribution.id }},
+            name: "{{ contribution.name|escapejs }}",
+            description: "{{ contribution.description|escapejs }}",
+            amount: {{ contribution.amount }},
+            start_date: "{{ contribution.start_date|date:'Y-m-d' }}"
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ];
+    
+    contributionPagination.init(contributions);
 
     // Mobile tab functionality
     $('.tab-btn').click(function() {
@@ -1193,15 +1355,16 @@ $(document).ready(function () {
      });
 
      // Auto-load first contribution details on page load (like original)
-     var firstContributionItem = $(".contribution-item").first();
-     if (firstContributionItem.length > 0) {
-         var firstContributionName = firstContributionItem.data('contribution-name') || 
-                                   firstContributionItem.find('#contribution-name').text();
-         if (firstContributionName) {
-             fetchAndRenderContributionDetails(firstContributionName);
-             firstContributionItem.addClass('selected');
+     setTimeout(function() {
+         var firstContributionItem = $(".contribution-item").first();
+         if (firstContributionItem.length > 0) {
+             var firstContributionName = firstContributionItem.data('contribution-name');
+             if (firstContributionName) {
+                 fetchAndRenderContributionDetails(firstContributionName);
+                 firstContributionItem.addClass('selected');
+             }
          }
-     }
+     }, 100);
      
      // Apply admin visibility rules on initial page load with a slight delay
      // to ensure the base template admin system has initialized
