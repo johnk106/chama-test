@@ -890,7 +890,8 @@ document.addEventListener('DOMContentLoaded', function () {
     window.toggleReportFilter = function(reportId) {
         const filterElement = document.getElementById(reportId + '-filters');
         if (filterElement) {
-            filterElement.style.display = filterElement.style.display === 'none' ? 'block' : 'none';
+            const currentDisplay = window.getComputedStyle(filterElement).display;
+            filterElement.style.display = currentDisplay === 'none' ? 'block' : 'none';
         }
     };
 
