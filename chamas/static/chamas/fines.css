@@ -518,14 +518,14 @@
 }
 
 /* Tab content */
-.tab-content {
+.mobile-tab-content {
     display: none !important;
     padding: 0;
     margin: 0;
     width: 100%;
 }
 
-.tab-content.active {
+.mobile-tab-content.active {
     display: block !important;
 }
 

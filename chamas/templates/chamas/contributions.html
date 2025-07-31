@@ -1319,13 +1319,16 @@ $(document).ready(function () {
                 const hasFirstRound = response.has_first_round_records;
                 const contributionFormCard = $(".contribution-form-card");
                 const detailsGrid = $(".details-grid");
+                const updateButton = $("#update-contributions");
                 
                 if (hasFirstRound) {
                     contributionFormCard.addClass('force-hidden');
                     detailsGrid.addClass('full-width');
+                    updateButton.hide(); // Hide update button when scheme has records
                 } else {
                     contributionFormCard.removeClass('force-hidden');
                     detailsGrid.removeClass('full-width');
+                    updateButton.show(); // Show update button when scheme has no records
                 }
 
                 const tbody = $("#contribution-records tbody");
