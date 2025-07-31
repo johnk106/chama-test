@@ -23,7 +23,7 @@
     </div>
 
     <!-- Create Fine Tab Content -->
-    <div class="tab-content admin active" id="create-fine">
+    <div class="mobile-tab-content admin active" id="create-fine">
       <div class="mobile-create-form admin">
         <div class="create-fine-card">
           <div class="create-fine-header">
@@ -63,7 +63,7 @@
     </div>
 
     <!-- Impose Fine Tab Content -->
-    <div class="tab-content admin" id="impose-fine">
+    <div class="mobile-tab-content admin" id="impose-fine">
       <div class="mobile-impose-alerts-hub"></div>
       <div class="mobile-fines-list">
         {% for loan in loans %}
@@ -113,7 +113,7 @@
     </div>
 
     <!-- Loan Fines Tab Content -->
-    <div class="tab-content admin" id="loan-fines">
+    <div class="mobile-tab-content admin" id="loan-fines">
       <div class="mobile-update-alerts-hub"></div>
       <div class="mobile-fines-list">
         {% for fine in fines %}
@@ -177,7 +177,7 @@
     </div>
 
     <!-- Contribution Fines Tab Content -->
-    <div class="tab-content admin" id="contribution-fines">
+    <div class="mobile-tab-content admin" id="contribution-fines">
       <div class="mobile-contribution-update-alerts-hub"></div>
       <div class="mobile-fines-list">
         {% for fine in contribution_fines %}
@@ -245,7 +245,7 @@
     </div>
 
     <!-- Group Fines Tab Content -->
-    <div class="tab-content member" id="group-fines">
+    <div class="mobile-tab-content member" id="group-fines">
       <div class="mobile-fines-list">
         <div class="fine-section-header">
           <h6>Loan Fines</h6>
@@ -312,7 +312,7 @@
     </div>
 
     <!-- My Loan Fines Tab Content -->
-    <div class="tab-content member" id="my-loan-fines">
+    <div class="mobile-tab-content member" id="my-loan-fines">
       <div class="mobile-fines-list">
         {% for fine in my_loan_fines %}
         <div class="fine-view-card">
@@ -345,7 +345,7 @@
     </div>
 
     <!-- My Contribution Fines Tab Content -->
-    <div class="tab-content member" id="my-contribution-fines">
+    <div class="mobile-tab-content member" id="my-contribution-fines">
       <div class="mobile-fines-list">
         {% for fine in my_contribution_fines %}
         <div class="fine-view-card">
@@ -841,7 +841,7 @@
   document.addEventListener("DOMContentLoaded", function () {
     // Mobile tab functionality
     const tabButtons = document.querySelectorAll('.tab-btn');
-    const tabContents = document.querySelectorAll('.tab-content');
+    const tabContents = document.querySelectorAll('.mobile-tab-content');
 
     tabButtons.forEach(button => {
       button.addEventListener('click', function() {
