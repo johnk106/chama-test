@@ -289,18 +289,15 @@
             <i class='bx bx-chevron-down' data-bs-toggle="dropdown" aria-expanded="false"></i>
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="{% url 'Setting' %}">My Profile</a></li>
-              <li class="view-toggle-container">
-                <div class="view-toggle-wrapper">
-                  <span class="view-toggle-label">View Mode</span>
-                  <div class="view-toggle-switch">
-                    <input type="checkbox" id="viewToggle" class="view-toggle-input" />
-                    <label for="viewToggle" class="view-toggle-label-switch">
-                      <span class="view-toggle-slider"></span>
-                      <span class="view-toggle-text member-text">Member</span>
-                      <span class="view-toggle-text admin-text">Admin</span>
-                    </label>
-                  </div>
-                </div>
+              <li class="dropdown-item view-switch-container">
+                <label class="view-switch" role="switch" aria-checked="false" tabindex="0">
+                  <input type="checkbox" class="view-switch-input" aria-hidden="true">
+                  <span class="view-switch-track">
+                    <span class="view-switch-knob"></span>
+                    <span class="view-switch-label view-switch-label-member">Member</span>
+                    <span class="view-switch-label view-switch-label-admin">Admin</span>
+                  </span>
+                </label>
               </li>
               <li><a class="dropdown-item" href="#">My Groups</a></li>
             </ul>
@@ -333,18 +330,15 @@
             <i class='bx bx-chevron-down' data-bs-toggle="dropdown" aria-expanded="false"></i>
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="{% url 'Setting' %}">My Profile</a></li>
-              <li class="view-toggle-container">
-                <div class="view-toggle-wrapper">
-                  <span class="view-toggle-label">View Mode</span>
-                  <div class="view-toggle-switch">
-                    <input type="checkbox" id="viewToggleDesktop" class="view-toggle-input" />
-                    <label for="viewToggleDesktop" class="view-toggle-label-switch">
-                      <span class="view-toggle-slider"></span>
-                      <span class="view-toggle-text member-text">Member</span>
-                      <span class="view-toggle-text admin-text">Admin</span>
-                    </label>
-                  </div>
-                </div>
+              <li class="dropdown-item view-switch-container">
+                <label class="view-switch" role="switch" aria-checked="false" tabindex="0">
+                  <input type="checkbox" class="view-switch-input" aria-hidden="true">
+                  <span class="view-switch-track">
+                    <span class="view-switch-knob"></span>
+                    <span class="view-switch-label view-switch-label-member">Member</span>
+                    <span class="view-switch-label view-switch-label-admin">Admin</span>
+                  </span>
+                </label>
               </li>
               <li><a class="dropdown-item" href="#">My Groups</a></li>
             </ul>
@@ -677,17 +671,20 @@ $(document).ready(function() {
   //    (so that nothing flashes on the screen before AJAX finishes)
   $(".admin, #remove-user, #add-member-button").hide();
   
-  // 2.1) IMMEDIATELY disable the admin toggle for all users until verified
-  $("#viewToggle, #viewToggleDesktop").prop('disabled', true);
+  // 2.1) IMMEDIATELY disable the view switch for all users until verified
+  $(".view-switch").addClass('disabled');
+  $(".view-switch-input").prop('disabled', true);
 
-  // 3) Initialize the toggle state based on savedView
+  // 3) Initialize the switch state based on savedView
   if (savedView === "member") {
-    // If last‐saved was member, set toggle to member position
-    $("#viewToggle, #viewToggleDesktop").prop('checked', false);
+    // If last‐saved was member, set switch to member position
+    $(".view-switch-input").prop('checked', false);
+    $(".view-switch").attr('aria-checked', 'false');
   } else {
     // savedView is "admin" (user clicked admin on a previous page).
-    // Set toggle to admin position but keep disabled until verified
-    $("#viewToggle, #viewToggleDesktop").prop('checked', true);
+    // Set switch to admin position but keep disabled until verified
+    $(".view-switch-input").prop('checked', true);
+    $(".view-switch").attr('aria-checked', 'true');
   }
 
   // 4) Now call the server to see "am I admin in this group?"
@@ -698,9 +695,10 @@ $(document).ready(function() {
     success: function(data) {
       // If the server says I'm not an admin here or there's an error:
       if (data.role !== "admin" || data.error) {
-        // Force member mode, hide the admin toggle entirely
+        // Force member mode, keep switch disabled
         savedView = "member";
-        $("#viewToggle, #viewToggleDesktop").prop('checked', false).prop('disabled', true);
+        $(".view-switch-input").prop('checked', false).prop('disabled', true);
+        $(".view-switch").attr('aria-checked', 'false').addClass('disabled');
         // Re‐apply member‐only UI
         updateView("member");
         // Overwrite localStorage in case it was "admin" before
@@ -711,30 +709,34 @@ $(document).ready(function() {
           console.log("Role verification error:", data.error);
         }
       } else {
-        // I am admin. Enable the toggle now
-        $("#viewToggle, #viewToggleDesktop").prop('disabled', false);
+        // I am admin. Enable the switch now
+        $(".view-switch").removeClass('disabled');
+        $(".view-switch-input").prop('disabled', false);
 
         // If they had last‐saved "admin," now we can safely flip on admin features:
         if (savedView === "admin") {
           updateView("admin");
-          $("#viewToggle, #viewToggleDesktop").prop('checked', true);
+          $(".view-switch-input").prop('checked', true);
+          $(".view-switch").attr('aria-checked', 'true');
         } else {
           // They last‐saved "member," so keep member view
           updateView("member");
-          $("#viewToggle, #viewToggleDesktop").prop('checked', false);
+          $(".view-switch-input").prop('checked', false);
+          $(".view-switch").attr('aria-checked', 'false');
         }
       }
     },
     error: function() {
-      // If the AJAX fails, disable toggle and stay in member view.
-      $("#viewToggle, #viewToggleDesktop").prop('checked', false).prop('disabled', true);
+      // If the AJAX fails, disable switch and stay in member view.
+      $(".view-switch-input").prop('checked', false).prop('disabled', true);
+      $(".view-switch").attr('aria-checked', 'false').addClass('disabled');
       updateView("member");
       localStorage.setItem(storageKey, "member");
     }
   });
 
-  // 5) Toggle switch handler: whenever they toggle the switch, re‐verify if necessary
-  $("#viewToggle, #viewToggleDesktop").on("change", function() {
+  // 5) Switch handler: whenever they toggle the switch, re‐verify if necessary
+  $(".view-switch-input").on("change", function() {
     var isAdminView = $(this).is(':checked');
 
     if (isAdminView) {
@@ -747,13 +749,15 @@ $(document).ready(function() {
           if (data.role === "admin") {
             // OK, they really are an admin: flip on admin mode
             updateView("admin");
-            $("#viewToggle, #viewToggleDesktop").prop('checked', true);
+            $(".view-switch-input").prop('checked', true);
+            $(".view-switch").attr('aria-checked', 'true');
             localStorage.setItem(storageKey, "admin");
           } else {
             // Not an admin—show alert and revert to member
             alert("You don't have permission to view as admin here.");
             updateView("member");
-            $("#viewToggle, #viewToggleDesktop").prop('checked', false);
+            $(".view-switch-input").prop('checked', false);
+            $(".view-switch").attr('aria-checked', 'false');
             localStorage.setItem(storageKey, "member");
           }
         },
@@ -761,7 +765,8 @@ $(document).ready(function() {
           // If AJAX fails, revert to member mode
           alert("Unable to verify your role. Showing member view.");
           updateView("member");
-          $("#viewToggle, #viewToggleDesktop").prop('checked', false);
+          $(".view-switch-input").prop('checked', false);
+          $(".view-switch").attr('aria-checked', 'false');
           localStorage.setItem(storageKey, "member");
         }
       });
@@ -769,12 +774,24 @@ $(document).ready(function() {
     } else {
       // They toggled to member—just switch immediately (no need to re‐verify)
       updateView("member");
-      $("#viewToggle, #viewToggleDesktop").prop('checked', false);
+      $(".view-switch-input").prop('checked', false);
+      $(".view-switch").attr('aria-checked', 'false');
       localStorage.setItem(storageKey, "member");
     }
   });
 
-  // 6) show/hide logic for each view
+  // 6) Keyboard accessibility for the switch
+  $(".view-switch").on("keydown", function(e) {
+    if (e.key === " " || e.key === "Enter") {
+      e.preventDefault();
+      var input = $(this).find('.view-switch-input');
+      if (!input.prop('disabled')) {
+        input.prop('checked', !input.prop('checked')).trigger('change');
+      }
+    }
+  });
+
+  // 7) show/hide logic for each view
   function updateView(view) {
     if (view === "member") {
       // Remove admin class from body/html and hide admin elements
@@ -789,7 +806,7 @@ $(document).ready(function() {
     }
   }
   
-  // 7) Global function for pages to sync their visibility with current view state
+  // 8) Global function for pages to sync their visibility with current view state
   window.syncAdminVisibility = function() {
     var groupId = localStorage.getItem('groupId');
     if (!groupId) return;
