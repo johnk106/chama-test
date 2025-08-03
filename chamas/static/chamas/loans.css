@@ -669,8 +669,8 @@ margin: 0;
 }
 
 .status-active {
-    background: rgba(33, 145, 165, 0.1);
-    color: #2191a5;
+    background: rgba(33, 145, 165, 0.1) !important;
+    color: #2191a5 !important;
 }
 
 .status-defaulted {
@@ -1078,8 +1078,8 @@ margin: 0;
 }
 
 .mobile-category-header.status-active {
-    background: linear-gradient(135deg, #2191a5 0%, #1a7589 100%);
-    color: white;
+    background: linear-gradient(135deg, #2191a5 0%, #1a7589 100%) !important;
+    color: white !important;
 }
 
 .mobile-category-header.status-defaulted {
@@ -1226,8 +1226,8 @@ margin: 0;
 }
 
 .mobile-status-badge.status-active {
-    background: rgba(33, 145, 165, 0.1);
-    color: #2191a5;
+    background: rgba(33, 145, 165, 0.1) !important;
+    color: #2191a5 !important;
 }
 
 .mobile-status-badge.status-completed {
