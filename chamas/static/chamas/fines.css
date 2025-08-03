@@ -485,6 +485,7 @@
     overflow-x: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    justify-content: space-evenly;
 }
 
 .mobile-tabs::-webkit-scrollbar {
@@ -495,8 +496,8 @@
     flex: 1;
     background: none;
     border: none;
-    padding: 16px 8px;
-    font-size: 14px;
+    padding: 12px 4px;
+    font-size: 12px;
     font-weight: 500;
     color: #9ca3af;
     border-bottom: 2px solid transparent;
@@ -504,6 +505,8 @@
     transition: all 0.2s;
     white-space: nowrap;
     min-width: 0;
+    text-align: center;
+    line-height: 1.2;
 }
 
 .tab-btn:hover {
@@ -872,6 +875,43 @@
     .fine-view-card {
         padding: 12px;
     }
+    
+    /* Responsive tabs for smaller screens */
+    .tab-btn {
+        font-size: 11px;
+        padding: 10px 2px;
+    }
+}
+
+@media (max-width: 480px) {
+    .tab-btn {
+        font-size: 10px;
+        padding: 8px 1px;
+        line-height: 1.1;
+    }
+    
+    /* Allow text wrapping on very small screens */
+    .mobile-tabs {
+        flex-wrap: wrap;
+        height: auto;
+    }
+    
+    .tab-btn {
+        white-space: normal;
+        word-break: break-word;
+        min-height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+@media (min-width: 769px) {
+    /* For larger screens, allow tabs to be more spacious */
+    .tab-btn {
+        padding: 16px 12px;
+        font-size: 14px;
+    }
 }
 
 /* Override base template styles - EXACT COPY FROM WORKING LOANS.CSS */
@@ -894,4 +934,13 @@
     padding: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
+}
+
+/* Ensure mobile fines container spans full width */
+.mobile-fines {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative;
+    overflow-x: hidden;
 }
