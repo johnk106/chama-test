@@ -1,5 +1,12 @@
-{%extends 'chamas/base.html'%} {%load static%} {% load humanize %} {% load avatar_filters %} {%block head%}
+{%extends 'chamas/base.html'%} {%load static%} {% load humanize %} {% load avatar_filters %} 
+
+{%block head%}
 <title>Fines</title>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.body.classList.add('fines-page');
+  });
+</script>
 <link rel="stylesheet" href="{%static 'chamas/fines.css'%}" />
 <link rel="stylesheet" href="{%static 'chamas/contribution.css'%}" />
 <link rel="stylesheet" href="{%static 'chamas/dashboard.css'%}" />
