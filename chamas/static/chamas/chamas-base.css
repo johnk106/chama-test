@@ -352,6 +352,39 @@ html, body,
   color: #6c757d !important;
 }
 
+/* Switch label styling */
+.switch-label-member,
+.switch-label-admin {
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease !important;
+}
+
+.switch-label-member {
+  color: #2191a5 !important;
+}
+
+.switch-label-admin {
+  color: #28a745 !important;
+}
+
+/* Label switching */
+.form-check-input:checked ~ .form-check-label .switch-label-member {
+  display: none !important;
+}
+
+.form-check-input:checked ~ .form-check-label .switch-label-admin {
+  display: inline !important;
+}
+
+.form-check-input:not(:checked) ~ .form-check-label .switch-label-member {
+  display: inline !important;
+}
+
+.form-check-input:not(:checked) ~ .form-check-label .switch-label-admin {
+  display: none !important;
+}
+
 /* Disabled state */
 .form-check-input:disabled {
   opacity: 0.6 !important;

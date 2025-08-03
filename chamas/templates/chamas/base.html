@@ -290,14 +290,12 @@
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="{% url 'Setting' %}">My Profile</a></li>
               <li class="dropdown-item">
-                <div class="d-flex align-items-center justify-content-between">
-                  <span class="me-3">View Mode</span>
-                  <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="viewToggle">
-                    <label class="form-check-label" for="viewToggle">
-                      <small class="text-muted">Member</small>
-                    </label>
-                  </div>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="viewToggle">
+                  <label class="form-check-label" for="viewToggle">
+                    <span class="switch-label-member">Member</span>
+                    <span class="switch-label-admin" style="display: none;">Admin</span>
+                  </label>
                 </div>
               </li>
               <li><a class="dropdown-item" href="#">My Groups</a></li>
@@ -332,14 +330,12 @@
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="{% url 'Setting' %}">My Profile</a></li>
               <li class="dropdown-item">
-                <div class="d-flex align-items-center justify-content-between">
-                  <span class="me-3">View Mode</span>
-                  <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="viewToggleDesktop">
-                    <label class="form-check-label" for="viewToggleDesktop">
-                      <small class="text-muted">Member</small>
-                    </label>
-                  </div>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="viewToggleDesktop">
+                  <label class="form-check-label" for="viewToggleDesktop">
+                    <span class="switch-label-member">Member</span>
+                    <span class="switch-label-admin" style="display: none;">Admin</span>
+                  </label>
                 </div>
               </li>
               <li><a class="dropdown-item" href="#">My Groups</a></li>
@@ -680,10 +676,14 @@ $(document).ready(function() {
   if (savedView === "member") {
     // If last‐saved was member, set switch to member position
     $("#viewToggle, #viewToggleDesktop").prop('checked', false);
+    $(".switch-label-member").show();
+    $(".switch-label-admin").hide();
   } else {
     // savedView is "admin" (user clicked admin on a previous page).
     // Set switch to admin position but keep disabled until verified
     $("#viewToggle, #viewToggleDesktop").prop('checked', true);
+    $(".switch-label-member").hide();
+    $(".switch-label-admin").show();
   }
 
   // 4) Now call the server to see "am I admin in this group?"
@@ -714,10 +714,14 @@ $(document).ready(function() {
         if (savedView === "admin") {
           updateView("admin");
           $("#viewToggle, #viewToggleDesktop").prop('checked', true);
+          $(".switch-label-member").hide();
+          $(".switch-label-admin").show();
         } else {
           // They last‐saved "member," so keep member view
           updateView("member");
           $("#viewToggle, #viewToggleDesktop").prop('checked', false);
+          $(".switch-label-member").show();
+          $(".switch-label-admin").hide();
         }
       }
     },
@@ -744,12 +748,16 @@ $(document).ready(function() {
             // OK, they really are an admin: flip on admin mode
             updateView("admin");
             $("#viewToggle, #viewToggleDesktop").prop('checked', true);
+            $(".switch-label-member").hide();
+            $(".switch-label-admin").show();
             localStorage.setItem(storageKey, "admin");
           } else {
             // Not an admin—show alert and revert to member
             alert("You don't have admin permissions");
             updateView("member");
             $("#viewToggle, #viewToggleDesktop").prop('checked', false);
+            $(".switch-label-member").show();
+            $(".switch-label-admin").hide();
             localStorage.setItem(storageKey, "member");
           }
         },
@@ -758,6 +766,8 @@ $(document).ready(function() {
           alert("Unable to verify permissions");
           updateView("member");
           $("#viewToggle, #viewToggleDesktop").prop('checked', false);
+          $(".switch-label-member").show();
+          $(".switch-label-admin").hide();
           localStorage.setItem(storageKey, "member");
         }
       });
@@ -766,6 +776,8 @@ $(document).ready(function() {
       // They toggled to member—just switch immediately (no need to re‐verify)
       updateView("member");
       $("#viewToggle, #viewToggleDesktop").prop('checked', false);
+      $(".switch-label-member").show();
+      $(".switch-label-admin").hide();
       localStorage.setItem(storageKey, "member");
     }
   });
