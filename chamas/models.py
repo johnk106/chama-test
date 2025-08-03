@@ -241,9 +241,11 @@ class Saving(models.Model):
 class Investment(models.Model):
     name = models.CharField(max_length=55)
     chama = models.ForeignKey(Chama,on_delete=models.SET_NULL,related_name='investments',  null=True, blank=True)
+    owner = models.ForeignKey(ChamaMember,on_delete=models.SET_NULL,related_name='investments',null=True, blank=True)
     date = models.DateTimeField(default=timezone.now)
     amount = models.DecimalField(max_digits=10,decimal_places=2)
     user_date = models.DateField(default=timezone.now)
+    forGroup = models.BooleanField(default=False, db_column='forGroup')
 
     def __str__(self):
         return self.name

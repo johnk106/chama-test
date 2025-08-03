@@ -83,8 +83,14 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link admin member" id="investments-tab" data-bs-toggle="tab" href="#tab-investments" role="tab">
+                <a class="nav-link admin member" id="investment-income-tab" data-bs-toggle="tab" href="#tab-investment-income" role="tab">
                     <i class="bx bx-trending-up"></i>
+                    Investment Income
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link admin member" id="investments-tab" data-bs-toggle="tab" href="#tab-investments" role="tab">
+                    <i class="bx bx-briefcase"></i>
                     Investments
                 </a>
             </li>
@@ -366,8 +372,8 @@
                 </div>
             </div>
 
-            <!-- Investments Tab -->
-            <div class="tab-pane" id="tab-investments" role="tabpanel">
+            <!-- Investment Income Tab -->
+            <div class="tab-pane" id="tab-investment-income" role="tabpanel">
                 <div class="reports-grid">
                     <!-- Group Investment Income Card -->
                     <div class="report-card brand-card admin member">
@@ -491,6 +497,138 @@
                                     <i class="bx bx-file-blank empty-state-icon"></i>
                                     <p class="empty-state-message">Nothing to show</p>
                                     <p class="empty-state-description">No personal investment income data available for the selected period</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Investments Tab -->
+            <div class="tab-pane" id="tab-investments" role="tabpanel">
+                <div class="reports-grid">
+                    <!-- Group Investments Card -->
+                    <div class="report-card brand-card admin member">
+                        <div class="report-card-header brand-card-header">
+                            <div class="report-header-info">
+                                <h3 class="report-title text-brand-primary">Group Investments</h3>
+                                <p class="report-description">Total group investment portfolio</p>
+                            </div>
+                            <div class="report-actions">
+                                <button class="btn-download-individual bg-brand-primary" id="download-group-investments">
+                                    <i class="bx bx-download"></i>
+                                </button>
+                                <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('group-investments')">
+                                    <i class="bx bx-filter"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="report-filters" id="group-investments-filters">
+                            <div class="filter-row">
+                                <div class="filter-field">
+                                    <label for="group-investments-start" class="field-label">Start Date</label>
+                                    <input type="date" class="field-input" id="group-investments-start">
+                                </div>
+                                <div class="filter-field">
+                                    <label for="group-investments-end" class="field-label">End Date</label>
+                                    <input type="date" class="field-input" id="group-investments-end">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="report-data brand-card-body">
+                            <div id="group-investments-items" class="data-container">
+                                <div class="empty-state">
+                                    <i class="bx bx-file-blank empty-state-icon"></i>
+                                    <p class="empty-state-message">Nothing to show</p>
+                                    <p class="empty-state-description">No group investments data available for the selected period</p>
+                                </div>
+                            </div>
+                            <div id="group-investments-total" class="summary-cards"></div>
+                        </div>
+                    </div>
+
+                    <!-- Individual Investments Card (Admin Only) -->
+                    <div class="report-card brand-card admin">
+                        <div class="report-card-header brand-card-header">
+                            <div class="report-header-info">
+                                <h3 class="report-title text-brand-primary">Individual Investments</h3>
+                                <p class="report-description">Individual member investment portfolio</p>
+                            </div>
+                            <div class="report-actions">
+                                <button class="btn-download-individual bg-brand-primary" id="download-individual-investments">
+                                    <i class="bx bx-download"></i>
+                                </button>
+                                <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('individual-investments')">
+                                    <i class="bx bx-filter"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="report-filters" id="individual-investments-filters">
+                            <div class="filter-row">
+                                <div class="filter-field">
+                                    <label for="individual-investment-owner" class="field-label">Select Member</label>
+                                    <select class="field-input" id="individual-investment-owner">
+                                        <option value="" disabled selected>Select Member</option>
+                                        {%for member in members%}
+                                        <option value="{{member.id}}">{{member.name}}</option>
+                                        {%endfor%}
+                                    </select>
+                                </div>
+                                <div class="filter-field">
+                                    <label for="individual-investments-start" class="field-label">Start Date</label>
+                                    <input type="date" class="field-input" id="individual-investments-start">
+                                </div>
+                                <div class="filter-field">
+                                    <label for="individual-investments-end" class="field-label">End Date</label>
+                                    <input type="date" class="field-input" id="individual-investments-end">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="report-data brand-card-body">
+                            <div id="individual-investments-items" class="data-container">
+                                <div class="empty-state">
+                                    <i class="bx bx-file-blank empty-state-icon"></i>
+                                    <p class="empty-state-message">Nothing to show</p>
+                                    <p class="empty-state-description">Please select a member to view their investments data</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- My Investments Card (Member Only) -->
+                    <div class="report-card brand-card member">
+                        <div class="report-card-header brand-card-header">
+                            <div class="report-header-info">
+                                <h3 class="report-title text-brand-primary">My Investments</h3>
+                                <p class="report-description">Your personal investment portfolio</p>
+                            </div>
+                            <div class="report-actions">
+                                <button class="btn-download-individual bg-brand-primary" id="download-my-investments">
+                                    <i class="bx bx-download"></i>
+                                </button>
+                                <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('my-investments')">
+                                    <i class="bx bx-filter"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="report-filters" id="my-investments-filters">
+                            <div class="filter-row">
+                                <div class="filter-field">
+                                    <label for="my-investments-start" class="field-label">Start Date</label>
+                                    <input type="date" class="field-input" id="my-investments-start">
+                                </div>
+                                <div class="filter-field">
+                                    <label for="my-investments-end" class="field-label">End Date</label>
+                                    <input type="date" class="field-input" id="my-investments-end">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="report-data brand-card-body">
+                            <div id="my-investments-items" class="data-container">
+                                <div class="empty-state">
+                                    <i class="bx bx-file-blank empty-state-icon"></i>
+                                    <p class="empty-state-message">Nothing to show</p>
+                                    <p class="empty-state-description">No personal investments data available for the selected period</p>
                                 </div>
                             </div>
                         </div>
@@ -909,6 +1047,9 @@ document.addEventListener('DOMContentLoaded', function () {
         '#download-repayment-schedule': '/chamas-bookeeping/download-loan-repayment-schedule/',
         '#download-group-investment-income': '/chamas-bookeeping/download-group-investment-income/',
         '#download-member-investment-income': '/chamas-bookeeping/download-member-investment-income/',
+        '#download-group-investments': '/chamas-bookeeping/download-group-investments/',
+        '#download-individual-investments': '/chamas-bookeeping/download-individual-investments/',
+        '#download-my-investments': '/chamas-bookeeping/download-my-investments/',
         '#download-individual-saving-report': '/chamas-bookeeping/download-individual-saving-report/',
         '#download-group-saving-report': '/chamas-bookeeping/download-group-saving-report/',
         '#download-group-contributions-report': '/chamas-bookeeping/download-group-contributions-report/',
@@ -1062,6 +1203,45 @@ document.addEventListener('DOMContentLoaded', function () {
                             if (params.length > 0) {
                                 url += `?${params.join('&')}`;
                             }
+                        } else if (selector.includes('group-investments')) {
+                            const startDateInput = document.querySelector('#group-investments-start');
+                            const endDateInput = document.querySelector('#group-investments-end');
+                            const startDate = startDateInput?.value;
+                            const endDate = endDateInput?.value;
+                            
+                            let params = [];
+                            if (startDate) params.push(`start_date=${startDate}`);
+                            if (endDate) params.push(`end_date=${endDate}`);
+                            if (params.length > 0) {
+                                url += `?${params.join('&')}`;
+                            }
+                        } else if (selector.includes('individual-investments')) {
+                            const memberSelect = document.querySelector('#individual-investment-owner');
+                            const startDateInput = document.querySelector('#individual-investments-start');
+                            const endDateInput = document.querySelector('#individual-investments-end');
+                            const memberId = memberSelect?.value;
+                            const startDate = startDateInput?.value;
+                            const endDate = endDateInput?.value;
+                            
+                            let params = [];
+                            if (memberId) params.push(`member_id=${memberId}`);
+                            if (startDate) params.push(`start_date=${startDate}`);
+                            if (endDate) params.push(`end_date=${endDate}`);
+                            if (params.length > 0) {
+                                url += `?${params.join('&')}`;
+                            }
+                        } else if (selector.includes('my-investments')) {
+                            const startDateInput = document.querySelector('#my-investments-start');
+                            const endDateInput = document.querySelector('#my-investments-end');
+                            const startDate = startDateInput?.value;
+                            const endDate = endDateInput?.value;
+                            
+                            let params = [];
+                            if (startDate) params.push(`start_date=${startDate}`);
+                            if (endDate) params.push(`end_date=${endDate}`);
+                            if (params.length > 0) {
+                                url += `?${params.join('&')}`;
+                            }
                         } else if (selector.includes('contribution')) {
                         const memberSelect = document.querySelector('#member-contribution-owner');
                         memberId = memberSelect?.value;
@@ -1167,10 +1347,14 @@ document.addEventListener('DOMContentLoaded', function () {
 // Initialize report data from Django context
 const reportData = {
     groupContributions: {% if group_contributions %}{{ group_contributions|safe }}{% else %}[]{% endif %},
+    myContributions: {% if my_contributions %}{{ my_contributions|safe }}{% else %}[]{% endif %},
     groupSavings: {% if group_saving_report %}{{ group_saving_report|safe }}{% else %}[]{% endif %},
     individualSavings: {% if individual_saving_report %}{{ individual_saving_report|safe }}{% else %}[]{% endif %},
     groupInvestmentIncomes: {% if group_investment_incomes %}{{ group_investment_incomes|safe }}{% else %}[]{% endif %},
     memberInvestmentIncomes: {% if member_investment_income %}{{ member_investment_income|safe }}{% else %}[]{% endif %},
+    groupInvestments: {% if group_investments %}{{ group_investments|safe }}{% else %}[]{% endif %},
+    individualInvestments: {% if individual_investments %}{{ individual_investments|safe }}{% else %}[]{% endif %},
+    myInvestments: {% if my_investments %}{{ my_investments|safe }}{% else %}[]{% endif %},
     loans: {% if unpaid_loans %}{{ unpaid_loans|safe }}{% else %}[]{% endif %},
     collectedFines: {% if collected_fines %}{{ collected_fines|safe }}{% else %}[]{% endif %},
     unpaidFines: {% if unpaid_fines %}{{ unpaid_fines|safe }}{% else %}[]{% endif %},
@@ -1485,8 +1669,338 @@ function populateReportData() {
         }
     }
 
+    // My Contributions
+    if (reportData.myContributions.length > 0) {
+        const container = document.getElementById('my-contributions-items');
+        if (container) {
+            container.innerHTML = `
+                <div class="brand-table-responsive">
+                    <table class="brand-table">
+                        <thead>
+                            <tr>
+                                <th>Scheme</th>
+                                <th>Amount Paid</th>
+                                <th>Amount Expected</th>
+                                <th>Balance</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${reportData.myContributions.map(item => `
+                                <tr>
+                                    <td>${item.scheme_name || 'N/A'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.amount_paid?.toLocaleString() || '0'}</td>
+                                    <td>Ksh ${item.amount_expected?.toLocaleString() || '0'}</td>
+                                    <td>Ksh ${item.balance?.toLocaleString() || '0'}</td>
+                                    <td>${item.date_created || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+    }
+
+    // Group Investments
+    if (reportData.groupInvestments.length > 0) {
+        const container = document.getElementById('group-investments-items');
+        if (container) {
+            container.innerHTML = `
+                <div class="brand-table-responsive">
+                    <table class="brand-table">
+                        <thead>
+                            <tr>
+                                <th>Investment Name</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${reportData.groupInvestments.map(item => `
+                                <tr>
+                                    <td>${item.name || 'N/A'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.amount?.toLocaleString() || '0'}</td>
+                                    <td>${item.date || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+    }
+
+    // Individual Investments
+    if (reportData.individualInvestments.length > 0) {
+        const container = document.getElementById('individual-investments-items');
+        if (container) {
+            container.innerHTML = `
+                <div class="brand-table-responsive">
+                    <table class="brand-table">
+                        <thead>
+                            <tr>
+                                <th>Member</th>
+                                <th>Investment Name</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${reportData.individualInvestments.map(item => `
+                                <tr>
+                                    <td>${item.owner_id || 'N/A'}</td>
+                                    <td>${item.name || 'N/A'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.amount?.toLocaleString() || '0'}</td>
+                                    <td>${item.date || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+    }
+
+    // My Investments
+    if (reportData.myInvestments.length > 0) {
+        const container = document.getElementById('my-investments-items');
+        if (container) {
+            container.innerHTML = `
+                <div class="brand-table-responsive">
+                    <table class="brand-table">
+                        <thead>
+                            <tr>
+                                <th>Investment Name</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${reportData.myInvestments.map(item => `
+                                <tr>
+                                    <td>${item.name || 'N/A'}</td>
+                                    <td class="text-brand-primary">Ksh ${item.amount?.toLocaleString() || '0'}</td>
+                                    <td>${item.date || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+    }
+
     // Add debug information to console for troubleshooting
     console.log('Report Data:', reportData);
+    
+    // Calculate and display totals for all tables
+    calculateAndDisplayTotals();
+}
+
+// Function to calculate and display totals for all tables
+function calculateAndDisplayTotals() {
+    // Cashflow totals
+    if (reportData.cashflow.length > 0) {
+        const total = reportData.cashflow.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+        const container = document.getElementById('cashflow-report-totals-cont');
+        if (container) {
+            container.innerHTML = `
+                <div class="summary-card">
+                    <h4 class="summary-title">Total Cashflow</h4>
+                    <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                </div>
+            `;
+        }
+    }
+
+    // Group Investment Income totals
+    if (reportData.groupInvestmentIncomes.length > 0) {
+        const total = reportData.groupInvestmentIncomes.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+        const container = document.getElementById('group-investment-incomes-total');
+        if (container) {
+            container.innerHTML = `
+                <div class="summary-card">
+                    <h4 class="summary-title">Total Investment Income</h4>
+                    <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                </div>
+            `;
+        }
+    }
+
+    // Group Investments totals
+    if (reportData.groupInvestments.length > 0) {
+        const total = reportData.groupInvestments.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+        const container = document.getElementById('group-investments-total');
+        if (container) {
+            container.innerHTML = `
+                <div class="summary-card">
+                    <h4 class="summary-title">Total Investments</h4>
+                    <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                </div>
+            `;
+        }
+    }
+
+    // Group Contributions totals
+    if (reportData.groupContributions.length > 0) {
+        const total = reportData.groupContributions.reduce((sum, item) => sum + (parseFloat(item.amount_paid) || 0), 0);
+        const container = document.getElementById('group-contributions-items');
+        if (container) {
+            const existingTable = container.querySelector('.brand-table-responsive');
+            if (existingTable) {
+                const totalsDiv = document.createElement('div');
+                totalsDiv.className = 'summary-cards';
+                totalsDiv.innerHTML = `
+                    <div class="summary-card">
+                        <h4 class="summary-title">Total Contributions</h4>
+                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                    </div>
+                `;
+                container.appendChild(totalsDiv);
+            }
+        }
+    }
+
+    // My Contributions totals
+    if (reportData.myContributions.length > 0) {
+        const total = reportData.myContributions.reduce((sum, item) => sum + (parseFloat(item.amount_paid) || 0), 0);
+        const container = document.getElementById('my-contributions-items');
+        if (container) {
+            const existingTable = container.querySelector('.brand-table-responsive');
+            if (existingTable) {
+                const totalsDiv = document.createElement('div');
+                totalsDiv.className = 'summary-cards';
+                totalsDiv.innerHTML = `
+                    <div class="summary-card">
+                        <h4 class="summary-title">Total My Contributions</h4>
+                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                    </div>
+                `;
+                container.appendChild(totalsDiv);
+            }
+        }
+    }
+
+    // Expenses totals
+    if (reportData.expenses.length > 0) {
+        const total = reportData.expenses.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+        const container = document.getElementById('expenses-items');
+        if (container) {
+            const existingTable = container.querySelector('.brand-table-responsive');
+            if (existingTable) {
+                const totalsDiv = document.createElement('div');
+                totalsDiv.className = 'summary-cards';
+                totalsDiv.innerHTML = `
+                    <div class="summary-card">
+                        <h4 class="summary-title">Total Expenses</h4>
+                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                    </div>
+                `;
+                container.appendChild(totalsDiv);
+            }
+        }
+    }
+
+    // Loans totals
+    if (reportData.loans.length > 0) {
+        const total = reportData.loans.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+        const container = document.getElementById('loans-items');
+        if (container) {
+            const existingTable = container.querySelector('.brand-table-responsive');
+            if (existingTable) {
+                const totalsDiv = document.createElement('div');
+                totalsDiv.className = 'summary-cards';
+                totalsDiv.innerHTML = `
+                    <div class="summary-card">
+                        <h4 class="summary-title">Total Loans</h4>
+                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                    </div>
+                `;
+                container.appendChild(totalsDiv);
+            }
+        }
+    }
+
+    // Collected Fines totals
+    if (reportData.collectedFines.length > 0) {
+        const total = reportData.collectedFines.reduce((sum, item) => sum + (parseFloat(item.fine_amount) || 0), 0);
+        const container = document.getElementById('collected-fines-items');
+        if (container) {
+            const existingTable = container.querySelector('.brand-table-responsive');
+            if (existingTable) {
+                const totalsDiv = document.createElement('div');
+                totalsDiv.className = 'summary-cards';
+                totalsDiv.innerHTML = `
+                    <div class="summary-card">
+                        <h4 class="summary-title">Total Collected Fines</h4>
+                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                    </div>
+                `;
+                container.appendChild(totalsDiv);
+            }
+        }
+    }
+
+    // Unpaid Fines totals
+    if (reportData.unpaidFines.length > 0) {
+        const total = reportData.unpaidFines.reduce((sum, item) => sum + (parseFloat(item.fine_amount) || 0), 0);
+        const container = document.getElementById('unpaid-fines-items');
+        if (container) {
+            const existingTable = container.querySelector('.brand-table-responsive');
+            if (existingTable) {
+                const totalsDiv = document.createElement('div');
+                totalsDiv.className = 'summary-cards';
+                totalsDiv.innerHTML = `
+                    <div class="summary-card">
+                        <h4 class="summary-title">Total Unpaid Fines</h4>
+                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                    </div>
+                `;
+                container.appendChild(totalsDiv);
+            }
+        }
+    }
+
+    // Group Savings totals
+    if (reportData.groupSavings.length > 0) {
+        const total = reportData.groupSavings.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+        const container = document.getElementById('group-saving-items');
+        if (container) {
+            const existingTable = container.querySelector('.brand-table-responsive');
+            if (existingTable) {
+                const totalsDiv = document.createElement('div');
+                totalsDiv.className = 'summary-cards';
+                totalsDiv.innerHTML = `
+                    <div class="summary-card">
+                        <h4 class="summary-title">Total Group Savings</h4>
+                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                    </div>
+                `;
+                container.appendChild(totalsDiv);
+            }
+        }
+    }
+
+    // Individual Savings totals
+    if (reportData.individualSavings.length > 0) {
+        const total = reportData.individualSavings.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+        const container = document.getElementById('individual-saving-items');
+        if (container) {
+            const existingTable = container.querySelector('.brand-table-responsive');
+            if (existingTable) {
+                const totalsDiv = document.createElement('div');
+                totalsDiv.className = 'summary-cards';
+                totalsDiv.innerHTML = `
+                    <div class="summary-card">
+                        <h4 class="summary-title">Total Individual Savings</h4>
+                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                    </div>
+                `;
+                container.appendChild(totalsDiv);
+            }
+        }
+    }
 }
 
 // Initialize data when page loads

@@ -1296,6 +1296,37 @@ def reports(request,chama_id):
             pass
     my_investment_incomes = json.dumps(_my_investment_income)
     
+    # Add investment data for the new Investments tab
+    group_investments = Paginator(Investment.objects.filter(chama=chama,forGroup=True).order_by('-date').all(),10).page(1)
+    _group_investments = list(group_investments.object_list.values())
+    for investment in _group_investments:
+        investment['date'] = investment['date'].strftime('%Y-%m-%d')
+        investment['user_date'] = investment['user_date'].strftime('%Y-%m-%d')
+        investment['amount'] = float(investment['amount'])
+    group_investments = json.dumps(_group_investments)
+    
+    individual_investments = Paginator(Investment.objects.filter(chama=chama,forGroup=False).order_by('-date').all(),10).page(1)
+    _individual_investments = list(individual_investments.object_list.values())
+    for investment in _individual_investments:
+        investment['date'] = investment['date'].strftime('%Y-%m-%d')
+        investment['user_date'] = investment['user_date'].strftime('%Y-%m-%d')
+        investment['amount'] = float(investment['amount'])
+        
+        try:
+            o = ChamaMember.objects.get(pk=int(investment['owner_id']))
+            investment['owner_id'] = o.name
+        except:
+            pass
+    individual_investments = json.dumps(_individual_investments)
+    
+    my_investments = Paginator(Investment.objects.filter(chama=chama,owner=member).order_by('-date').all(),10).page(1)
+    _my_investments = list(my_investments.object_list.values())
+    for investment in _my_investments:
+        investment['date'] = investment['date'].strftime('%Y-%m-%d')
+        investment['user_date'] = investment['user_date'].strftime('%Y-%m-%d')
+        investment['amount'] = float(investment['amount'])
+    my_investments = json.dumps(_my_investments)
+    
 
     my_total_contributions = Decimal('0.00')
     my_total_loan_disbursment = Decimal('0.00')
@@ -1333,11 +1364,34 @@ def reports(request,chama_id):
     + my_total_expenses
     )
 
-    my_contributions = Paginator(ContributionRecord.objects.filter(chama=chama,member=member).order_by('-id'),10).page(1)
+    my_contributions_data = ContributionRecord.objects.filter(chama=chama,member=member).select_related('contribution', 'member').order_by('-date_created')[:30]
+    _my_contributions = []
+    for record in my_contributions_data:
+        contrib_data = {
+            'id': record.id,
+            'date_created': record.date_created.strftime("%Y-%m-%d"),
+            'last_updated': record.last_updated.strftime("%Y-%m-%d"),
+            'amount_paid': float(record.amount_paid),
+            'balance': float(record.balance),
+            'amount_expected': float(record.amount_expected),
+            'member_id': record.member.id if record.member else None,
+            'member_name': record.member.name if record.member else 'Unknown Member',
+        }
+        
+        if record.contribution:
+            contrib_data['contribution'] = record.contribution.id
+            contrib_data['scheme_name'] = record.contribution.name
+        else:
+            contrib_data['contribution'] = None
+            contrib_data['scheme_name'] = 'No Scheme Linked'
+            
+        _my_contributions.append(contrib_data)
+    
+    my_contributions = json.dumps(_my_contributions)
+    
     tot = 0.00
-    for contribution in my_contributions:
-        tot += float(contribution.amount_paid)
-        print(contribution.amount_paid)
+    for record in my_contributions_data:
+        tot += float(record.amount_paid)
 
     contribution_schemes = Contribution.objects.filter(chama=chama).all()
 
@@ -1380,7 +1434,10 @@ def reports(request,chama_id):
         'chama_expense_reports':chama_expenses,
         'expenses_tot':expenses_tot,
         'schemes':contribution_schemes,
-        'contributions':contribution_schemes
+        'contributions':contribution_schemes,
+        'group_investments':group_investments,
+        'individual_investments':individual_investments,
+        'my_investments':my_investments
         
     }
 
@@ -1433,6 +1490,21 @@ def download_member_investment_income(request, chama_id):
 @is_user_chama_member
 def download_my_investment_income(request, chama_id):
     return DownloadService.download_my_investment_income(request, chama_id)
+
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def download_group_investments(request, chama_id):
+    return DownloadService.download_group_investments(request, chama_id)
+
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def download_individual_investments(request, chama_id):
+    return DownloadService.download_individual_investments(request, chama_id)
+
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def download_my_investments(request, chama_id):
+    return DownloadService.download_my_investments(request, chama_id)
     
 
 
