@@ -914,4 +914,42 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 </div>
 
+<!-- Test Section to Demonstrate Toggle Switch -->
+<div class="test-toggle-section" style="margin: 20px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+    <h4>Toggle Switch Test Section</h4>
+    <p>This section demonstrates the admin/member view toggle functionality:</p>
+    
+    <div class="member" style="padding: 15px; background: #e3f2fd; border-radius: 8px; margin: 10px 0;">
+        <h5>👤 Member View Content</h5>
+        <p>This content is visible when viewing as a member. Members can see basic information and perform limited actions.</p>
+        <ul>
+            <li>View contributions</li>
+            <li>Check loan status</li>
+            <li>View group reports</li>
+        </ul>
+    </div>
+    
+    <div class="admin" style="padding: 15px; background: #fff3e0; border-radius: 8px; margin: 10px 0;">
+        <h5>⚙️ Admin View Content</h5>
+        <p>This content is visible when viewing as an admin. Admins have additional privileges and can perform administrative tasks.</p>
+        <ul>
+            <li>Add/remove members</li>
+            <li>Manage group settings</li>
+            <li>Upload documents</li>
+            <li>Delete documents</li>
+            <li>View detailed reports</li>
+        </ul>
+    </div>
+    
+    <div style="margin-top: 20px; padding: 15px; background: #f1f8e9; border-radius: 8px;">
+        <h6>Toggle Switch Instructions:</h6>
+        <ol>
+            <li>Click on your profile picture in the top-right corner</li>
+            <li>Look for the "View Mode" toggle switch in the dropdown</li>
+            <li>Toggle between "Member" and "Admin" views</li>
+            <li>Notice how the content above changes based on your selected view</li>
+        </ol>
+    </div>
+</div>
+
 {% endblock %}
