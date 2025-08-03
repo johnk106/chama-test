@@ -85,6 +85,10 @@ class ContributionRecord(models.Model):
     def __str__(self):
         return f'{self.member.name} - {self.date_created}'
     
+    def fine_count(self):
+        """Return the number of times this contribution record has been fined"""
+        return self.fines.count()
+    
 
 #--------------------------------------
 class LoanType(models.Model):
@@ -201,6 +205,7 @@ class FineItem(models.Model):
     last_updated = models.DateTimeField(default=timezone.now)
     loan = models.ForeignKey(LoanItem,on_delete=models.SET_NULL,related_name = 'fines',default='',null=True)
     contribution = models.ForeignKey(Contribution,on_delete=models.SET_NULL,related_name='fines',null=True)
+    contribution_record = models.ForeignKey(ContributionRecord,on_delete=models.SET_NULL,related_name='fines',null=True,blank=True)
     forLoan = models.BooleanField(default=False, db_column='forLoan')
     forContribution = models.BooleanField(default=False, db_column='forContribution')
     contribution_balance = models.DecimalField(decimal_places=2,max_digits=10,null=True)

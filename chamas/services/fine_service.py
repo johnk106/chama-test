@@ -68,6 +68,7 @@ class FineService:
                 paid_fine_amount = 0.00,
                 fine_balance = fine.amount,
                 contribution = contribution,
+                contribution_record = contribution_item,
                 forLoan = False,
                 forContribution = True,
                 contribution_balance = Decimal(contribution_balance)

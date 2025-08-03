@@ -591,6 +591,10 @@ class ContributionService:
             contribution = Contribution.objects.get(pk=record['contribution'])
             record['contribution'] = contribution.name
             record['date_created']  = record['date_created'].strftime('%Y-%m-%d %H:%M:%S')
+            
+            # Get the actual ContributionRecord object to access the fine_count method
+            contribution_record = ContributionRecord.objects.get(pk=record['id'])
+            record['fine_count'] = contribution_record.fine_count()
         
         return {
             'page': records_page.number,

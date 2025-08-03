@@ -240,6 +240,7 @@
                                             <th>Contribution</th>
                                             <th>Amount</th>
                                             <th>Balance</th>
+                                            <th>Fines</th>
                                             <th class="admin">Actions</th>
                                         </tr>
                                     </thead>
@@ -1100,6 +1101,8 @@ $(document).ready(function () {
                          const balance = parseFloat(record.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                          const hasBalance = parseFloat(record.balance) > 0;
 
+                         const fineCount = record.fine_count || 0;
+                         
                          recordsHtml += `
                              <div class="mobile-record-card" data-record-id="${record.id}">
                                  <div class="mobile-record-header">
@@ -1114,8 +1117,22 @@ $(document).ready(function () {
                                      <div class="mobile-record-row">
                                          <span class="mobile-record-label">Balance:</span>
                                          <span class="mobile-record-value">Ksh ${balance}</span>
-                                     </div>
-                                 </div>`;
+                                     </div>`;
+                         
+                         // Add fine count to mobile view
+                         if (fineCount > 0) {
+                             recordsHtml += `
+                                     <div class="mobile-record-row">
+                                         <span class="mobile-record-label">Fines:</span>
+                                         <span class="mobile-record-value">
+                                             <span class="badge bg-warning text-dark">
+                                                 <i class='bx bx-error-circle'></i> ${fineCount} fine${fineCount > 1 ? 's' : ''}
+                                             </span>
+                                         </span>
+                                     </div>`;
+                         }
+                         
+                         recordsHtml += `</div>`;
                          
                          if (hasBalance) {
                              recordsHtml += `
@@ -1337,6 +1354,7 @@ $(document).ready(function () {
                     const contrib = record.contribution;
                     const paid = parseFloat(record.amount_paid).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                     const bal = parseFloat(record.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    const fineCount = record.fine_count || 0;
 
                     // Check if this record has a balance greater than 0
                     const hasBalance = parseFloat(record.balance) > 0;
@@ -1348,6 +1366,18 @@ $(document).ready(function () {
                             <td>${contrib}</td>
                             <td>ksh ${paid}</td>
                             <td>ksh ${bal}</td>
+                            <td>`;
+                    
+                    // Display fine count with appropriate styling
+                    if (fineCount > 0) {
+                        rowHtml += `<span class="badge bg-warning text-dark">
+                            <i class='bx bx-error-circle'></i> ${fineCount} fine${fineCount > 1 ? 's' : ''}
+                        </span>`;
+                    } else {
+                        rowHtml += `<span class="text-muted">-</span>`;
+                    }
+                    
+                    rowHtml += `</td>
                             <td class="admin">`;
                     
                     // Only show buttons if there's a balance
