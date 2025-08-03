@@ -477,42 +477,82 @@
     background: white;
     display: flex;
     border-bottom: 1px solid #e5e7eb;
-    padding: 0;
+    padding: 0 16px;
     margin: 0;
     width: 100vw;
     margin-left: calc(-50vw + 50%);
     position: relative;
-    overflow-x: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
     box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+}
+
+/* Add fade indicators for scroll areas */
+.mobile-tabs::before,
+.mobile-tabs::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.mobile-tabs::before {
+    left: 0;
+    background: linear-gradient(to right, white, transparent);
+}
+
+.mobile-tabs::after {
+    right: 0;
+    background: linear-gradient(to left, white, transparent);
 }
 
 .mobile-tabs::-webkit-scrollbar {
-    display: none;
+    height: 4px;
+}
+
+.mobile-tabs::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.mobile-tabs::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 2px;
+}
+
+.mobile-tabs::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
 }
 
 .tab-btn {
-    flex: 1;
+    flex: none;
     background: #ffffff;
     border: none;
-    padding: 8px 4px;
-    font-size: 11px;
-    font-weight: 700;
+    padding: 12px 20px;
+    font-size: 13px;
+    font-weight: 600;
     color: #1f2937;
     border-bottom: 3px solid transparent;
     cursor: pointer;
     transition: all 0.2s;
-    white-space: normal;
-    min-width: 0;
+    white-space: nowrap;
+    min-width: 120px;
     text-align: center;
-    line-height: 1.1;
-    word-break: break-word;
-    min-height: 50px;
+    line-height: 1.2;
+    min-height: 54px;
     display: flex;
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    border-left: 1px solid #e5e7eb;
+    border-right: 1px solid #e5e7eb;
+    margin-right: 4px;
 }
 
 .tab-btn:hover {
@@ -885,51 +925,73 @@
     }
     
     /* Responsive tabs for smaller screens */
+    .mobile-tabs {
+        padding: 0 12px;
+    }
+    
     .tab-btn {
-        font-size: 10px;
-        padding: 6px 1px;
-        min-height: 45px;
+        font-size: 12px;
+        padding: 10px 16px;
+        min-width: 100px;
+        min-height: 50px;
+        margin-right: 3px;
     }
 }
 
 @media (max-width: 480px) {
     .mobile-tabs {
-        height: auto;
-        min-height: 50px;
+        padding: 0 8px;
     }
     
     .tab-btn {
-        font-size: 9px;
-        padding: 4px 1px;
-        min-height: 50px;
-        line-height: 1.0;
-        font-weight: 700;
+        font-size: 11px;
+        padding: 8px 12px;
+        min-width: 80px;
+        min-height: 48px;
+        margin-right: 2px;
     }
 }
 
 @media (max-width: 360px) {
+    .mobile-tabs {
+        padding: 0 4px;
+    }
+    
     .tab-btn {
-        font-size: 8px;
-        padding: 3px 0px;
-        min-height: 48px;
-        font-weight: 700;
+        font-size: 10px;
+        padding: 6px 10px;
+        min-width: 70px;
+        min-height: 46px;
+        margin-right: 1px;
     }
 }
 
 @media (min-width: 769px) {
     /* For larger screens, allow tabs to be more spacious */
+    .mobile-tabs {
+        padding: 0 20px;
+    }
+    
     .tab-btn {
-        padding: 12px 8px;
-        font-size: 13px;
-        min-height: 55px;
+        padding: 14px 24px;
+        font-size: 14px;
+        min-width: 140px;
+        min-height: 58px;
+        margin-right: 6px;
     }
 }
 
 @media (min-width: 992px) {
+    .mobile-tabs {
+        padding: 0 24px;
+    }
+    
     .tab-btn {
-        padding: 16px 12px;
-        font-size: 14px;
-        min-height: 60px;
+        padding: 16px 28px;
+        font-size: 15px;
+        min-width: 160px;
+        min-height: 62px;
+        margin-right: 8px;
     }
 }
 
@@ -1030,9 +1092,10 @@ body .main-content .page-content:has(.modern-fines),
 
 /* Ensure tabs have consistent styling */
 .mobile-tabs .tab-btn:first-child {
-    border-left: none;
+    margin-left: 0;
 }
 
 .mobile-tabs .tab-btn:last-child {
-    border-right: 1px solid #e5e7eb;
+    margin-right: 0;
+    border-right: none;
 }
