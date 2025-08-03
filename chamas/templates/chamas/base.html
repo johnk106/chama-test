@@ -289,21 +289,14 @@
             <i class='bx bx-chevron-down' data-bs-toggle="dropdown" aria-expanded="false"></i>
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="{% url 'Setting' %}">My Profile</a></li>
-              <li class="dropdown-item view-switch-container">
-                <div class="view-switch-wrapper">
-                  <span class="view-switch-title">View Mode</span>
-                  <div class="view-switch">
-                    <input type="checkbox" class="view-switch-input" aria-hidden="true">
-                    <div class="view-switch-track">
-                      <div class="view-switch-knob">
-                        <div class="knob-icon member-icon">👤</div>
-                        <div class="knob-icon admin-icon">⚙️</div>
-                      </div>
-                      <div class="view-switch-labels">
-                        <span class="switch-label switch-label-member">Member</span>
-                        <span class="switch-label switch-label-admin">Admin</span>
-                      </div>
-                    </div>
+              <li class="dropdown-item">
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="me-3">View Mode</span>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="viewToggle">
+                    <label class="form-check-label" for="viewToggle">
+                      <small class="text-muted">Member</small>
+                    </label>
                   </div>
                 </div>
               </li>
@@ -338,21 +331,14 @@
             <i class='bx bx-chevron-down' data-bs-toggle="dropdown" aria-expanded="false"></i>
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="{% url 'Setting' %}">My Profile</a></li>
-              <li class="dropdown-item view-switch-container">
-                <div class="view-switch-wrapper">
-                  <span class="view-switch-title">View Mode</span>
-                  <div class="view-switch">
-                    <input type="checkbox" class="view-switch-input" aria-hidden="true">
-                    <div class="view-switch-track">
-                      <div class="view-switch-knob">
-                        <div class="knob-icon member-icon">👤</div>
-                        <div class="knob-icon admin-icon">⚙️</div>
-                      </div>
-                      <div class="view-switch-labels">
-                        <span class="switch-label switch-label-member">Member</span>
-                        <span class="switch-label switch-label-admin">Admin</span>
-                      </div>
-                    </div>
+              <li class="dropdown-item">
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="me-3">View Mode</span>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="viewToggleDesktop">
+                    <label class="form-check-label" for="viewToggleDesktop">
+                      <small class="text-muted">Member</small>
+                    </label>
                   </div>
                 </div>
               </li>
@@ -688,19 +674,16 @@ $(document).ready(function() {
   $(".admin, #remove-user, #add-member-button").hide();
   
   // 2.1) IMMEDIATELY disable the view switch for all users until verified
-  $(".view-switch").addClass('disabled');
-  $(".view-switch-input").prop('disabled', true);
+  $("#viewToggle, #viewToggleDesktop").prop('disabled', true);
 
   // 3) Initialize the switch state based on savedView
   if (savedView === "member") {
     // If last‐saved was member, set switch to member position
-    $(".view-switch-input").prop('checked', false);
-    $(".view-switch").attr('aria-checked', 'false');
+    $("#viewToggle, #viewToggleDesktop").prop('checked', false);
   } else {
     // savedView is "admin" (user clicked admin on a previous page).
     // Set switch to admin position but keep disabled until verified
-    $(".view-switch-input").prop('checked', true);
-    $(".view-switch").attr('aria-checked', 'true');
+    $("#viewToggle, #viewToggleDesktop").prop('checked', true);
   }
 
   // 4) Now call the server to see "am I admin in this group?"
@@ -713,8 +696,7 @@ $(document).ready(function() {
       if (data.role !== "admin" || data.error) {
         // Force member mode, keep switch disabled
         savedView = "member";
-        $(".view-switch-input").prop('checked', false).prop('disabled', true);
-        $(".view-switch").attr('aria-checked', 'false').addClass('disabled');
+        $("#viewToggle, #viewToggleDesktop").prop('checked', false).prop('disabled', true);
         // Re‐apply member‐only UI
         updateView("member");
         // Overwrite localStorage in case it was "admin" before
@@ -726,41 +708,30 @@ $(document).ready(function() {
         }
       } else {
         // I am admin. Enable the switch now
-        $(".view-switch").removeClass('disabled');
-        $(".view-switch-input").prop('disabled', false);
+        $("#viewToggle, #viewToggleDesktop").prop('disabled', false);
 
         // If they had last‐saved "admin," now we can safely flip on admin features:
         if (savedView === "admin") {
           updateView("admin");
-          $(".view-switch-input").prop('checked', true);
-          $(".view-switch").attr('aria-checked', 'true');
+          $("#viewToggle, #viewToggleDesktop").prop('checked', true);
         } else {
           // They last‐saved "member," so keep member view
           updateView("member");
-          $(".view-switch-input").prop('checked', false);
-          $(".view-switch").attr('aria-checked', 'false');
+          $("#viewToggle, #viewToggleDesktop").prop('checked', false);
         }
       }
     },
     error: function() {
       // If the AJAX fails, disable switch and stay in member view.
-      $(".view-switch-input").prop('checked', false).prop('disabled', true);
-      $(".view-switch").attr('aria-checked', 'false').addClass('disabled');
+      $("#viewToggle, #viewToggleDesktop").prop('checked', false).prop('disabled', true);
       updateView("member");
       localStorage.setItem(storageKey, "member");
     }
   });
 
   // 5) Switch handler: whenever they toggle the switch, re‐verify if necessary
-  $(".view-switch-input").on("change", function() {
+  $("#viewToggle, #viewToggleDesktop").on("change", function() {
     var isAdminView = $(this).is(':checked');
-    var switchElement = $(this).closest('.view-switch');
-
-    // Add visual feedback
-    switchElement.addClass('switching');
-    setTimeout(function() {
-      switchElement.removeClass('switching');
-    }, 400);
 
     if (isAdminView) {
       // If they toggle to admin, do one more AJAX check:
@@ -772,27 +743,21 @@ $(document).ready(function() {
           if (data.role === "admin") {
             // OK, they really are an admin: flip on admin mode
             updateView("admin");
-            $(".view-switch-input").prop('checked', true);
-            $(".view-switch").attr('aria-checked', 'true');
+            $("#viewToggle, #viewToggleDesktop").prop('checked', true);
             localStorage.setItem(storageKey, "admin");
-            
-            // Add success feedback
-            showSwitchFeedback("Admin mode activated", "success");
           } else {
             // Not an admin—show alert and revert to member
-            showSwitchFeedback("You don't have admin permissions", "error");
+            alert("You don't have admin permissions");
             updateView("member");
-            $(".view-switch-input").prop('checked', false);
-            $(".view-switch").attr('aria-checked', 'false');
+            $("#viewToggle, #viewToggleDesktop").prop('checked', false);
             localStorage.setItem(storageKey, "member");
           }
         },
         error: function() {
           // If AJAX fails, revert to member mode
-          showSwitchFeedback("Unable to verify permissions", "error");
+          alert("Unable to verify permissions");
           updateView("member");
-          $(".view-switch-input").prop('checked', false);
-          $(".view-switch").attr('aria-checked', 'false');
+          $("#viewToggle, #viewToggleDesktop").prop('checked', false);
           localStorage.setItem(storageKey, "member");
         }
       });
@@ -800,53 +765,10 @@ $(document).ready(function() {
     } else {
       // They toggled to member—just switch immediately (no need to re‐verify)
       updateView("member");
-      $(".view-switch-input").prop('checked', false);
-      $(".view-switch").attr('aria-checked', 'false');
+      $("#viewToggle, #viewToggleDesktop").prop('checked', false);
       localStorage.setItem(storageKey, "member");
-      
-      // Add feedback
-      showSwitchFeedback("Member mode activated", "success");
     }
   });
-
-  // 6) Enhanced keyboard accessibility for the switch
-  $(".view-switch").on("keydown", function(e) {
-    if (e.key === " " || e.key === "Enter") {
-      e.preventDefault();
-      var input = $(this).find('.view-switch-input');
-      if (!input.prop('disabled')) {
-        input.prop('checked', !input.prop('checked')).trigger('change');
-      }
-    }
-  });
-
-  // 7) Click handler for the entire switch area
-  $(".view-switch").on("click", function(e) {
-    if (!$(this).hasClass('disabled')) {
-      var input = $(this).find('.view-switch-input');
-      input.prop('checked', !input.prop('checked')).trigger('change');
-    }
-  });
-
-  // 8) Function to show switch feedback
-  function showSwitchFeedback(message, type) {
-    // Create feedback element
-    var feedback = $('<div class="switch-feedback ' + type + '">' + message + '</div>');
-    $('body').append(feedback);
-    
-    // Show feedback
-    setTimeout(function() {
-      feedback.addClass('show');
-    }, 10);
-    
-    // Remove feedback after 3 seconds
-    setTimeout(function() {
-      feedback.removeClass('show');
-      setTimeout(function() {
-        feedback.remove();
-      }, 300);
-    }, 3000);
-  }
 
   // 7) show/hide logic for each view
   function updateView(view) {

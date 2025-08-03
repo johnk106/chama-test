@@ -324,354 +324,41 @@ html, body,
 }
 
 /* ================================
-   BEAUTIFUL VIEW SWITCH STYLES
+   BOOTSTRAP FORM SWITCH STYLES
    ================================ */
 
-.view-switch-container {
-  padding: 16px !important;
-  border-bottom: 1px solid rgba(33, 145, 165, 0.1) !important;
-}
-
-.view-switch-wrapper {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 12px !important;
-}
-
-.view-switch-title {
-  font-size: 13px !important;
-  font-weight: 600 !important;
-  color: #495057 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.5px !important;
+/* Custom styling for Bootstrap form-switch */
+.form-check.form-switch {
   margin: 0 !important;
 }
 
-.view-switch {
-  position: relative !important;
-  display: inline-block !important;
+.form-check-input {
   cursor: pointer !important;
-  user-select: none !important;
-  outline: none !important;
-  transition: all 0.2s ease !important;
 }
 
-.view-switch:focus {
-  outline: 2px solid #2191a5 !important;
-  outline-offset: 4px !important;
-  border-radius: 8px !important;
+.form-check-input:checked {
+  background-color: #2191a5 !important;
+  border-color: #2191a5 !important;
 }
 
-.view-switch-input {
-  position: absolute !important;
-  opacity: 0 !important;
-  width: 1px !important;
-  height: 1px !important;
-  margin: -1px !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-  clip: rect(0, 0, 0, 0) !important;
-  white-space: nowrap !important;
-  border: 0 !important;
+.form-check-input:focus {
+  border-color: #2191a5 !important;
+  box-shadow: 0 0 0 0.25rem rgba(33, 145, 165, 0.25) !important;
 }
 
-.view-switch-track {
-  position: relative !important;
-  display: flex !important;
-  align-items: center !important;
-  width: 140px !important;
-  height: 44px !important;
-  background: linear-gradient(145deg, #f8f9fa 0%, #e9ecef 50%, #dee2e6 100%) !important;
-  border-radius: 22px !important;
-  padding: 3px !important;
-  box-shadow: 
-    inset 0 2px 4px rgba(0, 0, 0, 0.1),
-    0 2px 8px rgba(0, 0, 0, 0.1),
-    0 0 0 1px rgba(33, 145, 165, 0.1) !important;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  overflow: hidden !important;
-}
-
-.view-switch:hover .view-switch-track {
-  background: linear-gradient(145deg, #e9ecef 0%, #dee2e6 50%, #ced4da 100%) !important;
-  box-shadow: 
-    inset 0 2px 4px rgba(0, 0, 0, 0.15),
-    0 4px 12px rgba(0, 0, 0, 0.15),
-    0 0 0 1px rgba(33, 145, 165, 0.2) !important;
-  transform: translateY(-1px) !important;
-}
-
-.view-switch-knob {
-  position: absolute !important;
-  top: 3px !important;
-  left: 3px !important;
-  width: 68px !important;
-  height: 38px !important;
-  background: linear-gradient(145deg, #2191a5 0%, #1a7589 50%, #0f5f73 100%) !important;
-  border-radius: 19px !important;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  box-shadow: 
-    0 4px 12px rgba(33, 145, 165, 0.4),
-    0 2px 6px rgba(0, 0, 0, 0.2),
-    inset 0 1px 2px rgba(255, 255, 255, 0.2) !important;
-  z-index: 2 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-
-.view-switch-input:checked ~ .view-switch-track .view-switch-knob {
-  transform: translateX(66px) !important;
-  background: linear-gradient(145deg, #28a745 0%, #20c997 50%, #1e7e34 100%) !important;
-  box-shadow: 
-    0 4px 12px rgba(40, 167, 69, 0.4),
-    0 2px 6px rgba(0, 0, 0, 0.2),
-    inset 0 1px 2px rgba(255, 255, 255, 0.2) !important;
-}
-
-.knob-icon {
-  position: absolute !important;
-  font-size: 16px !important;
-  transition: all 0.3s ease !important;
-  opacity: 0.8 !important;
-}
-
-.knob-icon.member-icon {
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  opacity: 1 !important;
-}
-
-.knob-icon.admin-icon {
-  right: 50% !important;
-  transform: translateX(50%) !important;
-  opacity: 0 !important;
-}
-
-.view-switch-input:checked ~ .view-switch-track .knob-icon.member-icon {
-  opacity: 0 !important;
-}
-
-.view-switch-input:checked ~ .view-switch-track .knob-icon.admin-icon {
-  opacity: 1 !important;
-}
-
-.view-switch-labels {
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  padding: 0 12px !important;
-  pointer-events: none !important;
-}
-
-.switch-label {
-  font-size: 11px !important;
-  font-weight: 700 !important;
+.form-check-label {
+  cursor: pointer !important;
+  font-size: 12px !important;
   color: #6c757d !important;
-  transition: all 0.3s ease !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.8px !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
-}
-
-.switch-label-member {
-  color: #2191a5 !important;
-  opacity: 1 !important;
-}
-
-.switch-label-admin {
-  color: #6c757d !important;
-  opacity: 0.6 !important;
-}
-
-.view-switch-input:checked ~ .view-switch-track .switch-label-member {
-  color: #6c757d !important;
-  opacity: 0.6 !important;
-}
-
-.view-switch-input:checked ~ .view-switch-track .switch-label-admin {
-  color: #28a745 !important;
-  opacity: 1 !important;
-}
-
-/* Enhanced hover effects */
-.view-switch:hover .view-switch-knob {
-  box-shadow: 
-    0 6px 16px rgba(33, 145, 165, 0.5),
-    0 3px 8px rgba(0, 0, 0, 0.3),
-    inset 0 1px 2px rgba(255, 255, 255, 0.3) !important;
-  transform: scale(1.02) !important;
-}
-
-.view-switch-input:checked ~ .view-switch-track:hover .view-switch-knob {
-  box-shadow: 
-    0 6px 16px rgba(40, 167, 69, 0.5),
-    0 3px 8px rgba(0, 0, 0, 0.3),
-    inset 0 1px 2px rgba(255, 255, 255, 0.3) !important;
 }
 
 /* Disabled state */
-.view-switch.disabled {
-  opacity: 0.5 !important;
+.form-check-input:disabled {
+  opacity: 0.6 !important;
   cursor: not-allowed !important;
 }
 
-.view-switch.disabled .view-switch-track {
-  background: #f8f9fa !important;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
-}
-
-.view-switch.disabled .view-switch-knob {
-  background: #adb5bd !important;
-  box-shadow: none !important;
-  transform: none !important;
-}
-
-.view-switch.disabled:hover .view-switch-track {
-  transform: none !important;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .view-switch-track {
-    width: 120px !important;
-    height: 38px !important;
-  }
-  
-  .view-switch-knob {
-    width: 58px !important;
-    height: 32px !important;
-  }
-  
-  .view-switch-input:checked ~ .view-switch-track .view-switch-knob {
-    transform: translateX(56px) !important;
-  }
-  
-  .switch-label {
-    font-size: 10px !important;
-    letter-spacing: 0.6px !important;
-  }
-  
-  .knob-icon {
-    font-size: 14px !important;
-  }
-  
-  .view-switch-labels {
-    padding: 0 10px !important;
-  }
-}
-
-/* Animation for state changes */
-@keyframes switchPulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
-
-.view-switch-input:checked ~ .view-switch-track .view-switch-knob {
-  animation: switchPulse 0.3s ease-out !important;
-}
-
-/* Switching state animation */
-.view-switch.switching .view-switch-track {
-  animation: switchGlow 0.4s ease-in-out !important;
-}
-
-@keyframes switchGlow {
-  0% { box-shadow: 
-    inset 0 2px 4px rgba(0, 0, 0, 0.1),
-    0 2px 8px rgba(0, 0, 0, 0.1),
-    0 0 0 1px rgba(33, 145, 165, 0.1); }
-  50% { box-shadow: 
-    inset 0 2px 4px rgba(0, 0, 0, 0.1),
-    0 4px 16px rgba(33, 145, 165, 0.3),
-    0 0 0 2px rgba(33, 145, 165, 0.3); }
-  100% { box-shadow: 
-    inset 0 2px 4px rgba(0, 0, 0, 0.1),
-    0 2px 8px rgba(0, 0, 0, 0.1),
-    0 0 0 1px rgba(33, 145, 165, 0.1); }
-}
-
-/* Switch feedback notifications */
-.switch-feedback {
-  position: fixed !important;
-  top: 20px !important;
-  right: 20px !important;
-  padding: 12px 20px !important;
-  border-radius: 8px !important;
-  font-size: 14px !important;
-  font-weight: 500 !important;
-  color: white !important;
-  z-index: 9999 !important;
-  transform: translateX(100%) !important;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-  max-width: 300px !important;
-}
-
-.switch-feedback.show {
-  transform: translateX(0) !important;
-}
-
-.switch-feedback.success {
-  background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
-  border-left: 4px solid #1e7e34 !important;
-}
-
-.switch-feedback.error {
-  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
-  border-left: 4px solid #bd2130 !important;
-}
-
-/* Enhanced hover effects with ripple */
-.view-switch {
-  position: relative !important;
-  overflow: hidden !important;
-}
-
-.view-switch::before {
-  content: '' !important;
-  position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
-  width: 0 !important;
-  height: 0 !important;
-  border-radius: 50% !important;
-  background: rgba(33, 145, 165, 0.2) !important;
-  transform: translate(-50%, -50%) !important;
-  transition: width 0.6s, height 0.6s !important;
-  z-index: 1 !important;
-}
-
-.view-switch:active::before {
-  width: 200px !important;
-  height: 200px !important;
-}
-
-/* Focus ring animation */
-.view-switch:focus {
-  outline: none !important;
-}
-
-.view-switch:focus::after {
-  content: '' !important;
-  position: absolute !important;
-  top: -4px !important;
-  left: -4px !important;
-  right: -4px !important;
-  bottom: -4px !important;
-  border: 2px solid #2191a5 !important;
-  border-radius: 26px !important;
-  animation: focusRing 0.3s ease-out !important;
-  z-index: 0 !important;
-}
-
-@keyframes focusRing {
-  0% { transform: scale(0.8); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+.form-check-input:disabled + .form-check-label {
+  cursor: not-allowed !important;
+  opacity: 0.6 !important;
 }
