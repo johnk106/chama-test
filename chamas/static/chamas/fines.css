@@ -477,7 +477,7 @@
     background: white;
     display: flex;
     border-bottom: 1px solid #e5e7eb;
-    padding: 0 16px;
+    padding: 0 20px;
     margin: 0;
     width: 100vw;
     margin-left: calc(-50vw + 50%);
@@ -489,6 +489,7 @@
     scrollbar-color: #cbd5e1 transparent;
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
+    gap: 0;
 }
 
 /* Add fade indicators for scroll areas */
@@ -498,19 +499,19 @@
     position: absolute;
     top: 0;
     bottom: 0;
-    width: 20px;
+    width: 30px;
     pointer-events: none;
     z-index: 2;
 }
 
 .mobile-tabs::before {
     left: 0;
-    background: linear-gradient(to right, white, transparent);
+    background: linear-gradient(to right, white 0%, rgba(255,255,255,0.8) 50%, transparent 100%);
 }
 
 .mobile-tabs::after {
     right: 0;
-    background: linear-gradient(to left, white, transparent);
+    background: linear-gradient(to left, white 0%, rgba(255,255,255,0.8) 50%, transparent 100%);
 }
 
 .mobile-tabs::-webkit-scrollbar {
@@ -534,7 +535,7 @@
     flex: none;
     background: #ffffff;
     border: none;
-    padding: 12px 20px;
+    padding: 12px 24px;
     font-size: 13px;
     font-weight: 600;
     color: #1f2937;
@@ -542,7 +543,7 @@
     cursor: pointer;
     transition: all 0.2s;
     white-space: nowrap;
-    min-width: 120px;
+    min-width: 140px;
     text-align: center;
     line-height: 1.2;
     min-height: 54px;
@@ -552,7 +553,8 @@
     box-sizing: border-box;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     border-right: 1px solid #e5e7eb;
-    margin-right: 4px;
+    margin-right: 12px;
+    border-radius: 8px 8px 0 0;
 }
 
 .tab-btn:hover {
@@ -926,72 +928,72 @@
     
     /* Responsive tabs for smaller screens */
     .mobile-tabs {
-        padding: 0 12px;
+        padding: 0 16px;
     }
     
     .tab-btn {
         font-size: 12px;
-        padding: 10px 16px;
-        min-width: 100px;
+        padding: 10px 20px;
+        min-width: 120px;
         min-height: 50px;
-        margin-right: 3px;
+        margin-right: 10px;
     }
 }
 
 @media (max-width: 480px) {
     .mobile-tabs {
-        padding: 0 8px;
+        padding: 0 12px;
     }
     
     .tab-btn {
         font-size: 11px;
-        padding: 8px 12px;
-        min-width: 80px;
+        padding: 8px 16px;
+        min-width: 100px;
         min-height: 48px;
-        margin-right: 2px;
+        margin-right: 8px;
     }
 }
 
 @media (max-width: 360px) {
     .mobile-tabs {
-        padding: 0 4px;
+        padding: 0 8px;
     }
     
     .tab-btn {
         font-size: 10px;
-        padding: 6px 10px;
-        min-width: 70px;
+        padding: 6px 12px;
+        min-width: 85px;
         min-height: 46px;
-        margin-right: 1px;
+        margin-right: 6px;
     }
 }
 
 @media (min-width: 769px) {
     /* For larger screens, allow tabs to be more spacious */
     .mobile-tabs {
-        padding: 0 20px;
+        padding: 0 24px;
     }
     
     .tab-btn {
-        padding: 14px 24px;
+        padding: 14px 28px;
         font-size: 14px;
-        min-width: 140px;
+        min-width: 160px;
         min-height: 58px;
-        margin-right: 6px;
+        margin-right: 16px;
     }
 }
 
 @media (min-width: 992px) {
     .mobile-tabs {
-        padding: 0 24px;
+        padding: 0 28px;
     }
     
     .tab-btn {
-        padding: 16px 28px;
+        padding: 16px 32px;
         font-size: 15px;
-        min-width: 160px;
+        min-width: 180px;
         min-height: 62px;
-        margin-right: 8px;
+        margin-right: 20px;
     }
 }
 
@@ -1096,6 +1098,6 @@ body .main-content .page-content:has(.modern-fines),
 }
 
 .mobile-tabs .tab-btn:last-child {
-    margin-right: 0;
+    margin-right: 20px;
     border-right: none;
 }
