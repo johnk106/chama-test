@@ -483,8 +483,11 @@
     margin-left: calc(-50vw + 50%);
     position: relative;
     overflow-x: auto;
+    overflow-y: hidden;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
 }
 
 .mobile-tabs::-webkit-scrollbar {
@@ -492,10 +495,10 @@
 }
 
 .tab-btn {
-    flex: 1;
+    flex: none;
     background: none;
     border: none;
-    padding: 16px 8px;
+    padding: 16px 12px;
     font-size: 14px;
     font-weight: 500;
     color: #9ca3af;
@@ -503,7 +506,7 @@
     cursor: pointer;
     transition: all 0.2s;
     white-space: nowrap;
-    min-width: 0;
+    min-width: fit-content;
 }
 
 .tab-btn:hover {
@@ -515,6 +518,21 @@
     color: #2291A5;
     border-bottom-color: #2291A5;
     background: rgba(34, 145, 165, 0.05);
+}
+
+/* Additional responsive improvements for mobile tabs */
+@media (max-width: 480px) {
+    .tab-btn {
+        padding: 12px 10px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 360px) {
+    .tab-btn {
+        padding: 10px 8px;
+        font-size: 12px;
+    }
 }
 
 /* Tab content */
