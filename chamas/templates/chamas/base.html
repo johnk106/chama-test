@@ -290,14 +290,22 @@
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="{% url 'Setting' %}">My Profile</a></li>
               <li class="dropdown-item view-switch-container">
-                <label class="view-switch" role="switch" aria-checked="false" tabindex="0">
-                  <input type="checkbox" class="view-switch-input" aria-hidden="true">
-                  <span class="view-switch-track">
-                    <span class="view-switch-knob"></span>
-                    <span class="view-switch-label view-switch-label-member">Member</span>
-                    <span class="view-switch-label view-switch-label-admin">Admin</span>
-                  </span>
-                </label>
+                <div class="view-switch-wrapper">
+                  <span class="view-switch-title">View Mode</span>
+                  <div class="view-switch">
+                    <input type="checkbox" class="view-switch-input" aria-hidden="true">
+                    <div class="view-switch-track">
+                      <div class="view-switch-knob">
+                        <div class="knob-icon member-icon">👤</div>
+                        <div class="knob-icon admin-icon">⚙️</div>
+                      </div>
+                      <div class="view-switch-labels">
+                        <span class="switch-label switch-label-member">Member</span>
+                        <span class="switch-label switch-label-admin">Admin</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </li>
               <li><a class="dropdown-item" href="#">My Groups</a></li>
             </ul>
@@ -331,14 +339,22 @@
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="{% url 'Setting' %}">My Profile</a></li>
               <li class="dropdown-item view-switch-container">
-                <label class="view-switch" role="switch" aria-checked="false" tabindex="0">
-                  <input type="checkbox" class="view-switch-input" aria-hidden="true">
-                  <span class="view-switch-track">
-                    <span class="view-switch-knob"></span>
-                    <span class="view-switch-label view-switch-label-member">Member</span>
-                    <span class="view-switch-label view-switch-label-admin">Admin</span>
-                  </span>
-                </label>
+                <div class="view-switch-wrapper">
+                  <span class="view-switch-title">View Mode</span>
+                  <div class="view-switch">
+                    <input type="checkbox" class="view-switch-input" aria-hidden="true">
+                    <div class="view-switch-track">
+                      <div class="view-switch-knob">
+                        <div class="knob-icon member-icon">👤</div>
+                        <div class="knob-icon admin-icon">⚙️</div>
+                      </div>
+                      <div class="view-switch-labels">
+                        <span class="switch-label switch-label-member">Member</span>
+                        <span class="switch-label switch-label-admin">Admin</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </li>
               <li><a class="dropdown-item" href="#">My Groups</a></li>
             </ul>
@@ -738,6 +754,13 @@ $(document).ready(function() {
   // 5) Switch handler: whenever they toggle the switch, re‐verify if necessary
   $(".view-switch-input").on("change", function() {
     var isAdminView = $(this).is(':checked');
+    var switchElement = $(this).closest('.view-switch');
+
+    // Add visual feedback
+    switchElement.addClass('switching');
+    setTimeout(function() {
+      switchElement.removeClass('switching');
+    }, 400);
 
     if (isAdminView) {
       // If they toggle to admin, do one more AJAX check:
@@ -752,9 +775,12 @@ $(document).ready(function() {
             $(".view-switch-input").prop('checked', true);
             $(".view-switch").attr('aria-checked', 'true');
             localStorage.setItem(storageKey, "admin");
+            
+            // Add success feedback
+            showSwitchFeedback("Admin mode activated", "success");
           } else {
             // Not an admin—show alert and revert to member
-            alert("You don't have permission to view as admin here.");
+            showSwitchFeedback("You don't have admin permissions", "error");
             updateView("member");
             $(".view-switch-input").prop('checked', false);
             $(".view-switch").attr('aria-checked', 'false');
@@ -763,7 +789,7 @@ $(document).ready(function() {
         },
         error: function() {
           // If AJAX fails, revert to member mode
-          alert("Unable to verify your role. Showing member view.");
+          showSwitchFeedback("Unable to verify permissions", "error");
           updateView("member");
           $(".view-switch-input").prop('checked', false);
           $(".view-switch").attr('aria-checked', 'false');
@@ -777,10 +803,13 @@ $(document).ready(function() {
       $(".view-switch-input").prop('checked', false);
       $(".view-switch").attr('aria-checked', 'false');
       localStorage.setItem(storageKey, "member");
+      
+      // Add feedback
+      showSwitchFeedback("Member mode activated", "success");
     }
   });
 
-  // 6) Keyboard accessibility for the switch
+  // 6) Enhanced keyboard accessibility for the switch
   $(".view-switch").on("keydown", function(e) {
     if (e.key === " " || e.key === "Enter") {
       e.preventDefault();
@@ -790,6 +819,34 @@ $(document).ready(function() {
       }
     }
   });
+
+  // 7) Click handler for the entire switch area
+  $(".view-switch").on("click", function(e) {
+    if (!$(this).hasClass('disabled')) {
+      var input = $(this).find('.view-switch-input');
+      input.prop('checked', !input.prop('checked')).trigger('change');
+    }
+  });
+
+  // 8) Function to show switch feedback
+  function showSwitchFeedback(message, type) {
+    // Create feedback element
+    var feedback = $('<div class="switch-feedback ' + type + '">' + message + '</div>');
+    $('body').append(feedback);
+    
+    // Show feedback
+    setTimeout(function() {
+      feedback.addClass('show');
+    }, 10);
+    
+    // Remove feedback after 3 seconds
+    setTimeout(function() {
+      feedback.removeClass('show');
+      setTimeout(function() {
+        feedback.remove();
+      }, 300);
+    }, 3000);
+  }
 
   // 7) show/hide logic for each view
   function updateView(view) {
