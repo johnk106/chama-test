@@ -833,6 +833,17 @@
                             <label for="Amount" class="form-label">Amount</label>
                             <input type="number" name="amount" class="form-control" id="amount" required>
                         </div>
+                        
+                        <div class="mb-3">
+                            <label for="owner" class="form-label">Owner</label>
+                            <select id="owner" class="form-control" name="owner" required>
+                                <option value="" disabled selected>Select Owner</option>
+                                <option value="group">Group</option>
+                                {%for member in members%}
+                                <option value="{{member.id}}" class="text-capitalize">{{member.name}}</option>
+                                {%endfor%}
+                            </select>
+                        </div>
                     </div>
 
                     <button type="submit" class="btn btn-primary border-0" style="width: 100%;">Create Investment</button>

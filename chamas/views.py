@@ -1305,7 +1305,7 @@ def reports(request,chama_id):
         investment['amount'] = float(investment['amount'])
     group_investments = json.dumps(_group_investments)
     
-    individual_investments = Paginator(Investment.objects.filter(chama=chama,forGroup=False).order_by('-date').all(),10).page(1)
+    individual_investments = Paginator(Investment.objects.filter(chama=chama,forGroup=False).select_related('owner').order_by('-date').all(),10).page(1)
     _individual_investments = list(individual_investments.object_list.values())
     for investment in _individual_investments:
         investment['date'] = investment['date'].strftime('%Y-%m-%d')
@@ -1316,7 +1316,7 @@ def reports(request,chama_id):
             o = ChamaMember.objects.get(pk=int(investment['owner_id']))
             investment['owner_id'] = o.name
         except:
-            pass
+            investment['owner_id'] = 'Unknown Member'
     individual_investments = json.dumps(_individual_investments)
     
     my_investments = Paginator(Investment.objects.filter(chama=chama,owner=member).order_by('-date').all(),10).page(1)

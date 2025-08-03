@@ -59,16 +59,32 @@ class FinanceService:
         name = data.get('name')
         amount = data.get('amount')
         date = data.get('date')
+        owner = data.get('owner')
 
         chama = Chama.objects.get(pk=chama_id)
 
         try:
-            new_investment = Investment.objects.create(
-                name = name,
-                amount = amount,
-                chama = chama,
-                user_date = date
-            )
+            if owner == 'group':
+                forGroup = True
+                new_investment = Investment.objects.create(
+                    name = name,
+                    amount = amount,
+                    chama = chama,
+                    user_date = date,
+                    forGroup = forGroup
+                )
+            else:
+                forGroup = False
+                owner_member = ChamaMember.objects.get(pk=int(owner))
+                new_investment = Investment.objects.create(
+                    name = name,
+                    amount = amount,
+                    chama = chama,
+                    user_date = date,
+                    owner = owner_member,
+                    forGroup = forGroup
+                )
+            
             data = {
                 'status':'success',
                 'message':'New investment created succesfully',

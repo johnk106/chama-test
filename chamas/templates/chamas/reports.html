@@ -2001,6 +2001,166 @@ function calculateAndDisplayTotals() {
             }
         }
     }
+
+    // Member Investment Income totals
+    if (reportData.memberInvestmentIncomes.length > 0) {
+        const total = reportData.memberInvestmentIncomes.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+        const container = document.getElementById('member-investment-income-items');
+        if (container) {
+            const existingTable = container.querySelector('.brand-table-responsive');
+            if (existingTable) {
+                const totalsDiv = document.createElement('div');
+                totalsDiv.className = 'summary-cards';
+                totalsDiv.innerHTML = `
+                    <div class="summary-card">
+                        <h4 class="summary-title">Total Member Investment Income</h4>
+                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                    </div>
+                `;
+                container.appendChild(totalsDiv);
+            }
+        }
+    }
+
+    // My Investment Income totals
+    if (reportData.myReports.length > 0) {
+        const total = reportData.myReports.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+        const container = document.getElementById('my-income-items');
+        if (container) {
+            const existingTable = container.querySelector('.brand-table-responsive');
+            if (existingTable) {
+                const totalsDiv = document.createElement('div');
+                totalsDiv.className = 'summary-cards';
+                totalsDiv.innerHTML = `
+                    <div class="summary-card">
+                        <h4 class="summary-title">Total My Investment Income</h4>
+                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                    </div>
+                `;
+                container.appendChild(totalsDiv);
+            }
+        }
+    }
+
+    // Individual Investments totals
+    if (reportData.individualInvestments.length > 0) {
+        const total = reportData.individualInvestments.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+        const container = document.getElementById('individual-investments-items');
+        if (container) {
+            const existingTable = container.querySelector('.brand-table-responsive');
+            if (existingTable) {
+                const totalsDiv = document.createElement('div');
+                totalsDiv.className = 'summary-cards';
+                totalsDiv.innerHTML = `
+                    <div class="summary-card">
+                        <h4 class="summary-title">Total Individual Investments</h4>
+                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                    </div>
+                `;
+                container.appendChild(totalsDiv);
+            }
+        }
+    }
+
+    // My Investments totals
+    if (reportData.myInvestments.length > 0) {
+        const total = reportData.myInvestments.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+        const container = document.getElementById('my-investments-items');
+        if (container) {
+            const existingTable = container.querySelector('.brand-table-responsive');
+            if (existingTable) {
+                const totalsDiv = document.createElement('div');
+                totalsDiv.className = 'summary-cards';
+                totalsDiv.innerHTML = `
+                    <div class="summary-card">
+                        <h4 class="summary-title">Total My Investments</h4>
+                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                    </div>
+                `;
+                container.appendChild(totalsDiv);
+            }
+        }
+    }
+
+    // Member Contributions totals
+    if (reportData.groupContributions.length > 0) {
+        const total = reportData.groupContributions.reduce((sum, item) => sum + (parseFloat(item.amount_paid) || 0), 0);
+        const container = document.getElementById('member-contributions-items');
+        if (container) {
+            const existingTable = container.querySelector('.brand-table-responsive');
+            if (existingTable) {
+                const totalsDiv = document.createElement('div');
+                totalsDiv.className = 'summary-cards';
+                totalsDiv.innerHTML = `
+                    <div class="summary-card">
+                        <h4 class="summary-title">Total Member Contributions</h4>
+                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                    </div>
+                `;
+                container.appendChild(totalsDiv);
+            }
+        }
+    }
+
+    // My Reports (Cashflow) totals
+    if (reportData.myReports.length > 0) {
+        const total = reportData.myReports.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+        const container = document.getElementById('my-report-items');
+        if (container) {
+            const existingTable = container.querySelector('.brand-table-responsive');
+            if (existingTable) {
+                const totalsDiv = document.createElement('div');
+                totalsDiv.className = 'summary-cards';
+                totalsDiv.innerHTML = `
+                    <div class="summary-card">
+                        <h4 class="summary-title">Total My Cashflow</h4>
+                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                    </div>
+                `;
+                container.appendChild(totalsDiv);
+            }
+        }
+    }
+
+    // Member Cashflow totals
+    if (reportData.cashflow.length > 0) {
+        const total = reportData.cashflow.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+        const container = document.getElementById('member-cashflow-items');
+        if (container) {
+            const existingTable = container.querySelector('.brand-table-responsive');
+            if (existingTable) {
+                const totalsDiv = document.createElement('div');
+                totalsDiv.className = 'summary-cards';
+                totalsDiv.innerHTML = `
+                    <div class="summary-card">
+                        <h4 class="summary-title">Total Member Cashflow</h4>
+                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                    </div>
+                `;
+                container.appendChild(totalsDiv);
+            }
+        }
+    }
+
+    // Loan Repayment Schedule totals
+    if (window.currentRepaymentScheduleData && window.currentRepaymentScheduleData.data.length > 0) {
+        const total = window.currentRepaymentScheduleData.data.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+        const container = document.getElementById('loan-repayment-schedule-items');
+        if (container) {
+            const existingTable = container.querySelector('.brand-table-responsive');
+            if (existingTable) {
+                const totalsDiv = document.createElement('div');
+                totalsDiv.className = 'summary-cards';
+                totalsDiv.innerHTML = `
+                    <div class="summary-card">
+                        <h4 class="summary-title">Total Loan Repayment Schedule</h4>
+                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                    </div>
+                `;
+                container.appendChild(totalsDiv);
+            }
+        }
+    }
 }
 
 // Initialize data when page loads
