@@ -456,16 +456,16 @@ const contributionPagination = {
                         </div>
                         
                         <div class="accordion-content">
-                            <div class="members-table-header" id="mobile-header-${contribution.id}">
+                            <div class="members-table-header" id="mobile-header-${contribution.id}" ${hasRecords ? 'class="mobile-update-hidden"' : ''}>
                                 <span>Members Name</span>
                                 <span>Balance</span>
                                 <span>Enter amount</span>
                             </div>
-                            <div class="members-list" id="members-list-${contribution.id}">
+                            <div class="members-list" id="members-list-${contribution.id}" ${hasRecords ? 'class="mobile-update-hidden"' : ''}>
                                 <!-- Will be populated by JavaScript -->
                             </div>
                             <div id="mobile-contribution-feedback-${contribution.id}" class="alert" style="display: none; margin-top: 10px;"></div>
-                            <button class="update-contribution-btn admin" data-contribution-id="${contribution.id}" id="mobile-update-btn-${contribution.id}">
+                            <button class="update-contribution-btn admin ${hasRecords ? 'mobile-update-hidden' : ''}" data-contribution-id="${contribution.id}" id="mobile-update-btn-${contribution.id}">
                                 Update contribution
                             </button>
                             
@@ -857,12 +857,15 @@ function applyAdminVisibility() {
     setTimeout(function() {
         const contributionFormCard = $(".contribution-form-card");
         const detailsGrid = $(".details-grid");
+        const updateButton = $("#update-contributions");
         
         if (contributionFormCard.hasClass('force-hidden')) {
             detailsGrid.addClass('full-width');
+            updateButton.hide();
         } else if (contributionFormCard.hasClass('admin') && $("body").hasClass("user-is-admin")) {
             // Only show form if in admin mode and form doesn't have records
             detailsGrid.removeClass('full-width');
+            updateButton.show();
         }
     }, 100);
 }
@@ -1168,13 +1171,15 @@ $(document).ready(function () {
                 const mobileHeader = $(`#mobile-header-${contributionId}`);
                 
                 if (hasFirstRound) {
-                    mobileUpdateBtn.hide();
-                    membersList.hide();
-                    mobileHeader.hide();
+                    // Use CSS class to force hide - this overrides admin visibility
+                    mobileUpdateBtn.addClass('mobile-update-hidden');
+                    membersList.addClass('mobile-update-hidden');
+                    mobileHeader.addClass('mobile-update-hidden');
                 } else {
-                    mobileUpdateBtn.show();
-                    membersList.show();
-                    mobileHeader.show();
+                    // Remove the force-hide class to allow normal admin visibility
+                    mobileUpdateBtn.removeClass('mobile-update-hidden');
+                    membersList.removeClass('mobile-update-hidden');
+                    mobileHeader.removeClass('mobile-update-hidden');
                 }
                 
                 // Apply admin visibility to newly generated mobile content
@@ -1336,13 +1341,16 @@ $(document).ready(function () {
                 const hasFirstRound = response.has_first_round_records;
                 const contributionFormCard = $(".contribution-form-card");
                 const detailsGrid = $(".details-grid");
+                const updateButton = $("#update-contributions");
                 
                 if (hasFirstRound) {
                     contributionFormCard.addClass('force-hidden');
                     detailsGrid.addClass('full-width');
+                    updateButton.hide();
                 } else {
                     contributionFormCard.removeClass('force-hidden');
                     detailsGrid.removeClass('full-width');
+                    updateButton.show();
                 }
 
                 const tbody = $("#contribution-records tbody");
@@ -1726,10 +1734,13 @@ $(document).ready(function () {
         // Also ensure proper layout on initial load
         const contributionFormCard = $(".contribution-form-card");
         const detailsGrid = $(".details-grid");
+        const updateButton = $("#update-contributions");
         if (contributionFormCard.hasClass('force-hidden')) {
             detailsGrid.addClass('full-width');
+            updateButton.hide();
         } else {
             detailsGrid.removeClass('full-width');
+            updateButton.show();
         }
         
         // Auto-load first contribution details after admin visibility is set
