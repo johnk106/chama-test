@@ -857,12 +857,15 @@ function applyAdminVisibility() {
     setTimeout(function() {
         const contributionFormCard = $(".contribution-form-card");
         const detailsGrid = $(".details-grid");
+        const updateButton = $("#update-contributions");
         
         if (contributionFormCard.hasClass('force-hidden')) {
             detailsGrid.addClass('full-width');
+            updateButton.hide();
         } else if (contributionFormCard.hasClass('admin') && $("body").hasClass("user-is-admin")) {
             // Only show form if in admin mode and form doesn't have records
             detailsGrid.removeClass('full-width');
+            updateButton.show();
         }
     }, 100);
 }
@@ -1336,13 +1339,16 @@ $(document).ready(function () {
                 const hasFirstRound = response.has_first_round_records;
                 const contributionFormCard = $(".contribution-form-card");
                 const detailsGrid = $(".details-grid");
+                const updateButton = $("#update-contributions");
                 
                 if (hasFirstRound) {
                     contributionFormCard.addClass('force-hidden');
                     detailsGrid.addClass('full-width');
+                    updateButton.hide();
                 } else {
                     contributionFormCard.removeClass('force-hidden');
                     detailsGrid.removeClass('full-width');
+                    updateButton.show();
                 }
 
                 const tbody = $("#contribution-records tbody");
@@ -1726,10 +1732,13 @@ $(document).ready(function () {
         // Also ensure proper layout on initial load
         const contributionFormCard = $(".contribution-form-card");
         const detailsGrid = $(".details-grid");
+        const updateButton = $("#update-contributions");
         if (contributionFormCard.hasClass('force-hidden')) {
             detailsGrid.addClass('full-width');
+            updateButton.hide();
         } else {
             detailsGrid.removeClass('full-width');
+            updateButton.show();
         }
         
         // Auto-load first contribution details after admin visibility is set
