@@ -14,7 +14,27 @@ The mobile view was correctly implemented and already hides the update button wh
 
 ## Solution Implemented
 
-### 1. Updated Desktop Contribution Details Function
+### 1. Fixed Mobile Update Button Visibility
+**File:** `/workspace/chamas/templates/chamas/contributions.html`
+**Lines:** ~420-485 (mobile accordion generation) and ~1167-1185 (mobile records loading)
+
+The mobile view had a critical issue where update buttons were generated for all contributions initially, and only hidden when the accordion was opened. This meant users could see update buttons for contributions with records before opening the accordion.
+
+**Fixed by:**
+- Adding initial hiding logic during mobile accordion generation using CSS class `mobile-update-hidden`
+- Using CSS class approach instead of JavaScript `hide()/show()` to override admin visibility system
+- Ensuring the hiding logic runs after admin visibility is applied
+
+**CSS Rule Added:**
+```css
+.mobile-update-hidden,
+body.user-is-admin .mobile-update-hidden,
+html.user-is-admin .mobile-update-hidden {
+    display: none !important;
+}
+```
+
+### 2. Updated Desktop Contribution Details Function
 **File:** `/workspace/chamas/templates/chamas/contributions.html`
 **Lines:** ~1335-1346
 
@@ -38,7 +58,7 @@ if (hasFirstRound) {
 }
 ```
 
-### 2. Updated Admin Visibility Function
+### 3. Updated Admin Visibility Function
 **File:** `/workspace/chamas/templates/chamas/contributions.html`
 **Lines:** ~855-867
 
@@ -60,7 +80,7 @@ setTimeout(function() {
 }, 100);
 ```
 
-### 3. Updated Initial Page Load Logic
+### 4. Updated Initial Page Load Logic
 **File:** `/workspace/chamas/templates/chamas/contributions.html**
 **Lines:** ~1732-1739
 
@@ -82,10 +102,12 @@ if (contributionFormCard.hasClass('force-hidden')) {
 
 ## Verification
 
-### Mobile View (Already Working)
-- ✅ Update button correctly hides when contribution has records
+### Mobile View (Now Fixed)
+- ✅ Update button correctly hides when contribution has records (initially and when opened)
 - ✅ Update button shows when contribution has no records
 - ✅ Members list and header also hide/show appropriately
+- ✅ CSS class approach overrides admin visibility system
+- ✅ No flickering or temporary visibility of buttons that should be hidden
 
 ### Desktop View (Now Fixed)
 - ✅ Update button now hides when contribution has records
@@ -101,8 +123,8 @@ if (contributionFormCard.hasClass('force-hidden')) {
 | **Has Records** | ❌ Hidden (`force-hidden`) | ❌ Hidden | Full-width records |
 
 ## Files Modified
-1. `/workspace/chamas/templates/chamas/contributions.html` - Added JavaScript logic to hide/show update button
-2. `/workspace/chamas/static/chamas/contribution.css` - No changes needed (CSS already handles form hiding)
+1. `/workspace/chamas/templates/chamas/contributions.html` - Added JavaScript logic to hide/show update button (desktop and mobile)
+2. `/workspace/chamas/static/chamas/contribution.css` - Added `mobile-update-hidden` CSS class for robust hiding
 
 ## Testing Recommendations
 1. Create a new contribution scheme

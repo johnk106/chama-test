@@ -456,16 +456,16 @@ const contributionPagination = {
                         </div>
                         
                         <div class="accordion-content">
-                            <div class="members-table-header" id="mobile-header-${contribution.id}">
+                            <div class="members-table-header" id="mobile-header-${contribution.id}" ${hasRecords ? 'class="mobile-update-hidden"' : ''}>
                                 <span>Members Name</span>
                                 <span>Balance</span>
                                 <span>Enter amount</span>
                             </div>
-                            <div class="members-list" id="members-list-${contribution.id}">
+                            <div class="members-list" id="members-list-${contribution.id}" ${hasRecords ? 'class="mobile-update-hidden"' : ''}>
                                 <!-- Will be populated by JavaScript -->
                             </div>
                             <div id="mobile-contribution-feedback-${contribution.id}" class="alert" style="display: none; margin-top: 10px;"></div>
-                            <button class="update-contribution-btn admin" data-contribution-id="${contribution.id}" id="mobile-update-btn-${contribution.id}">
+                            <button class="update-contribution-btn admin ${hasRecords ? 'mobile-update-hidden' : ''}" data-contribution-id="${contribution.id}" id="mobile-update-btn-${contribution.id}">
                                 Update contribution
                             </button>
                             
@@ -1171,13 +1171,15 @@ $(document).ready(function () {
                 const mobileHeader = $(`#mobile-header-${contributionId}`);
                 
                 if (hasFirstRound) {
-                    mobileUpdateBtn.hide();
-                    membersList.hide();
-                    mobileHeader.hide();
+                    // Use CSS class to force hide - this overrides admin visibility
+                    mobileUpdateBtn.addClass('mobile-update-hidden');
+                    membersList.addClass('mobile-update-hidden');
+                    mobileHeader.addClass('mobile-update-hidden');
                 } else {
-                    mobileUpdateBtn.show();
-                    membersList.show();
-                    mobileHeader.show();
+                    // Remove the force-hide class to allow normal admin visibility
+                    mobileUpdateBtn.removeClass('mobile-update-hidden');
+                    membersList.removeClass('mobile-update-hidden');
+                    mobileHeader.removeClass('mobile-update-hidden');
                 }
                 
                 // Apply admin visibility to newly generated mobile content

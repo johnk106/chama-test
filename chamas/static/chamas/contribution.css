@@ -1183,6 +1183,13 @@
         display: none !important;
     }
     
+    /* Force hide mobile update elements when contribution has records - overrides admin visibility */
+    .mobile-update-hidden,
+    body.user-is-admin .mobile-update-hidden,
+    html.user-is-admin .mobile-update-hidden {
+        display: none !important;
+    }
+    
     /* Pagination Styles */
     .desktop-pagination, .mobile-pagination {
         display: flex;
