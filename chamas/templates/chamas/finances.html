@@ -47,7 +47,7 @@
     <!-- Finance Tabs Navigation -->
     <ul class="finance-tabs" role="tablist">
         <li class="nav-item">
-            <a class="nav-link active" id="my-savings-tab" data-bs-toggle="tab" href="#tab-my-savings" role="tab">My Savings</a>
+            <a class="nav-link active" id="my-savings-tab" data-bs-toggle="tab" href="#tab-my-savings" role="tab">My Savings Admin</a>
         </li>
         <li class="nav-item">
             <a class="nav-link admin" id="individual-savings-tab" data-bs-toggle="tab" href="#tab-individual-savings" role="tab">Individual Savings</a>
@@ -191,6 +191,15 @@
                         <div class="mb-3">
                             <label for="individual_savings_end" class="form-label">End Date</label>
                             <input type="date" class="form-control" id="individual_savings_end">
+                        </div>
+                        <div class="mb-3 member-filter">
+                            <label for="individual_savings_member" class="form-label">Member</label>
+                            <select class="form-control" id="individual_savings_member">
+                                <option value="">All Members</option>
+                                {%for member in members%}
+                                <option value="{{member.id}}" class="text-capitalize">{{member.name}}</option>
+                                {%endfor%}
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -480,6 +489,27 @@
                         <p>Individual Investment Income</p>
                     </div>
                 </div>
+                <div class="filter-section">
+                    <div class="filter-inputs">
+                        <div class="mb-3">
+                            <label for="individual_investment_income_start" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="individual_investment_income_start">
+                        </div>
+                        <div class="mb-3">
+                            <label for="individual_investment_income_end" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="individual_investment_income_end">
+                        </div>
+                        <div class="mb-3 member-filter">
+                            <label for="individual_investment_income_member" class="form-label">Member</label>
+                            <select class="form-control" id="individual_investment_income_member">
+                                <option value="">All Members</option>
+                                {%for member in members%}
+                                <option value="{{member.id}}" class="text-capitalize">{{member.name}}</option>
+                                {%endfor%}
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 <div class="table-responsive finance-table-wrapper desktop-view">
                     <table class="table finance-table">
                         <thead>
@@ -491,7 +521,7 @@
                                 <th>Amount</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id='individual-investment-income-table-body'>
                             {%for income in individual_investment_income%}
                             <tr>
                                 <td>{{income.owner.name}}</td>
@@ -508,7 +538,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="mobile-cards">
+                <div id='individual-investment-income-cont' class="mobile-cards">
                     {%for income in individual_investment_income%}
                     <div class="finance-card">
                         <div class="saving-details">
@@ -578,6 +608,18 @@
                         <p>Group Investment Income</p>
                     </div>
                 </div>
+                <div class="filter-section">
+                    <div class="filter-inputs">
+                        <div class="mb-3">
+                            <label for="group_investment_income_start" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="group_investment_income_start">
+                        </div>
+                        <div class="mb-3">
+                            <label for="group_investment_income_end" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="group_investment_income_end">
+                        </div>
+                    </div>
+                </div>
                 <div class="table-responsive finance-table-wrapper desktop-view">
                     <table class="table finance-table">
                         <thead>
@@ -588,7 +630,7 @@
                                 <th>Amount</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id='group-investment-income-table-body'>
                             {%for income in group_investment_incomes%}
                             <tr>
                                 <td>{{income.name}}</td>
@@ -604,7 +646,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="mobile-cards">
+                <div id='group-investment-income-cont' class="mobile-cards">
                     {%for income in group_investment_incomes%}
                     <div class="finance-card">
                         <div class="saving-details">
@@ -1202,6 +1244,7 @@
         {% for saving in individual_savings %}
             {
                 'owner': '{{ saving.owner.name }}',
+                'owner_id': '{{ saving.owner.id }}',
                 'date': new Date('{{ saving.date|date:"c" }}'),
                 'type': '{{ saving.saving_type.name }}',
                 'amount': '{{ saving.amount }}',
@@ -1211,21 +1254,37 @@
     
     document.getElementById('individual_savings_start').addEventListener('change', filterSavings);
     document.getElementById('individual_savings_end').addEventListener('change', filterSavings);
+    document.getElementById('individual_savings_member').addEventListener('change', filterSavings);
     
     function filterSavings() {
         var startInput = document.getElementById('individual_savings_start').value;
         var endInput = document.getElementById('individual_savings_end').value;
+        var memberInput = document.getElementById('individual_savings_member').value;
     
-        // Check if both start and end dates are selected
+        var filteredSavings = savings;
+        
+        // Filter by date range if both dates are provided
         if (startInput && endInput) {
             var start = new Date(startInput);
             var end = new Date(endInput);
     
             // Check if the parsed dates are valid
             if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
-                var filteredSavings = savings.filter(function(saving) {
+                filteredSavings = filteredSavings.filter(function(saving) {
                     return saving.date >= start && saving.date <= end;
                 });
+            }
+        }
+        
+        // Filter by member if selected
+        if (memberInput) {
+            filteredSavings = filteredSavings.filter(function(saving) {
+                return saving.owner_id == memberInput;
+            });
+        }
+        
+        // Only update display if we have filters applied
+        if ((startInput && endInput) || memberInput) {
     
                                 // Update mobile cards
                 var savingsContainer = document.getElementById('individual-savings-cont');
@@ -1289,9 +1348,6 @@
                     `;
                     savingsContainer.appendChild(savingElement);
                 });
-            } else {
-                console.log("Invalid date format");
-            }
         }
     }
 </script>
@@ -1471,7 +1527,213 @@
     }
 </script>
 
+<script>
+    // Individual Investment Income filtering
+    var individualInvestmentIncomes = [
+        {% for income in individual_investment_income %}
+            {
+                'owner': '{{ income.owner.name }}',
+                'owner_id': '{{ income.owner.id }}',
+                'name': '{{ income.name }}',
+                'investment': '{{ income.investment.name }}',
+                'date': new Date('{{ income.date|date:"c" }}'),
+                'amount': '{{ income.amount }}',
+            },
+        {% endfor %}
+    ];
+    
+    document.getElementById('individual_investment_income_start').addEventListener('change', filterIndividualInvestmentIncomes);
+    document.getElementById('individual_investment_income_end').addEventListener('change', filterIndividualInvestmentIncomes);
+    document.getElementById('individual_investment_income_member').addEventListener('change', filterIndividualInvestmentIncomes);
+    
+    function filterIndividualInvestmentIncomes() {
+        var startInput = document.getElementById('individual_investment_income_start').value;
+        var endInput = document.getElementById('individual_investment_income_end').value;
+        var memberInput = document.getElementById('individual_investment_income_member').value;
+    
+        var filteredIncomes = individualInvestmentIncomes;
+        
+        // Filter by date range if both dates are provided
+        if (startInput && endInput) {
+            var start = new Date(startInput);
+            var end = new Date(endInput);
+    
+            if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+                filteredIncomes = filteredIncomes.filter(function(income) {
+                    return income.date >= start && income.date <= end;
+                });
+            }
+        }
+        
+        // Filter by member if selected
+        if (memberInput) {
+            filteredIncomes = filteredIncomes.filter(function(income) {
+                return income.owner_id == memberInput;
+            });
+        }
+        
+        // Only update display if we have filters applied
+        if ((startInput && endInput) || memberInput) {
+            // Update mobile cards
+            var incomesContainer = document.getElementById('individual-investment-income-cont');
+            incomesContainer.innerHTML = '';
+            
+            // Update table body
+            var tableBody = document.getElementById('individual-investment-income-table-body');
+            tableBody.innerHTML = '';
 
+            filteredIncomes.forEach(function(income) {
+                // Create mobile card
+                var incomeElement = document.createElement('div');
+                incomeElement.className = 'finance-card';
+                
+                // Create table row
+                var tableRow = document.createElement('tr');
+                tableRow.innerHTML = `
+                    <td>${income.owner}</td>
+                    <td>${income.name}</td>
+                    <td>${income.investment}</td>
+                    <td>${income.date.getDate()}/${income.date.getMonth()+1}/${income.date.getFullYear()}</td>
+                    <td>ksh ${income.amount}</td>
+                `;
+                tableBody.appendChild(tableRow);
+                
+                incomeElement.innerHTML = `
+                    <div class="saving-details">
+                        <div class="saving-details-row">
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">Owner</h6>
+                                <div class="amount-section">
+                                    <p class="amount">${income.owner}</p>
+                                </div>
+                            </div>
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">Name</h6>
+                                <div class="amount-section">
+                                    <p class="amount">${income.name}</p>
+                                </div>
+                            </div>
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">Investment</h6>
+                                <div class="amount-section">
+                                    <p class="amount">${income.investment}</p>
+                                </div>
+                            </div>
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">Date</h6>
+                                <div class="amount-section">
+                                    <p class="amount">${income.date.getDate()}/${income.date.getMonth()+1}/${income.date.getFullYear()}</p>
+                                </div>
+                            </div>
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">Amount</h6>
+                                <div class="amount-section">
+                                    <p class="amount">ksh ${income.amount}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                incomesContainer.appendChild(incomeElement);
+            });
+        }
+    }
+</script>
+
+<script>
+    // Group Investment Income filtering
+    var groupInvestmentIncomes = [
+        {% for income in group_investment_incomes %}
+            {
+                'name': '{{ income.name }}',
+                'investment': '{{ income.investment.name }}',
+                'date': new Date('{{ income.date|date:"c" }}'),
+                'amount': '{{ income.amount }}',
+            },
+        {% endfor %}
+    ];
+    
+    document.getElementById('group_investment_income_start').addEventListener('change', filterGroupInvestmentIncomes);
+    document.getElementById('group_investment_income_end').addEventListener('change', filterGroupInvestmentIncomes);
+    
+    function filterGroupInvestmentIncomes() {
+        var startInput = document.getElementById('group_investment_income_start').value;
+        var endInput = document.getElementById('group_investment_income_end').value;
+    
+        var filteredIncomes = groupInvestmentIncomes;
+        
+        // Filter by date range if both dates are provided
+        if (startInput && endInput) {
+            var start = new Date(startInput);
+            var end = new Date(endInput);
+    
+            if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+                filteredIncomes = filteredIncomes.filter(function(income) {
+                    return income.date >= start && income.date <= end;
+                });
+            }
+        }
+        
+        // Only update display if we have filters applied
+        if (startInput && endInput) {
+            // Update mobile cards
+            var incomesContainer = document.getElementById('group-investment-income-cont');
+            incomesContainer.innerHTML = '';
+            
+            // Update table body
+            var tableBody = document.getElementById('group-investment-income-table-body');
+            tableBody.innerHTML = '';
+
+            filteredIncomes.forEach(function(income) {
+                // Create mobile card
+                var incomeElement = document.createElement('div');
+                incomeElement.className = 'finance-card';
+                
+                // Create table row
+                var tableRow = document.createElement('tr');
+                tableRow.innerHTML = `
+                    <td>${income.name}</td>
+                    <td>${income.investment}</td>
+                    <td>${income.date.getDate()}/${income.date.getMonth()+1}/${income.date.getFullYear()}</td>
+                    <td>ksh ${income.amount}</td>
+                `;
+                tableBody.appendChild(tableRow);
+                
+                incomeElement.innerHTML = `
+                    <div class="saving-details">
+                        <div class="saving-details-row">
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">Name</h6>
+                                <div class="amount-section">
+                                    <p class="amount">${income.name}</p>
+                                </div>
+                            </div>
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">Investment</h6>
+                                <div class="amount-section">
+                                    <p class="amount">${income.investment}</p>
+                                </div>
+                            </div>
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">Date</h6>
+                                <div class="amount-section">
+                                    <p class="amount">${income.date.getDate()}/${income.date.getMonth()+1}/${income.date.getFullYear()}</p>
+                                </div>
+                            </div>
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">Amount</h6>
+                                <div class="amount-section">
+                                    <p class="amount">ksh ${income.amount}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                incomesContainer.appendChild(incomeElement);
+            });
+        }
+    }
+</script>
 
 <!-- Tab Functionality Script -->
 <script>

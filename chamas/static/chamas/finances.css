@@ -1289,12 +1289,21 @@ html, body,
 
     /* Filter Section Mobile */
     .filter-inputs {
-        flex-direction: column;
+        display: flex;
+        flex-direction: row;
         gap: 12px;
+        flex-wrap: wrap;
     }
 
-    .filter-inputs .mb-3 {
+    .filter-inputs .mb-3:not(.member-filter) {
+        flex: 1;
+        min-width: calc(50% - 6px);
+    }
+
+    .filter-inputs .mb-3.member-filter {
+        flex: 1;
         min-width: 100%;
+        width: 100%;
     }
 
     /* Finance Modal Mobile Adjustments */
