@@ -161,31 +161,13 @@ document.addEventListener('DOMContentLoaded', function() {
         resetMemberForm();
     });
     
-    // Ensure select dropdown works properly
+    // Simple select dropdown fix
     const memberRoleSelect = document.getElementById('memberRole');
     if (memberRoleSelect) {
-        // Remove any potential event listeners that might interfere
+        // Just add a simple change listener for debugging
         memberRoleSelect.addEventListener('change', function(e) {
             console.log('Role selected:', this.value, this.options[this.selectedIndex].text);
-            // Prevent event bubbling that might close modal
-            e.stopPropagation();
         });
-        
-        // Ensure the select is properly initialized
-        memberRoleSelect.addEventListener('click', function(e) {
-            console.log('Select clicked');
-            // Prevent event bubbling
-            e.stopPropagation();
-        });
-        
-        // Prevent dropdown from closing when clicking on options
-        memberRoleSelect.addEventListener('mousedown', function(e) {
-            e.stopPropagation();
-        });
-        
-        // Ensure the select element is properly accessible
-        memberRoleSelect.style.pointerEvents = 'auto';
-        memberRoleSelect.style.userSelect = 'auto';
     }
 });
 

@@ -964,22 +964,8 @@
     padding: 8px 12px !important; /* Reduced padding */
   }
   
-  /* Ensure modal doesn't interfere with select dropdown */
-  .modal {
-    z-index: 1050 !important;
-  }
-  
-  .modal-dialog {
-    z-index: 1055 !important;
-  }
-  
-  .modal-content {
-    z-index: 1060 !important;
-  }
-  
-  /* Ensure select dropdown appears above modal */
+  /* Simple fix for select dropdown in modal */
   .modal .form-select {
-    z-index: 1070 !important;
     position: relative !important;
     pointer-events: auto !important;
     user-select: auto !important;
@@ -991,12 +977,6 @@
     color: #000000 !important;
     padding: 8px !important;
     font-size: 14px !important;
-    pointer-events: auto !important;
-  }
-  
-  /* Prevent any interference with select dropdown */
-  .modal .form-select:focus {
-    z-index: 1080 !important;
   }
   
   /* Reduce form spacing in modal */
