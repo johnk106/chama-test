@@ -1252,28 +1252,82 @@
     /* Mobile pagination adjustments */
     @media (max-width: 768px) {
         .mobile-pagination {
-            gap: 6px;
+            gap: 8px;
             margin-top: 16px;
             margin-bottom: 16px;
-            padding: 12px 16px;
+            padding: 16px;
             background: white;
             border-top: 1px solid #e5e7eb;
             width: 100%;
             box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
         }
         
         .mobile-pagination .pagination-btn {
-            min-width: 36px;
-            height: 36px;
-            padding: 6px 10px;
-            font-size: 13px;
+            min-width: 40px;
+            height: 40px;
+            padding: 8px 12px;
+            font-size: 14px;
+            font-weight: 500;
             margin: 0 2px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            color: #64748b;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+        }
+        
+        .mobile-pagination .pagination-btn:hover {
+            background: #f8fafc;
+            border-color: #2291A5;
+            color: #2291A5;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(34, 145, 165, 0.1);
+        }
+        
+        .mobile-pagination .pagination-btn.active {
+            background: #2291A5;
+            border-color: #2291A5;
+            color: white;
+            box-shadow: 0 2px 8px rgba(34, 145, 165, 0.3);
+        }
+        
+        .mobile-pagination .pagination-btn.disabled {
+            background: #f9fafb;
+            border-color: #e5e7eb;
+            color: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .mobile-pagination .pagination-btn.disabled:hover {
+            background: #f9fafb;
+            border-color: #e5e7eb;
+            color: #9ca3af;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .mobile-pagination .pagination-btn:active {
+            transform: scale(0.95);
         }
         
         .mobile-pagination .pagination-info {
-            font-size: 11px;
+            font-size: 12px;
+            color: #64748b;
             margin: 0 8px;
             white-space: nowrap;
+            font-weight: 500;
         }
     }
 
