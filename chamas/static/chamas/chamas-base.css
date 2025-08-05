@@ -77,21 +77,171 @@ html, body,
   color: #1a7589 !important;
 }
 
+/* ================================
+   PROFILE SECTION ENHANCEMENT
+   ================================ */
+
+/* Enhanced profile container styling */
+.profile {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 8px 12px !important;
+  border-radius: 25px !important;
+  background: rgba(33, 145, 165, 0.08) !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+  position: relative !important;
+}
+
+.profile:hover {
+  background: rgba(33, 145, 165, 0.12) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(33, 145, 165, 0.15) !important;
+}
+
+/* Enhanced avatar styling */
 .avatar {
-  width: 40px !important;
-  height: 40px !important;
+  width: 42px !important;
+  height: 42px !important;
   border-radius: 50% !important;
-  background: #2191a5 !important;
+  background: linear-gradient(135deg, #2191a5 0%, #1a7589 100%) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   overflow: hidden !important;
+  border: 2px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 2px 8px rgba(33, 145, 165, 0.3) !important;
+  flex-shrink: 0 !important;
 }
 
 .avatar img {
   width: 100% !important;
   height: 100% !important;
   object-fit: cover !important;
+  border-radius: 50% !important;
+}
+
+.avatar i {
+  color: white !important;
+  font-size: 20px !important;
+  font-weight: 500 !important;
+}
+
+/* Enhanced profile name styling */
+.profile-name {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: #2c3e50 !important;
+  line-height: 1.2 !important;
+  text-overflow: ellipsis !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  max-width: 120px !important;
+}
+
+/* Dropdown arrow styling */
+.profile .bx-chevron-down {
+  color: #64748b !important;
+  font-size: 16px !important;
+  transition: transform 0.3s ease !important;
+  margin-left: 4px !important;
+  flex-shrink: 0 !important;
+}
+
+.profile:hover .bx-chevron-down {
+  transform: rotate(180deg) !important;
+  color: #2191a5 !important;
+}
+
+/* Dropdown menu styling */
+.profile .dropdown-menu {
+  position: absolute !important;
+  top: 100% !important;
+  right: 0 !important;
+  left: auto !important;
+  background: white !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+  padding: 8px 0 !important;
+  margin-top: 8px !important;
+  min-width: 180px !important;
+  z-index: 1050 !important;
+}
+
+.profile .dropdown-menu::before {
+  content: '' !important;
+  position: absolute !important;
+  top: -6px !important;
+  right: 20px !important;
+  width: 12px !important;
+  height: 12px !important;
+  background: white !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-bottom: none !important;
+  border-right: none !important;
+  transform: rotate(45deg) !important;
+}
+
+.profile .dropdown-item {
+  padding: 10px 16px !important;
+  font-size: 14px !important;
+  color: #374151 !important;
+  transition: all 0.2s ease !important;
+  border: none !important;
+  background: none !important;
+}
+
+.profile .dropdown-item:hover {
+  background: #f8fafc !important;
+  color: #2191a5 !important;
+  padding-left: 20px !important;
+}
+
+/* Header-specific profile adjustments */
+.mobile-header .profile {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(33, 145, 165, 0.1) !important;
+}
+
+.desktop-header .profile {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(33, 145, 165, 0.1) !important;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .profile {
+    gap: 8px !important;
+    padding: 6px 10px !important;
+  }
+  
+  .avatar {
+    width: 36px !important;
+    height: 36px !important;
+  }
+  
+  .profile-name {
+    font-size: 13px !important;
+    max-width: 100px !important;
+  }
+  
+  .mobile-actions {
+    gap: 12px !important;
+  }
+}
+
+/* Desktop responsive adjustments */
+@media (min-width: 769px) {
+  .desktop-header .header-actions {
+    align-items: center !important;
+    gap: 24px !important;
+  }
+  
+  .desktop-header .profile {
+    margin-left: auto !important;
+  }
 }
 
 .dp-sect {
@@ -394,4 +544,192 @@ html, body,
 .form-check-input:disabled + .form-check-label {
   cursor: not-allowed !important;
   opacity: 0.6 !important;
+}
+
+/* ================================
+   CSS OVERRIDE RULES
+   ================================ */
+
+/* Override conflicting styles from style.css and brand-colors.css */
+.mobile-header .profile,
+.desktop-header .profile,
+.header .profile,
+.profile {
+  /* Remove conflicting background from style.css */
+  background: rgba(33, 145, 165, 0.08) !important;
+  /* Ensure proper display and alignment */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  flex-direction: row !important;
+  /* Override any padding conflicts */
+  padding: 8px 12px !important;
+  /* Ensure proper spacing */
+  gap: 12px !important;
+  /* Remove any conflicting borders */
+  border: 1px solid rgba(33, 145, 165, 0.1) !important;
+  border-radius: 25px !important;
+  /* Ensure proper positioning */
+  position: relative !important;
+  /* Override width constraints */
+  width: auto !important;
+  min-width: auto !important;
+  max-width: none !important;
+  /* Ensure text doesn't wrap */
+  white-space: nowrap !important;
+}
+
+/* Specific override for brand-colors.css spacing */
+.profile {
+  gap: 12px !important;
+}
+
+/* Ensure avatar maintains its enhanced styling */
+.mobile-header .avatar,
+.desktop-header .avatar,
+.header .avatar,
+.profile .avatar {
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 50% !important;
+  background: linear-gradient(135deg, #2191a5 0%, #1a7589 100%) !important;
+  border: 2px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 2px 8px rgba(33, 145, 165, 0.3) !important;
+  flex-shrink: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+}
+
+/* Ensure profile name maintains enhanced styling */
+.mobile-header .profile-name,
+.desktop-header .profile-name,
+.header .profile-name,
+.profile .profile-name {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: #2c3e50 !important;
+  line-height: 1.2 !important;
+  text-overflow: ellipsis !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  max-width: 120px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  flex-shrink: 1 !important;
+}
+
+/* Override any conflicting dropdown arrow styles */
+.mobile-header .profile .bx-chevron-down,
+.desktop-header .profile .bx-chevron-down,
+.profile .bx-chevron-down {
+  color: #64748b !important;
+  font-size: 16px !important;
+  transition: transform 0.3s ease !important;
+  margin-left: 4px !important;
+  margin-right: 0 !important;
+  flex-shrink: 0 !important;
+}
+
+/* Mobile-specific overrides */
+@media (max-width: 768px) {
+  .mobile-header .profile {
+    background: rgba(255, 255, 255, 0.9) !important;
+    gap: 8px !important;
+    padding: 6px 10px !important;
+  }
+  
+  .mobile-header .avatar {
+    width: 36px !important;
+    height: 36px !important;
+  }
+  
+  .mobile-header .profile-name {
+    font-size: 13px !important;
+    max-width: 100px !important;
+  }
+}
+
+/* Desktop-specific overrides */
+@media (min-width: 769px) {
+  .desktop-header .profile {
+    background: rgba(255, 255, 255, 0.8) !important;
+    margin-left: auto !important;
+  }
+}
+
+/* ================================
+   HEADER CONTAINER ENHANCEMENTS
+   ================================ */
+
+/* Mobile header improvements */
+.mobile-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 12px 16px !important;
+  background: white !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+  min-height: 64px !important;
+}
+
+.mobile-header .mobile-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin-left: auto !important;
+}
+
+.mobile-header .mobile-nav-toggle {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Desktop header improvements */
+.desktop-header {
+  display: flex !important;
+  background: white !important;
+  border-radius: 0 0 20px 20px !important;
+  border-bottom: 1px solid #e0e4e8 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+  padding: 16px 24px !important;
+  width: 100% !important;
+  margin: 0 !important;
+  min-height: 80px !important;
+}
+
+.desktop-header .header-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  gap: 24px !important;
+}
+
+.desktop-header .page-title {
+  color: #2191a5 !important;
+  font-weight: 600 !important;
+  font-size: 1.5rem !important;
+  margin: 0 !important;
+  flex-shrink: 0 !important;
+}
+
+.desktop-header .action-icons {
+  display: flex !important;
+  align-items: center !important;
+  gap: 15px !important;
+  flex-shrink: 0 !important;
+}
+
+.desktop-header .action-icons i {
+  font-size: 20px !important;
+  cursor: pointer !important;
+  transition: transform 0.2s ease !important;
+}
+
+.desktop-header .action-icons i:hover {
+  transform: scale(1.1) !important;
 }

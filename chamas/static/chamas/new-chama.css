@@ -179,16 +179,7 @@
     gap: 12px;
 }
 
-.profile {
-    border-radius: 200px;
-    border: 1.5px solid var(--White, #FFF);
-    display: flex;
-    width: 50px;
-    height: 50px;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
+/* Profile style removed - replaced with more specific selectors at end of file */
 
 .member-name {
     color: var(--Primary-500, #2291A5);
@@ -574,4 +565,34 @@
     background-color: #ebf8ff;
     border-color: #90cdf4;
     color: #2c5282;
+}
+
+/* Member list profile styles - specific to avoid header conflicts */
+.member-list .profile,
+.member-tile .profile,
+.selected-member .profile {
+    border-radius: 200px;
+    border: 1.5px solid var(--White, #FFF);
+    display: flex;
+    width: 50px;
+    height: 50px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Ensure header profile styles are not affected */
+.mobile-header .profile,
+.desktop-header .profile {
+    border-radius: 25px !important;
+    border: 1px solid rgba(33, 145, 165, 0.1) !important;
+    display: flex !important;
+    width: auto !important;
+    height: auto !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 8px 12px !important;
+    background: rgba(33, 145, 165, 0.08) !important;
 }
