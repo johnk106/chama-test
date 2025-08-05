@@ -601,12 +601,12 @@
    IMPROVED MOBILE FORM LAYOUT
    ================================ */
 
-/* Form container styling - full width */
+/* Form container styling - reduced margins */
 .form-container {
   width: 100%;
-  max-width: none;
-  margin: 0;
-  padding: 0;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 8px; /* Small padding instead of no margin */
 }
 
 .new-chama-form {
@@ -618,7 +618,7 @@
 .form-row {
   margin-bottom: 20px;
   width: 100%;
-  padding: 0 16px; /* Add inner padding instead of container margin */
+  padding: 0 8px; /* Reduced inner padding */
 }
 
 .form-row:last-child {
@@ -845,15 +845,15 @@
     font-size: 16px;
   }
   
-  /* Form section mobile adjustments - full width */
+  /* Form section mobile adjustments - reduced margins */
   .form-section {
-    padding: 0 !important;
-    margin: 0 !important;
-    width: 100% !important;
+    padding: 8px !important;
+    margin: 2% auto !important;
+    width: 96% !important;
     max-width: none !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
-    background: #e4e9f7 !important;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 12px !important;
+    background: white !important;
   }
   
   /* Ensure main content area allows proper scrolling */
@@ -870,24 +870,24 @@
   
   /* Header section mobile styling */
   .header-section {
-    padding: 20px 16px !important;
+    padding: 16px !important;
     margin: 0 !important;
-    background: white !important;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+    background: transparent !important;
+    border-bottom: none !important;
   }
   
   .new-chama-sect-header {
-    font-size: 20px !important;
+    font-size: 22px !important;
     font-weight: 600 !important;
     color: #2291A5 !important;
-    margin: 0 !important;
+    margin: 0 0 16px 0 !important;
     text-align: center !important;
   }
   
   /* Alert cluster styling */
   #alertCluster {
-    padding: 0 16px !important;
-    margin: 16px 0 !important;
+    padding: 0 8px !important;
+    margin: 12px 0 !important;
   }
   
   /* Mobile input box adjustments */
@@ -896,6 +896,7 @@
     border: 1px solid rgba(157, 147, 147, 0.3) !important;
     border-radius: 8px !important;
     margin-bottom: 0 !important;
+    padding: 12px !important;
   }
   
   .input-box label {
@@ -905,6 +906,17 @@
     margin-bottom: 8px !important;
     display: block !important;
     float: none !important;
+    text-align: left !important; /* Left align labels */
+  }
+  
+  /* Ensure select box labels are also left aligned */
+  .select-box label {
+    color: #2291A5 !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    margin-bottom: 8px !important;
+    display: block !important;
+    text-align: left !important; /* Left align labels */
   }
 }
 
@@ -917,9 +929,21 @@
     align-items: flex-end;
   }
   
+  /* Desktop form container */
+  .form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+  
   /* Desktop form spacing */
   .form-row {
     margin-bottom: 24px;
+    padding: 0 16px;
+  }
+  
+  .form-row:last-child {
+    margin-bottom: 40px;
   }
   
   /* Desktop input sizing */
@@ -929,6 +953,18 @@
     font-size: 14px;
     padding: 10px;
     min-height: 40px;
+  }
+  
+  /* Desktop label alignment */
+  .input-box label,
+  .select-box label {
+    color: #2291A5 !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    margin-bottom: 8px !important;
+    display: block !important;
+    text-align: left !important; /* Left align labels on desktop too */
+    float: none !important;
   }
   
   /* Desktop button sizing */
@@ -947,6 +983,7 @@
   /* Desktop members section */
   .members-section {
     padding: 24px;
+    max-height: 500px; /* Larger height on desktop */
   }
   
   .members-title {
@@ -956,9 +993,18 @@
   /* Desktop submit button */
   .add-button {
     padding: 18px;
+    margin-bottom: 40px;
   }
   
   .create-chama-text {
     font-size: 18px;
+  }
+  
+  /* Desktop form section */
+  .form-section {
+    padding: 24px !important;
+    margin: 3% auto !important;
+    width: 90% !important;
+    max-width: 900px !important;
   }
 }
