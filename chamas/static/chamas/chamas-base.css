@@ -259,6 +259,23 @@ html, body,
   
   .desktop-header .profile {
     margin-left: auto !important;
+    /* Reduced scale for desktop header profile */
+    gap: 8px !important;
+    padding: 6px 10px !important;
+  }
+  
+  .desktop-header .avatar {
+    width: 32px !important;
+    height: 32px !important;
+  }
+  
+  .desktop-header .profile-name {
+    font-size: 13px !important;
+    max-width: 120px !important;
+  }
+  
+  .desktop-header .bx-chevron-down {
+    font-size: 14px !important;
   }
 }
 
