@@ -486,3 +486,47 @@
         min-width: 90px;
     }
 }
+
+/* Ensure tab content and notification containers stretch full width */
+.modern-notifications,
+.mobile-notifications,
+.desktop-notifications,
+.tab-content,
+.create-notification-card,
+.send-notification-card,
+.mobile-notification-history-list,
+.notification-history-beautiful-card {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin-left: calc(-50vw + 50%) !important;
+    left: 0 !important;
+    right: 0 !important;
+    box-sizing: border-box;
+}
+
+/* Remove margin and padding from body and html for notifications page */
+body, html {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100vw !important;
+    overflow-x: hidden;
+}
+
+/* Ensure footer stretches full width */
+.mbl_footer {
+    width: 100vw !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+}
+
+/* Ensure the bottom nav bar (footer_row) stretches */
+.footer_row {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin: 0 auto !important;
+    padding: 0 0 !important;
+    box-sizing: border-box;
+}
