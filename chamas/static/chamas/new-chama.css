@@ -19,6 +19,9 @@
 /* Style the .your-chamas-sect-header */
 .new-chama-sect-header {
     margin-top: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--color-default);
     /* Remove default margin for h3 */
 }
 
@@ -33,18 +36,18 @@
 
 .input-box label {
     font-weight: 600;
-    size: 12px;
-    line-height: 18px;
+    font-size: 11px;
+    line-height: 16px;
     color: var(--color-default);
     float: left;
 }
 
 .input-box input {
     font-weight: 400;
-    font-size: 12px;
-    line-height: 18px;
+    font-size: 11px;
+    line-height: 16px;
     color: #000000;
-    padding: 5px;
+    padding: 4px;
     border: none;
     width: 100%;
     border-radius: 0;
@@ -88,21 +91,29 @@
     /* 142.857% */
 }
 
-.input-group select {
+.input-group select,
+.input-group .form-select {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
     border: 1px solid rgba(157, 147, 147, 0.633);
-    border-radius: 8px;
-    padding: 8px;
+    border-radius: 0 8px 8px 0;
+    padding: 10px 12px;
     background-color: white;
     width: 100%;
-    font-size: 12px;
+    font-size: 11px;
     color: #000000;
     cursor: pointer;
+    min-height: 38px;
+    line-height: 16px;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
 }
 
-.input-group select:focus {
+.input-group select:focus,
+.input-group .form-select:focus {
     outline: none;
     border-color: var(--color-default);
     box-shadow: 0 0 5px rgba(33, 145, 165, 0.5);
@@ -110,24 +121,44 @@
 
 .input-group .input-group-text {
     font-weight: 600;
-    size: 12px;
-    line-height: 18px;
+    font-size: 11px;
+    line-height: 16px;
     color: var(--color-default);
     background-color: white;
     border: 1px solid rgba(157, 147, 147, 0.633);
     border-radius: 8px 0 0 8px;
+    padding: 8px 10px;
 }
 
 /* Adjust the height of the select to match the input box */
 .input-group {
-    height: 38px;
+    height: auto;
     /* Adjust as needed */
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.input-group .input-group-text {
+    border-right: none;
+}
+
+.input-group .form-select {
+    border-left: none;
 }
 
 /* Optional: Apply styles for better consistency */
 .input-group .input-group-text:hover {
     background-color: var(--color-light);
     /* Change color on hover */
+}
+
+/* Selected Members section styling */
+.col-md-5 h5 {
+    font-size: 14px !important;
+    text-align: center;
+    color: #2291A5;
+    font-weight: 600;
+    margin-bottom: 12px;
 }
 
 .add-button {
@@ -146,7 +177,7 @@
     color: var(--White, #FFF);
     text-align: center;
     font-family: sans-serif;
-    font-size: 16px;
+    font-size: 14px;
     font-style: normal;
     font-weight: 600;
     margin: 0;
@@ -385,10 +416,10 @@
 
     /* Public Sans/Text sm/Regular */
     font-family: sans-serif;
-    font-size: 16px;
+    font-size: 14px;
     font-style: normal;
     font-weight: 600;
-    line-height: 20px;
+    line-height: 18px;
     /* 142.857% */
 }
 

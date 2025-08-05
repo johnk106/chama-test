@@ -300,6 +300,8 @@ body {
     display: flex !important;
     align-items: center !important;
     gap: var(--brand-space-sm) !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
 }
 
 .avatar {
@@ -311,6 +313,7 @@ body {
     align-items: center !important;
     justify-content: center !important;
     overflow: hidden !important;
+    flex-shrink: 0 !important;
 }
 
 .avatar img {
@@ -328,6 +331,9 @@ body {
     font-size: 14px !important;
     font-weight: 500 !important;
     color: var(--brand-gray-700) !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
 }
 
 /* ================================
