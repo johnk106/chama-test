@@ -601,31 +601,34 @@
    IMPROVED MOBILE FORM LAYOUT
    ================================ */
 
-/* Form container styling */
+/* Form container styling - full width */
 .form-container {
   width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
+  max-width: none;
+  margin: 0;
+  padding: 0;
 }
 
 .new-chama-form {
   width: 100%;
+  padding: 0;
 }
 
 /* Form row styling */
 .form-row {
   margin-bottom: 20px;
   width: 100%;
+  padding: 0 16px; /* Add inner padding instead of container margin */
 }
 
 .form-row:last-child {
-  margin-bottom: 0;
+  margin-bottom: 80px; /* Extra space for bottom scrolling */
 }
 
-/* Two columns layout for desktop */
+/* Two columns layout - keep on mobile too */
 .two-columns {
   display: flex;
-  gap: 16px;
+  gap: 12px;
   align-items: flex-end;
 }
 
@@ -701,6 +704,8 @@
   border-radius: 12px;
   padding: 20px;
   background: white;
+  max-height: 400px; /* Limit height to prevent too much scroll */
+  overflow-y: auto; /* Allow internal scrolling if needed */
 }
 
 .members-title {
@@ -721,6 +726,7 @@
   transition: all 0.3s ease;
   border: none;
   box-shadow: 0 4px 12px rgba(33, 145, 165, 0.3);
+  margin-bottom: 20px; /* Extra margin for mobile scrolling */
 }
 
 .add-button:hover {
@@ -771,17 +777,15 @@
     width: 100%;
   }
   
-  /* Stack two-column layout on mobile */
+  /* Keep two-column layout on mobile for date/type */
   .two-columns {
-    flex-direction: column;
-    gap: 0;
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
   }
   
   .two-columns .input-box {
-    margin-bottom: 16px;
-  }
-  
-  .two-columns .input-box:last-child {
+    flex: 1;
     margin-bottom: 0;
   }
   
@@ -841,10 +845,66 @@
     font-size: 16px;
   }
   
-  /* Form section mobile adjustments */
+  /* Form section mobile adjustments - full width */
   .form-section {
-    padding: 16px !important;
-    margin: 5% auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    background: #e4e9f7 !important;
+  }
+  
+  /* Ensure main content area allows proper scrolling */
+  .main-content {
+    min-height: 100vh !important;
+    padding-bottom: 100px !important; /* Extra padding for scrolling */
+  }
+  
+  /* Page content adjustments */
+  .page-content {
+    padding: 0 !important;
+    min-height: calc(100vh - 120px) !important;
+  }
+  
+  /* Header section mobile styling */
+  .header-section {
+    padding: 20px 16px !important;
+    margin: 0 !important;
+    background: white !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+  }
+  
+  .new-chama-sect-header {
+    font-size: 20px !important;
+    font-weight: 600 !important;
+    color: #2291A5 !important;
+    margin: 0 !important;
+    text-align: center !important;
+  }
+  
+  /* Alert cluster styling */
+  #alertCluster {
+    padding: 0 16px !important;
+    margin: 16px 0 !important;
+  }
+  
+  /* Mobile input box adjustments */
+  .input-box {
+    background: white !important;
+    border: 1px solid rgba(157, 147, 147, 0.3) !important;
+    border-radius: 8px !important;
+    margin-bottom: 0 !important;
+  }
+  
+  .input-box label {
+    color: #2291A5 !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    margin-bottom: 8px !important;
+    display: block !important;
+    float: none !important;
   }
 }
 

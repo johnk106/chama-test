@@ -230,6 +230,24 @@ html, body,
   .mobile-actions {
     gap: 12px !important;
   }
+  
+  /* Mobile scrolling improvements */
+  .main-content {
+    min-height: 100vh !important;
+    overflow-y: auto !important;
+  }
+  
+  .page-content {
+    padding-bottom: 120px !important; /* Extra space for scrolling */
+    min-height: calc(100vh - 64px) !important; /* Account for mobile header */
+  }
+  
+  /* Ensure mobile header doesn't interfere with scrolling */
+  .mobile-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
+  }
 }
 
 /* Desktop responsive adjustments */
