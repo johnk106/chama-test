@@ -1324,19 +1324,19 @@ button:focus {
     }
     
     .input-box label {
-        font-size: 10px;
+        font-size: 9px;
     }
     
     .input-box input {
-        font-size: 10px;
+        font-size: 9px;
     }
     
     .input-group .input-group-text {
-        font-size: 10px;
+        font-size: 9px;
     }
     
     .input-group select {
-        font-size: 10px;
+        font-size: 9px;
     }
     
     .button-title {
@@ -1373,19 +1373,19 @@ button:focus {
 
 @media (max-width: 480px) {
     .input-box label {
-        font-size: 9px;
+        font-size: 8px;
     }
     
     .input-box input {
-        font-size: 9px;
+        font-size: 8px;
     }
     
     .input-group .input-group-text {
-        font-size: 9px;
+        font-size: 8px;
     }
     
     .input-group select {
-        font-size: 9px;
+        font-size: 8px;
     }
     
     .button-title {
