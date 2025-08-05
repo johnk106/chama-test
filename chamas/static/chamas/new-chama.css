@@ -598,40 +598,307 @@
 }
 
 /* ================================
-   MOBILE-SPECIFIC FORM IMPROVEMENTS  
+   IMPROVED MOBILE FORM LAYOUT
    ================================ */
 
-/* Simple mobile improvements for Select Group Type field */
+/* Form container styling */
+.form-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.new-chama-form {
+  width: 100%;
+}
+
+/* Form row styling */
+.form-row {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.form-row:last-child {
+  margin-bottom: 0;
+}
+
+/* Two columns layout for desktop */
+.two-columns {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.two-columns .input-box {
+  flex: 1;
+}
+
+/* Full width input styling */
+.input-box.full-width {
+  width: 100%;
+}
+
+/* Select box specific styling */
+.select-box select,
+.select-box .form-select {
+  width: 100% !important;
+  padding: 12px !important;
+  font-size: 14px !important;
+  border: 1px solid rgba(157, 147, 147, 0.633) !important;
+  border-radius: 8px !important;
+  background-color: white !important;
+  color: #000000 !important;
+  cursor: pointer !important;
+}
+
+.select-box select:focus,
+.select-box .form-select:focus {
+  outline: none !important;
+  border-color: var(--color-default) !important;
+  box-shadow: 0 0 5px rgba(33, 145, 165, 0.5) !important;
+}
+
+/* Enhanced Add Members button */
+.add-members-button {
+  width: 100%;
+  padding: 16px;
+  border: 2px dashed #2291A5;
+  border-radius: 12px;
+  background: rgba(33, 145, 165, 0.05);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.add-members-button:hover {
+  background: rgba(33, 145, 165, 0.1);
+  border-color: #1a7589;
+  transform: translateY(-1px);
+}
+
+.button-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.button-content i {
+  font-size: 20px;
+  color: #2291A5;
+}
+
+.button-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2291A5;
+  margin: 0;
+}
+
+/* Members section styling */
+.members-section {
+  width: 100%;
+  border: 1px solid rgba(33, 145, 165, 0.15);
+  border-radius: 12px;
+  padding: 20px;
+  background: white;
+}
+
+.members-title {
+  text-align: center;
+  color: #2291A5;
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+
+/* Enhanced submit button */
+.add-button {
+  width: 100%;
+  padding: 16px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2291A5 0%, #1a7589 100%);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  box-shadow: 0 4px 12px rgba(33, 145, 165, 0.3);
+}
+
+.add-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(33, 145, 165, 0.4);
+}
+
+.create-chama-text {
+  color: white;
+  text-align: center;
+  font-family: sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Override any old conflicting styles */
 @media (max-width: 768px) {
-  /* Just convert input-group to a normal select on mobile */
+  /* Remove old row/column styling conflicts */
+  .row {
+    margin: 0;
+  }
+  
+  .col-md-7, .col-md-5, .col-md-6 {
+    padding: 0;
+    width: 100%;
+  }
+  
+  /* Ensure no old input-group styles interfere */
   .input-group {
-    display: block !important;
-    height: auto !important;
+    display: none; /* Hide any remaining input-group elements */
   }
   
-  .input-group .input-group-text {
-    display: none !important; /* Hide the label text */
+  /* Override old Bootstrap styling */
+  .mb-2, .mb-3, .mt-2 {
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
   }
   
-  .input-group .form-select,
-  .input-group select {
-    width: 100% !important;
+  /* Remove old button styling conflicts */
+  .button-start {
+    display: none;
+  }
+  
+  /* Ensure form flows properly */
+  .new-chama-form {
+    display: block;
+    width: 100%;
+  }
+  
+  /* Stack two-column layout on mobile */
+  .two-columns {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .two-columns .input-box {
+    margin-bottom: 16px;
+  }
+  
+  .two-columns .input-box:last-child {
+    margin-bottom: 0;
+  }
+  
+  /* Mobile form spacing */
+  .form-row {
+    margin-bottom: 16px;
+  }
+  
+  /* Mobile input improvements */
+  .input-box {
+    margin-bottom: 0 !important;
+  }
+  
+  .input-box input,
+  .select-box select,
+  .select-box .form-select {
+    font-size: 16px !important; /* Prevent zoom on iOS */
     padding: 12px !important;
-    font-size: 16px !important;
-    border: 1px solid rgba(157, 147, 147, 0.633) !important;
-    border-radius: 8px !important;
-    background-color: white !important;
-    color: #000000 !important;
-    -webkit-appearance: none !important;
-    -moz-appearance: none !important;
-    appearance: none !important;
-    cursor: pointer !important;
+    min-height: 48px !important; /* Touch-friendly */
   }
   
-  .input-group .form-select:focus,
-  .input-group select:focus {
-    outline: none !important;
-    border-color: var(--color-default) !important;
-    box-shadow: 0 0 5px rgba(33, 145, 165, 0.5) !important;
+  /* Mobile button improvements */
+  .add-members-button {
+    padding: 20px;
+    margin-bottom: 0;
+  }
+  
+  .button-content {
+    gap: 8px;
+  }
+  
+  .button-content i {
+    font-size: 18px;
+  }
+  
+  .button-title {
+    font-size: 15px;
+  }
+  
+  /* Mobile members section */
+  .members-section {
+    padding: 16px;
+  }
+  
+  .members-title {
+    font-size: 15px;
+    margin-bottom: 12px;
+  }
+  
+  /* Mobile submit button */
+  .add-button {
+    padding: 16px;
+    margin-top: 0;
+  }
+  
+  .create-chama-text {
+    font-size: 16px;
+  }
+  
+  /* Form section mobile adjustments */
+  .form-section {
+    padding: 16px !important;
+    margin: 5% auto !important;
+  }
+}
+
+/* Desktop styling adjustments */
+@media (min-width: 769px) {
+  /* Keep two-column layout on desktop */
+  .two-columns {
+    display: flex;
+    gap: 20px;
+    align-items: flex-end;
+  }
+  
+  /* Desktop form spacing */
+  .form-row {
+    margin-bottom: 24px;
+  }
+  
+  /* Desktop input sizing */
+  .input-box input,
+  .select-box select,
+  .select-box .form-select {
+    font-size: 14px;
+    padding: 10px;
+    min-height: 40px;
+  }
+  
+  /* Desktop button sizing */
+  .add-members-button {
+    padding: 18px;
+  }
+  
+  .button-content i {
+    font-size: 22px;
+  }
+  
+  .button-title {
+    font-size: 18px;
+  }
+  
+  /* Desktop members section */
+  .members-section {
+    padding: 24px;
+  }
+  
+  .members-title {
+    font-size: 18px;
+  }
+  
+  /* Desktop submit button */
+  .add-button {
+    padding: 18px;
+  }
+  
+  .create-chama-text {
+    font-size: 18px;
   }
 }
