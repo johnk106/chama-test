@@ -299,7 +299,7 @@ body {
 .input-box label {
     font-weight: 600;
     font-size: 10px;
-    line-height: 16px;
+    line-height: 18px;
     color: var(--color-default);
     float: left;
 }
@@ -307,7 +307,7 @@ body {
 .input-box input {
     font-weight: 400;
     font-size: 10px;
-    line-height: 16px;
+    line-height: 18px;
     color: #000000;
     padding: 5px;
     border: none;
@@ -349,7 +349,7 @@ body {
 .input-group .input-group-text {
     font-weight: 600;
     font-size: 10px;
-    line-height: 16px;
+    line-height: 18px;
     color: var(--color-default);
     background-color: white;
     border: 1px solid rgba(157, 147, 147, 0.633);
