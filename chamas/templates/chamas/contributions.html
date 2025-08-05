@@ -883,6 +883,9 @@ function rebindMobileAccordion() {
         const accordionContent = $(this).closest('.mobile-accordion-item').find('.accordion-content');
         const toggleIcon = $(this).find('.accordion-toggle');
         
+        // Load contribution details for desktop view
+        fetchAndRenderContributionDetails(contributionName);
+        
         if (accordionContent.is(':visible')) {
             accordionContent.slideUp();
             toggleIcon.removeClass('bx-chevron-up').addClass('bx-chevron-down');
@@ -1455,11 +1458,6 @@ $(document).ready(function () {
          // Highlight selected item
          $('.contribution-item').removeClass('selected');
          $(this).addClass('selected');
-     });
-
-         $(document).on('click', '.mobile-accordion-item .accordion-header', function() {
-         const contributionName = $(this).closest('.mobile-accordion-item').data('contribution-name');
-         fetchAndRenderContributionDetails(contributionName);
      });
 
      // Mobile update contribution button
