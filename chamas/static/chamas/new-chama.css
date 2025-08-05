@@ -1,27 +1,10 @@
 /* Modern Create Chama Page Styles */
 :root {
-    --primary-color: #2291A5;
-    --primary-light: #4FC3F7;
-    --primary-dark: #1976D2;
-    --secondary-color: #FF6B35;
-    --success-color: #4CAF50;
-    --warning-color: #FF9800;
-    --danger-color: #F44336;
-    --info-color: #2196F3;
-    --text-primary: #2C3E50;
-    --text-secondary: #7F8C8D;
-    --text-light: #BDC3C7;
-    --background-light: #F8F9FA;
-    --background-white: #FFFFFF;
-    --border-color: #E9ECEF;
-    --border-light: #F1F3F4;
-    --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.1);
-    --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.15);
-    --shadow-heavy: 0 8px 32px rgba(0, 0, 0, 0.2);
-    --radius-small: 8px;
-    --radius-medium: 12px;
-    --radius-large: 16px;
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --color-default: #2191a5;
+    --color-second: #0067ac;
+    --color-white: #fff;
+    --color-body: #e4e9f7;
+    --color-light: #e0e0e0;
 }
 
 /* Base Styles */
@@ -228,11 +211,19 @@ body {
 
 /* Form Sections */
 .form-section {
-    margin-bottom: 2rem;
+    margin: 10% auto;
+    text-align: center;
+    padding: 20px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+    max-width: 1000px;
+    width: 90%;
+    border-radius: 10px;
 }
 
-.form-section:last-child {
-    margin-bottom: 0;
+/* Style the .your-chamas-sect-header */
+.new-chama-sect-header {
+    margin-top: 0;
+    /* Remove default margin for h3 */
 }
 
 .section-header {
@@ -255,10 +246,16 @@ body {
 }
 
 .section-title {
-    font-size: 1.25rem;
+    color: var(--Primary-500, #2291A5);
+    text-align: center;
+
+    /* Public Sans/Text sm/Regular */
+    font-family: sans-serif;
+    font-size: 15px;
+    font-style: normal;
     font-weight: 600;
-    color: var(--text-primary);
-    margin: 0;
+    line-height: 20px;
+    /* 142.857% */
 }
 
 /* Input Groups */
@@ -290,17 +287,102 @@ body {
     position: relative;
 }
 
-.input-wrapper input,
-.select-wrapper select {
+.input-box {
+    border-radius: 8px;
+    border: 1px solid rgba(157, 147, 147, 0.633);
+    padding: 8px;
+    background-color: white;
+    margin: 2px;
     width: 100%;
-    padding: 0.875rem 1rem;
-    border: 2px solid var(--border-color);
-    border-radius: var(--radius-small);
-    font-size: 0.875rem;
-    background: var(--background-white);
-    color: var(--text-primary);
-    transition: var(--transition);
-    font-family: inherit;
+}
+
+.input-box label {
+    font-weight: 600;
+    font-size: 11px;
+    line-height: 18px;
+    color: var(--color-default);
+    float: left;
+}
+
+.input-box input {
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 18px;
+    color: #000000;
+    padding: 5px;
+    border: none;
+    width: 100%;
+    border-radius: 0;
+    background-color: white;
+    border: 1px solid white;
+    margin: 0;
+    height: auto;
+    width: 100%;
+
+}
+
+.input-group {
+    height: 38px;
+    /* Adjust as needed */
+}
+
+.input-group select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: 1px solid rgba(157, 147, 147, 0.633);
+    border-radius: 8px;
+    padding: 8px;
+    background-color: white;
+    width: 100%;
+    font-size: 11px;
+    color: #000000;
+    cursor: pointer;
+}
+
+.input-group select:focus {
+    outline: none;
+    border-color: var(--color-default);
+    box-shadow: 0 0 5px rgba(33, 145, 165, 0.5);
+}
+
+.input-group .input-group-text {
+    font-weight: 600;
+    font-size: 11px;
+    line-height: 18px;
+    color: var(--color-default);
+    background-color: white;
+    border: 1px solid rgba(157, 147, 147, 0.633);
+    border-radius: 8px 0 0 8px;
+}
+
+/* Optional: Apply styles for better consistency */
+.input-group .input-group-text:hover {
+    background-color: var(--color-light);
+    /* Change color on hover */
+}
+
+.add-button {
+    border-radius: 8px;
+    background: var(--Primary-500, #2291A5);
+    display: flex;
+    padding: 10px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+}
+
+.add-button p.create-chama-text {
+    color: var(--White, #FFF);
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    margin: 0;
+    padding: 0;
 }
 
 .input-wrapper input:focus,
@@ -526,14 +608,16 @@ body {
 .member-avatar {
     width: 40px;
     height: 40px;
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    background: rgba(34, 145, 165, 0.1);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
-    font-size: 1.25rem;
-    flex-shrink: 0;
+}
+
+.member-avatar .bx-user-circle {
+    font-size: 24px;
+    color: #2291A5;
 }
 
 .member-info {
@@ -996,5 +1080,222 @@ button:focus {
         --text-primary: #ffffff;
         --text-secondary: #cccccc;
         --border-color: #404040;
+    }
+}
+
+/* List tile styles */
+.member-tile {
+    margin-bottom: 8px;
+}
+
+.list-tile {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+    overflow: hidden;
+}
+
+.list-tile:hover {
+    border-color: #2291A5;
+    box-shadow: 0 2px 8px rgba(34, 145, 165, 0.1);
+}
+
+.tile-content {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    gap: 12px;
+}
+
+.tile-leading {
+    flex-shrink: 0;
+}
+
+.member-avatar {
+    width: 40px;
+    height: 40px;
+    background: rgba(34, 145, 165, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.member-avatar .bx-user-circle {
+    font-size: 24px;
+    color: #2291A5;
+}
+
+.tile-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.tile-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a202c;
+    margin: 0 0 2px 0;
+    line-height: 1.3;
+}
+
+.tile-subtitle {
+    font-size: 13px;
+    color: #718096;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.tile-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.btn-action {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: transparent;
+}
+
+.btn-action i {
+    font-size: 16px;
+}
+
+.btn-edit {
+    color: #4299e1;
+}
+
+.btn-edit:hover {
+    background: rgba(66, 153, 225, 0.1);
+    color: #3182ce;
+}
+
+.btn-delete {
+    color: #e53e3e;
+}
+
+.btn-delete:hover {
+    background: rgba(229, 62, 62, 0.1);
+    color: #c53030;
+}
+
+/* Member count header */
+.member-count-header {
+    padding: 8px 0;
+}
+
+.member-count-header hr {
+    margin: 8px 0;
+    border-color: #e2e8f0;
+}
+
+.member-count-header .btn-outline-secondary {
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border-color: #cbd5e0;
+    color: #4a5568;
+}
+
+.member-count-header .btn-outline-secondary:hover {
+    background-color: #f7fafc;
+    border-color: #a0aec0;
+}
+
+/* Selected members section */
+.member-list {
+    max-height: 350px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.member-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.member-list::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 2px;
+}
+
+.member-list::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 2px;
+}
+
+.member-list::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
+}
+
+/* Alert styles enhancement */
+.alert {
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.alert-success {
+    background-color: #f0fff4;
+    border-color: #9ae6b4;
+    color: #276749;
+}
+
+.alert-danger {
+    background-color: #fed7d7;
+    border-color: #feb2b2;
+    color: #c53030;
+}
+
+.alert-warning {
+    background-color: #fffbeb;
+    border-color: #f6e05e;
+    color: #744210;
+}
+
+.alert-info {
+    background-color: #ebf8ff;
+    border-color: #90cdf4;
+    color: #2c5282;
+}
+
+/* Mobile responsive fixes */
+@media (max-width: 768px) {
+    .form-section {
+        margin: 5% auto;
+        width: 95%;
+        padding: 15px;
+    }
+    
+    .input-box label {
+        font-size: 10px;
+    }
+    
+    .input-box input {
+        font-size: 10px;
+    }
+    
+    .input-group .input-group-text {
+        font-size: 10px;
+    }
+    
+    .input-group select {
+        font-size: 10px;
+    }
+    
+    .button-title {
+        font-size: 14px;
+    }
+    
+    .add-button p.create-chama-text {
+        font-size: 14px;
     }
 }

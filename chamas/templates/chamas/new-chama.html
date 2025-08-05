@@ -4,252 +4,106 @@
 {%block head%}
 <title>Create New Chama</title>
 <link rel="stylesheet" href="{%static 'chamas/new-chama.css'%}">
+
 {%endblock%}
+
 
 {%block body%}
 
-<!-- Modern Mobile-First Create Chama Page -->
-<div class="create-chama-container">
-    <!-- Enhanced Header Section -->
-    <div class="chama-header">
-        <div class="header-content">
-            <div class="header-left">
-                <div class="header-icon-wrapper">
-                    <i class='bx bx-group'></i>
-                </div>
-                <div class="header-text">
-                    <h1 class="page-title">Create New Group</h1>
-                    <p class="page-subtitle">Set up your chama and invite members</p>
-                </div>
-            </div>
-            <div class="header-right">
-                <div class="progress-indicator">
-                    <div class="progress-step active">
-                        <span class="step-number">1</span>
-                        <span class="step-label">Details</span>
-                    </div>
-                    <div class="progress-line"></div>
-                    <div class="progress-step">
-                        <span class="step-number">2</span>
-                        <span class="step-label">Members</span>
-                    </div>
-                </div>
-            </div>
+<div class="row">
+    <div class="col-md-8 form-section">
+        <div class="header-section">
+            <h3 class="new-chama-sect-header">Create New Group </h3>
         </div>
-    </div>
+        <div class="" id="alertCluster">
 
-    <!-- Alert Container -->
-    <div class="alert-container" id="alertCluster"></div>
-
-    <!-- Main Form Section -->
-    <div class="form-container">
-        <div class="form-card">
-            <form id="createChamaForm" class="chama-form">
-                {% csrf_token %}
-                
-                <!-- Chama Name Section -->
-                <div class="form-section">
-                    <div class="section-header">
-                        <div class="section-icon">
-                            <i class='bx bx-edit-alt'></i>
-                        </div>
-                        <h3 class="section-title">Basic Information</h3>
-                    </div>
-                    
-                    <div class="input-group-modern">
-                        <label for="name" class="input-label">
-                            <i class='bx bx-hash'></i>
-                            Chama Name
-                            <span class="required">*</span>
-                        </label>
-                        <div class="input-wrapper">
-                            <input type="text" name="name" id="name" placeholder="Enter your chama name" required>
-                            <div class="input-focus-border"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Group Type Section -->
-                <div class="form-section">
-                    <div class="section-header">
-                        <div class="section-icon">
-                            <i class='bx bx-category'></i>
-                        </div>
-                        <h3 class="section-title">Group Type</h3>
-                    </div>
-                    
-                    <div class="input-group-modern">
-                        <label for="type" class="input-label">
-                            <i class='bx bx-list-ul'></i>
-                            Select Group Type
-                            <span class="required">*</span>
-                        </label>
-                        <div class="select-wrapper">
-                            <select name="type" id="type" required>
-                                <option value="">Choose group type...</option>
-                                {%for type in types%}
-                                <option value="{{type.id}}">{{type.name}}</option>
-                                {%endfor%}
-                            </select>
-                            <i class='bx bx-chevron-down select-arrow'></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Start Date Section -->
-                <div class="form-section">
-                    <div class="section-header">
-                        <div class="section-icon">
-                            <i class='bx bx-calendar'></i>
-                        </div>
-                        <h3 class="section-title">Start Date</h3>
-                    </div>
-                    
-                    <div class="input-group-modern">
-                        <label for="date" class="input-label">
-                            <i class='bx bx-calendar-check'></i>
-                            Start Date
-                            <span class="required">*</span>
-                        </label>
-                        <div class="input-wrapper">
-                            <input type="date" name="date" id="date" required>
-                            <div class="input-focus-border"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Members Section -->
-                <div class="form-section">
-                    <div class="section-header">
-                        <div class="section-icon">
-                            <i class='bx bx-user-plus'></i>
-                        </div>
-                        <h3 class="section-title">Add Members</h3>
-                    </div>
-                    
-                    <div class="add-members-card" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="resetMemberForm()">
-                        <div class="add-members-content">
-                            <div class="add-icon">
-                                <i class='bx bx-user-plus'></i>
-                            </div>
-                            <div class="add-text">
-                                <h4>Add Members</h4>
-                                <p>Invite people to join your chama</p>
-                            </div>
-                            <div class="add-arrow">
-                                <i class='bx bx-chevron-right'></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
         </div>
+        <div class="row">
+            <div class="col-md-7">
+                <form id="createChamaForm" class="new-chama-form">
+                    {% csrf_token %}
+                    <div class="row" style="padding: 10px;">
+                        <div class="col-md-6 input-box">
+                            <label for="name">Name <span style="color: red;">*</span></label>
+                            <input type="text" name="name" id="name" placeholder="Enter chama name" required>
+                        </div>
+                    </div>
 
-        <!-- Selected Members Sidebar -->
-        <div class="members-sidebar">
-            <div class="members-header">
-                <div class="members-title">
-                    <i class='bx bx-group'></i>
-                    <h3>Selected Members</h3>
-                </div>
-                <div class="members-count" id="membersCount">
-                    <span class="count-number">0</span>
-                    <span class="count-label">members</span>
-                </div>
-            </div>
+                    <div class="add-members-button mb-2" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="resetMemberForm()">
+                        <div class="button-start row">
+                           <div class="col d-flex align-items-center">
+                            <i class='bx bx-user-plus bx-sm pe-2'></i>
+                            <h5 class="button-title mb-1">Add Members</h5>
+                           </div>
+                        </div>
+                    </div>
             
-            <div class="members-list" id="memberList">
-                <div class="empty-state" id="emptyMessage">
-                    <div class="empty-icon">
-                        <i class='bx bx-user-circle'></i>
+                    <div class="row" style="padding: 10px;">
+                        <div class="col-md-6 input-box">
+                            <label for="date">Start date <span style="color: red;">*</span></label>
+                            <input type="date" name="date" id="date" required>
+                        </div>
                     </div>
-                    <h4>No Members Yet</h4>
-                    <p>Start by adding members to your chama</p>
+
+                    <div class="input-group mb-3">
+                        <label class="input-group-text" for="type">Select Group Type <span style="color: red;">*</span></label>
+                        <select class="form-select text-capitalize" name="type" id="type" required>
+                            <option value="">Choose type...</option>
+                            {%for type in types%}
+                            <option value="{{type.id}}">{{type.name}}</option>
+                            {%endfor%}
+                        </select>
+                    </div>
+
+                </form>
+            </div>
+            <div class="col-md-5">
+                <h5 style="text-align: center;color: #2291A5;font-weight: 600;">Selected Members</h5>
+                <div class="member-list" id="memberList">
+                    <div class="member-single" id="emptyMessage">
+                       <div class="alert alert-warning">You have not selected any members yet</div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Create Button -->
-    <div class="create-button-container">
-        <button class="create-chama-btn" id="createChamaBtn">
-            <div class="btn-content">
-                <i class='bx bx-plus-circle'></i>
-                <span class="btn-text">Create Chama</span>
-            </div>
-            <div class="btn-loading" style="display: none;">
-                <div class="spinner"></div>
-                <span>Creating...</span>
-            </div>
-        </button>
+        <div class="add-button mt-2" id="createChamaBtn" style="cursor: pointer;">
+            <p class="create-chama-text">Create Chama</p>
+        </div>
     </div>
 </div>
 
-<!-- Enhanced Modal for adding members -->
+<!-- Modal for adding members (enhanced) -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content modern-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-title-section">
-                    <div class="modal-icon">
-                        <i class='bx bx-user-plus'></i>
-                    </div>
-                    <div class="modal-title-content">
-                        <h1 class="modal-title" id="exampleModalLabel">Add Member to Group</h1>
-                        <p class="modal-subtitle">Enter member details below</p>
-                    </div>
-                </div>
-                <button type="button" class="btn-close modern-close" data-bs-dismiss="modal" aria-label="Close">
-                    <i class='bx bx-x'></i>
-                </button>
+                <h1 class="modal-title fs-5" id="exampleModalLabel" style="color: #2291a5">
+                    Add Member to Group
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="addMemberForm" class="modern-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="memberName" class="form-label">
-                                <i class='bx bx-user'></i>
-                                Full Name
-                                <span class="required">*</span>
-                            </label>
-                            <input type="text" name="name" id="memberName" placeholder="Enter full name" class="form-control modern-input" required />
-                        </div>
-                        <div class="form-group">
-                            <label for="memberMobile" class="form-label">
-                                <i class='bx bx-phone'></i>
-                                Mobile Number
-                                <span class="required">*</span>
-                            </label>
-                            <input type="text" name="mobile" id="memberMobile" placeholder="+254 7XX XXX XXX" class="form-control modern-input" required />
-                        </div>
+                <form id="addMemberForm">
+                    <div class="mb-3">
+                        <label for="memberName" class="form-label">Name <span style="color: red;">*</span></label>
+                        <input type="text" name="name" id="memberName" placeholder="Eg John Doe" class="form-control" required />
                     </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="memberEmail" class="form-label">
-                                <i class='bx bx-envelope'></i>
-                                Email Address
-                                <span class="required">*</span>
-                            </label>
-                            <input type="email" name="email" id="memberEmail" placeholder="example@email.com" class="form-control modern-input" required />
-                        </div>
-                        <div class="form-group">
-                            <label for="memberIdNumber" class="form-label">
-                                <i class='bx bx-id-card'></i>
-                                ID Number
-                            </label>
-                            <input type="text" name="id_number" id="memberIdNumber" placeholder="12345678" class="form-control modern-input" />
-                        </div>
+                    <div class="mb-3">
+                        <label for="memberMobile" class="form-label">Mobile <span style="color: red;">*</span></label>
+                        <input type="text" name="mobile" id="memberMobile" placeholder="Eg +2547XXXXXXXX" class="form-control" required />
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="memberRole" class="form-label">
-                            <i class='bx bx-badge'></i>
-                            Role
-                            <span class="required">*</span>
-                        </label>
-                        <select name="role" id="memberRole" class="form-control modern-select" required>
-                            <option value="">Select member role...</option>
+                    <div class="mb-3">
+                        <label for="memberEmail" class="form-label">Email <span style="color: red;">*</span></label>
+                        <input type="email" name="email" id="memberEmail" placeholder="Eg example@email.com" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="memberIdNumber" class="form-label">ID Number</label>
+                        <input type="text" name="id_number" id="memberIdNumber" placeholder="Eg 12XXXXXXXX" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="memberRole" class="form-label">Role <span style="color: red;">*</span></label>
+                        <select name="role" id="memberRole" class="form-select" required>
+                            <option value="">Select role...</option>
                             {% for role in roles %}
                             <option value="{{role.id}}">{{role.name}}</option>
                             {% endfor %}
@@ -258,14 +112,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary modern-btn-secondary" data-bs-dismiss="modal">
-                    <i class='bx bx-x'></i>
-                    Cancel
-                </button>
-                <button type="button" class="btn btn-primary modern-btn-primary" id="addMemberBtn">
-                    <i class='bx bx-plus'></i>
-                    Add Member
-                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="addMemberBtn">Add Member</button>
             </div>
         </div>
     </div>
@@ -409,49 +257,63 @@ function addMemberToList() {
 function updateMembersList() {
     const memberList = document.getElementById('memberList');
     const emptyMessage = document.getElementById('emptyMessage');
-    const membersCount = document.getElementById('membersCount');
-    
-    // Update count
-    const countNumber = membersCount.querySelector('.count-number');
-    countNumber.textContent = temporaryMembers.length;
     
     if (temporaryMembers.length === 0) {
-        emptyMessage.style.display = 'flex';
+        emptyMessage.style.display = 'block';
         // Clear any existing member cards
-        const existingCards = memberList.querySelectorAll('.member-card');
+        const existingCards = memberList.querySelectorAll('.member-tile, .member-count-header');
         existingCards.forEach(card => card.remove());
         return;
     }
     
     emptyMessage.style.display = 'none';
     
-    // Clear existing member cards
-    const existingCards = memberList.querySelectorAll('.member-card');
-    existingCards.forEach(card => card.remove());
+    // Clear existing member tiles and headers
+    const existingItems = memberList.querySelectorAll('.member-tile, .member-count-header');
+    existingItems.forEach(item => item.remove());
     
-    // Add member cards
+    // Add member count header
+    const memberCountHeader = document.createElement('div');
+    memberCountHeader.className = 'member-count-header mb-3';
+    memberCountHeader.innerHTML = `
+        <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted fw-medium">${temporaryMembers.length} member(s) selected</small>
+            <button class="btn btn-sm btn-outline-secondary" onclick="clearAllMembers()" title="Clear all members">
+                <i class="bx bx-trash-alt"></i> Clear All
+            </button>
+        </div>
+        <hr class="my-2">
+    `;
+    memberList.appendChild(memberCountHeader);
+    
+    // Add member tiles
     temporaryMembers.forEach((member, index) => {
-        const memberCard = document.createElement('div');
-        memberCard.className = 'member-card';
-        memberCard.innerHTML = `
-            <div class="member-avatar">
-                <i class='bx bx-user-circle'></i>
-            </div>
-            <div class="member-info">
-                <h4 class="member-name">${member.name}</h4>
-                <p class="member-role">${member.role_name}</p>
-                <p class="member-contact">${member.mobile}</p>
-            </div>
-            <div class="member-actions">
-                <button class="action-btn edit-btn" onclick="editMember('${member.id}')" title="Edit member">
-                    <i class='bx bx-edit-alt'></i>
-                </button>
-                <button class="action-btn delete-btn" onclick="removeMember('${member.id}')" title="Remove member">
-                    <i class='bx bx-trash-alt'></i>
-                </button>
+        const memberTile = document.createElement('div');
+        memberTile.className = 'member-tile mb-2';
+        memberTile.innerHTML = `
+            <div class="list-tile">
+                <div class="tile-content">
+                    <div class="tile-leading">
+                        <div class="member-avatar">
+                            <i class="bx bx-user-circle"></i>
+                        </div>
+                    </div>
+                    <div class="tile-body">
+                        <h6 class="tile-title">${member.name}</h6>
+                        <p class="tile-subtitle">${member.role_name}</p>
+                    </div>
+                    <div class="tile-actions">
+                        <button class="btn-action btn-edit" onclick="editMember('${member.id}')" title="Edit member">
+                            <i class="bx bx-edit-alt"></i>
+                        </button>
+                        <button class="btn-action btn-delete" onclick="removeMember('${member.id}')" title="Remove member">
+                            <i class="bx bx-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
         `;
-        memberList.appendChild(memberCard);
+        memberList.appendChild(memberTile);
     });
 }
 
@@ -459,6 +321,14 @@ function removeMember(memberId) {
     temporaryMembers = temporaryMembers.filter(member => member.id !== memberId);
     updateMembersList();
     showAlert('Member removed from the list', 'info');
+}
+
+function clearAllMembers() {
+    if (confirm('Are you sure you want to clear all selected members?')) {
+        temporaryMembers = [];
+        updateMembersList();
+        showAlert('All members cleared from the list', 'info');
+    }
 }
 
 function editMember(memberId) {
@@ -477,7 +347,7 @@ function editMember(memberId) {
     
     // Change modal title and button text
     document.getElementById('exampleModalLabel').textContent = 'Edit Member';
-    document.getElementById('addMemberBtn').innerHTML = '<i class="bx bx-check"></i> Update Member';
+    document.getElementById('addMemberBtn').textContent = 'Update Member';
     
     // Show the modal
     const modal = new bootstrap.Modal(document.getElementById('exampleModal'));
@@ -491,7 +361,7 @@ function resetMemberForm() {
     
     // Reset modal title and button text
     document.getElementById('exampleModalLabel').textContent = 'Add Member to Group';
-    document.getElementById('addMemberBtn').innerHTML = '<i class="bx bx-plus"></i> Add Member';
+    document.getElementById('addMemberBtn').textContent = 'Add Member';
 }
 
 function createChama() {
@@ -525,11 +395,8 @@ function createChama() {
     
     // Show loading state
     const createBtn = document.getElementById('createChamaBtn');
-    const btnContent = createBtn.querySelector('.btn-content');
-    const btnLoading = createBtn.querySelector('.btn-loading');
-    
-    btnContent.style.display = 'none';
-    btnLoading.style.display = 'flex';
+    const originalText = createBtn.querySelector('.create-chama-text').textContent;
+    createBtn.querySelector('.create-chama-text').textContent = 'Creating...';
     createBtn.style.pointerEvents = 'none';
     
     // Submit chama creation
@@ -559,8 +426,7 @@ function createChama() {
     })
     .finally(() => {
         // Reset button state
-        btnContent.style.display = 'flex';
-        btnLoading.style.display = 'none';
+        createBtn.querySelector('.create-chama-text').textContent = originalText;
         createBtn.style.pointerEvents = 'auto';
     });
 }
@@ -572,15 +438,10 @@ function showAlert(message, type) {
     alertCluster.innerHTML = '';
     
     const alert = document.createElement('div');
-    alert.className = `alert alert-${type} alert-dismissible fade show modern-alert`;
+    alert.className = `alert alert-${type} alert-dismissible fade show`;
     alert.innerHTML = `
-        <div class="alert-content">
-            <i class='bx ${type === 'success' ? 'bx-check-circle' : type === 'danger' ? 'bx-error-circle' : type === 'warning' ? 'bx-warning' : 'bx-info-circle'}'></i>
-            <span>${message}</span>
-        </div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-            <i class='bx bx-x'></i>
-        </button>
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     `;
     
     alertCluster.appendChild(alert);
