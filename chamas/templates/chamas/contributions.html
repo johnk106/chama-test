@@ -456,16 +456,16 @@ const contributionPagination = {
                         </div>
                         
                         <div class="accordion-content">
-                            <div class="members-table-header" id="mobile-header-${contribution.id}">
+                            <div class="members-table-header" id="mobile-header-${contribution.id}" ${hasRecords ? 'style="display: none;"' : ''}>
                                 <span>Members Name</span>
                                 <span>Balance</span>
                                 <span>Enter amount</span>
                             </div>
-                            <div class="members-list" id="members-list-${contribution.id}">
+                            <div class="members-list" id="members-list-${contribution.id}" ${hasRecords ? 'style="display: none;"' : ''}>
                                 <!-- Will be populated by JavaScript -->
                             </div>
                             <div id="mobile-contribution-feedback-${contribution.id}" class="alert" style="display: none; margin-top: 10px;"></div>
-                            <button class="update-contribution-btn admin" data-contribution-id="${contribution.id}" id="mobile-update-btn-${contribution.id}">
+                            <button class="update-contribution-btn admin" data-contribution-id="${contribution.id}" id="mobile-update-btn-${contribution.id}" ${hasRecords ? 'style="display: none;"' : ''}>
                                 Update contribution
                             </button>
                             
