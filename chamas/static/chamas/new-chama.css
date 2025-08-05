@@ -6,22 +6,75 @@
     --color-light: #e0e0e0;
 }
 
+/* New chama page specific body styling */
+.new-chama-body {
+    background: linear-gradient(135deg, #e4e9f7 0%, #f8fafc 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 0;
+    margin: 0;
+}
+
+/* Back button styling */
+.back-button-container {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+}
+
+.back-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: var(--color-default);
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(33, 145, 165, 0.3);
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.back-button:hover {
+    background: var(--color-second);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(33, 145, 165, 0.4);
+    text-decoration: none;
+}
+
+.back-button i {
+    font-size: 18px;
+    transition: transform 0.3s ease;
+}
+
+.back-button:hover i {
+    transform: translateX(-2px);
+}
+
 .form-section {
-    margin: 5% auto;
-    text-align: center;
-    padding: 15px;
-    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
-    max-width: 800px;
-    width: 95%;
-    border-radius: 10px;
+    margin: 80px auto 40px auto;
+    text-align: left;
+    padding: 30px;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+    width: 100%;
+    border-radius: 15px;
+    background: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 /* Style the .your-chamas-sect-header */
 .new-chama-sect-header {
     margin-top: 0;
-    font-size: 20px;
-    font-weight: 600;
+    margin-bottom: 25px;
+    font-size: 24px;
+    font-weight: 700;
     color: var(--color-default);
+    text-align: center;
     /* Remove default margin for h3 */
 }
 
@@ -153,6 +206,15 @@
 }
 
 /* Selected Members section styling */
+.selected-members-title {
+    font-size: 16px !important;
+    text-align: left;
+    color: #2291A5;
+    font-weight: 600;
+    margin-bottom: 15px;
+    padding-left: 5px;
+}
+
 .col-md-5 h5 {
     font-size: 14px !important;
     text-align: center;
@@ -386,16 +448,24 @@
 .add-members-button {
     display: flex;
     padding: 16px;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    align-self: stretch;
+    width: 100%;
     border-radius: 12px;
-    border: 0.5px solid var(--light, rgba(0, 0, 0, 0.20));
-    background: #FFF;
+    border: 2px dashed var(--color-default);
+    background: rgba(33, 145, 165, 0.05);
+    transition: all 0.3s ease;
+    cursor: pointer;
 
     /* XS - Drop Shadow */
-    box-shadow: 0px 3px 6px 0px rgba(148, 163, 184, 0.15);
+    box-shadow: 0px 2px 8px 0px rgba(33, 145, 165, 0.1);
+}
 
+.add-members-button:hover {
+    background: rgba(33, 145, 165, 0.1);
+    border-color: var(--color-second);
+    transform: translateY(-1px);
+    box-shadow: 0px 4px 12px 0px rgba(33, 145, 165, 0.2);
 }
 
 .button-start {
