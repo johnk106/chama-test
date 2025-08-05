@@ -298,16 +298,16 @@ body {
 
 .input-box label {
     font-weight: 600;
-    font-size: 11px;
-    line-height: 18px;
+    font-size: 10px;
+    line-height: 16px;
     color: var(--color-default);
     float: left;
 }
 
 .input-box input {
     font-weight: 400;
-    font-size: 11px;
-    line-height: 18px;
+    font-size: 10px;
+    line-height: 16px;
     color: #000000;
     padding: 5px;
     border: none;
@@ -335,7 +335,7 @@ body {
     padding: 8px;
     background-color: white;
     width: 100%;
-    font-size: 11px;
+    font-size: 10px;
     color: #000000;
     cursor: pointer;
 }
@@ -348,8 +348,8 @@ body {
 
 .input-group .input-group-text {
     font-weight: 600;
-    font-size: 11px;
-    line-height: 18px;
+    font-size: 10px;
+    line-height: 16px;
     color: var(--color-default);
     background-color: white;
     border: 1px solid rgba(157, 147, 147, 0.633);
@@ -1267,6 +1267,54 @@ button:focus {
     color: #2c5282;
 }
 
+/* Header Avatar Section Fixes */
+.mobile-header .profile,
+.desktop-header .profile {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex-direction: row !important;
+}
+
+.mobile-header .avatar,
+.desktop-header .avatar {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 50% !important;
+    background: #2191a5 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+    flex-shrink: 0 !important;
+}
+
+.mobile-header .avatar i,
+.desktop-header .avatar i {
+    color: white !important;
+    font-size: 16px !important;
+}
+
+.mobile-header .profile-name,
+.desktop-header .profile-name {
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: #374151 !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 120px !important;
+}
+
+.mobile-header .bx-chevron-down,
+.desktop-header .bx-chevron-down {
+    color: #6b7280 !important;
+    font-size: 14px !important;
+    margin-left: 4px !important;
+    flex-shrink: 0 !important;
+}
+
 /* Mobile responsive fixes */
 @media (max-width: 768px) {
     .form-section {
@@ -1276,26 +1324,80 @@ button:focus {
     }
     
     .input-box label {
-        font-size: 10px;
+        font-size: 9px;
     }
     
     .input-box input {
-        font-size: 10px;
+        font-size: 9px;
     }
     
     .input-group .input-group-text {
-        font-size: 10px;
+        font-size: 9px;
     }
     
     .input-group select {
-        font-size: 10px;
+        font-size: 9px;
     }
     
     .button-title {
-        font-size: 14px;
+        font-size: 13px;
     }
     
     .add-button p.create-chama-text {
-        font-size: 14px;
+        font-size: 13px;
+    }
+    
+    /* Mobile header improvements */
+    .mobile-header .profile {
+        gap: 6px !important;
+    }
+    
+    .mobile-header .avatar {
+        width: 28px !important;
+        height: 28px !important;
+    }
+    
+    .mobile-header .avatar i {
+        font-size: 14px !important;
+    }
+    
+    .mobile-header .profile-name {
+        font-size: 11px !important;
+        max-width: 100px !important;
+    }
+    
+    .mobile-header .bx-chevron-down {
+        font-size: 12px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .input-box label {
+        font-size: 8px;
+    }
+    
+    .input-box input {
+        font-size: 8px;
+    }
+    
+    .input-group .input-group-text {
+        font-size: 8px;
+    }
+    
+    .input-group select {
+        font-size: 8px;
+    }
+    
+    .button-title {
+        font-size: 12px;
+    }
+    
+    .add-button p.create-chama-text {
+        font-size: 12px;
+    }
+    
+    .mobile-header .profile-name {
+        max-width: 80px !important;
+        font-size: 10px !important;
     }
 }
