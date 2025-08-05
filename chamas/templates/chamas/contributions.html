@@ -484,6 +484,9 @@ const contributionPagination = {
         }
         
         container.html(html);
+        
+        // Re-bind accordion functionality after rendering new content
+        rebindMobileAccordion();
     },
     
     renderPagination: function() {
@@ -866,6 +869,30 @@ function applyAdminVisibility() {
             detailsGrid.removeClass('full-width');
         }
     }, 100);
+}
+
+// Function to re-bind mobile accordion functionality
+function rebindMobileAccordion() {
+    // Remove existing click handlers to prevent duplicates
+    $('.mobile-accordion-item .accordion-header').off('click');
+    
+    // Re-bind accordion click handlers
+    $('.mobile-accordion-item .accordion-header').click(function() {
+        const contributionId = $(this).data('contribution-id');
+        const contributionName = $(this).closest('.mobile-accordion-item').data('contribution-name');
+        const accordionContent = $(this).closest('.mobile-accordion-item').find('.accordion-content');
+        const toggleIcon = $(this).find('.accordion-toggle');
+        
+        if (accordionContent.is(':visible')) {
+            accordionContent.slideUp();
+            toggleIcon.removeClass('bx-chevron-up').addClass('bx-chevron-down');
+        } else {
+            accordionContent.slideDown();
+            toggleIcon.removeClass('bx-chevron-down').addClass('bx-chevron-up');
+            loadMembersForMobile(contributionId);
+            loadMobileContributionRecords(contributionName);
+        }
+    });
 }
 
 $(document).ready(function () {
