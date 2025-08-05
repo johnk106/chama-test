@@ -66,7 +66,7 @@
             </div>
             
             <!-- Mobile Pagination -->
-            <div class="mobile-pagination" id="mobile-pagination">
+            <div class="mobile-pagination" id="mobile-pagination" role="navigation" aria-label="Contribution pages">
                 <!-- Pagination will be populated by JavaScript -->
             </div>
         </div>
@@ -465,10 +465,11 @@ const contributionPagination = {
                                 <!-- Will be populated by JavaScript -->
                             </div>
                             <div id="mobile-contribution-feedback-${contribution.id}" class="alert" style="display: none; margin-top: 10px;"></div>
+                            ${!hasRecords ? `
                             <button class="update-contribution-btn admin" data-contribution-id="${contribution.id}" id="mobile-update-btn-${contribution.id}">
                                 Update contribution
                             </button>
-                            
+                            ` : ''}
                             <!-- Mobile Contribution Records Section -->
                             <div class="mobile-contribution-records" style="margin-top: 20px;">
                                 <h4 class="mobile-records-title">Contribution Records</h4>
@@ -504,7 +505,7 @@ const contributionPagination = {
         let html = '';
         
         // Previous button
-        html += `<button class="pagination-btn ${this.currentPage === 1 ? 'disabled' : ''}" data-page="${this.currentPage - 1}">
+        html += `<button type="button" class="pagination-btn ${this.currentPage === 1 ? 'disabled' : ''}" data-page="${this.currentPage - 1}" aria-label="Previous page">
                     <i class='bx bx-chevron-left'></i>
                  </button>`;
         
@@ -513,25 +514,25 @@ const contributionPagination = {
         const endPage = Math.min(totalPages, this.currentPage + 2);
         
         if (startPage > 1) {
-            html += `<button class="pagination-btn" data-page="1">1</button>`;
+            html += `<button type="button" class="pagination-btn" data-page="1" aria-label="Go to page 1">1</button>`;
             if (startPage > 2) {
                 html += '<span class="pagination-info">...</span>';
             }
         }
         
         for (let i = startPage; i <= endPage; i++) {
-            html += `<button class="pagination-btn ${i === this.currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+            html += `<button type="button" class="pagination-btn ${i === this.currentPage ? 'active' : ''}" data-page="${i}" aria-label="Go to page ${i}">${i}</button>`;
         }
         
         if (endPage < totalPages) {
             if (endPage < totalPages - 1) {
                 html += '<span class="pagination-info">...</span>';
             }
-            html += `<button class="pagination-btn" data-page="${totalPages}">${totalPages}</button>`;
+            html += `<button type="button" class="pagination-btn" data-page="${totalPages}" aria-label="Go to page ${totalPages}">${totalPages}</button>`;
         }
         
         // Next button
-        html += `<button class="pagination-btn ${this.currentPage === totalPages ? 'disabled' : ''}" data-page="${this.currentPage + 1}">
+        html += `<button type="button" class="pagination-btn ${this.currentPage === totalPages ? 'disabled' : ''}" data-page="${this.currentPage + 1}" aria-label="Next page">
                     <i class='bx bx-chevron-right'></i>
                  </button>`;
         
@@ -1163,16 +1164,13 @@ $(document).ready(function () {
                 
                 // Show/hide mobile update form based on first round records status
                 const hasFirstRound = response.has_first_round_records;
-                const mobileUpdateBtn = $(`#mobile-update-btn-${contributionId}`);
                 const membersList = $(`#members-list-${contributionId}`);
                 const mobileHeader = $(`#mobile-header-${contributionId}`);
                 
                 if (hasFirstRound) {
-                    mobileUpdateBtn.hide();
                     membersList.hide();
                     mobileHeader.hide();
                 } else {
-                    mobileUpdateBtn.show();
                     membersList.show();
                     mobileHeader.show();
                 }
@@ -1439,6 +1437,7 @@ $(document).ready(function () {
 
      // Mobile update contribution button
      $(document).on('click', '.mobile-accordion-item .update-contribution-btn', function(e) {
+         if (!this) return; // Button may not exist if not rendered
          e.stopPropagation();
          const contributionId = $(this).data('contribution-id');
          const chamaId = localStorage.getItem("groupId");
