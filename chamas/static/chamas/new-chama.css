@@ -964,6 +964,41 @@
     padding: 8px 12px !important; /* Reduced padding */
   }
   
+  /* Ensure modal doesn't interfere with select dropdown */
+  .modal {
+    z-index: 1050 !important;
+  }
+  
+  .modal-dialog {
+    z-index: 1055 !important;
+  }
+  
+  .modal-content {
+    z-index: 1060 !important;
+  }
+  
+  /* Ensure select dropdown appears above modal */
+  .modal .form-select {
+    z-index: 1070 !important;
+    position: relative !important;
+    pointer-events: auto !important;
+    user-select: auto !important;
+  }
+  
+  /* Ensure select options are visible and clickable */
+  .modal .form-select option {
+    background-color: white !important;
+    color: #000000 !important;
+    padding: 8px !important;
+    font-size: 14px !important;
+    pointer-events: auto !important;
+  }
+  
+  /* Prevent any interference with select dropdown */
+  .modal .form-select:focus {
+    z-index: 1080 !important;
+  }
+  
   /* Reduce form spacing in modal */
   .modal-body .mb-3 {
     margin-bottom: 8px !important; /* Reduced from default */
@@ -1002,12 +1037,24 @@
     -webkit-appearance: none !important;
     -moz-appearance: none !important;
     appearance: none !important;
+    position: relative !important;
+    z-index: 1 !important;
   }
   
+  /* Ensure dropdown options are visible and clickable */
+  .modal-body .form-select option {
+    background-color: white !important;
+    color: #000000 !important;
+    padding: 8px !important;
+    font-size: 14px !important;
+  }
+  
+  /* Prevent any interference with select functionality */
   .modal-body .form-select:focus {
     outline: none !important;
     border-color: var(--color-default) !important;
     box-shadow: 0 0 5px rgba(33, 145, 165, 0.5) !important;
+    z-index: 10 !important;
   }
 }
 
