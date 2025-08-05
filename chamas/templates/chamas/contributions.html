@@ -66,7 +66,8 @@
             </div>
             
             <!-- Mobile Pagination -->
-            <div class="mobile-pagination" id="mobile-pagination">
+            <div class="mobile-pagination" id="mobile-pagination" style="background: yellow; border: 3px solid red; padding: 20px;">
+                <p style="color: red; font-weight: bold;">PAGINATION TEST - If you see this, pagination container is working</p>
                 <!-- Pagination will be populated by JavaScript -->
             </div>
         </div>
@@ -424,6 +425,13 @@ const contributionPagination = {
                 const editButtonClass = hasRecords ? 'disabled' : '';
                 const editButtonTitle = hasRecords ? 'Cannot edit - scheme has records' : 'Edit contribution scheme';
                 
+                console.log('Rendering mobile contribution:', {
+                    name: contribution.name,
+                    id: contribution.id,
+                    hasRecords: hasRecords,
+                    editButtonClass: editButtonClass
+                });
+                
                 html += `
                     <div class="mobile-accordion-item" data-contribution-name="${contribution.name}">
                         <div class="accordion-header" data-contribution-id="${contribution.id}">
@@ -456,17 +464,17 @@ const contributionPagination = {
                         </div>
                         
                         <div class="accordion-content">
-                            <div class="members-table-header" id="mobile-header-${contribution.id}">
+                            <div class="members-table-header" id="mobile-header-${contribution.id}" ${hasRecords ? 'style="display: none;"' : ''}>
                                 <span>Members Name</span>
                                 <span>Balance</span>
                                 <span>Enter amount</span>
                             </div>
-                            <div class="members-list" id="members-list-${contribution.id}">
+                            <div class="members-list" id="members-list-${contribution.id}" ${hasRecords ? 'style="display: none;"' : ''}>
                                 <!-- Will be populated by JavaScript -->
                             </div>
                             <div id="mobile-contribution-feedback-${contribution.id}" class="alert" style="display: none; margin-top: 10px;"></div>
-                            <button class="update-contribution-btn admin" data-contribution-id="${contribution.id}" id="mobile-update-btn-${contribution.id}">
-                                Update contribution
+                            <button class="update-contribution-btn admin" data-contribution-id="${contribution.id}" id="mobile-update-btn-${contribution.id}" ${hasRecords ? 'style="display: none; background: red;"' : 'style="background: green;"'}>
+                                ${hasRecords ? 'HIDDEN - HAS RECORDS' : 'Update contribution'}
                             </button>
                             
                             <!-- Mobile Contribution Records Section -->
@@ -488,8 +496,16 @@ const contributionPagination = {
     renderPagination: function() {
         const totalPages = Math.ceil(this.contributions.length / this.itemsPerPage);
         
+        console.log('Rendering pagination:', {
+            totalContributions: this.contributions.length,
+            itemsPerPage: this.itemsPerPage,
+            totalPages: totalPages,
+            currentPage: this.currentPage
+        });
+        
         if (totalPages <= 1) {
             $('#desktop-pagination, #mobile-pagination').hide();
+            console.log('Hiding pagination - only 1 page or less');
             return;
         }
         
@@ -498,6 +514,8 @@ const contributionPagination = {
         const paginationHtml = this.generatePaginationHtml(totalPages);
         $('#desktop-pagination').html(paginationHtml);
         $('#mobile-pagination').html(paginationHtml);
+        
+        console.log('Pagination HTML generated:', paginationHtml);
     },
     
     generatePaginationHtml: function(totalPages) {
@@ -1167,14 +1185,24 @@ $(document).ready(function () {
                 const membersList = $(`#members-list-${contributionId}`);
                 const mobileHeader = $(`#mobile-header-${contributionId}`);
                 
+                console.log('Mobile form visibility check:', {
+                    contributionId: contributionId,
+                    hasFirstRound: hasFirstRound,
+                    updateBtnExists: mobileUpdateBtn.length > 0,
+                    membersListExists: membersList.length > 0,
+                    headerExists: mobileHeader.length > 0
+                });
+                
                 if (hasFirstRound) {
                     mobileUpdateBtn.hide();
                     membersList.hide();
                     mobileHeader.hide();
+                    console.log('Hiding mobile form elements for contribution:', contributionId);
                 } else {
                     mobileUpdateBtn.show();
                     membersList.show();
                     mobileHeader.show();
+                    console.log('Showing mobile form elements for contribution:', contributionId);
                 }
                 
                 // Apply admin visibility to newly generated mobile content
