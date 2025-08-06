@@ -908,8 +908,19 @@ def finances(request,chama_id):
     for investment in group_investments:
         group_investments_tot += int(investment.amount)
 
-    group_investment_incomes = Paginator(Income.objects.filter(chama=chama,forGroup=True).order_by('-id').all(),6)
-    group_investment_incomes = group_investment_incomes.page(1)
+    group_investment_incomes = Paginator(Income.objects.filter(chama=chama,forGroup=True).order_by('-id').all(),6).page(1)
+    _group_investment_incomes = list(group_investment_incomes.object_list.values())
+    for income in _group_investment_incomes:
+        income['user_date'] = income['user_date'].strftime("%Y-%m-%d")
+        income['date'] = income['date'].strftime("%Y-%m-%d")
+        income['amount'] = float(income['amount'])
+        try:
+            i = Investment.objects.get(pk=int(income['investment_id']))
+            income['investment_id'] = i.name
+        except:
+            pass
+    group_investment_incomes = json.dumps(_group_investment_incomes)
+    # All individual investment incomes logic has been removed
 
     group_investment_incomes_tot = 0.00
     for income in group_investment_incomes:
