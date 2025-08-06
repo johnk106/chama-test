@@ -61,14 +61,13 @@ class FinanceService:
         date = data.get('date')
         chama = Chama.objects.get(pk=chama_id)
         try:
-            # Only group investments are allowed now
-            forGroup = True
+            # All investments are group investments
             new_investment = Investment.objects.create(
                 name = name,
                 amount = amount,
                 chama = chama,
                 user_date = date,
-                forGroup = forGroup
+                forGroup = True
             )
             data = {
                 'status':'success',

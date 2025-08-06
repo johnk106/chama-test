@@ -244,6 +244,10 @@ class Saving(models.Model):
 
 #------------------------------------------------------
 class Investment(models.Model):
+    """
+    Represents a group investment. All investments belong to the Chama/group only.
+    There are no individual (member) investments.
+    """
     name = models.CharField(max_length=55)
     chama = models.ForeignKey(Chama,on_delete=models.SET_NULL,related_name='investments',  null=True, blank=True)
     date = models.DateTimeField(default=timezone.now)
