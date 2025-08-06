@@ -59,46 +59,27 @@ class FinanceService:
         name = data.get('name')
         amount = data.get('amount')
         date = data.get('date')
-        owner = data.get('owner')
-
         chama = Chama.objects.get(pk=chama_id)
-
         try:
-            if owner == 'group':
+            # All investments are group investments
+            new_investment = Investment.objects.create(
+                name = name,
+                amount = amount,
+                chama = chama,
+                user_date = date,
                 forGroup = True
-                new_investment = Investment.objects.create(
-                    name = name,
-                    amount = amount,
-                    chama = chama,
-                    user_date = date,
-                    forGroup = forGroup
-                )
-            else:
-                forGroup = False
-                owner_member = ChamaMember.objects.get(pk=int(owner))
-                new_investment = Investment.objects.create(
-                    name = name,
-                    amount = amount,
-                    chama = chama,
-                    user_date = date,
-                    owner = owner_member,
-                    forGroup = forGroup
-                )
-            
+            )
             data = {
                 'status':'success',
                 'message':'New investment created succesfully',
                 'investment':model_to_dict(new_investment)
             }
-
             return JsonResponse(data,status=200)
-
         except Exception as e:
             data = {
                 'status':'failed',
                 'message':f'an error occurred: {e}'
             }
-
             return JsonResponse(data,status=200)
         
     @staticmethod
