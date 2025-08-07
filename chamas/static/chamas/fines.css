@@ -972,11 +972,9 @@
     padding: 0 !important;
 }
 
-/* Remove padding from page-content specifically for fines page */
+/* Ensure fines page respects main layout positioning */
 body .main-content .page-content:has(.modern-fines),
 .main-content .page-content:has(.modern-fines) {
-    padding: 0 !important;
-    margin: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
 }
@@ -984,8 +982,6 @@ body .main-content .page-content:has(.modern-fines),
 /* Fallback for browsers that don't support :has() */
 .fines-page .main-content,
 .fines-page .page-content {
-    padding: 0 !important;
-    margin: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
 }
@@ -1090,13 +1086,26 @@ body .main-content .page-content:has(.modern-fines),
     display: none !important;
   }
 
-  /* Ensure desktop content doesn't overflow */
+  /* Ensure desktop content doesn't overflow and respects main layout */
   .desktop-fines .body-div {
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 !important;
     padding: 16px !important;
     box-sizing: border-box;
+  }
+
+  /* Ensure Bootstrap grid works properly in desktop */
+  .desktop-fines .row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+  }
+
+  .desktop-fines .col-sm-12 {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    width: 100% !important;
   }
 
   /* Ensure footer doesn't slide under sidebar */
