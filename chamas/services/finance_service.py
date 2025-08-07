@@ -59,35 +59,23 @@ class FinanceService:
         name = data.get('name')
         amount = data.get('amount')
         date = data.get('date')
-        owner = data.get('owner')
 
         chama = Chama.objects.get(pk=chama_id)
 
         try:
-            if owner == 'group':
-                forGroup = True
-                new_investment = Investment.objects.create(
-                    name = name,
-                    amount = amount,
-                    chama = chama,
-                    user_date = date,
-                    forGroup = forGroup
-                )
-            else:
-                forGroup = False
-                owner_member = ChamaMember.objects.get(pk=int(owner))
-                new_investment = Investment.objects.create(
-                    name = name,
-                    amount = amount,
-                    chama = chama,
-                    user_date = date,
-                    owner = owner_member,
-                    forGroup = forGroup
-                )
+            # Always create group investments - individual ownership is no longer supported
+            new_investment = Investment.objects.create(
+                name = name,
+                amount = amount,
+                chama = chama,
+                user_date = date,
+                forGroup = True,
+                owner = None
+            )
             
             data = {
                 'status':'success',
-                'message':'New investment created succesfully',
+                'message':'New investment created successfully',
                 'investment':model_to_dict(new_investment)
             }
 

@@ -415,92 +415,7 @@
                         </div>
                     </div>
 
-                    <!-- Member Investment Income Card (Admin Only) -->
-                    <div class="report-card brand-card admin">
-                        <div class="report-card-header brand-card-header">
-                            <div class="report-header-info">
-                                <h3 class="report-title text-brand-primary">Member Investment Income</h3>
-                                <p class="report-description">Individual member investment returns</p>
-                            </div>
-                            <div class="report-actions">
-                                <button class="btn-download-individual bg-brand-primary" id="download-member-investment-income">
-                                    <i class="bx bx-download"></i>
-                                </button>
-                                <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('member-investment-income')">
-                                    <i class="bx bx-filter"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="report-filters" id="member-investment-income-filters">
-                            <div class="filter-row">
-                                <div class="filter-field">
-                                    <label for="investment-owner" class="field-label">Select Member</label>
-                                    <select class="field-input" id="investment-owner">
-                                        <option value="" disabled selected>Select Member</option>
-                                        {%for member in members%}
-                                        <option value="{{member.id}}">{{member.name}}</option>
-                                        {%endfor%}
-                                    </select>
-                                </div>
-                                <div class="filter-field">
-                                    <label for="member-investment-incomes-start" class="field-label">Start Date</label>
-                                    <input type="date" class="field-input" id="member-investment-incomes-start">
-                                </div>
-                                <div class="filter-field">
-                                    <label for="member-investment-incomes-end" class="field-label">End Date</label>
-                                    <input type="date" class="field-input" id="member-investment-incomes-end">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="report-data brand-card-body">
-                            <div id="member-investment-income-items" class="data-container">
-                                <div class="empty-state">
-                                    <i class="bx bx-file-blank empty-state-icon"></i>
-                                    <p class="empty-state-message">Nothing to show</p>
-                                    <p class="empty-state-description">Please select a member to view their investment income data</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- My Investment Income Card (Member Only) -->
-                    <div class="report-card brand-card member">
-                        <div class="report-card-header brand-card-header">
-                            <div class="report-header-info">
-                                <h3 class="report-title text-brand-primary">My Investment Income</h3>
-                                <p class="report-description">Your personal investment returns</p>
-                            </div>
-                            <div class="report-actions">
-                                <button class="btn-download-individual bg-brand-primary" id="download-my-investment-income">
-                                    <i class="bx bx-download"></i>
-                                </button>
-                                <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('my-investment-income')">
-                                    <i class="bx bx-filter"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="report-filters" id="my-investment-income-filters">
-                            <div class="filter-row">
-                                <div class="filter-field">
-                                    <label for="my-incomes-start" class="field-label">Start Date</label>
-                                    <input type="date" class="field-input" id="my-incomes-start">
-                                </div>
-                                <div class="filter-field">
-                                    <label for="my-incomes-end" class="field-label">End Date</label>
-                                    <input type="date" class="field-input" id="my-incomes-end">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="report-data brand-card-body">
-                            <div id="my-income-items" class="data-container">
-                                <div class="empty-state">
-                                    <i class="bx bx-file-blank empty-state-icon"></i>
-                                    <p class="empty-state-message">Nothing to show</p>
-                                    <p class="empty-state-description">No personal investment income data available for the selected period</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -547,92 +462,7 @@
                         </div>
                     </div>
 
-                    <!-- Individual Investments Card (Admin Only) -->
-                    <div class="report-card brand-card admin">
-                        <div class="report-card-header brand-card-header">
-                            <div class="report-header-info">
-                                <h3 class="report-title text-brand-primary">Individual Investments</h3>
-                                <p class="report-description">Individual member investment portfolio</p>
-                            </div>
-                            <div class="report-actions">
-                                <button class="btn-download-individual bg-brand-primary" id="download-individual-investments">
-                                    <i class="bx bx-download"></i>
-                                </button>
-                                <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('individual-investments')">
-                                    <i class="bx bx-filter"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="report-filters" id="individual-investments-filters">
-                            <div class="filter-row">
-                                <div class="filter-field">
-                                    <label for="individual-investment-owner" class="field-label">Select Member</label>
-                                    <select class="field-input" id="individual-investment-owner">
-                                        <option value="" disabled selected>Select Member</option>
-                                        {%for member in members%}
-                                        <option value="{{member.id}}">{{member.name}}</option>
-                                        {%endfor%}
-                                    </select>
-                                </div>
-                                <div class="filter-field">
-                                    <label for="individual-investments-start" class="field-label">Start Date</label>
-                                    <input type="date" class="field-input" id="individual-investments-start">
-                                </div>
-                                <div class="filter-field">
-                                    <label for="individual-investments-end" class="field-label">End Date</label>
-                                    <input type="date" class="field-input" id="individual-investments-end">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="report-data brand-card-body">
-                            <div id="individual-investments-items" class="data-container">
-                                <div class="empty-state">
-                                    <i class="bx bx-file-blank empty-state-icon"></i>
-                                    <p class="empty-state-message">Nothing to show</p>
-                                    <p class="empty-state-description">Please select a member to view their investments data</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- My Investments Card (Member Only) -->
-                    <div class="report-card brand-card member">
-                        <div class="report-card-header brand-card-header">
-                            <div class="report-header-info">
-                                <h3 class="report-title text-brand-primary">My Investments</h3>
-                                <p class="report-description">Your personal investment portfolio</p>
-                            </div>
-                            <div class="report-actions">
-                                <button class="btn-download-individual bg-brand-primary" id="download-my-investments">
-                                    <i class="bx bx-download"></i>
-                                </button>
-                                <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('my-investments')">
-                                    <i class="bx bx-filter"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="report-filters" id="my-investments-filters">
-                            <div class="filter-row">
-                                <div class="filter-field">
-                                    <label for="my-investments-start" class="field-label">Start Date</label>
-                                    <input type="date" class="field-input" id="my-investments-start">
-                                </div>
-                                <div class="filter-field">
-                                    <label for="my-investments-end" class="field-label">End Date</label>
-                                    <input type="date" class="field-input" id="my-investments-end">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="report-data brand-card-body">
-                            <div id="my-investments-items" class="data-container">
-                                <div class="empty-state">
-                                    <i class="bx bx-file-blank empty-state-icon"></i>
-                                    <p class="empty-state-message">Nothing to show</p>
-                                    <p class="empty-state-description">No personal investments data available for the selected period</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -1046,10 +876,7 @@ document.addEventListener('DOMContentLoaded', function () {
         '#download-full-loan-report': '/chamas-bookeeping/download-full-loan-report/',
         '#download-repayment-schedule': '/chamas-bookeeping/download-loan-repayment-schedule/',
         '#download-group-investment-income': '/chamas-bookeeping/download-group-investment-income/',
-        '#download-member-investment-income': '/chamas-bookeeping/download-member-investment-income/',
         '#download-group-investments': '/chamas-bookeeping/download-group-investments/',
-        '#download-individual-investments': '/chamas-bookeeping/download-individual-investments/',
-        '#download-my-investments': '/chamas-bookeeping/download-my-investments/',
         '#download-individual-saving-report': '/chamas-bookeeping/download-individual-saving-report/',
         '#download-group-saving-report': '/chamas-bookeeping/download-group-saving-report/',
         '#download-group-contributions-report': '/chamas-bookeeping/download-group-contributions-report/',
