@@ -388,8 +388,9 @@
 
   <!-- Desktop View -->
   <div class="desktop-fines d-none d-lg-block">
-    <div class="row justify-content-center mt-2 text-capitalize mt-2">
-      <div class="col-sm-12 m-2 body-div admin">
+    <div class="container-fluid justify-content-center">
+      <div class="container row justify-content-center mt-2">
+        <div class="body-div admin">
         <h6 class="w-auto mx-auto">Create Fine</h6>
         <div class="div-header">
           <h6 class="w-auto">Define Fine</h6>
@@ -412,9 +413,9 @@
           </div>
           <button class="btn btn-primary border-0" style="width: 100%">Create</button>
         </form>
-      </div>
+        </div>
 
-      <div class="col-sm-12 m-2 body-div admin">
+        <div class="body-div admin">
         <h6 class="w-auto mx-auto">Impose Fine</h6>
         <div class="div-header">
           <h6 class="w-auto mx-auto">Impose Fine</h6>
@@ -467,11 +468,12 @@
 
         <div class="div-header">
         </div>
+        </div>
       </div>
     </div>
-
-    <div class="row justify-content-around text-capitalize">
-      <div class="m-2 body-div admin">
+    <br>
+    <div class="container row justify-content-center">
+      <div class="body-div admin">
         <h6 class="w-auto mx-auto">Pay fine</h6>
         <div class="div-header">
           <h6 class="w-auto">Loan Fines</h6>
@@ -610,7 +612,7 @@
         </div>
         {%endfor%}
       </div>
-      <div class="m-2 body-div body-div member">
+      <div class="body-div member">
         <h6 class="w-auto mx-auto">Active group fines</h6>
         <div class="div-header">
           <h6 class="w-auto mx-auto">Active Fines</h6>
@@ -742,10 +744,11 @@
           <h7>No active contribution fines</h7>
         </div>
         {%endfor%}
-
-
       </div>
-      <div class="m-2 body-div body-div member">
+    </div>
+    <br>
+    <div class="container row justify-content-center">
+      <div class="body-div member">
         <h6 class="w-auto mx-auto">My Active fines</h6>
         <div class="div-header">
           <h6 class="w-auto mx-auto">My Active Loan Fines</h6>
@@ -839,6 +842,7 @@
         <br>
         {%endfor%}
       </div>
+    </div>
     </div>
   </div>
 </div>
