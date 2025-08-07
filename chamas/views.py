@@ -901,7 +901,7 @@ def finances(request,chama_id):
     for saving in group_savings:
         group_saving_tot += int(saving.amount)
 
-    group_investments = Paginator(Investment.objects.filter(chama=chama).order_by('-id').all(),6)
+    group_investments = Paginator(Investment.objects.filter(chama=chama, forGroup=True).order_by('-id').all(),6)
     group_investments = group_investments.page(1)
 
     group_investments_tot = 0.00
@@ -924,7 +924,7 @@ def finances(request,chama_id):
     members = ChamaMember.objects.filter(group=chama,active=True).all()
     saving_types = SavingType.objects.all()
 
-    investments = Investment.objects.filter(chama=chama).all()
+    investments = Investment.objects.filter(chama=chama, forGroup=True).all()
 
 
 
@@ -1305,27 +1305,7 @@ def reports(request,chama_id):
         investment['amount'] = float(investment['amount'])
     group_investments = json.dumps(_group_investments)
     
-    individual_investments = Paginator(Investment.objects.filter(chama=chama,forGroup=False).select_related('owner').order_by('-date').all(),10).page(1)
-    _individual_investments = list(individual_investments.object_list.values())
-    for investment in _individual_investments:
-        investment['date'] = investment['date'].strftime('%Y-%m-%d')
-        investment['user_date'] = investment['user_date'].strftime('%Y-%m-%d')
-        investment['amount'] = float(investment['amount'])
-        
-        try:
-            o = ChamaMember.objects.get(pk=int(investment['owner_id']))
-            investment['owner_id'] = o.name
-        except:
-            investment['owner_id'] = 'Unknown Member'
-    individual_investments = json.dumps(_individual_investments)
-    
-    my_investments = Paginator(Investment.objects.filter(chama=chama,owner=member).order_by('-date').all(),10).page(1)
-    _my_investments = list(my_investments.object_list.values())
-    for investment in _my_investments:
-        investment['date'] = investment['date'].strftime('%Y-%m-%d')
-        investment['user_date'] = investment['user_date'].strftime('%Y-%m-%d')
-        investment['amount'] = float(investment['amount'])
-    my_investments = json.dumps(_my_investments)
+
     
 
     my_total_contributions = Decimal('0.00')
@@ -1435,9 +1415,7 @@ def reports(request,chama_id):
         'expenses_tot':expenses_tot,
         'schemes':contribution_schemes,
         'contributions':contribution_schemes,
-        'group_investments':group_investments,
-        'individual_investments':individual_investments,
-        'my_investments':my_investments
+        'group_investments':group_investments
         
     }
 
@@ -1495,16 +1473,6 @@ def download_my_investment_income(request, chama_id):
 @is_user_chama_member
 def download_group_investments(request, chama_id):
     return DownloadService.download_group_investments(request, chama_id)
-
-@login_required(login_url='/user/Login')
-@is_user_chama_member
-def download_individual_investments(request, chama_id):
-    return DownloadService.download_individual_investments(request, chama_id)
-
-@login_required(login_url='/user/Login')
-@is_user_chama_member
-def download_my_investments(request, chama_id):
-    return DownloadService.download_my_investments(request, chama_id)
     
 
 
@@ -1922,6 +1890,8 @@ def get_group_investment_income_data(request, chama_id):
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
 
+
+
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def get_member_investment_income_data(request, chama_id):
@@ -2040,7 +2010,6 @@ def get_my_investment_income_data(request, chama_id):
             })
     
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
-
 
 @login_required(login_url='/user/Login')
 @is_user_chama_member
