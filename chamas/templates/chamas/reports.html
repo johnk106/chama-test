@@ -213,16 +213,7 @@
                                     <p class="empty-state-description">Loading member cashflow data</p>
                                 </div>
                             </div>
-                            <div id="member-cashflow-totals-cont" class="summary-cards">
-                                <div class="summary-card">
-                                    <h4 class="summary-title">Total Contributions</h4>
-                                    <p class="summary-amount text-brand-primary">ksh {{total_contributions | intcomma}}</p>
-                                </div>
-                                <div class="summary-card">
-                                    <h4 class="summary-title">Total Loan Disbursement</h4>
-                                    <p class="summary-amount text-brand-primary">ksh {{total_loan_disbursment | intcomma}}</p>
-                                </div>
-                            </div>
+                            <div id="member-cashflow-totals-cont" class="summary-cards"></div>
                             <div id='member-cashflow-net-cont' class="net-summary"></div>
                         </div>
                     </div>
@@ -287,38 +278,41 @@
                             </div>
                         </div>
                         <div class="report-data brand-card-body">
-                            <div class="brand-table-responsive">
-                                <table class="brand-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Status</th>
-                                            <th>Type</th>
-                                            <th>Member</th>
-                                            <th>Amount</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {%for loan in loans%}
-                                        <tr>
-                                            <td><span class="status-badge {{loan.status}}">{{loan.status}}</span></td>
-                                            <td>{{loan.type.name}}</td>
-                                            <td>{{loan.member.name}}</td>
-                                            <td class="text-brand-primary">ksh {{loan.amount | intcomma}}</td>
-                                        </tr>
-                                        {%empty%}
-                                        <tr>
-                                            <td colspan="4">
-                                                <div class="empty-state">
-                                                    <i class="bx bx-file-blank empty-state-icon"></i>
-                                                    <p class="empty-state-message">Nothing to show</p>
-                                                    <p class="empty-state-description">No loans found</p>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        {%endfor%}
-                                    </tbody>
-                                </table>
+                            <div id="loans-items" class="data-container">
+                                <div class="brand-table-responsive">
+                                    <table class="brand-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Status</th>
+                                                <th>Type</th>
+                                                <th>Member</th>
+                                                <th>Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {%for loan in loans%}
+                                            <tr>
+                                                <td><span class="status-badge {{loan.status}}">{{loan.status}}</span></td>
+                                                <td>{{loan.type.name}}</td>
+                                                <td>{{loan.member.name}}</td>
+                                                <td class="text-brand-primary">ksh {{loan.amount | intcomma}}</td>
+                                            </tr>
+                                            {%empty%}
+                                            <tr>
+                                                <td colspan="4">
+                                                    <div class="empty-state">
+                                                        <i class="bx bx-file-blank empty-state-icon"></i>
+                                                        <p class="empty-state-message">Nothing to show</p>
+                                                        <p class="empty-state-description">No loans found</p>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {%endfor%}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
+                            <div id="loans-total" class="summary-cards"></div>
                         </div>
                     </div>
 
@@ -350,21 +344,21 @@
                                     </select>
                                 </div>
                                 <div class="filter-field">
-                                    <label for="repayment-start-date" class="field-label">Start Date</label>
-                                    <input type="date" class="field-input" id="repayment-start-date">
+                                    <label for="repayment-schedule-start" class="field-label">Start Date</label>
+                                    <input type="date" class="field-input" id="repayment-schedule-start">
                                 </div>
                                 <div class="filter-field">
-                                    <label for="repayment-end-date" class="field-label">End Date</label>
-                                    <input type="date" class="field-input" id="repayment-end-date">
+                                    <label for="repayment-schedule-end" class="field-label">End Date</label>
+                                    <input type="date" class="field-input" id="repayment-schedule-end">
                                 </div>
                             </div>
                         </div>
                         <div class="report-data brand-card-body">
                             <div id="repayment-schedule-items" class="data-container">
                                 <div class="empty-state">
-                                    <i class="bx bx-loader-alt bx-spin empty-state-icon"></i>
-                                    <p class="empty-state-message">Loading...</p>
-                                    <p class="empty-state-description">Loading loan repayment schedule data</p>
+                                    <i class="bx bx-file-blank empty-state-icon"></i>
+                                    <p class="empty-state-message">Nothing to show</p>
+                                    <p class="empty-state-description">No repayment schedule available</p>
                                 </div>
                             </div>
                         </div>
@@ -944,7 +938,8 @@ document.addEventListener('DOMContentLoaded', function () {
     window.toggleReportFilter = function(reportId) {
         const filterElement = document.getElementById(reportId + '-filters');
         if (filterElement) {
-            filterElement.style.display = filterElement.style.display === 'none' ? 'block' : 'none';
+            const isHidden = window.getComputedStyle(filterElement).display === 'none';
+            filterElement.style.display = isHidden ? 'block' : 'none';
         }
     };
 
@@ -1820,20 +1815,14 @@ function calculateAndDisplayTotals() {
     // Loans totals
     if (reportData.loans.length > 0) {
         const total = reportData.loans.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
-        const container = document.getElementById('loans-items');
+        const container = document.getElementById('loans-total');
         if (container) {
-            const existingTable = container.querySelector('.brand-table-responsive');
-            if (existingTable) {
-                const totalsDiv = document.createElement('div');
-                totalsDiv.className = 'summary-cards';
-                totalsDiv.innerHTML = `
-                    <div class="summary-card">
-                        <h4 class="summary-title">Total Loans</h4>
-                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
-                    </div>
-                `;
-                container.appendChild(totalsDiv);
-            }
+            container.innerHTML = `
+                <div class="summary-card">
+                    <h4 class="summary-title">Total Loans</h4>
+                    <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                </div>
+            `;
         }
     }
 
@@ -2017,44 +2006,47 @@ function calculateAndDisplayTotals() {
         }
     }
 
-    // My Reports (Cashflow) totals
+    // My Reports (Cashflow) totals -> write to totals container
     if (reportData.myReports.length > 0) {
         const total = reportData.myReports.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
-        const container = document.getElementById('my-report-items');
+        const container = document.getElementById('my-cashflow-report-totals-cont');
         if (container) {
-            const existingTable = container.querySelector('.brand-table-responsive');
-            if (existingTable) {
-                const totalsDiv = document.createElement('div');
-                totalsDiv.className = 'summary-cards';
-                totalsDiv.innerHTML = `
-                    <div class="summary-card">
-                        <h4 class="summary-title">Total My Cashflow</h4>
-                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
-                    </div>
-                `;
-                container.appendChild(totalsDiv);
-            }
+            container.innerHTML = `
+                <div class="summary-card">
+                    <h4 class="summary-title">Total My Cashflow</h4>
+                    <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                </div>
+            `;
         }
     }
 
-    // Member Cashflow totals
-    if (reportData.cashflow.length > 0) {
-        const total = reportData.cashflow.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
-        const container = document.getElementById('member-cashflow-items');
+    // Member Cashflow totals (net, based on filtered data if available)
+    const memberData = (window.currentMemberCashflowData && Array.isArray(window.currentMemberCashflowData.data)) ? window.currentMemberCashflowData.data : [];
+    if (memberData.length > 0) {
+        const net = memberData.reduce((sum, item) => {
+            const amount = parseFloat(item.amount) || 0;
+            const type = (item.type || '').toLowerCase();
+            // Member perspective: contributions/payments are outflows (-), disbursements are inflows (+)
+            if (type === 'loan disbursment') return sum + amount;
+            if (type === 'contribution') return sum - amount;
+            if (type === 'loan payment') return sum - amount;
+            if (type === 'fine payment') return sum - amount;
+            if (type === 'expense') return sum - amount;
+            // Non-cash types like imposed fine do not change cash position
+            return sum;
+        }, 0);
+        const container = document.getElementById('member-cashflow-totals-cont');
         if (container) {
-            const existingTable = container.querySelector('.brand-table-responsive');
-            if (existingTable) {
-                const totalsDiv = document.createElement('div');
-                totalsDiv.className = 'summary-cards';
-                totalsDiv.innerHTML = `
-                    <div class="summary-card">
-                        <h4 class="summary-title">Total Member Cashflow</h4>
-                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
-                    </div>
-                `;
-                container.appendChild(totalsDiv);
-            }
+            container.innerHTML = `
+                <div class="summary-card">
+                    <h4 class="summary-title">Total Member Cashflow</h4>
+                    <p class="summary-amount text-brand-primary">Ksh ${net.toLocaleString()}</p>
+                </div>
+            `;
         }
+    } else {
+        const container = document.getElementById('member-cashflow-totals-cont');
+        if (container) container.innerHTML = '';
     }
 
     // Loan Repayment Schedule totals
@@ -2320,39 +2312,39 @@ function setupFilterListeners() {
          });
      }
      
-     // Loan repayment schedule selection
-     const repaymentOwnerSelect = document.getElementById('repayment-owner');
-     if (repaymentOwnerSelect) {
-         repaymentOwnerSelect.addEventListener('change', function() {
-             const startDate = document.getElementById('repayment-start-date')?.value;
-             const endDate = document.getElementById('repayment-end-date')?.value;
-             // Pass null if no member is selected (empty value) to show all members
-             const memberId = this.value || null;
-             filterLoanRepaymentSchedule(memberId, startDate, endDate);
-         });
-     }
-     
-     // Loan repayment schedule date filters
-     const repaymentStartDate = document.getElementById('repayment-start-date');
-     const repaymentEndDate = document.getElementById('repayment-end-date');
-     
-     if (repaymentStartDate) {
-         repaymentStartDate.addEventListener('change', function() {
-             const memberId = document.getElementById('repayment-owner')?.value || null;
-             const endDate = document.getElementById('repayment-end-date')?.value;
-             // Always filter, even if no member is selected (will show all members with date filter)
-             filterLoanRepaymentSchedule(memberId, this.value, endDate);
-         });
-     }
-     
-     if (repaymentEndDate) {
-         repaymentEndDate.addEventListener('change', function() {
-             const memberId = document.getElementById('repayment-owner')?.value || null;
-             const startDate = document.getElementById('repayment-start-date')?.value;
-             // Always filter, even if no member is selected (will show all members with date filter)
-             filterLoanRepaymentSchedule(memberId, startDate, this.value);
-         });
-     }
+          // Loan repayment schedule selection
+      const repaymentOwnerSelect = document.getElementById('repayment-owner');
+      if (repaymentOwnerSelect) {
+          repaymentOwnerSelect.addEventListener('change', function() {
+              const startDate = document.getElementById('repayment-schedule-start')?.value;
+              const endDate = document.getElementById('repayment-schedule-end')?.value;
+              // Pass null if no member is selected (empty value) to show all members
+              const memberId = this.value || null;
+              filterLoanRepaymentSchedule(memberId, startDate, endDate);
+          });
+      }
+      
+      // Loan repayment schedule date filters
+      const repaymentStartDate = document.getElementById('repayment-schedule-start');
+      const repaymentEndDate = document.getElementById('repayment-schedule-end');
+      
+      if (repaymentStartDate) {
+          repaymentStartDate.addEventListener('change', function() {
+              const memberId = document.getElementById('repayment-owner')?.value || null;
+              const endDate = document.getElementById('repayment-schedule-end')?.value;
+              // Always filter, even if no member is selected (will show all members with date filter)
+              filterLoanRepaymentSchedule(memberId, this.value, endDate);
+          });
+      }
+      
+      if (repaymentEndDate) {
+          repaymentEndDate.addEventListener('change', function() {
+              const memberId = document.getElementById('repayment-owner')?.value || null;
+              const startDate = document.getElementById('repayment-schedule-start')?.value;
+              // Always filter, even if no member is selected (will show all members with date filter)
+              filterLoanRepaymentSchedule(memberId, startDate, this.value);
+          });
+      }
      
      // Member contributions filtering
      const memberContributionOwnerSelect = document.getElementById('member-contribution-owner');
@@ -3001,6 +2993,8 @@ function filterMemberCashflow(memberId = null, startDate = null, endDate = null)
                 startDate: startDate,
                 endDate: endDate
             };
+            // Update totals
+            calculateAndDisplayTotals();
         } else {
             const emptyMessage = memberId 
                 ? `No cashflow data available for the selected member${startDate || endDate ? ' in the specified date range' : ''}`
@@ -3014,6 +3008,8 @@ function filterMemberCashflow(memberId = null, startDate = null, endDate = null)
                 </div>
             `;
             window.currentMemberCashflowData = null;
+            // Clear totals
+            calculateAndDisplayTotals();
         }
     })
     .catch(error => {
@@ -3026,6 +3022,8 @@ function filterMemberCashflow(memberId = null, startDate = null, endDate = null)
             </div>
         `;
         window.currentMemberCashflowData = null;
+        // Clear totals
+        calculateAndDisplayTotals();
     });
 }
 
