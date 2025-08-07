@@ -990,14 +990,7 @@ body .main-content .page-content:has(.modern-fines),
     max-width: 100% !important;
 }
 
-/* Ensure mobile fines container spans full width */
-.mobile-fines {
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    position: relative;
-    overflow-x: hidden;
-}
+/* Mobile fines container - handled by media queries */
 
 /* Force full width for all parent containers */
 /* Override base template styles */
@@ -1006,10 +999,84 @@ body .main-content .page-content:has(.modern-fines),
     padding: 0 !important;
 }
 
+/* Critical Bootstrap Display Class Overrides - Must be at the top */
+@media (min-width: 992px) {
+  /* Force Bootstrap classes to work */
+  .d-lg-block {
+    display: block !important;
+  }
+  
+  .d-lg-none {
+    display: none !important;
+  }
+  
+  /* Specific overrides for fines page */
+  .mobile-fines.d-lg-none {
+    display: none !important;
+  }
+  
+  .desktop-fines.d-lg-block {
+    display: block !important;
+  }
+}
+
+@media (max-width: 991px) {
+  /* Force Bootstrap classes to work */
+  .d-lg-block {
+    display: none !important;
+  }
+  
+  .d-lg-none {
+    display: block !important;
+  }
+  
+  /* Specific overrides for fines page */
+  .mobile-fines.d-lg-none {
+    display: block !important;
+  }
+  
+  .desktop-fines.d-lg-block {
+    display: none !important;
+  }
+}
+
+/* Override any conflicting display rules */
+@media (min-width: 992px) {
+  .mobile-fines {
+    display: none !important;
+  }
+  
+  .desktop-fines {
+    display: block !important;
+  }
+}
+
+@media (max-width: 991px) {
+  .mobile-fines {
+    display: block !important;
+  }
+  
+  .desktop-fines {
+    display: none !important;
+  }
+}
+
+
+
 /* Desktop View - Fix content positioning to account for sidebar */
 @media (min-width: 769px) {
-  .modern-fines,
+  .modern-fines {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    left: auto !important;
+    right: auto !important;
+    box-sizing: border-box;
+  }
+
+  /* Ensure desktop layout shows in desktop */
   .desktop-fines {
+    display: block !important;
     width: 100% !important;
     max-width: 100% !important;
     margin-left: 0 !important;
@@ -1021,11 +1088,6 @@ body .main-content .page-content:has(.modern-fines),
   /* Hide mobile layout in desktop */
   .mobile-fines {
     display: none !important;
-  }
-
-  /* Show desktop layout in desktop */
-  .desktop-fines {
-    display: block !important;
   }
 
   /* Ensure desktop content doesn't overflow */
@@ -1050,9 +1112,31 @@ body .main-content .page-content:has(.modern-fines),
 
 /* Mobile View - Keep existing full-width behavior */
 @media (max-width: 768px) {
-  .modern-fines,
-  .mobile-fines,
-  .desktop-fines,
+  .modern-fines {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    left: auto !important;
+    right: auto !important;
+    box-sizing: border-box;
+  }
+
+  /* Show mobile layout in mobile */
+  .mobile-fines {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    left: auto !important;
+    right: auto !important;
+    box-sizing: border-box;
+  }
+
+  /* Hide desktop layout in mobile */
+  .desktop-fines {
+    display: none !important;
+  }
+
   .mobile-tab-content,
   .create-fine-card,
   .fine-member-card,
@@ -1091,15 +1175,5 @@ body .main-content .page-content:has(.modern-fines),
     margin: 0 !important;
     padding: 10px 0 !important;
     box-sizing: border-box;
-  }
-
-  /* Hide desktop layout in mobile */
-  .desktop-fines {
-    display: none !important;
-  }
-
-  /* Show mobile layout in mobile */
-  .mobile-fines {
-    display: block !important;
   }
 }
