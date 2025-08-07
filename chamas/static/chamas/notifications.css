@@ -578,24 +578,19 @@ body, html {
     /* Break out of all container constraints */
     .app-layout,
     .modern-notifications,
-    .mobile-notifications,
-    .page-content,
-    .main-content {
-        width: 100vw !important;
-        max-width: 100vw !important;
+    .mobile-notifications {
+        width: 100% !important;
+        max-width: 100% !important;
         margin: 0 !important;
         padding: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        position: relative !important;
         box-sizing: border-box !important;
     }
     
     /* Override any Bootstrap container constraints */
     .container,
     .container-fluid {
-        width: 100vw !important;
-        max-width: 100vw !important;
+        width: 100% !important;
+        max-width: 100% !important;
         margin: 0 !important;
         padding: 0 !important;
         box-sizing: border-box !important;
@@ -604,51 +599,39 @@ body, html {
     /* Force mobile forms to full width */
     .mobile-send-form,
     .mobile-create-form {
-        width: 100vw !important;
-        max-width: 100vw !important;
+        width: 100% !important;
+        max-width: 100% !important;
         margin: 0 !important;
         padding: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        position: relative !important;
         box-sizing: border-box !important;
     }
     
     /* Force form cards to full width */
     .create-notification-card,
     .send-notification-card {
-        width: 100vw !important;
-        max-width: 100vw !important;
+        width: 100% !important;
+        max-width: 100% !important;
         margin: 0 !important;
         padding: 20px 16px !important;
-        left: 0 !important;
-        right: 0 !important;
-        position: relative !important;
         box-sizing: border-box !important;
         border-radius: 0 !important;
     }
     
     /* Force tab content to full width */
     .tab-content {
-        width: 100vw !important;
-        max-width: 100vw !important;
+        width: 100% !important;
+        max-width: 100% !important;
         margin: 0 !important;
         padding: 20px 16px !important;
-        left: 0 !important;
-        right: 0 !important;
-        position: relative !important;
         box-sizing: border-box !important;
     }
     
     /* Force notification history to full width */
     .mobile-notification-history-list {
-        width: 100vw !important;
-        max-width: 100vw !important;
+        width: 100% !important;
+        max-width: 100% !important;
         margin: 0 !important;
         padding: 0 16px !important;
-        left: 0 !important;
-        right: 0 !important;
-        position: relative !important;
         box-sizing: border-box !important;
     }
     
@@ -663,10 +646,8 @@ body, html {
     
     /* Force footer to full width with evenly distributed buttons */
     .mbl_footer {
-        width: 100vw !important;
-        max-width: 100vw !important;
-        left: 0 !important;
-        right: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
         margin: 0 !important;
         padding: 10px 0 !important;
         position: fixed !important;
@@ -723,8 +704,8 @@ body, html {
   .send-notification-card,
   .mobile-notification-history-list,
   .notification-history-beautiful-card {
-    width: calc(100vw - 260px) !important;
-    max-width: calc(100vw - 260px) !important;
+    width: 100% !important;
+    max-width: 100% !important;
     margin-left: 0 !important;
     left: auto !important;
     right: auto !important;
@@ -732,8 +713,8 @@ body, html {
   }
 
   .mobile-tabs {
-    width: calc(100vw - 260px) !important;
-    max-width: calc(100vw - 260px) !important;
+    width: 100% !important;
+    max-width: 100% !important;
     margin-left: 0 !important;
     position: relative;
     overflow-x: auto;
@@ -745,8 +726,8 @@ body, html {
 
   .mobile-send-form,
   .mobile-create-form {
-    width: calc(100vw - 260px) !important;
-    max-width: calc(100vw - 260px) !important;
+    width: 100% !important;
+    max-width: 100% !important;
     margin: 0 !important;
     padding: 0 16px !important;
     box-sizing: border-box;
@@ -754,7 +735,7 @@ body, html {
 
   /* Ensure footer doesn't slide under sidebar */
   .mbl_footer {
-    width: calc(100vw - 260px) !important;
+    width: 100% !important;
     left: auto !important;
     right: auto !important;
     margin: 0 !important;
@@ -773,16 +754,16 @@ body, html {
   .send-notification-card,
   .mobile-notification-history-list,
   .notification-history-beautiful-card {
-    width: 100vw !important;
-    max-width: 100vw !important;
-    margin-left: calc(-50vw + 50%) !important;
-    left: 0 !important;
-    right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    left: auto !important;
+    right: auto !important;
     box-sizing: border-box;
   }
 
       .mobile-tabs {
-        width: 100vw;
+        width: 100%;
         margin-left: 0;
         position: relative;
         overflow-x: auto;
@@ -794,17 +775,17 @@ body, html {
 
   .mobile-send-form,
   .mobile-create-form {
-    width: 100vw !important;
-    max-width: 100vw !important;
+    width: 100% !important;
+    max-width: 100% !important;
     margin: 0 !important;
     padding: 0 16px !important;
     box-sizing: border-box;
   }
 
   .mbl_footer {
-    width: 100vw !important;
-    left: 0 !important;
-    right: 0 !important;
+    width: 100% !important;
+    left: auto !important;
+    right: auto !important;
     margin: 0 !important;
     padding: 10px 0 !important;
     box-sizing: border-box;
