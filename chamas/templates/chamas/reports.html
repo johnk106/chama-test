@@ -1724,17 +1724,22 @@ function calculateAndDisplayTotals() {
         }
     }
 
-    // Group Investment Income totals
-    if (reportData.groupInvestmentIncomes.length > 0) {
-        const total = reportData.groupInvestmentIncomes.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
-        const container = document.getElementById('group-investment-incomes-total');
-        if (container) {
-            container.innerHTML = `
-                <div class="summary-card">
-                    <h4 class="summary-title">Total Investment Income</h4>
-                    <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
-                </div>
-            `;
+    // Group Investment Income totals (use filtered data if available)
+    {
+        const data = (window.currentGroupInvestmentData && Array.isArray(window.currentGroupInvestmentData.data))
+            ? window.currentGroupInvestmentData.data
+            : reportData.groupInvestmentIncomes;
+        if (data && data.length > 0) {
+            const total = data.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+            const container = document.getElementById('group-investment-incomes-total');
+            if (container) {
+                container.innerHTML = `
+                    <div class="summary-card">
+                        <h4 class="summary-title">Total Investment Income</h4>
+                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                    </div>
+                `;
+            }
         }
     }
 
@@ -1752,22 +1757,29 @@ function calculateAndDisplayTotals() {
         }
     }
 
-    // Group Contributions totals
-    if (reportData.groupContributions.length > 0) {
-        const total = reportData.groupContributions.reduce((sum, item) => sum + (parseFloat(item.amount_paid) || 0), 0);
-        const container = document.getElementById('group-contributions-items');
-        if (container) {
-            const existingTable = container.querySelector('.brand-table-responsive');
-            if (existingTable) {
-                const totalsDiv = document.createElement('div');
-                totalsDiv.className = 'summary-cards';
-                totalsDiv.innerHTML = `
-                    <div class="summary-card">
-                        <h4 class="summary-title">Total Contributions</h4>
-                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
-                    </div>
-                `;
-                container.appendChild(totalsDiv);
+    // Group Contributions totals (use filtered data if available)
+    {
+        const data = (window.currentGroupContributionsData && Array.isArray(window.currentGroupContributionsData.data))
+            ? window.currentGroupContributionsData.data
+            : reportData.groupContributions;
+        if (data && data.length > 0) {
+            const total = data.reduce((sum, item) => sum + (parseFloat(item.amount_paid) || 0), 0);
+            const container = document.getElementById('group-contributions-items');
+            if (container) {
+                const existingTable = container.querySelector('.brand-table-responsive');
+                if (existingTable) {
+                    // Remove existing totals under this container if present (avoid duplicates)
+                    container.querySelectorAll('.summary-cards').forEach(el => el.remove());
+                    const totalsDiv = document.createElement('div');
+                    totalsDiv.className = 'summary-cards';
+                    totalsDiv.innerHTML = `
+                        <div class="summary-card">
+                            <h4 class="summary-title">Total Contributions</h4>
+                            <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                        </div>
+                    `;
+                    container.appendChild(totalsDiv);
+                }
             }
         }
     }
@@ -1779,6 +1791,7 @@ function calculateAndDisplayTotals() {
         if (container) {
             const existingTable = container.querySelector('.brand-table-responsive');
             if (existingTable) {
+                container.querySelectorAll('.summary-cards').forEach(el => el.remove());
                 const totalsDiv = document.createElement('div');
                 totalsDiv.className = 'summary-cards';
                 totalsDiv.innerHTML = `
@@ -1792,22 +1805,28 @@ function calculateAndDisplayTotals() {
         }
     }
 
-    // Expenses totals
-    if (reportData.expenses.length > 0) {
-        const total = reportData.expenses.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
-        const container = document.getElementById('expenses-items');
-        if (container) {
-            const existingTable = container.querySelector('.brand-table-responsive');
-            if (existingTable) {
-                const totalsDiv = document.createElement('div');
-                totalsDiv.className = 'summary-cards';
-                totalsDiv.innerHTML = `
-                    <div class="summary-card">
-                        <h4 class="summary-title">Total Expenses</h4>
-                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
-                    </div>
-                `;
-                container.appendChild(totalsDiv);
+    // Expenses totals (use filtered data if available)
+    {
+        const data = (window.currentExpensesData && Array.isArray(window.currentExpensesData.data))
+            ? window.currentExpensesData.data
+            : reportData.expenses;
+        if (data && data.length > 0) {
+            const total = data.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+            const container = document.getElementById('expenses-items');
+            if (container) {
+                const existingTable = container.querySelector('.brand-table-responsive');
+                if (existingTable) {
+                    container.querySelectorAll('.summary-cards').forEach(el => el.remove());
+                    const totalsDiv = document.createElement('div');
+                    totalsDiv.className = 'summary-cards';
+                    totalsDiv.innerHTML = `
+                        <div class="summary-card">
+                            <h4 class="summary-title">Total Expenses</h4>
+                            <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                        </div>
+                    `;
+                    container.appendChild(totalsDiv);
+                }
             }
         }
     }
@@ -1826,122 +1845,158 @@ function calculateAndDisplayTotals() {
         }
     }
 
-    // Collected Fines totals
-    if (reportData.collectedFines.length > 0) {
-        const total = reportData.collectedFines.reduce((sum, item) => sum + (parseFloat(item.fine_amount) || 0), 0);
-        const container = document.getElementById('collected-fines-items');
-        if (container) {
-            const existingTable = container.querySelector('.brand-table-responsive');
-            if (existingTable) {
-                const totalsDiv = document.createElement('div');
-                totalsDiv.className = 'summary-cards';
-                totalsDiv.innerHTML = `
-                    <div class="summary-card">
-                        <h4 class="summary-title">Total Collected Fines</h4>
-                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
-                    </div>
-                `;
-                container.appendChild(totalsDiv);
+    // Collected Fines totals (use filtered data if available)
+    {
+        const data = (window.currentCollectedFinesData && Array.isArray(window.currentCollectedFinesData.data))
+            ? window.currentCollectedFinesData.data
+            : reportData.collectedFines;
+        if (data && data.length > 0) {
+            const total = data.reduce((sum, item) => sum + (parseFloat(item.fine_amount) || 0), 0);
+            const container = document.getElementById('collected-fines-items');
+            if (container) {
+                const existingTable = container.querySelector('.brand-table-responsive');
+                if (existingTable) {
+                    container.querySelectorAll('.summary-cards').forEach(el => el.remove());
+                    const totalsDiv = document.createElement('div');
+                    totalsDiv.className = 'summary-cards';
+                    totalsDiv.innerHTML = `
+                        <div class="summary-card">
+                            <h4 class="summary-title">Total Collected Fines</h4>
+                            <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                        </div>
+                    `;
+                    container.appendChild(totalsDiv);
+                }
             }
         }
     }
 
-    // Unpaid Fines totals
-    if (reportData.unpaidFines.length > 0) {
-        const total = reportData.unpaidFines.reduce((sum, item) => sum + (parseFloat(item.fine_amount) || 0), 0);
-        const container = document.getElementById('unpaid-fines-items');
-        if (container) {
-            const existingTable = container.querySelector('.brand-table-responsive');
-            if (existingTable) {
-                const totalsDiv = document.createElement('div');
-                totalsDiv.className = 'summary-cards';
-                totalsDiv.innerHTML = `
-                    <div class="summary-card">
-                        <h4 class="summary-title">Total Unpaid Fines</h4>
-                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
-                    </div>
-                `;
-                container.appendChild(totalsDiv);
+    // Unpaid Fines totals (use filtered data if available)
+    {
+        const data = (window.currentUnpaidFinesData && Array.isArray(window.currentUnpaidFinesData.data))
+            ? window.currentUnpaidFinesData.data
+            : reportData.unpaidFines;
+        if (data && data.length > 0) {
+            const total = data.reduce((sum, item) => sum + (parseFloat(item.fine_amount) || 0), 0);
+            const container = document.getElementById('unpaid-fines-items');
+            if (container) {
+                const existingTable = container.querySelector('.brand-table-responsive');
+                if (existingTable) {
+                    container.querySelectorAll('.summary-cards').forEach(el => el.remove());
+                    const totalsDiv = document.createElement('div');
+                    totalsDiv.className = 'summary-cards';
+                    totalsDiv.innerHTML = `
+                        <div class="summary-card">
+                            <h4 class="summary-title">Total Unpaid Fines</h4>
+                            <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                        </div>
+                    `;
+                    container.appendChild(totalsDiv);
+                }
             }
         }
     }
 
-    // Group Savings totals
-    if (reportData.groupSavings.length > 0) {
-        const total = reportData.groupSavings.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
-        const container = document.getElementById('group-saving-items');
-        if (container) {
-            const existingTable = container.querySelector('.brand-table-responsive');
-            if (existingTable) {
-                const totalsDiv = document.createElement('div');
-                totalsDiv.className = 'summary-cards';
-                totalsDiv.innerHTML = `
-                    <div class="summary-card">
-                        <h4 class="summary-title">Total Group Savings</h4>
-                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
-                    </div>
-                `;
-                container.appendChild(totalsDiv);
+    // Group Savings totals (use filtered data if available)
+    {
+        const data = (window.currentGroupSavingData && Array.isArray(window.currentGroupSavingData.data))
+            ? window.currentGroupSavingData.data
+            : reportData.groupSavings;
+        if (data && data.length > 0) {
+            const total = data.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+            const container = document.getElementById('group-saving-items');
+            if (container) {
+                const existingTable = container.querySelector('.brand-table-responsive');
+                if (existingTable) {
+                    container.querySelectorAll('.summary-cards').forEach(el => el.remove());
+                    const totalsDiv = document.createElement('div');
+                    totalsDiv.className = 'summary-cards';
+                    totalsDiv.innerHTML = `
+                        <div class="summary-card">
+                            <h4 class="summary-title">Total Group Savings</h4>
+                            <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                        </div>
+                    `;
+                    container.appendChild(totalsDiv);
+                }
             }
         }
     }
 
-    // Individual Savings totals
-    if (reportData.individualSavings.length > 0) {
-        const total = reportData.individualSavings.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
-        const container = document.getElementById('individual-saving-items');
-        if (container) {
-            const existingTable = container.querySelector('.brand-table-responsive');
-            if (existingTable) {
-                const totalsDiv = document.createElement('div');
-                totalsDiv.className = 'summary-cards';
-                totalsDiv.innerHTML = `
-                    <div class="summary-card">
-                        <h4 class="summary-title">Total Individual Savings</h4>
-                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
-                    </div>
-                `;
-                container.appendChild(totalsDiv);
+    // Individual Savings totals (use filtered data if available)
+    {
+        const data = (window.currentIndividualSavingData && Array.isArray(window.currentIndividualSavingData.data))
+            ? window.currentIndividualSavingData.data
+            : reportData.individualSavings;
+        if (data && data.length > 0) {
+            const total = data.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+            const container = document.getElementById('individual-saving-items');
+            if (container) {
+                const existingTable = container.querySelector('.brand-table-responsive');
+                if (existingTable) {
+                    container.querySelectorAll('.summary-cards').forEach(el => el.remove());
+                    const totalsDiv = document.createElement('div');
+                    totalsDiv.className = 'summary-cards';
+                    totalsDiv.innerHTML = `
+                        <div class="summary-card">
+                            <h4 class="summary-title">Total Individual Savings</h4>
+                            <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                        </div>
+                    `;
+                    container.appendChild(totalsDiv);
+                }
             }
         }
     }
 
-    // Member Investment Income totals
-    if (reportData.memberInvestmentIncomes.length > 0) {
-        const total = reportData.memberInvestmentIncomes.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
-        const container = document.getElementById('member-investment-income-items');
-        if (container) {
-            const existingTable = container.querySelector('.brand-table-responsive');
-            if (existingTable) {
-                const totalsDiv = document.createElement('div');
-                totalsDiv.className = 'summary-cards';
-                totalsDiv.innerHTML = `
-                    <div class="summary-card">
-                        <h4 class="summary-title">Total Member Investment Income</h4>
-                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
-                    </div>
-                `;
-                container.appendChild(totalsDiv);
+    // Member Investment Income totals (use filtered data if available)
+    {
+        const data = (window.currentMemberInvestmentData && Array.isArray(window.currentMemberInvestmentData.data))
+            ? window.currentMemberInvestmentData.data
+            : reportData.memberInvestmentIncomes;
+        if (data && data.length > 0) {
+            const total = data.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+            const container = document.getElementById('member-investment-income-items');
+            if (container) {
+                const existingTable = container.querySelector('.brand-table-responsive');
+                if (existingTable) {
+                    container.querySelectorAll('.summary-cards').forEach(el => el.remove());
+                    const totalsDiv = document.createElement('div');
+                    totalsDiv.className = 'summary-cards';
+                    totalsDiv.innerHTML = `
+                        <div class="summary-card">
+                            <h4 class="summary-title">Total Member Investment Income</h4>
+                            <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                        </div>
+                    `;
+                    container.appendChild(totalsDiv);
+                }
             }
         }
     }
 
-    // My Investment Income totals
-    if (reportData.myReports.length > 0) {
-        const total = reportData.myReports.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
-        const container = document.getElementById('my-income-items');
-        if (container) {
-            const existingTable = container.querySelector('.brand-table-responsive');
-            if (existingTable) {
-                const totalsDiv = document.createElement('div');
-                totalsDiv.className = 'summary-cards';
-                totalsDiv.innerHTML = `
-                    <div class="summary-card">
-                        <h4 class="summary-title">Total My Investment Income</h4>
-                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
-                    </div>
-                `;
-                container.appendChild(totalsDiv);
+    // My Investment Income totals (use filtered data if available)
+    {
+        const data = (window.currentMyInvestmentData && Array.isArray(window.currentMyInvestmentData.data))
+            ? window.currentMyInvestmentData.data
+            : [];
+        if (data && data.length > 0) {
+            const total = data.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+            const container = document.getElementById('my-income-items');
+            if (container) {
+                const existingTable = container.querySelector('.brand-table-responsive');
+                if (existingTable) {
+                    container.querySelectorAll('.summary-cards').forEach(el => el.remove());
+                    const totalsDiv = document.createElement('div');
+                    totalsDiv.className = 'summary-cards';
+                    totalsDiv.innerHTML = `
+                        <div class="summary-card">
+                            <h4 class="summary-title">Total My Investment Income</h4>
+                            <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                        </div>
+                    `;
+                    container.appendChild(totalsDiv);
+                }
             }
         }
     }
@@ -1953,6 +2008,7 @@ function calculateAndDisplayTotals() {
         if (container) {
             const existingTable = container.querySelector('.brand-table-responsive');
             if (existingTable) {
+                container.querySelectorAll('.summary-cards').forEach(el => el.remove());
                 const totalsDiv = document.createElement('div');
                 totalsDiv.className = 'summary-cards';
                 totalsDiv.innerHTML = `
@@ -1973,6 +2029,7 @@ function calculateAndDisplayTotals() {
         if (container) {
             const existingTable = container.querySelector('.brand-table-responsive');
             if (existingTable) {
+                container.querySelectorAll('.summary-cards').forEach(el => el.remove());
                 const totalsDiv = document.createElement('div');
                 totalsDiv.className = 'summary-cards';
                 totalsDiv.innerHTML = `
@@ -1986,22 +2043,28 @@ function calculateAndDisplayTotals() {
         }
     }
 
-    // Member Contributions totals
-    if (reportData.groupContributions.length > 0) {
-        const total = reportData.groupContributions.reduce((sum, item) => sum + (parseFloat(item.amount_paid) || 0), 0);
-        const container = document.getElementById('member-contributions-items');
-        if (container) {
-            const existingTable = container.querySelector('.brand-table-responsive');
-            if (existingTable) {
-                const totalsDiv = document.createElement('div');
-                totalsDiv.className = 'summary-cards';
-                totalsDiv.innerHTML = `
-                    <div class="summary-card">
-                        <h4 class="summary-title">Total Member Contributions</h4>
-                        <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
-                    </div>
-                `;
-                container.appendChild(totalsDiv);
+    // Member Contributions totals (use filtered data if available)
+    {
+        const data = (window.currentMemberContributionsData && Array.isArray(window.currentMemberContributionsData.data))
+            ? window.currentMemberContributionsData.data
+            : [];
+        if (data && data.length > 0) {
+            const total = data.reduce((sum, item) => sum + (parseFloat(item.amount_paid) || 0), 0);
+            const container = document.getElementById('member-contributions-items');
+            if (container) {
+                const existingTable = container.querySelector('.brand-table-responsive');
+                if (existingTable) {
+                    container.querySelectorAll('.summary-cards').forEach(el => el.remove());
+                    const totalsDiv = document.createElement('div');
+                    totalsDiv.className = 'summary-cards';
+                    totalsDiv.innerHTML = `
+                        <div class="summary-card">
+                            <h4 class="summary-title">Total Member Contributions</h4>
+                            <p class="summary-amount text-brand-primary">Ksh ${total.toLocaleString()}</p>
+                        </div>
+                    `;
+                    container.appendChild(totalsDiv);
+                }
             }
         }
     }
@@ -2026,13 +2089,11 @@ function calculateAndDisplayTotals() {
         const net = memberData.reduce((sum, item) => {
             const amount = parseFloat(item.amount) || 0;
             const type = (item.type || '').toLowerCase();
-            // Member perspective: contributions/payments are outflows (-), disbursements are inflows (+)
             if (type === 'loan disbursment') return sum + amount;
             if (type === 'contribution') return sum - amount;
             if (type === 'loan payment') return sum - amount;
             if (type === 'fine payment') return sum - amount;
             if (type === 'expense') return sum - amount;
-            // Non-cash types like imposed fine do not change cash position
             return sum;
         }, 0);
         const container = document.getElementById('member-cashflow-totals-cont');
@@ -2049,13 +2110,14 @@ function calculateAndDisplayTotals() {
         if (container) container.innerHTML = '';
     }
 
-    // Loan Repayment Schedule totals
+    // Loan Repayment Schedule totals (use filtered data)
     if (window.currentRepaymentScheduleData && window.currentRepaymentScheduleData.data.length > 0) {
         const total = window.currentRepaymentScheduleData.data.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
         const container = document.getElementById('loan-repayment-schedule-items');
         if (container) {
             const existingTable = container.querySelector('.brand-table-responsive');
             if (existingTable) {
+                container.querySelectorAll('.summary-cards').forEach(el => el.remove());
                 const totalsDiv = document.createElement('div');
                 totalsDiv.className = 'summary-cards';
                 totalsDiv.innerHTML = `
@@ -2646,6 +2708,8 @@ function filterGroupContributions(memberId = null, schemeId = null, startDate = 
                 <p class="empty-state-description">No group contributions data available</p>
             </div>
         `;
+        window.currentGroupContributionsData = null;
+        calculateAndDisplayTotals();
         return;
     }
     
@@ -2669,10 +2733,8 @@ function filterGroupContributions(memberId = null, schemeId = null, startDate = 
     }
     
     if (filteredData.length > 0) {
-        // Show member and scheme columns based on filters
         const showMemberColumn = !memberId;
         const showSchemeColumn = !schemeId;
-        
         container.innerHTML = `
             <div class="brand-table-responsive">
                 <table class="brand-table">
@@ -2697,11 +2759,12 @@ function filterGroupContributions(memberId = null, schemeId = null, startDate = 
                 </table>
             </div>
         `;
+        window.currentGroupContributionsData = { data: filteredData };
+        calculateAndDisplayTotals();
     } else {
         const emptyMessage = memberId || schemeId
             ? `No contribution data available for the selected ${memberId ? 'member' : 'scheme'}${startDate || endDate ? ' in the specified date range' : ''}`
             : `No group contribution data available${startDate || endDate ? ' in the specified date range' : ''}`;
-            
         container.innerHTML = `
             <div class="empty-state">
                 <i class="bx bx-file-blank empty-state-icon"></i>
@@ -2709,6 +2772,8 @@ function filterGroupContributions(memberId = null, schemeId = null, startDate = 
                 <p class="empty-state-description">${emptyMessage}</p>
             </div>
         `;
+        window.currentGroupContributionsData = null;
+        calculateAndDisplayTotals();
     }
 }
 
@@ -2718,7 +2783,6 @@ function filterMemberContributions(memberId = null, schemeId = null, startDate =
     const container = document.getElementById('member-contributions-items');
     const chamaId = localStorage.getItem('groupId');
     
-    // Show loading state
     if (container) {
         container.innerHTML = `
             <div class="empty-state">
@@ -2729,14 +2793,12 @@ function filterMemberContributions(memberId = null, schemeId = null, startDate =
         `;
     }
     
-    // Build query parameters
     let params = new URLSearchParams();
     if (memberId) params.append('member_id', memberId);
     if (schemeId) params.append('scheme_id', schemeId);
     if (startDate) params.append('start_date', startDate);
     if (endDate) params.append('end_date', endDate);
     
-    // Make AJAX request
     fetch(`/chamas-bookeeping/get-member-contributions-data/${chamaId}/?${params.toString()}`, {
         method: 'GET',
         headers: {
@@ -2747,10 +2809,8 @@ function filterMemberContributions(memberId = null, schemeId = null, startDate =
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success' && data.data.length > 0) {
-            // Show member and scheme columns based on filters
             const showMemberColumn = !memberId;
             const showSchemeColumn = !schemeId;
-            
             container.innerHTML = `
                 <div class="brand-table-responsive">
                     <table class="brand-table">
@@ -2781,8 +2841,6 @@ function filterMemberContributions(memberId = null, schemeId = null, startDate =
                     </table>
                 </div>
             `;
-            
-            // Store current filtered data for download
             window.currentMemberContributionsData = {
                 memberId: memberId,
                 schemeId: schemeId,
@@ -2790,11 +2848,11 @@ function filterMemberContributions(memberId = null, schemeId = null, startDate =
                 startDate: startDate,
                 endDate: endDate
             };
+            calculateAndDisplayTotals();
         } else {
             const emptyMessage = memberId || schemeId
                 ? `No contribution data available for the selected ${memberId ? 'member' : 'scheme'}${startDate || endDate ? ' in the specified date range' : ''}`
                 : `No member contribution data available${startDate || endDate ? ' in the specified date range' : ''}`;
-                
             container.innerHTML = `
                 <div class="empty-state">
                     <i class="bx bx-file-blank empty-state-icon"></i>
@@ -2803,6 +2861,7 @@ function filterMemberContributions(memberId = null, schemeId = null, startDate =
                 </div>
             `;
             window.currentMemberContributionsData = null;
+            calculateAndDisplayTotals();
         }
     })
     .catch(error => {
@@ -2815,6 +2874,7 @@ function filterMemberContributions(memberId = null, schemeId = null, startDate =
             </div>
         `;
         window.currentMemberContributionsData = null;
+        calculateAndDisplayTotals();
     });
 }
 
@@ -2822,8 +2882,6 @@ function filterMemberContributions(memberId = null, schemeId = null, startDate =
 function filterLoanRepaymentSchedule(memberId = null, startDate = null, endDate = null) {
     const container = document.getElementById('repayment-schedule-items');
     const chamaId = localStorage.getItem('groupId');
-    
-    // Show loading state
     if (container) {
         container.innerHTML = `
             <div class="empty-state">
@@ -2833,14 +2891,10 @@ function filterLoanRepaymentSchedule(memberId = null, startDate = null, endDate 
             </div>
         `;
     }
-    
-    // Build query parameters
     let params = new URLSearchParams();
     if (memberId) params.append('member_id', memberId);
     if (startDate) params.append('start_date', startDate);
     if (endDate) params.append('end_date', endDate);
-    
-    // Make AJAX request
     fetch(`/chamas-bookeeping/get-loan-repayment-schedule/${chamaId}/?${params.toString()}`, {
         method: 'GET',
         headers: {
@@ -2851,9 +2905,7 @@ function filterLoanRepaymentSchedule(memberId = null, startDate = null, endDate 
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success' && data.data.length > 0) {
-            // Show member column if displaying all members (no specific member selected)
             const showMemberColumn = !memberId;
-            
             container.innerHTML = `
                 <div class="brand-table-responsive">
                     <table class="brand-table">
@@ -2886,19 +2938,17 @@ function filterLoanRepaymentSchedule(memberId = null, startDate = null, endDate 
                     </table>
                 </div>
             `;
-            
-            // Store current filtered data for download
             window.currentRepaymentScheduleData = {
                 memberId: memberId,
                 data: data.data,
                 startDate: startDate,
                 endDate: endDate
             };
+            calculateAndDisplayTotals();
         } else {
             const emptyMessage = memberId 
                 ? `No loan repayment schedule available for the selected member${startDate || endDate ? ' in the specified date range' : ''}`
                 : `No loan repayment schedule data available${startDate || endDate ? ' in the specified date range' : ''}`;
-                
             container.innerHTML = `
                 <div class="empty-state">
                     <i class="bx bx-file-blank empty-state-icon"></i>
@@ -2907,6 +2957,7 @@ function filterLoanRepaymentSchedule(memberId = null, startDate = null, endDate 
                 </div>
             `;
             window.currentRepaymentScheduleData = null;
+            calculateAndDisplayTotals();
         }
     })
     .catch(error => {
@@ -2919,6 +2970,7 @@ function filterLoanRepaymentSchedule(memberId = null, startDate = null, endDate 
             </div>
         `;
         window.currentRepaymentScheduleData = null;
+        calculateAndDisplayTotals();
     });
 }
 
@@ -3047,7 +3099,6 @@ function getCookie(name) {
 function filterGroupInvestmentIncome(startDate = null, endDate = null) {
     const container = document.getElementById('group-investment-incomes-items');
     const chamaId = localStorage.getItem('groupId');
-    
     // Show loading state
     if (container) {
         container.innerHTML = `
@@ -3058,12 +3109,10 @@ function filterGroupInvestmentIncome(startDate = null, endDate = null) {
             </div>
         `;
     }
-    
     // Build query parameters
     let params = new URLSearchParams();
     if (startDate) params.append('start_date', startDate);
     if (endDate) params.append('end_date', endDate);
-    
     // Make AJAX request
     fetch(`/chamas-bookeeping/get-group-investment-income-data/${chamaId}/?${params.toString()}`, {
         method: 'GET',
@@ -3099,18 +3148,16 @@ function filterGroupInvestmentIncome(startDate = null, endDate = null) {
                     </table>
                 </div>
             `;
-            
-            // Store current filtered data for download
             window.currentGroupInvestmentData = {
                 data: data.data,
                 startDate: startDate,
                 endDate: endDate
             };
+            calculateAndDisplayTotals();
         } else {
             const emptyMessage = startDate || endDate 
                 ? 'No group investment income data available in the specified date range'
                 : 'No group investment income data available';
-                
             container.innerHTML = `
                 <div class="empty-state">
                     <i class="bx bx-file-blank empty-state-icon"></i>
@@ -3119,6 +3166,7 @@ function filterGroupInvestmentIncome(startDate = null, endDate = null) {
                 </div>
             `;
             window.currentGroupInvestmentData = null;
+            calculateAndDisplayTotals();
         }
     })
     .catch(error => {
@@ -3131,6 +3179,7 @@ function filterGroupInvestmentIncome(startDate = null, endDate = null) {
             </div>
         `;
         window.currentGroupInvestmentData = null;
+        calculateAndDisplayTotals();
     });
 }
 
@@ -3138,8 +3187,6 @@ function filterGroupInvestmentIncome(startDate = null, endDate = null) {
 function filterMyInvestmentIncome(startDate = null, endDate = null) {
     const container = document.getElementById('my-income-items');
     const chamaId = localStorage.getItem('groupId');
-    
-    // Show loading state
     if (container) {
         container.innerHTML = `
             <div class="empty-state">
@@ -3149,13 +3196,9 @@ function filterMyInvestmentIncome(startDate = null, endDate = null) {
             </div>
         `;
     }
-    
-    // Build query parameters
     let params = new URLSearchParams();
     if (startDate) params.append('start_date', startDate);
     if (endDate) params.append('end_date', endDate);
-    
-    // Make AJAX request
     fetch(`/chamas-bookeeping/get-my-investment-income-data/${chamaId}/?${params.toString()}`, {
         method: 'GET',
         headers: {
@@ -3190,18 +3233,16 @@ function filterMyInvestmentIncome(startDate = null, endDate = null) {
                     </table>
                 </div>
             `;
-            
-            // Store current filtered data for download
             window.currentMyInvestmentData = {
                 data: data.data,
                 startDate: startDate,
                 endDate: endDate
             };
+            calculateAndDisplayTotals();
         } else {
             const emptyMessage = startDate || endDate 
                 ? 'No personal investment income data available in the specified date range'
                 : 'No personal investment income data available';
-                
             container.innerHTML = `
                 <div class="empty-state">
                     <i class="bx bx-file-blank empty-state-icon"></i>
@@ -3210,6 +3251,7 @@ function filterMyInvestmentIncome(startDate = null, endDate = null) {
                 </div>
             `;
             window.currentMyInvestmentData = null;
+            calculateAndDisplayTotals();
         }
     })
     .catch(error => {
@@ -3222,6 +3264,7 @@ function filterMyInvestmentIncome(startDate = null, endDate = null) {
             </div>
         `;
         window.currentMyInvestmentData = null;
+        calculateAndDisplayTotals();
     });
 }
 
@@ -3229,8 +3272,6 @@ function filterMyInvestmentIncome(startDate = null, endDate = null) {
 function filterGroupSavings(startDate = null, endDate = null) {
     const container = document.getElementById('group-saving-items');
     const chamaId = localStorage.getItem('groupId');
-    
-    // Show loading state
     if (container) {
         container.innerHTML = `
             <div class="empty-state">
@@ -3240,13 +3281,9 @@ function filterGroupSavings(startDate = null, endDate = null) {
             </div>
         `;
     }
-    
-    // Build query parameters
     let params = new URLSearchParams();
     if (startDate) params.append('start_date', startDate);
     if (endDate) params.append('end_date', endDate);
-    
-    // Make AJAX request
     fetch(`/chamas-bookeeping/get-group-saving-data/${chamaId}/?${params.toString()}`, {
         method: 'GET',
         headers: {
@@ -3279,18 +3316,16 @@ function filterGroupSavings(startDate = null, endDate = null) {
                     </table>
                 </div>
             `;
-            
-            // Store current filtered data for download
             window.currentGroupSavingData = {
                 data: data.data,
                 startDate: startDate,
                 endDate: endDate
             };
+            calculateAndDisplayTotals();
         } else {
             const emptyMessage = startDate || endDate 
                 ? 'No group savings data available in the specified date range'
                 : 'No group savings data available';
-                
             container.innerHTML = `
                 <div class="empty-state">
                     <i class="bx bx-file-blank empty-state-icon"></i>
@@ -3299,6 +3334,7 @@ function filterGroupSavings(startDate = null, endDate = null) {
                 </div>
             `;
             window.currentGroupSavingData = null;
+            calculateAndDisplayTotals();
         }
     })
     .catch(error => {
@@ -3311,6 +3347,7 @@ function filterGroupSavings(startDate = null, endDate = null) {
             </div>
         `;
         window.currentGroupSavingData = null;
+        calculateAndDisplayTotals();
     });
 }
 
@@ -3318,8 +3355,6 @@ function filterGroupSavings(startDate = null, endDate = null) {
 function filterCollectedFines(startDate = null, endDate = null) {
     const container = document.getElementById('collected-fines-items');
     const chamaId = localStorage.getItem('groupId');
-    
-    // Show loading state
     if (container) {
         container.innerHTML = `
             <div class="empty-state">
@@ -3329,13 +3364,9 @@ function filterCollectedFines(startDate = null, endDate = null) {
             </div>
         `;
     }
-    
-    // Build query parameters
     let params = new URLSearchParams();
     if (startDate) params.append('start_date', startDate);
     if (endDate) params.append('end_date', endDate);
-    
-    // Make AJAX request
     fetch(`/chamas-bookeeping/get-collected-fines-data/${chamaId}/?${params.toString()}`, {
         method: 'GET',
         headers: {
@@ -3374,18 +3405,16 @@ function filterCollectedFines(startDate = null, endDate = null) {
                     </table>
                 </div>
             `;
-            
-            // Store current filtered data for download
             window.currentCollectedFinesData = {
                 data: data.data,
                 startDate: startDate,
                 endDate: endDate
             };
+            calculateAndDisplayTotals();
         } else {
             const emptyMessage = startDate || endDate 
                 ? 'No collected fines data available in the specified date range'
                 : 'No collected fines data available';
-                
             container.innerHTML = `
                 <div class="empty-state">
                     <i class="bx bx-file-blank empty-state-icon"></i>
@@ -3394,6 +3423,7 @@ function filterCollectedFines(startDate = null, endDate = null) {
                 </div>
             `;
             window.currentCollectedFinesData = null;
+            calculateAndDisplayTotals();
         }
     })
     .catch(error => {
@@ -3406,6 +3436,7 @@ function filterCollectedFines(startDate = null, endDate = null) {
             </div>
         `;
         window.currentCollectedFinesData = null;
+        calculateAndDisplayTotals();
     });
 }
 
@@ -3413,8 +3444,6 @@ function filterCollectedFines(startDate = null, endDate = null) {
 function filterUnpaidFines(startDate = null, endDate = null) {
     const container = document.getElementById('unpaid-fines-items');
     const chamaId = localStorage.getItem('groupId');
-    
-    // Show loading state
     if (container) {
         container.innerHTML = `
             <div class="empty-state">
@@ -3424,13 +3453,9 @@ function filterUnpaidFines(startDate = null, endDate = null) {
             </div>
         `;
     }
-    
-    // Build query parameters
     let params = new URLSearchParams();
     if (startDate) params.append('start_date', startDate);
     if (endDate) params.append('end_date', endDate);
-    
-    // Make AJAX request
     fetch(`/chamas-bookeeping/get-unpaid-fines-data/${chamaId}/?${params.toString()}`, {
         method: 'GET',
         headers: {
@@ -3469,18 +3494,16 @@ function filterUnpaidFines(startDate = null, endDate = null) {
                     </table>
                 </div>
             `;
-            
-            // Store current filtered data for download
             window.currentUnpaidFinesData = {
                 data: data.data,
                 startDate: startDate,
                 endDate: endDate
             };
+            calculateAndDisplayTotals();
         } else {
             const emptyMessage = startDate || endDate 
                 ? 'No unpaid fines data available in the specified date range'
                 : 'No unpaid fines data available';
-                
             container.innerHTML = `
                 <div class="empty-state">
                     <i class="bx bx-file-blank empty-state-icon"></i>
@@ -3489,6 +3512,7 @@ function filterUnpaidFines(startDate = null, endDate = null) {
                 </div>
             `;
             window.currentUnpaidFinesData = null;
+            calculateAndDisplayTotals();
         }
     })
     .catch(error => {
@@ -3501,6 +3525,7 @@ function filterUnpaidFines(startDate = null, endDate = null) {
             </div>
         `;
         window.currentUnpaidFinesData = null;
+        calculateAndDisplayTotals();
     });
 }
 
@@ -3508,8 +3533,6 @@ function filterUnpaidFines(startDate = null, endDate = null) {
 function filterExpenses(startDate = null, endDate = null) {
     const container = document.getElementById('expenses-items');
     const chamaId = localStorage.getItem('groupId');
-    
-    // Show loading state
     if (container) {
         container.innerHTML = `
             <div class="empty-state">
@@ -3519,13 +3542,9 @@ function filterExpenses(startDate = null, endDate = null) {
             </div>
         `;
     }
-    
-    // Build query parameters
     let params = new URLSearchParams();
     if (startDate) params.append('start_date', startDate);
     if (endDate) params.append('end_date', endDate);
-    
-    // Make AJAX request
     fetch(`/chamas-bookeeping/get-expenses-data/${chamaId}/?${params.toString()}`, {
         method: 'GET',
         headers: {
@@ -3562,18 +3581,16 @@ function filterExpenses(startDate = null, endDate = null) {
                     </table>
                 </div>
             `;
-            
-            // Store current filtered data for download
             window.currentExpensesData = {
                 data: data.data,
                 startDate: startDate,
                 endDate: endDate
             };
+            calculateAndDisplayTotals();
         } else {
             const emptyMessage = startDate || endDate 
                 ? 'No expenses data available in the specified date range'
                 : 'No expenses data available';
-                
             container.innerHTML = `
                 <div class="empty-state">
                     <i class="bx bx-file-blank empty-state-icon"></i>
@@ -3582,6 +3599,7 @@ function filterExpenses(startDate = null, endDate = null) {
                 </div>
             `;
             window.currentExpensesData = null;
+            calculateAndDisplayTotals();
         }
     })
     .catch(error => {
@@ -3594,6 +3612,7 @@ function filterExpenses(startDate = null, endDate = null) {
             </div>
         `;
         window.currentExpensesData = null;
+        calculateAndDisplayTotals();
     });
 }
 </script>
