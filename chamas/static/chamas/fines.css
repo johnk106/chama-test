@@ -996,15 +996,108 @@ body .main-content .page-content:has(.modern-fines),
   .fines-page .main-content {
     margin-left: 260px !important;
   }
+  
+  /* Add proper spacing between desktop components */
+  .desktop-fines .container-fluid {
+    padding: 20px;
+  }
+  
+  .desktop-fines .container.row {
+    margin-bottom: 24px;
+    gap: 16px;
+  }
+  
+  .desktop-fines .body-div {
+    margin-bottom: 16px;
+    margin-right: 16px;
+    margin-left: 16px;
+  }
+  
+  /* Add spacing between sections */
+  .desktop-fines .container.row:last-child {
+    margin-bottom: 40px;
+  }
+  
+  /* Improve body-div styling on desktop */
+  .desktop-fines .body-div {
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    background: #fff;
+    transition: box-shadow 0.2s ease;
+  }
+  
+  .desktop-fines .body-div:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  }
+  
+  /* Add spacing between form elements */
+  .desktop-fines .form-group,
+  .desktop-fines .mb-3 {
+    margin-bottom: 20px;
+  }
+  
+  /* Style section headers */
+  .desktop-fines .div-header {
+    margin: 16px 0 20px 0;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f1f5f9;
+  }
+  
+  /* Improve member cards spacing */
+  .desktop-fines .member-header {
+    margin: 16px 0;
+  }
+  
+  .desktop-fines .loan-single {
+    margin: 12px 0 20px 0;
+    padding: 16px;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+  }
 }
 
 /* Ensure mobile fines container spans full width */
 .mobile-fines {
     width: 100% !important;
     margin: 0 !important;
-    padding: 0 !important;
+    padding: 16px !important;
     position: relative;
     overflow-x: hidden;
+}
+
+/* Mobile component spacing */
+@media (max-width: 768px) {
+  .mobile-tabs {
+    margin-bottom: 20px;
+  }
+  
+  .mobile-tab-content {
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  
+  .mobile-create-form,
+  .mobile-fines-list {
+    margin-bottom: 20px;
+  }
+  
+  .fine-member-card,
+  .fine-payment-card,
+  .fine-view-card {
+    margin-bottom: 16px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .create-fine-card,
+  .send-notification-card {
+    margin-bottom: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
 }
 
 /* Force full width for all parent containers */
