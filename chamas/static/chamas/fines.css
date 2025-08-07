@@ -30,35 +30,263 @@
     pointer-events: none;
 }
 
+/* Import loans styling for consistency */
 .body-div {
     border-radius: 12px;
-    border: 0.5px solid var(--light, rgba(0, 0, 0, 0.20));
+    border: 1px solid var(--light, rgba(0, 0, 0, 0.20));
     background: #FFF;
-
     /* MD - Drop Shadow */
     box-shadow: 0px 10px 20px 0px rgba(148, 163, 184, 0.20);
-    display: flex;
-    padding: 16px 12px;
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
-    flex: 1 0 0;
     align-self: stretch;
+    margin: 10px;
 }
 
-.body-div h6 {
+.section-header {
     color: var(--light-type-high, #070A13);
     text-align: center;
-
     /* Public Sans/Display xs/Medium */
     font-family: sans-serif;
     font-size: 24px;
     font-style: normal;
-    font-weight: 500;
+    font-weight: 600;
     line-height: 32px;
     /* 133.333% */
-    width: 354px;
-    margin: 10px;
+    align-self: stretch;
+}
+
+.loan-type-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-svg {
+    width: 24px;
+    height: 24px;
+}
+
+.header-text {
+    color: var(--Primary-500, #2291A5);
+    text-align: center;
+    /* Public Sans/Text sm/Medium */
+    font-family: sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;
+    /* 142.857% */
+}
+
+.input-sect {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    align-self: stretch;
+    width: 100%;
+}
+
+.some-cont {
+    border-radius: 8px;
+    /* border: 0.5px solid var(--light, rgba(0, 0, 0, 0.20)); */
+    background: var(--White, #FFF);
+    display: flex;
+    padding: 10px;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1 0 0;
+}
+
+.some-cont label {
+    color: var(--Primary-500, #2291A5);
+    text-align: center;
+    /* Public Sans/Text xs/Medium */
+    font-family: sans-serif;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 18px;
+    /* 150% */
+}
+
+.some-cont input {
+    opacity: 0.6;
+    color: #000;
+    text-align: flex-start;
+    /* Public Sans/Text xs/Regular */
+    font-family: sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+    /* 150% */
+}
+
+.some-cont select {
+    opacity: 0.6;
+    color: #000;
+    text-align: flex-start;
+    /* Public Sans/Text xs/Regular */
+    font-family: sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+    /* 150% */
+}
+
+.desc-area {
+    margin-bottom: 20px;
+}
+
+.btn-primary {
+    background: var(--Primary-500, #2291A5);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: #1e7a8c;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(34, 145, 165, 0.3);
+}
+
+.member-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    align-self: stretch;
+    border-radius: 8px;
+    background: var(--light, rgba(0, 0, 0, 0.05));
+    padding: 12px;
+    margin: 16px 0;
+}
+
+.member-header-inner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1 0 0;
+}
+
+.leading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1 0 0;
+}
+
+.leading-inner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.fine-profile {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--Primary-500, #2291A5);
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.member-name {
+    color: var(--light-type-high, #070A13);
+    text-align: center;
+    /* Public Sans/Text sm/Medium */
+    font-family: sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;
+    /* 142.857% */
+}
+
+.loan-single {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    align-self: stretch;
+    border-radius: 8px;
+    background: var(--White, #FFF);
+    padding: 16px;
+    margin: 16px 0;
+    border: 1px solid var(--light, rgba(0, 0, 0, 0.10));
+}
+
+.loan-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    align-self: stretch;
+}
+
+.loan-row-cube {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    flex: 1 0 0;
+    border-radius: 8px;
+    background: var(--light, rgba(0, 0, 0, 0.05));
+    padding: 12px;
+}
+
+.cube-title {
+    color: var(--Primary-500, #2291A5);
+    text-align: center;
+    /* Public Sans/Text xs/Medium */
+    font-family: sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 18px;
+    /* 150% */
+    margin: 0;
+}
+
+.cube-amount {
+    color: var(--light-type-high, #070A13);
+    text-align: center;
+    /* Public Sans/Text sm/Medium */
+    font-family: sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;
+    /* 142.857% */
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+.impose-fine-button, .pay-fine-button {
+    background: var(--Primary-500, #2291A5);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    align-self: flex-start;
+}
+
+.impose-fine-button:hover, .pay-fine-button:hover {
+    background: #1e7a8c;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(34, 145, 165, 0.3);
 }
 
 .div-header {
@@ -80,140 +308,6 @@
     font-weight: 600;
     line-height: 20px;
     /* 142.857% */
-}
-
-
-.member-header {
-    border-radius: 8px;
-    border: 0.5px solid var(--light, rgba(0, 0, 0, 0.20));
-    background: var(--primary-hover, rgba(34, 145, 165, 0.06));
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    align-self: stretch;
-    cursor: pointer;
-}
-
-.member-header-inner {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex: 1 0 0;
-}
-
-.leading {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex: 1 0 0;
-}
-
-.leading-inner {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex: 1 0 0;
-}
-
-.fine-profile {
-    background-color: var(--Primary-500, #2291A5);
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background-size: cover;
-    background-repeat: no-repeat;
-    margin-left: 8px;
-    /* margin-top: 8px; */
-}
-
-.member-name {
-    color: var(--Primary-900, #030F11);
-    /* Public Sans/Text sm/Semibold */
-    font-family: sans-serif;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 20px;
-    /* 142.857% */
-    margin: 0;
-}
-
-
-.loan-single {
-    border-radius: 8px;
-    border: 0.5px solid var(--light, rgba(0, 0, 0, 0.20));
-    background: var(--light-surface-secondary, #F8FAFC);
-    display: flex;
-    padding: 12px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-    align-self: stretch;
-}
-
-.loan-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 6px;
-    align-self: stretch;
-}
-
-.loan-row-cube {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-    flex: 1 0 0;
-}
-
-.cube-title {
-    color: var(--Primary-900, #030F11);
-    font-family: sans-serif;
-    font-size: 10px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 18px;
-    /* 180% */
-    margin: 0;
-}
-
-.cube-amount {
-    border-radius: 4px;
-    border: 0.5px solid var(--light, rgba(0, 0, 0, 0.20));
-    background: #FFF;
-    display: flex;
-    padding: 2px 4px;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 12px;
-    align-self: stretch;
-    color: #000;
-    text-align: center;
-    font-family: sans-serif;
-    font-size: 10px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 18px;
-    /* 180% */
-    opacity: 0.4;
-}
-
-
-.input-sect {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    align-self: stretch;
-}
-
-.input-sect .mb-3 {
-    flex: 1 0 0;
-}
-
-
-.desc-area {
-    align-self: stretch;
 }
 
 
@@ -480,7 +574,7 @@
     padding: 0;
     margin: 0;
     width: 100vw;
-    margin-left: calc(-50vw + 50%);
+    margin-left: 0;
     position: relative;
     overflow-x: auto;
     scrollbar-width: none;
@@ -818,21 +912,25 @@
 
 /* No fines state */
 .no-fines {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 40px 20px;
     text-align: center;
-    padding: 48px 16px;
-    color: #64748b;
 }
 
 .no-fines i {
     font-size: 48px;
-    margin-bottom: 12px;
-    opacity: 0.5;
+    color: var(--light, rgba(0, 0, 0, 0.3));
 }
 
 .no-fines p {
-    margin: 0;
-    font-size: 14px;
+    color: var(--light-type-high, #070A13);
+    font-family: sans-serif;
+    font-size: 16px;
     font-weight: 500;
+    margin: 0;
 }
 
 /* Bootstrap grid support */
@@ -972,36 +1070,351 @@
     padding: 0 !important;
 }
 
-/* Remove padding from page-content specifically for fines page */
+/* Ensure fines page respects main layout positioning */
 body .main-content .page-content:has(.modern-fines),
 .main-content .page-content:has(.modern-fines) {
-    padding: 0 !important;
-    margin: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
+    padding: 20px !important;
 }
 
 /* Fallback for browsers that don't support :has() */
 .fines-page .main-content,
 .fines-page .page-content {
-    padding: 0 !important;
-    margin: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
+    padding: 20px !important;
 }
 
-/* Ensure mobile fines container spans full width */
-.mobile-fines {
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    position: relative;
-    overflow-x: hidden;
-}
+/* Mobile fines container - handled by media queries */
 
 /* Force full width for all parent containers */
 /* Override base template styles */
 .modern-fines .home-section {
     margin: 0 !important;
     padding: 0 !important;
+}
+
+/* Critical Bootstrap Display Class Overrides - Must be at the top */
+@media (min-width: 992px) {
+  /* Force Bootstrap classes to work */
+  .d-lg-block {
+    display: block !important;
+  }
+  
+  .d-lg-none {
+    display: none !important;
+  }
+  
+  /* Specific overrides for fines page */
+  .mobile-fines.d-lg-none {
+    display: none !important;
+  }
+  
+  .desktop-fines.d-lg-block {
+    display: block !important;
+  }
+}
+
+@media (max-width: 991px) {
+  /* Force Bootstrap classes to work */
+  .d-lg-block {
+    display: none !important;
+  }
+  
+  .d-lg-none {
+    display: block !important;
+  }
+  
+  /* Specific overrides for fines page */
+  .mobile-fines.d-lg-none {
+    display: block !important;
+  }
+  
+  .desktop-fines.d-lg-block {
+    display: none !important;
+  }
+}
+
+/* Override any conflicting display rules */
+@media (min-width: 992px) {
+  .mobile-fines {
+    display: none !important;
+  }
+  
+  .desktop-fines {
+    display: block !important;
+  }
+}
+
+@media (max-width: 991px) {
+  .mobile-fines {
+    display: block !important;
+  }
+  
+  .desktop-fines {
+    display: none !important;
+  }
+}
+
+
+
+/* Desktop View - Fix content positioning to account for sidebar */
+@media (min-width: 769px) {
+  .modern-fines {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    left: auto !important;
+    right: auto !important;
+    box-sizing: border-box;
+  }
+
+  /* Ensure desktop layout shows in desktop */
+  .desktop-fines {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    left: auto !important;
+    right: auto !important;
+    box-sizing: border-box;
+  }
+
+  /* Hide mobile layout in desktop */
+  .mobile-fines {
+    display: none !important;
+  }
+
+  /* Add spacing between rows */
+  .desktop-fines .row {
+    margin-bottom: 24px !important;
+  }
+
+  .desktop-fines .row:last-child {
+    margin-bottom: 0 !important;
+  }
+
+  /* Ensure desktop content doesn't overflow and respects main layout */
+  .desktop-fines .body-div {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 0 20px 0 !important;
+    padding: 24px !important;
+    box-sizing: border-box;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Ensure Bootstrap grid works properly in desktop */
+  .desktop-fines .row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+  }
+
+  .desktop-fines .col-sm-12 {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    width: 100% !important;
+  }
+
+  /* Add spacing between form elements */
+  .desktop-fines .mb-3 {
+    margin-bottom: 16px !important;
+  }
+
+  .desktop-fines .form-label {
+    margin-bottom: 8px !important;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  .desktop-fines .form-control {
+    padding: 12px 16px !important;
+    border-radius: 8px !important;
+    border: 1px solid #d1d5db !important;
+    font-size: 14px !important;
+  }
+
+  .desktop-fines .form-control:focus {
+    border-color: #06b6d4 !important;
+    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1) !important;
+  }
+
+  /* Add spacing to member headers */
+  .desktop-fines .member-header {
+    margin: 16px 0 !important;
+    padding: 16px !important;
+    background: #f8fafc !important;
+    border-radius: 8px !important;
+    border: 1px solid #e5e7eb !important;
+  }
+
+  /* Add spacing to loan details */
+  .desktop-fines .loan-single {
+    margin: 16px 0 !important;
+    padding: 20px !important;
+    background: white !important;
+    border-radius: 8px !important;
+    border: 1px solid #e5e7eb !important;
+  }
+
+  .desktop-fines .loan-row {
+    margin-bottom: 16px !important;
+  }
+
+  .desktop-fines .loan-row-cube {
+    padding: 12px !important;
+    background: #f8fafc !important;
+    border-radius: 6px !important;
+    margin: 0 8px 0 0 !important;
+  }
+
+  /* Improve headings */
+  .desktop-fines h6 {
+    margin-bottom: 16px !important;
+    font-weight: 600 !important;
+    color: #1f2937 !important;
+  }
+
+  /* Add spacing to input sections */
+  .desktop-fines .input-sect {
+    margin-bottom: 16px !important;
+  }
+
+  .desktop-fines .desc-area {
+    margin-bottom: 20px !important;
+  }
+
+  /* Style buttons */
+  .desktop-fines .btn-primary {
+    padding: 12px 24px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    background: #06b6d4 !important;
+    border: none !important;
+    transition: all 0.3s ease !important;
+  }
+
+  .desktop-fines .btn-primary:hover {
+    background: #0891b2 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3) !important;
+  }
+
+  /* Style impose fine button */
+  .desktop-fines .impose-fine-button {
+    padding: 10px 20px !important;
+    border-radius: 6px !important;
+    font-weight: 600 !important;
+    background: #06b6d4 !important;
+    color: white !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+  }
+
+  .desktop-fines .impose-fine-button:hover {
+    background: #0891b2 !important;
+    transform: translateY(-1px) !important;
+  }
+
+  /* Ensure footer doesn't slide under sidebar */
+  .mbl_footer {
+    width: 100% !important;
+    left: auto !important;
+    right: auto !important;
+    margin: 0 !important;
+    padding: 10px 0 !important;
+    box-sizing: border-box;
+  }
+}
+
+/* Mobile View - Keep existing full-width behavior */
+@media (max-width: 768px) {
+  .modern-fines {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    left: auto !important;
+    right: auto !important;
+    box-sizing: border-box;
+  }
+
+  /* Show mobile layout in mobile */
+  .mobile-fines {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    left: auto !important;
+    right: auto !important;
+    box-sizing: border-box;
+    padding: 16px !important;
+  }
+
+  /* Hide desktop layout in mobile */
+  .desktop-fines {
+    display: none !important;
+  }
+
+  .mobile-tab-content,
+  .create-fine-card,
+  .fine-member-card,
+  .fine-payment-card,
+  .fine-view-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    left: auto !important;
+    right: auto !important;
+    box-sizing: border-box;
+  }
+
+  .mobile-tabs {
+    width: 100%;
+    margin-left: 0;
+    position: relative;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .mobile-create-form,
+  .mobile-impose-form {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 16px !important;
+    box-sizing: border-box;
+  }
+
+  /* Add spacing to mobile components */
+  .mobile-fines .create-fine-card {
+    margin-bottom: 20px !important;
+    padding: 20px !important;
+  }
+
+  .mobile-fines .fine-member-card {
+    margin-bottom: 16px !important;
+  }
+
+  .mobile-fines .fine-member-header {
+    padding: 16px !important;
+  }
+
+  .mobile-fines .fine-member-content {
+    padding: 16px !important;
+  }
+
+  .mbl_footer {
+    width: 100% !important;
+    left: auto !important;
+    right: auto !important;
+    margin: 0 !important;
+    padding: 10px 0 !important;
+    box-sizing: border-box;
+  }
 }

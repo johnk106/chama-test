@@ -388,456 +388,173 @@
 
   <!-- Desktop View -->
   <div class="desktop-fines d-none d-lg-block">
-    <div class="row justify-content-center mt-2 text-capitalize mt-2">
-      <div class="col-sm-12 m-2 body-div admin">
-        <h6 class="w-auto mx-auto">Create Fine</h6>
-        <div class="div-header">
-          <h6 class="w-auto">Define Fine</h6>
-        </div>
-        <div class="alert-hub"></div>
-        <form action="" id="create-fine-type" style="width: 100%;">
-          <div class="input-sect">
-            <div class="mb-3">
-              <label for="name" class="form-label">Name</label>
-              <input type="name" name="name" class="form-control" id="name" required />
-            </div>
-            <div class="mb-3">
-              <label for="amount" class="form-label">amount</label>
-              <input type="number" name="amount" class="form-control" id="amount" required />
-            </div>
-          </div>
-          <div class="mb-3 desc-area">
-            <label for="description" class="form-label">Description</label>
-            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
-          </div>
-          <button class="btn btn-primary border-0" style="width: 100%">Create</button>
-        </form>
-      </div>
+    <div class="text-capitalize">
+      <div class="row justify-content-center">
 
-      <div class="col-sm-12 m-2 body-div admin">
-        <h6 class="w-auto mx-auto">Impose Fine</h6>
-        <div class="div-header">
-          <h6 class="w-auto mx-auto">Impose Fine</h6>
-        </div>
-        <div class="impose-alerts-hub"></div>
+        <div class="col-lg-5 col-md-12 col-sm-12 col-12 p-2 body-div admin">
+          <h6 class="section-header">Create Fine Type</h6>
+          <div class="loan-type-header">
+            <svg class="header-svg" xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25"
+              fill="none">
+              <path
+                d="M4.5 14.6746H6.75993C7.77079 14.6746 8.79253 14.7799 9.7763 14.9826C11.5166 15.3411 13.3488 15.3845 15.1069 15.1C15.9738 14.9596 16.826 14.7451 17.5975 14.3727C18.2939 14.0366 19.1469 13.5628 19.7199 13.0321C20.2921 12.5022 20.888 11.6349 21.3109 10.9569C21.6736 10.3756 21.4982 9.66235 20.9245 9.22915C20.2873 8.74805 19.3417 8.74815 18.7046 9.22945L16.8974 10.5946C16.197 11.1237 15.432 11.6107 14.5206 11.7561C14.411 11.7736 14.2962 11.7895 14.1764 11.8034M14.1764 11.8034C14.1403 11.8076 14.1038 11.8116 14.0668 11.8154M14.1764 11.8034C14.3222 11.7722 14.4669 11.6822 14.6028 11.5637C15.246 11.0023 15.2866 10.0562 14.7285 9.42925C14.5991 9.28385 14.4475 9.16255 14.2791 9.06205C11.4817 7.39355 7.12942 8.66435 4.5 10.5291M14.1764 11.8034C14.1399 11.8112 14.1033 11.8154 14.0668 11.8154M14.0668 11.8154C13.5434 11.8691 12.9312 11.883 12.2518 11.8188"
+                stroke="#2291A5" stroke-width="1.5" stroke-linecap="round" />
+              <path
+                d="M4.5 9.78613C4.5 8.95771 3.82843 8.28613 3 8.28613C2.17157 8.28613 1.5 8.95771 1.5 9.78613V14.7861C1.5 15.6146 2.17157 16.2861 3 16.2861C3.82843 16.2861 4.5 15.6146 4.5 14.7861V9.78613Z"
+                stroke="#2291A5" stroke-width="1.5" />
+            </svg>
 
-        {% for loan in loans %}
-        <div class="member-header">
-          <div class="member-header-inner">
-            <div class="leading">
-              <div class="leading-inner">
-                {%if loan.member.profile%}
-                <div class="fine-profile"
-                  style="background-image: url({{loan.member.profile.url}});background-position: center;"></div>
-                {%else%}
-                <div class="fine-profile"></div>
-                {%endif%}
-                <p class="member-name">{{ loan.member.name }}</p>
-              </div>
-            </div>
+            <h6 class="header-text">Fine Type</h6>
           </div>
-        </div>
-        <div class="loan-single" style="display: none;">
-          <div class="loan-row">
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">Loan amount</p>
-              <button class="cube-amount">ksh {{ loan.amount | intcomma }}</button>
-            </div>
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">Loan balance</p>
-              <button class="cube-amount">ksh {{ loan.balance | intcomma }}</button>
-            </div>
-          </div>
-          <form action="" style="width: 100%" class="impose-fine-form">
-            <input type="hidden" class="loan-id" value="{{ loan.id }}" />
+          <div class="alert-hub"></div>
+
+          <form action="" id="create-fine-type" style="width: 100%">
             <div class="input-sect">
-              <div class="mb-3">
-                <label for="fine-type" class="cube-title fw-semibold">Fine type</label>
-                <select name="fine-type" class="fine-type">
-                  {% for type in fine_types %}
-                  <option value="{{ type.id }}">{{ type.name }}</option>
-                  {% endfor %}
-                </select>
+              <div class="some-cont">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" name="name" class="form-control" id="name" required />
               </div>
             </div>
-          </form>
-          <button class="impose-fine-button">Impose</button>
-        </div>
-        {% endfor %}
-
-        <div class="div-header">
-        </div>
-      </div>
-    </div>
-
-    <div class="row justify-content-around text-capitalize">
-      <div class="m-2 body-div admin">
-        <h6 class="w-auto mx-auto">Pay fine</h6>
-        <div class="div-header">
-          <h6 class="w-auto">Loan Fines</h6>
-        </div>
-        <div class="pay-fine-alerts-hub"></div>
-
-        {%for fine in fines%}
-        <div class="member-header">
-          <div class="member-header-inner">
-            <div class="leading">
-              <div class="leading-inner">
-                {%if fine.member.profile%}
-
-                <div class="fine-profile"
-                  style="background-image: url({{fine.member.profile.url}});background-position: center;"></div>
-
-                {%else%}
-
-                <div class="fine-profile"></div>
-
-                {%endif%}
-
-                <p class="member-name">{{fine.member.name}}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="loan-single">
-          <div class="loan-row">
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">Loan amount</p>
-              <button class="cube-amount">ksh {{fine.loan_amount | intcomma}}</button>
-            </div>
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">Loan balance</p>
-              <button class="cube-amount">ksh {{fine.loan_balance | intcomma}}</button>
-            </div>
-          </div>
-          <div class="loan-row">
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">fine amount</p>
-              <button class="cube-amount">ksh {{fine.fine_amount | intcomma}}</button>
-            </div>
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">fine balance</p>
-              <button class="cube-amount">ksh {{fine.fine_balance | intcomma}}</button>
-            </div>
-          </div>
-
-          <form action="" style="width: 100%" id="update-fine">
-            <input type="hidden" id="fine-id" value="{{fine.id}}" />
-
             <div class="input-sect">
-              <div class="mb-3">
-                <label for="amount" class="form-label">Fine amount</label>
-                <input type="number" name="fine-amount" class="form-control" id="amount" />
+              <div class="some-cont">
+                <label for="amount" class="form-label">Amount (KSH)</label>
+                <input type="number" name="amount" class="form-control" id="amount" required />
               </div>
             </div>
+            <div class="some-cont mb-2 desc-area">
+              <label for="description" class="form-label">Description</label>
+              <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+            </div>
+            <button class="btn btn-primary border-0" style="width: 100%">Create</button>
           </form>
-          <button class="impose-fine-button update-fine-button">Update fine</button>
-        </div>
-        {% empty %}
-        <div class="div-header mx-auto">
-          <h7>No active loan fines</h7>
-        </div>
-        {%endfor%}
-        <div class="div-header">
-          <h6 class="w-auto mx-auto">Contribution fines</h6>
         </div>
 
-        {%for fine in contribution_fines%}
-        <div class="member-header">
-          <div class="member-header-inner">
-            <div class="leading">
-              <div class="leading-inner">
-                {%if fine.member.profile%}
+        <div class="col-lg-5 col-md-12 col-sm-12 col-12 p-2 body-div admin">
+          <h6 class="section-header">Impose Fine</h6>
+          <div class="loan-type-header">
+            <svg class="header-svg" xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25"
+              fill="none">
+              <path
+                d="M4.5 14.6746H6.75993C7.77079 14.6746 8.79253 14.7799 9.7763 14.9826C11.5166 15.3411 13.3488 15.3845 15.1069 15.1C15.9738 14.9596 16.826 14.7451 17.5975 14.3727C18.2939 14.0366 19.1469 13.5628 19.7199 13.0321C20.2921 12.5022 20.888 11.6349 21.3109 10.9569C21.6736 10.3756 21.4982 9.66235 20.9245 9.22915C20.2873 8.74805 19.3417 8.74815 18.7046 9.22945L16.8974 10.5946C16.197 11.1237 15.432 11.6107 14.5206 11.7561C14.411 11.7736 14.2962 11.7895 14.1764 11.8034M14.1764 11.8034C14.1403 11.8076 14.1038 11.8116 14.0668 11.8154M14.1764 11.8034C14.3222 11.7722 14.4669 11.6822 14.6028 11.5637C15.246 11.0023 15.2866 10.0562 14.7285 9.42925C14.5991 9.28385 14.4475 9.16255 14.2791 9.06205C11.4817 7.39355 7.12942 8.66435 4.5 10.5291M14.1764 11.8034C14.1399 11.8112 14.1033 11.8154 14.0668 11.8154M14.0668 11.8154C13.5434 11.8691 12.9312 11.883 12.2518 11.8188"
+                stroke="#2291A5" stroke-width="1.5" stroke-linecap="round" />
+              <path
+                d="M4.5 9.78613C4.5 8.95771 3.82843 8.28613 3 8.28613C2.17157 8.28613 1.5 8.95771 1.5 9.78613V14.7861C1.5 15.6146 2.17157 16.2861 3 16.2861C3.82843 16.2861 4.5 15.6146 4.5 14.7861V9.78613Z"
+                stroke="#2291A5" stroke-width="1.5" />
+            </svg>
 
-                <div class="fine-profile"
-                  style="background-image: url({{fine.member.profile.url}});background-position: center;"></div>
+            <h6 class="header-text">Impose Fine</h6>
+          </div>
+          <div class="impose-alerts-hub"></div>
 
-                {%else%}
-
-                <div class="fine-profile"></div>
-
-                {%endif%}
-
-                <p class="member-name">{{fine.member.name}}</p>
+          {% for loan in loans %}
+          <div class="member-header">
+            <div class="member-header-inner">
+              <div class="leading">
+                <div class="leading-inner">
+                  {%if loan.member.profile%}
+                  <div class="fine-profile"
+                    style="background-image: url({{loan.member.profile.url}});background-position: center;"></div>
+                  {%else%}
+                  <div class="fine-profile"></div>
+                  {%endif%}
+                  <p class="member-name">{{ loan.member.name }}</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="loan-single">
-          <div class="loan-row">
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">Contribution Name</p>
-              <button class="cube-amount">{{fine.contribution.name}}</button>
-            </div>
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">Contribution amount</p>
-              <button class="cube-amount">ksh {{fine.contribution.amount | intcomma}}</button>
-            </div>
-          </div>
-          <div class="loan-row">
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">contribution balance</p>
-              <button class="cube-amount">ksh {{fine.contribution_balance | intcomma}}</button>
-            </div>
-          </div>
-          <div class="loan-row">
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">fine amount</p>
-              <button class="cube-amount">ksh {{fine.fine_amount | intcomma}}</button>
-            </div>
-
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">fine balance</p>
-              <button class="cube-amount">ksh {{fine.fine_balance | intcomma}}</button>
-            </div>
-          </div>
-
-          <form action="" style="width: 100%" id="update-fine">
-            <input type="hidden" id="fine-id" value="{{fine.id}}" />
-
-            <div class="input-sect">
-              <div class="mb-3">
-                <label for="amount" class="form-label">Fine amount</label>
-                <input type="number" name="fine-amount" class="form-control" id="amount" />
+          <div class="loan-single" style="display: none;">
+            <div class="loan-row">
+              <div class="loan-row-cube">
+                <p class="cube-title fw-semibold">Loan amount</p>
+                <button class="cube-amount">ksh {{ loan.amount | intcomma }}</button>
+              </div>
+              <div class="loan-row-cube">
+                <p class="cube-title fw-semibold">Loan balance</p>
+                <button class="cube-amount">ksh {{ loan.balance | intcomma }}</button>
               </div>
             </div>
-          </form>
-          <button class="impose-fine-button update-fine-button">Update fine</button>
+            <form action="" style="width: 100%" class="impose-fine-form">
+              <input type="hidden" class="loan-id" value="{{ loan.id }}" />
+              <div class="input-sect">
+                <div class="some-cont">
+                  <label for="fine-type" class="cube-title fw-semibold">Fine type</label>
+                  <select name="fine-type" class="fine-type">
+                    {% for type in fine_types %}
+                    <option value="{{ type.id }}">{{ type.name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+            </form>
+            <button class="impose-fine-button">Impose</button>
+          </div>
+          {% endfor %}
         </div>
-        {% empty %}
-        <div class="div-header mx-auto">
-          <h7>No active contribution fines</h7>
-        </div>
-        {%endfor%}
       </div>
-      <div class="m-2 body-div body-div member">
-        <h6 class="w-auto mx-auto">Active group fines</h6>
-        <div class="div-header">
-          <h6 class="w-auto mx-auto">Active Fines</h6>
-        </div>
-        <div class="impose-alerts-hub"></div>
 
+      <div class="row justify-content-center">
+        <div class="col-lg-10 col-md-12 col-sm-12 col-12 p-2 body-div admin">
+          <h6 class="section-header">Pay Fine</h6>
+          <div class="loan-type-header">
+            <svg class="header-svg" xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25"
+              fill="none">
+              <path
+                d="M4.5 14.6746H6.75993C7.77079 14.6746 8.79253 14.7799 9.7763 14.9826C11.5166 15.3411 13.3488 15.3845 15.1069 15.1C15.9738 14.9596 16.826 14.7451 17.5975 14.3727C18.2939 14.0366 19.1469 13.5628 19.7199 13.0321C20.2921 12.5022 20.888 11.6349 21.3109 10.9569C21.6736 10.3756 21.4982 9.66235 20.9245 9.22915C20.2873 8.74805 19.3417 8.74815 18.7046 9.22945L16.8974 10.5946C16.197 11.1237 15.432 11.6107 14.5206 11.7561C14.411 11.7736 14.2962 11.7895 14.1764 11.8034M14.1764 11.8034C14.1403 11.8076 14.1038 11.8116 14.0668 11.8154M14.1764 11.8034C14.3222 11.7722 14.4669 11.6822 14.6028 11.5637C15.246 11.0023 15.2866 10.0562 14.7285 9.42925C14.5991 9.28385 14.4475 9.16255 14.2791 9.06205C11.4817 7.39355 7.12942 8.66435 4.5 10.5291M14.1764 11.8034C14.1399 11.8112 14.1033 11.8154 14.0668 11.8154M14.0668 11.8154C13.5434 11.8691 12.9312 11.883 12.2518 11.8188"
+                stroke="#2291A5" stroke-width="1.5" stroke-linecap="round" />
+              <path
+                d="M4.5 9.78613C4.5 8.95771 3.82843 8.28613 3 8.28613C2.17157 8.28613 1.5 8.95771 1.5 9.78613V14.7861C1.5 15.6146 2.17157 16.2861 3 16.2861C3.82843 16.2861 4.5 15.6146 4.5 14.7861V9.78613Z"
+                stroke="#2291A5" stroke-width="1.5" />
+            </svg>
 
-        {%for fine in fines%}
-        <div class="member-header">
-          <div class="member-header-inner">
-            <div class="leading">
-              <div class="leading-inner">
+            <h6 class="header-text">Pay Fine</h6>
+          </div>
+          <div class="pay-fine-alerts-hub"></div>
 
-                {%if fine.member.profile%}
-                <div class="fine-profile"></div>
-
-                {%else%}
-
-                <div class="fine-profile"></div>
-
-                {%endif%}
-
-                <p class="member-name">{{fine.member.name}}</p>
+          {%for fine in fines%}
+          <div class="member-header">
+            <div class="member-header-inner">
+              <div class="leading">
+                <div class="leading-inner">
+                  {%if fine.member.profile%}
+                  <div class="fine-profile"
+                    style="background-image: url({{fine.member.profile.url}});background-position: center;"></div>
+                  {%else%}
+                  <div class="fine-profile"></div>
+                  {%endif%}
+                  <p class="member-name">{{ fine.member.name }}</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="loan-single">
-          <div class="loan-row">
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">Type</p>
-              <button class="cube-amount">{{fine.fine_type.name}}</button>
-            </div>
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">fine amount</p>
-              <button class="cube-amount">ksh {{fine.fine_amount | intcomma}}</button>
-            </div>
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">paid amount</p>
-              <button class="cube-amount">ksh {{fine.paid_fine_amount | intcomma}}</button>
-            </div>
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">fine balance</p>
-              <button class="cube-amount">ksh {{fine.fine_balance | intcomma}}</button>
-            </div>
-          </div>
-          <div class="loan-row">
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">status</p>
-              <button class="cube-amount">{{fine.status}}</button>
-            </div>
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">date created</p>
-              <button class="cube-amount">{{fine.created | date:"d/m/Y"}}</button>
-            </div>
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">last updated</p>
-              <button class="cube-amount">{{fine.last_updated | date:"d/m/Y"}}</button>
-            </div>
-          </div>
-        </div>
-        {% empty %}
-        <div class="div-header mx-auto">
-          <h7>No active group fines</h7>
-        </div>
-        {%endfor%}
-
-        <div class="div-header">
-          <h6 class="w-auto mx-auto">Active Contribution Fines</h6>
-        </div>
-
-
-        {%for fine in contribution_fines%}
-        <div class="member-header">
-          <div class="member-header-inner">
-            <div class="leading">
-              <div class="leading-inner">
-
-                {%if fine.member.profile%}
-                <div class="fine-profile"></div>
-
-                {%else%}
-
-                <div class="fine-profile"></div>
-
-                {%endif%}
-
-                <p class="member-name">{{fine.member.name}}</p>
+          <div class="loan-single" style="display: none;">
+            <div class="loan-row">
+              <div class="loan-row-cube">
+                <p class="cube-title fw-semibold">Fine amount</p>
+                <button class="cube-amount">ksh {{ fine.amount | intcomma }}</button>
+              </div>
+              <div class="loan-row-cube">
+                <p class="cube-title fw-semibold">Fine type</p>
+                <button class="cube-amount">{{ fine.type.name }}</button>
               </div>
             </div>
+            <form action="" style="width: 100%" class="pay-fine-form">
+              <input type="hidden" class="fine-id" value="{{ fine.id }}" />
+              <div class="input-sect">
+                <div class="some-cont">
+                  <label for="pay-amount" class="cube-title fw-semibold">Pay amount</label>
+                  <input type="number" name="pay-amount" class="form-control" id="pay-amount" value="{{ fine.amount }}" />
+                </div>
+              </div>
+            </form>
+            <button class="pay-fine-button">Pay Fine</button>
           </div>
-        </div>
-        <div class="loan-single">
-          <div class="loan-row">
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">Type</p>
-              <button class="cube-amount">{{fine.fine_type.name}}</button>
-            </div>
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">fine amount</p>
-              <button class="cube-amount">ksh {{fine.fine_amount | intcomma}}</button>
-            </div>
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">paid amount</p>
-              <button class="cube-amount">ksh {{fine.paid_fine_amount | intcomma}}</button>
-            </div>
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">fine balance</p>
-              <button class="cube-amount">ksh {{fine.fine_balance | intcomma}}</button>
-            </div>
+          {% empty %}
+          <div class="no-fines">
+            <i class='bx bx-info-circle'></i>
+            <p>No Active Loan Fines</p>
           </div>
-          <div class="loan-row">
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">status</p>
-              <button class="cube-amount">{{fine.status}}</button>
-            </div>
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">date created</p>
-              <button class="cube-amount">{{fine.created | date:"d/m/Y"}}</button>
-            </div>
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">last updated</p>
-              <button class="cube-amount">{{fine.last_updated| date:"d/m/Y"}}</button>
-            </div>
-          </div>
+          {% endfor %}
         </div>
-        {% empty %}
-        <div class="div-header mx-auto">
-          <h7>No active contribution fines</h7>
-        </div>
-        {%endfor%}
-
-
-      </div>
-      <div class="m-2 body-div body-div member">
-        <h6 class="w-auto mx-auto">My Active fines</h6>
-        <div class="div-header">
-          <h6 class="w-auto mx-auto">My Active Loan Fines</h6>
-        </div>
-        <div class="impose-alerts-hub"></div>
-        {%for fine in my_loan_fines%}
-        <div class="loan-single">
-          <div class="loan-row">
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">Type</p>
-              <button class="cube-amount">{{fine.fine_type.name}}</button>
-            </div>
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">fine amount</p>
-              <button class="cube-amount">ksh {{fine.fine_amount | intcomma}}</button>
-            </div>
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">paid amount</p>
-              <button class="cube-amount">ksh {{fine.paid_fine_amount | intcomma}}</button>
-            </div>
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">fine balance</p>
-              <button class="cube-amount">ksh {{fine.fine_balance | intcomma}}</button>
-            </div>
-          </div>
-          <div class="loan-row">
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">status</p>
-              <button class="cube-amount">{{fine.status}}</button>
-            </div>
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">date created</p>
-              <button class="cube-amount">{{fine.created | date:"d/m/Y"}}</button>
-            </div>
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">last updated</p>
-              <button class="cube-amount">{{fine.last_updated | date:"d/m/Y"}}</button>
-            </div>
-          </div>
-        </div>
-        {% empty %}
-        <div class="div-header mx-auto">
-          <h7>No active loan fines</h7>
-        </div>
-        <br>
-        {%endfor%}
-
-        <div class="div-header">
-          <h6 class="w-auto mx-auto">My Active Contribution Fines</h6>
-        </div>
-        <div class="impose-alerts-hub"></div>
-        {%for fine in my_contribution_fines%}
-        <div class="loan-single">
-          <div class="loan-row">
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">Type</p>
-              <button class="cube-amount">{{fine.fine_type.name}}</button>
-            </div>
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">fine amount</p>
-              <button class="cube-amount">ksh {{fine.fine_amount | intcomma}}</button>
-            </div>
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">paid amount</p>
-              <button class="cube-amount">ksh {{fine.paid_fine_amount | intcomma}}</button>
-            </div>
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">fine balance</p>
-              <button class="cube-amount">ksh {{fine.fine_balance | intcomma}}</button>
-            </div>
-          </div>
-          <div class="loan-row">
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">status</p>
-              <button class="cube-amount">{{fine.status}}</button>
-            </div>
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">date created</p>
-              <button class="cube-amount">{{fine.created | date:"d/m/Y"}}</button>
-            </div>
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">last updated</p>
-              <button class="cube-amount">{{fine.last_updated | date:"d/m/Y"}}</button>
-            </div>
-          </div>
-        </div>
-        {% empty %}
-        <div class="div-header mx-auto">
-          <h7>No active contribution fines</h7>
-        </div>
-        <br>
-        {%endfor%}
       </div>
     </div>
   </div>

@@ -236,7 +236,7 @@ h5 {
     padding: 0;
     margin: 0;
     width: 100vw;
-    margin-left: calc(-50vw + 50%);
+    margin-left: 0;
     position: relative;
     overflow-x: auto;
     scrollbar-width: none;
