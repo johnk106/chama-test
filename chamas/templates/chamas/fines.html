@@ -416,62 +416,58 @@
         </div>
 
         <div class="body-div admin">
-        <h6 class="w-auto mx-auto">Impose Fine</h6>
-        <div class="div-header">
           <h6 class="w-auto mx-auto">Impose Fine</h6>
-        </div>
-        <div class="impose-alerts-hub"></div>
+          <div class="div-header">
+            <h6 class="w-auto mx-auto">Impose Fine</h6>
+          </div>
+          <div class="impose-alerts-hub"></div>
 
-        {% for loan in loans %}
-        <div class="member-header">
-          <div class="member-header-inner">
-            <div class="leading">
-              <div class="leading-inner">
-                {%if loan.member.profile%}
-                <div class="fine-profile"
-                  style="background-image: url({{loan.member.profile.url}});background-position: center;"></div>
-                {%else%}
-                <div class="fine-profile"></div>
-                {%endif%}
-                <p class="member-name">{{ loan.member.name }}</p>
+          {% for loan in loans %}
+          <div class="member-header">
+            <div class="member-header-inner">
+              <div class="leading">
+                <div class="leading-inner">
+                  {%if loan.member.profile%}
+                  <div class="fine-profile"
+                    style="background-image: url({{loan.member.profile.url}});background-position: center;"></div>
+                  {%else%}
+                  <div class="fine-profile"></div>
+                  {%endif%}
+                  <p class="member-name">{{ loan.member.name }}</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="loan-single" style="display: none;">
-          <div class="loan-row">
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">Loan amount</p>
-              <button class="cube-amount">ksh {{ loan.amount | intcomma }}</button>
-            </div>
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">Loan balance</p>
-              <button class="cube-amount">ksh {{ loan.balance | intcomma }}</button>
-            </div>
-          </div>
-          <form action="" style="width: 100%" class="impose-fine-form">
-            <input type="hidden" class="loan-id" value="{{ loan.id }}" />
-            <div class="input-sect">
-              <div class="mb-3">
-                <label for="fine-type" class="cube-title fw-semibold">Fine type</label>
-                <select name="fine-type" class="fine-type">
-                  {% for type in fine_types %}
-                  <option value="{{ type.id }}">{{ type.name }}</option>
-                  {% endfor %}
-                </select>
+          <div class="loan-single" style="display: none;">
+            <div class="loan-row">
+              <div class="loan-row-cube">
+                <p class="cube-title fw-semibold">Loan amount</p>
+                <button class="cube-amount">ksh {{ loan.amount | intcomma }}</button>
+              </div>
+              <div class="loan-row-cube">
+                <p class="cube-title fw-semibold">Loan balance</p>
+                <button class="cube-amount">ksh {{ loan.balance | intcomma }}</button>
               </div>
             </div>
-          </form>
-          <button class="impose-fine-button">Impose</button>
-        </div>
-        {% endfor %}
-
-        <div class="div-header">
-        </div>
+            <form action="" style="width: 100%" class="impose-fine-form">
+              <input type="hidden" class="loan-id" value="{{ loan.id }}" />
+              <div class="input-sect">
+                <div class="mb-3">
+                  <label for="fine-type" class="cube-title fw-semibold">Fine type</label>
+                  <select name="fine-type" class="fine-type">
+                    {% for type in fine_types %}
+                    <option value="{{ type.id }}">{{ type.name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+            </form>
+            <button class="impose-fine-button">Impose</button>
+          </div>
+          {% endfor %}
         </div>
       </div>
-    </div>
-    <div class="container-fluid justify-content-center">
+      <br>
       <div class="container row justify-content-center">
         <div class="body-div admin">
         <h6 class="w-auto mx-auto">Pay fine</h6>
@@ -610,14 +606,17 @@
         <div class="div-header mx-auto">
           <h7>No active contribution fines</h7>
         </div>
-        {%endfor%}
+                {%endfor%}
         </div>
+      </div>
+      <br>
+      <div class="container row justify-content-center">
         <div class="body-div member">
           <h6 class="w-auto mx-auto">Active group fines</h6>
-        <div class="div-header">
-          <h6 class="w-auto mx-auto">Active Fines</h6>
-        </div>
-        <div class="impose-alerts-hub"></div>
+          <div class="div-header">
+            <h6 class="w-auto mx-auto">Active Fines</h6>
+          </div>
+          <div class="impose-alerts-hub"></div>
 
 
         {%for fine in fines%}
@@ -743,15 +742,17 @@
         <div class="div-header mx-auto">
           <h7>No active contribution fines</h7>
         </div>
-        {%endfor%}
-
+                {%endfor%}
         </div>
+      </div>
+      <br>
+      <div class="container row justify-content-center">
         <div class="body-div member">
           <h6 class="w-auto mx-auto">My Active fines</h6>
-        <div class="div-header">
-          <h6 class="w-auto mx-auto">My Active Loan Fines</h6>
-        </div>
-        <div class="impose-alerts-hub"></div>
+          <div class="div-header">
+            <h6 class="w-auto mx-auto">My Active Loan Fines</h6>
+          </div>
+          <div class="impose-alerts-hub"></div>
         {%for fine in my_loan_fines%}
         <div class="loan-single">
           <div class="loan-row">
