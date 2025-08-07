@@ -388,198 +388,202 @@
 
   <!-- Desktop View -->
   <div class="desktop-fines d-none d-lg-block">
-    <div class="row">
-      <div class="col-sm-12 body-div admin">
-        <h6 class="w-auto mx-auto">Create Fine</h6>
-        <div class="div-header">
-          <h6 class="w-auto">Define Fine</h6>
+    <div class="text-capitalize">
+      <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-12 col-sm-12 col-12 p-2 body-div admin">
+          <h6 class="section-header">Create Fine</h6>
+          <div class="div-header">
+            <h6 class="w-auto">Define Fine</h6>
+          </div>
+          <div class="alert-hub"></div>
+          <form action="" id="create-fine-type" style="width: 100%;">
+            <div class="input-sect">
+              <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="name" name="name" class="form-control" id="name" required />
+              </div>
+            </div>
+            <div class="input-sect">
+              <div class="mb-3">
+                <label for="amount" class="form-label">amount</label>
+                <input type="number" name="amount" class="form-control" id="amount" required />
+              </div>
+            </div>
+            <div class="mb-3 desc-area">
+              <label for="description" class="form-label">Description</label>
+              <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+            </div>
+            <button class="btn btn-primary border-0" style="width: 100%">Create</button>
+          </form>
         </div>
-        <div class="alert-hub"></div>
-        <form action="" id="create-fine-type" style="width: 100%;">
-          <div class="input-sect">
-            <div class="mb-3">
-              <label for="name" class="form-label">Name</label>
-              <input type="name" name="name" class="form-control" id="name" required />
-            </div>
-            <div class="mb-3">
-              <label for="amount" class="form-label">amount</label>
-              <input type="number" name="amount" class="form-control" id="amount" required />
+
+        <div class="col-lg-5 col-md-12 col-sm-12 col-12 p-2 body-div admin">
+          <h6 class="section-header">Impose Fine</h6>
+          <div class="div-header">
+            <h6 class="w-auto mx-auto">Impose Fine</h6>
+          </div>
+          <div class="impose-alerts-hub"></div>
+
+          {% for loan in loans %}
+          <div class="member-header">
+            <div class="member-header-inner">
+              <div class="leading">
+                <div class="leading-inner">
+                  {%if loan.member.profile%}
+                  <div class="fine-profile"
+                    style="background-image: url({{loan.member.profile.url}});background-position: center;"></div>
+                  {%else%}
+                  <div class="fine-profile"></div>
+                  {%endif%}
+                  <p class="member-name">{{ loan.member.name }}</p>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="mb-3 desc-area">
-            <label for="description" class="form-label">Description</label>
-            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+          <div class="loan-single" style="display: none;">
+            <div class="loan-row">
+              <div class="loan-row-cube">
+                <p class="cube-title fw-semibold">Loan amount</p>
+                <button class="cube-amount">ksh {{ loan.amount | intcomma }}</button>
+              </div>
+              <div class="loan-row-cube">
+                <p class="cube-title fw-semibold">Loan balance</p>
+                <button class="cube-amount">ksh {{ loan.balance | intcomma }}</button>
+              </div>
+            </div>
+            <form action="" style="width: 100%" class="impose-fine-form">
+              <input type="hidden" class="loan-id" value="{{ loan.id }}" />
+              <div class="input-sect">
+                <div class="mb-3">
+                  <label for="fine-type" class="cube-title fw-semibold">Fine type</label>
+                  <select name="fine-type" class="fine-type">
+                    {% for type in fine_types %}
+                    <option value="{{ type.id }}">{{ type.name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+            </form>
+            <button class="impose-fine-button">Impose</button>
           </div>
-          <button class="btn btn-primary border-0" style="width: 100%">Create</button>
-        </form>
+          {% endfor %}
+
+          <div class="div-header">
+          </div>
+        </div>
       </div>
 
-      <div class="col-sm-12 body-div admin">
-        <h6 class="w-auto mx-auto">Impose Fine</h6>
-        <div class="div-header">
-          <h6 class="w-auto mx-auto">Impose Fine</h6>
-        </div>
-        <div class="impose-alerts-hub"></div>
+      <div class="row justify-content-center">
+        <div class="col-lg-10 col-md-12 col-sm-12 col-12 p-2 body-div admin">
+          <h6 class="section-header">Pay fine</h6>
+          <div class="div-header">
+            <h6 class="w-auto">Loan Fines</h6>
+          </div>
+          <div class="pay-fine-alerts-hub"></div>
 
-        {% for loan in loans %}
-        <div class="member-header">
-          <div class="member-header-inner">
-            <div class="leading">
-              <div class="leading-inner">
-                {%if loan.member.profile%}
-                <div class="fine-profile"
-                  style="background-image: url({{loan.member.profile.url}});background-position: center;"></div>
-                {%else%}
-                <div class="fine-profile"></div>
-                {%endif%}
-                <p class="member-name">{{ loan.member.name }}</p>
+          {%for fine in fines%}
+          <div class="member-header">
+            <div class="member-header-inner">
+              <div class="leading">
+                <div class="leading-inner">
+                  {%if fine.member.profile%}
+
+                  <div class="fine-profile"
+                    style="background-image: url({{fine.member.profile.url}});background-position: center;"></div>
+
+                  {%else%}
+
+                  <div class="fine-profile"></div>
+
+                  {%endif%}
+
+                  <p class="member-name">{{fine.member.name}}</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="loan-single" style="display: none;">
-          <div class="loan-row">
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">Loan amount</p>
-              <button class="cube-amount">ksh {{ loan.amount | intcomma }}</button>
-            </div>
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">Loan balance</p>
-              <button class="cube-amount">ksh {{ loan.balance | intcomma }}</button>
-            </div>
-          </div>
-          <form action="" style="width: 100%" class="impose-fine-form">
-            <input type="hidden" class="loan-id" value="{{ loan.id }}" />
-            <div class="input-sect">
-              <div class="mb-3">
-                <label for="fine-type" class="cube-title fw-semibold">Fine type</label>
-                <select name="fine-type" class="fine-type">
-                  {% for type in fine_types %}
-                  <option value="{{ type.id }}">{{ type.name }}</option>
-                  {% endfor %}
-                </select>
+          <div class="loan-single" style="display: none;">
+            <div class="loan-row">
+              <div class="loan-row-cube">
+                <p class="cube-title fw-semibold">Fine amount</p>
+                <button class="cube-amount">ksh {{ fine.amount | intcomma }}</button>
+              </div>
+              <div class="loan-row-cube">
+                <p class="cube-title fw-semibold">Fine balance</p>
+                <button class="cube-amount">ksh {{ fine.balance | intcomma }}</button>
               </div>
             </div>
-          </form>
-          <button class="impose-fine-button">Impose</button>
-        </div>
-        {% endfor %}
+            <form action="" style="width: 100%" class="update-fine-form">
+              <input type="hidden" class="fine-id" value="{{ fine.id }}" />
+              <div class="input-sect">
+                <div class="mb-3">
+                  <label for="fine-type" class="cube-title fw-semibold">Fine type</label>
+                  <select name="fine-type" class="fine-type">
+                    {% for type in fine_types %}
+                    <option value="{{ type.id }}" {% if fine.fine_type.id == type.id %}selected{% endif %}>{{ type.name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+            </form>
+            <button class="update-fine-button">Update</button>
+          </div>
+          {%endfor%}
 
-        <div class="div-header">
-        </div>
-      </div>
-    </div>
+          <div class="div-header">
+            <h6 class="w-auto">Contribution Fines</h6>
+          </div>
+          <div class="contribution-fine-alerts-hub"></div>
 
-    <div class="row">
-      <div class="col-sm-12 body-div admin">
-        <h6 class="w-auto mx-auto">Pay fine</h6>
-        <div class="div-header">
-          <h6 class="w-auto">Loan Fines</h6>
-        </div>
-        <div class="pay-fine-alerts-hub"></div>
+          {%for fine in contribution_fines%}
+          <div class="member-header">
+            <div class="member-header-inner">
+              <div class="leading">
+                <div class="leading-inner">
+                  {%if fine.member.profile%}
 
-        {%for fine in fines%}
-        <div class="member-header">
-          <div class="member-header-inner">
-            <div class="leading">
-              <div class="leading-inner">
-                {%if fine.member.profile%}
+                  <div class="fine-profile"
+                    style="background-image: url({{fine.member.profile.url}});background-position: center;"></div>
 
-                <div class="fine-profile"
-                  style="background-image: url({{fine.member.profile.url}});background-position: center;"></div>
+                  {%else%}
 
-                {%else%}
+                  <div class="fine-profile"></div>
 
-                <div class="fine-profile"></div>
+                  {%endif%}
 
-                {%endif%}
-
-                <p class="member-name">{{fine.member.name}}</p>
+                  <p class="member-name">{{fine.member.name}}</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="loan-single" style="display: none;">
-          <div class="loan-row">
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">Fine amount</p>
-              <button class="cube-amount">ksh {{ fine.amount | intcomma }}</button>
-            </div>
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">Fine balance</p>
-              <button class="cube-amount">ksh {{ fine.balance | intcomma }}</button>
-            </div>
-          </div>
-          <form action="" style="width: 100%" class="update-fine-form">
-            <input type="hidden" class="fine-id" value="{{ fine.id }}" />
-            <div class="input-sect">
-              <div class="mb-3">
-                <label for="fine-type" class="cube-title fw-semibold">Fine type</label>
-                <select name="fine-type" class="fine-type">
-                  {% for type in fine_types %}
-                  <option value="{{ type.id }}" {% if fine.fine_type.id == type.id %}selected{% endif %}>{{ type.name }}</option>
-                  {% endfor %}
-                </select>
+          <div class="loan-single" style="display: none;">
+            <div class="loan-row">
+              <div class="loan-row-cube">
+                <p class="cube-title fw-semibold">Fine amount</p>
+                <button class="cube-amount">ksh {{ fine.amount | intcomma }}</button>
+              </div>
+              <div class="loan-row-cube">
+                <p class="cube-title fw-semibold">Fine balance</p>
+                <button class="cube-amount">ksh {{ fine.balance | intcomma }}</button>
               </div>
             </div>
-          </form>
-          <button class="update-fine-button">Update</button>
-        </div>
-        {%endfor%}
-
-        <div class="div-header">
-          <h6 class="w-auto">Contribution Fines</h6>
-        </div>
-        <div class="contribution-fine-alerts-hub"></div>
-
-        {%for fine in contribution_fines%}
-        <div class="member-header">
-          <div class="member-header-inner">
-            <div class="leading">
-              <div class="leading-inner">
-                {%if fine.member.profile%}
-
-                <div class="fine-profile"
-                  style="background-image: url({{fine.member.profile.url}});background-position: center;"></div>
-
-                {%else%}
-
-                <div class="fine-profile"></div>
-
-                {%endif%}
-
-                <p class="member-name">{{fine.member.name}}</p>
+            <form action="" style="width: 100%" class="contribution-update-fine-form">
+              <input type="hidden" class="fine-id" value="{{ fine.id }}" />
+              <div class="input-sect">
+                <div class="mb-3">
+                  <label for="fine-type" class="cube-title fw-semibold">Fine type</label>
+                  <select name="fine-type" class="fine-type">
+                    {% for type in fine_types %}
+                    <option value="{{ type.id }}" {% if fine.fine_type.id == type.id %}selected{% endif %}>{{ type.name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
               </div>
-            </div>
+            </form>
+            <button class="contribution-update-fine-button">Update</button>
           </div>
+          {%endfor%}
         </div>
-        <div class="loan-single" style="display: none;">
-          <div class="loan-row">
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">Fine amount</p>
-              <button class="cube-amount">ksh {{ fine.amount | intcomma }}</button>
-            </div>
-            <div class="loan-row-cube">
-              <p class="cube-title fw-semibold">Fine balance</p>
-              <button class="cube-amount">ksh {{ fine.balance | intcomma }}</button>
-            </div>
-          </div>
-          <form action="" style="width: 100%" class="contribution-update-fine-form">
-            <input type="hidden" class="fine-id" value="{{ fine.id }}" />
-            <div class="input-sect">
-              <div class="mb-3">
-                <label for="fine-type" class="cube-title fw-semibold">Fine type</label>
-                <select name="fine-type" class="fine-type">
-                  {% for type in fine_types %}
-                  <option value="{{ type.id }}" {% if fine.fine_type.id == type.id %}selected{% endif %}>{{ type.name }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-            </div>
-          </form>
-          <button class="contribution-update-fine-button">Update</button>
-        </div>
-        {%endfor%}
       </div>
     </div>
   </div>

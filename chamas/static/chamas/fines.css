@@ -44,9 +44,10 @@
     gap: 12px;
     flex: 1 0 0;
     align-self: stretch;
+    margin: 10px;
 }
 
-.body-div h6 {
+.section-header {
     color: var(--light-type-high, #070A13);
     text-align: center;
 
@@ -54,11 +55,10 @@
     font-family: sans-serif;
     font-size: 24px;
     font-style: normal;
-    font-weight: 500;
+    font-weight: 600;
     line-height: 32px;
     /* 133.333% */
-    width: 354px;
-    margin: 10px;
+    align-self: stretch;
 }
 
 .div-header {
@@ -66,8 +66,6 @@
     align-items: center;
     gap: 12px;
 }
-
-
 
 .div-header h6 {
     color: var(--Primary-500, #2291A5);
@@ -81,7 +79,6 @@
     line-height: 20px;
     /* 142.857% */
 }
-
 
 .member-header {
     border-radius: 8px;
@@ -182,15 +179,19 @@
 }
 
 .input-sect {
-    margin-bottom: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    align-self: stretch;
+    width: 100%;
 }
 
 .input-sect .mb-3 {
-    margin-bottom: 16px !important;
+    flex: 1 0 0;
 }
 
 .desc-area {
-    margin-bottom: 16px;
+    align-self: stretch;
 }
 
 .fine-type {
@@ -245,250 +246,6 @@
     background-color: #fee2e2;
     color: #991b1b;
     border: 1px solid #fca5a5;
-}
-
-.loan-card {
-    border-radius: 8px;
-    border: 0.5px solid var(--light, rgba(0, 0, 0, 0.20));
-    background: #FFF;
-    padding: 16px;
-    margin-bottom: 16px;
-}
-
-.loan-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
-}
-
-.loan-info {
-    flex: 1;
-}
-
-.loan-amount {
-    font-weight: 600;
-    color: var(--light-type-high, #070A13);
-}
-
-.loan-date {
-    color: var(--light-type-medium, #6B7280);
-    font-size: 14px;
-}
-
-.loan-details {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 12px;
-}
-
-.detail-item {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.detail-label {
-    color: var(--light-type-medium, #6B7280);
-    font-size: 12px;
-    font-weight: 500;
-}
-
-.detail-value {
-    color: var(--light-type-high, #070A13);
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.loan-cube {
-    background: var(--primary-hover, rgba(34, 145, 165, 0.06));
-    border-radius: 8px;
-    padding: 12px;
-    text-align: center;
-    border: 1px solid rgba(34, 145, 165, 0.1);
-}
-
-.loan-cube h6 {
-    color: var(--Primary-500, #2291A5);
-    font-size: 14px;
-    font-weight: 600;
-    margin: 0 0 8px 0;
-}
-
-.amount-section {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    justify-content: center;
-}
-
-.amount {
-    color: var(--light-type-high, #070A13);
-    font-size: 16px;
-    font-weight: 600;
-}
-
-/* Desktop-specific styles to prevent mobile styles from affecting desktop */
-.desktop-fines {
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-    padding: 20px;
-    box-sizing: border-box;
-}
-
-.desktop-fines .row {
-    margin: 0;
-    width: 100%;
-}
-
-.desktop-fines .col-sm-12 {
-    padding: 0 10px;
-    margin-bottom: 20px;
-}
-
-.desktop-fines .body-div {
-    margin: 0;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0px 10px 20px 0px rgba(148, 163, 184, 0.20);
-    background: #FFF;
-    border: 0.5px solid rgba(0, 0, 0, 0.20);
-}
-
-.desktop-fines .body-div h6 {
-    margin: 0 0 16px 0;
-    text-align: center;
-    font-size: 20px;
-    font-weight: 600;
-    color: #070A13;
-}
-
-.desktop-fines .div-header {
-    margin-bottom: 16px;
-}
-
-.desktop-fines .div-header h6 {
-    text-align: left;
-    font-size: 16px;
-    font-weight: 600;
-    color: #2291A5;
-    margin: 0;
-}
-
-/* Ensure desktop content doesn't slide under sidebar */
-@media (min-width: 769px) {
-    .desktop-fines {
-        margin-left: 0; /* Remove redundant margin since main-content already has margin-left: 260px */
-        width: 100%;
-        max-width: 100%;
-        padding: 20px;
-        box-sizing: border-box;
-    }
-    
-    .desktop-fines .row {
-        margin: 0;
-        width: 100%;
-    }
-    
-    .desktop-fines .col-sm-12 {
-        padding: 0 10px;
-        margin-bottom: 20px;
-    }
-    
-    /* Ensure proper spacing between desktop sections */
-    .desktop-fines .body-div {
-        margin-bottom: 20px;
-        padding: 24px;
-        border-radius: 12px;
-        box-shadow: 0px 10px 20px 0px rgba(148, 163, 184, 0.20);
-        background: #FFF;
-        border: 0.5px solid rgba(0, 0, 0, 0.20);
-    }
-    
-    /* Add margins to desktop components */
-    .desktop-fines .body-div:first-child {
-        margin-top: 0;
-    }
-    
-    .desktop-fines .body-div:last-child {
-        margin-bottom: 0;
-    }
-    
-    /* Add proper spacing between form elements */
-    .desktop-fines .mb-3 {
-        margin-bottom: 16px !important;
-    }
-    
-    .desktop-fines .input-sect {
-        margin-bottom: 20px;
-    }
-    
-    .desktop-fines .desc-area {
-        margin-bottom: 20px;
-    }
-    
-    /* Add spacing between member headers */
-    .desktop-fines .member-header {
-        margin-bottom: 12px;
-        padding: 16px;
-    }
-    
-    /* Add spacing for loan single sections */
-    .desktop-fines .loan-single {
-        margin-top: 12px;
-        padding: 20px;
-    }
-    
-    /* Add spacing for loan rows */
-    .desktop-fines .loan-row {
-        margin-bottom: 20px;
-    }
-    
-    /* Add spacing for loan row cubes */
-    .desktop-fines .loan-row-cube {
-        padding: 0 8px;
-    }
-    
-    /* Add spacing for input sections */
-    .desktop-fines .input-sect .mb-3 {
-        margin-bottom: 16px !important;
-    }
-    
-    /* Add spacing for impose fine button */
-    .desktop-fines .impose-fine-button {
-        margin-top: 16px;
-    }
-    
-    /* Add spacing for alerts */
-    .desktop-fines .alert-hub,
-    .desktop-fines .impose-alerts-hub,
-    .desktop-fines .pay-fine-alerts-hub {
-        margin-bottom: 16px;
-    }
-    
-    /* Add spacing for div headers */
-    .desktop-fines .div-header {
-        margin-bottom: 20px;
-        padding-bottom: 8px;
-        border-bottom: 1px solid #e5e7eb;
-    }
-    
-    /* Add spacing for fine types */
-    .desktop-fines .fine-type {
-        margin-bottom: 16px;
-    }
-    
-    /* Add spacing for cube amounts */
-    .desktop-fines .cube-amount {
-        margin: 8px 0;
-    }
-    
-    /* Add spacing for cube titles */
-    .desktop-fines .cube-title {
-        margin-bottom: 12px;
-    }
 }
 
 /* Mobile-specific styles - only apply to mobile */
@@ -1028,84 +785,4 @@ body .main-content .page-content:has(.modern-fines),
 .modern-fines .home-section {
     margin: 0 !important;
     padding: 0 !important;
-}
-
-/* Specific overrides for desktop fines layout */
-@media (min-width: 769px) {
-    /* Ensure page-content doesn't add extra padding */
-    .fines-page .page-content {
-        padding: 0 !important;
-        margin: 0 !important;
-    }
-    
-    /* Ensure main-content uses full width */
-    .fines-page .main-content {
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-    
-    /* Ensure desktop-fines uses full available space */
-    .desktop-fines {
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-        padding: 20px !important;
-        box-sizing: border-box !important;
-    }
-    
-    /* Override any Bootstrap container constraints */
-    .desktop-fines .container,
-    .desktop-fines .container-fluid {
-        max-width: 100% !important;
-        width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-    
-    /* Ensure rows use full width */
-    .desktop-fines .row {
-        width: 100% !important;
-        margin: 0 !important;
-        display: flex !important;
-        flex-wrap: wrap !important;
-    }
-    
-    /* Ensure columns use proper spacing */
-    .desktop-fines .col-sm-12 {
-        width: 100% !important;
-        padding: 0 10px !important;
-        margin-bottom: 20px !important;
-        flex: 0 0 100% !important;
-        max-width: 100% !important;
-    }
-    
-    /* Ensure body-div uses full width */
-    .desktop-fines .body-div {
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 0 20px 0 !important;
-        padding: 24px !important;
-        box-sizing: border-box !important;
-    }
-    
-    /* Override any Bootstrap margin classes */
-    .desktop-fines .m-2 {
-        margin: 0 !important;
-    }
-    
-    .desktop-fines .mt-2 {
-        margin-top: 0 !important;
-    }
-    
-    .desktop-fines .justify-content-center {
-        justify-content: flex-start !important;
-    }
-    
-    .desktop-fines .justify-content-around {
-        justify-content: flex-start !important;
-    }
-    
-    .desktop-fines .text-capitalize {
-        text-transform: none !important;
-    }
 }
