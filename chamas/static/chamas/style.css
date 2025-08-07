@@ -216,6 +216,7 @@ body {
   left: 0 !important;
   background-color: var(--color-default) !important;
 
+  /* Entire sidebar scrolls as a unit */
   overflow-x: hidden !important;
   overflow-y: auto !important;
   -webkit-overflow-scrolling: touch !important; /* Enable smooth scrolling on iOS */
@@ -252,16 +253,9 @@ body {
   padding: 20px 0;
   margin: 0;
   list-style: none;
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch; /* iOS smooth scrolling */
-  /* Ensure the nav list can scroll when content overflows */
-  max-height: calc(100vh - 120px); /* Account for logo section height */
-  /* Additional scrolling improvements */
-  scroll-behavior: smooth;
-  scrollbar-width: thin; /* Firefox */
-  scrollbar-color: rgba(255,255,255,0.3) transparent; /* Firefox */
+  /* Let the entire sidebar (.sidenav) handle scrolling */
+  flex: 0 0 auto;
+  overflow: visible;
 }
 
 .sidenav .nav-list li {
@@ -353,15 +347,15 @@ body.sidebar-open {
     height: 100dvh !important; /* Use dynamic viewport height when supported */
     max-height: 100vh !important;
     max-height: 100dvh !important;
+    overflow-y: auto !important; /* Ensure entire sidebar scrolls on mobile */
   }
   
   .sidenav .nav-list {
-    /* Adjust max-height for smaller mobile screens */
-    max-height: calc(100vh - 100px) !important;
-    max-height: calc(100dvh - 100px) !important;
-    /* Ensure touch scrolling works properly */
-    touch-action: pan-y !important;
-    overscroll-behavior: contain !important;
+    /* Let the full sidenav scroll on mobile */
+    max-height: none !important;
+    touch-action: auto !important;
+    overscroll-behavior: auto !important;
+    padding-bottom: 60px !important;
   }
   
   /* Ensure navigation items are properly spaced for touch */
