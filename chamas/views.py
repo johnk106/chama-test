@@ -915,6 +915,12 @@ def finances(request,chama_id):
     for income in group_investment_incomes:
         group_investment_incomes_tot += int(income.amount)
 
+    individual_investment_income = Paginator(Income.objects.filter(chama=chama,forGroup=False).order_by('-id').all(),6)
+    individual_investment_income = individual_investment_income.page(1)
+    
+    my_investment_income = Paginator(Income.objects.filter(chama=chama,forGroup=False, owner=chama_member).order_by('-id').all(),6)
+    my_investment_income = my_investment_income.page(1)
+
     members = ChamaMember.objects.filter(group=chama,active=True).all()
     saving_types = SavingType.objects.all()
 
@@ -934,6 +940,8 @@ def finances(request,chama_id):
         'group_investments_tot':group_investments_tot,
         'group_investment_incomes':group_investment_incomes,
         'group_investment_incomes_tot':group_investment_incomes_tot,
+        'individual_investment_income':individual_investment_income,
+        'my_investment_income':my_investment_income,
         'investments':investments
 
     }
@@ -999,7 +1007,27 @@ def reports(request,chama_id):
             pass
     group_investment_incomes = json.dumps(_group_investment_incomes)
 
+    individual_investment_incomes = Paginator(Income.objects.filter(chama=chama,forGroup=False).order_by('-id'),10).page(1)
+    _individual_investment_incomes = list(individual_investment_incomes.object_list.values())
+    for income in _individual_investment_incomes:
+        income['user_date'] = income['user_date'].strftime("%Y-%m-%d")
+        income['date'] = income['date'].strftime("%Y-%m-%d")
+        income['amount'] = float(income['amount'])
 
+    
+        try:
+            i = Investment.objects.get(pk=int(income['investment_id']))
+            income['investment_id'] = i.name
+        except Exception as e:
+            pass
+
+        try:
+            m = ChamaMember.objects.get(pk=int(income['owner_id']))
+            income['owner_id'] = m.name
+        except Exception as e:
+            
+            income['owner_id'] = 'group'
+    individual_investment_incomes = json.dumps(_individual_investment_incomes)
 
     individual_savings = Paginator(Saving.objects.filter(forGroup=False,chama=chama).order_by('-id').all(),10).page(1)
     _individual_savings = list(individual_savings.object_list.values())
@@ -1247,7 +1275,26 @@ def reports(request,chama_id):
     my_reports = json.dumps(_my_reports)
 
 
+    my_investment_incomes = Paginator(Income.objects.filter(chama=chama,owner=member).order_by('-date').all(),10).page(1)
+    _my_investment_income = list(my_investment_incomes.object_list.values())
+    for income in _my_investment_income:
+        income['date'] = income['date'].strftime('%Y-%m-%d')
+        income['user_date'] = income['user_date'].strftime('%Y-%m-%d')
+        income['amount'] = float(income['amount'])
 
+        try:
+            o = ChamaMember.objects.get(pk=int(income['owner_id']))
+            income['owner_id'] = o.name
+
+        except:
+            pass
+
+        try:
+            i = Investment.objects.get(pk=int(income['investment_id']))
+            income['investment'] = i.name
+        except:
+            pass
+    my_investment_incomes = json.dumps(_my_investment_income)
     
     # Add investment data for the new Investments tab
     group_investments = Paginator(Investment.objects.filter(chama=chama,forGroup=True).order_by('-date').all(),10).page(1)
@@ -1337,6 +1384,7 @@ def reports(request,chama_id):
         'unpaid_loans':active_loans,
         'group_investment_incomes':group_investment_incomes,
         'group_investment_incomes_tot':group_investment_incomes_tot,
+        'member_investment_income':individual_investment_incomes,
         'individual_saving_report':individual_savings,
         'chama_cashflow_reports':chama_cashflow_reports,
         'net_cashflow':net_cashflow,
@@ -1360,7 +1408,7 @@ def reports(request,chama_id):
         'my_net_cashflow':my_net_cashflow,
         'group_contributions':group_contributions,
         'unpaid_fines_total':unpaid_fines_total,
-
+        'my_investment_incomes':my_investment_incomes,
         'my_contributions':my_contributions,
         'my_tot_contributions':tot,
         'chama_expense_reports':chama_expenses,
@@ -1411,6 +1459,16 @@ def download_group_investment_income(request, chama_id):
    
 
     
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def download_member_investment_income(request, chama_id):
+    return DownloadService.download_member_investment_income(request,chama_id)
+
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def download_my_investment_income(request, chama_id):
+    return DownloadService.download_my_investment_income(request, chama_id)
+
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_group_investments(request, chama_id):
@@ -1834,6 +1892,124 @@ def get_group_investment_income_data(request, chama_id):
 
 
 
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def get_member_investment_income_data(request, chama_id):
+    """AJAX endpoint to get filtered member investment income data"""
+    if request.method == 'GET':
+        try:
+            chama = Chama.objects.get(pk=chama_id)
+            
+            # Get filter parameters
+            member_id = request.GET.get('member_id')
+            start_date = request.GET.get('start_date')
+            end_date = request.GET.get('end_date')
+            
+            # Base queryset for member investment incomes
+            queryset = Income.objects.filter(chama=chama, forGroup=False).select_related('investment', 'owner')
+            
+            # Apply member filter
+            if member_id:
+                queryset = queryset.filter(owner_id=member_id)
+            
+            # Apply date filters
+            if start_date:
+                queryset = queryset.filter(user_date__gte=start_date)
+            if end_date:
+                queryset = queryset.filter(user_date__lte=end_date)
+            
+            # Order by most recent
+            queryset = queryset.order_by('-date')
+            
+            # Build response data
+            data = []
+            for income in queryset:
+                data.append({
+                    'id': income.id,
+                    'name': income.name,
+                    'investment_name': income.investment.name if income.investment else 'N/A',
+                    'investment_id': income.investment.id if income.investment else None,
+                    'member_name': income.owner.name if income.owner else 'N/A',
+                    'member_id': income.owner.id if income.owner else None,
+                    'amount': float(income.amount),
+                    'date': income.user_date.strftime('%Y-%m-%d'),
+                    'created_date': income.date.strftime('%Y-%m-%d %H:%M:%S')
+                })
+                
+            return JsonResponse({
+                'status': 'success',
+                'data': data,
+                'count': len(data)
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            })
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+@login_required(login_url='/user/Login')
+@is_user_chama_member
+def get_my_investment_income_data(request, chama_id):
+    """AJAX endpoint to get filtered personal investment income data"""
+    if request.method == 'GET':
+        try:
+            chama = Chama.objects.get(pk=chama_id)
+            
+            # Get current user's member record
+            try:
+                member = ChamaMember.objects.get(user=request.user, group=chama)
+            except ChamaMember.DoesNotExist:
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'You are not a member of this chama'
+                })
+            
+            # Get filter parameters
+            start_date = request.GET.get('start_date')
+            end_date = request.GET.get('end_date')
+            
+            # Base queryset for personal investment incomes
+            queryset = Income.objects.filter(chama=chama, forGroup=False, owner=member).select_related('investment')
+            
+            # Apply date filters
+            if start_date:
+                queryset = queryset.filter(user_date__gte=start_date)
+            if end_date:
+                queryset = queryset.filter(user_date__lte=end_date)
+            
+            # Order by most recent
+            queryset = queryset.order_by('-date')
+            
+            # Build response data
+            data = []
+            for income in queryset:
+                data.append({
+                    'id': income.id,
+                    'name': income.name,
+                    'investment_name': income.investment.name if income.investment else 'N/A',
+                    'investment_id': income.investment.id if income.investment else None,
+                    'amount': float(income.amount),
+                    'date': income.user_date.strftime('%Y-%m-%d'),
+                    'created_date': income.date.strftime('%Y-%m-%d %H:%M:%S')
+                })
+                
+            return JsonResponse({
+                'status': 'success',
+                'data': data,
+                'count': len(data)
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            })
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
 @login_required(login_url='/user/Login')
 @is_user_chama_member

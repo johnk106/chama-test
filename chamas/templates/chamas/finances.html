@@ -59,7 +59,13 @@
             <a class="nav-link admin member" id="group-investments-tab" data-bs-toggle="tab" href="#tab-group-investments" role="tab">Group Investments</a>
         </li>
         <li class="nav-item">
+            <a class="nav-link admin" id="individual-investment-income-tab" data-bs-toggle="tab" href="#tab-individual-investment-income" role="tab">Individual Investment Income</a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link admin member" id="group-investment-income-tab" data-bs-toggle="tab" href="#tab-group-investment-income" role="tab">Group Investment Income</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link member" id="my-investment-income-tab" data-bs-toggle="tab" href="#tab-my-investment-income" role="tab">My Investment Income</a>
         </li>
     </ul>
 
@@ -472,7 +478,124 @@
             </div>
         </div>
 
-
+        <!-- Individual Investment Income Tab -->
+        <div class="tab-pane" id="tab-individual-investment-income" role="tabpanel">
+            <div class="finance-card admin">
+                <div class="finance-card-header">
+                    <div class="header-icon">
+                        <i class="fa-regular fa-flag"></i>
+                    </div>
+                    <div class="header-text">
+                        <p>Individual Investment Income</p>
+                    </div>
+                </div>
+                <div class="filter-section">
+                    <div class="filter-inputs">
+                        <div class="mb-3">
+                            <label for="individual_investment_income_start" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="individual_investment_income_start">
+                        </div>
+                        <div class="mb-3">
+                            <label for="individual_investment_income_end" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="individual_investment_income_end">
+                        </div>
+                        <div class="mb-3 member-filter">
+                            <label for="individual_investment_income_member" class="form-label">Member</label>
+                            <select class="form-control" id="individual_investment_income_member">
+                                <option value="">All Members</option>
+                                {%for member in members%}
+                                <option value="{{member.id}}" class="text-capitalize">{{member.name}}</option>
+                                {%endfor%}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive finance-table-wrapper desktop-view">
+                    <table class="table finance-table">
+                        <thead>
+                            <tr>
+                                <th>Owner</th>
+                                <th>Name</th>
+                                <th>Investment</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id='individual-investment-income-table-body'>
+                            {%for income in individual_investment_income%}
+                            <tr>
+                                <td>{{income.owner.name}}</td>
+                                <td>{{income.name}}</td>
+                                <td>{{income.investment.name}}</td>
+                                <td>{{income.date | date:"d/m/Y"}}</td>
+                                <td>ksh {{income.amount | intcomma}}</td>
+                            </tr>
+                            {%empty%}
+                            <tr>
+                                <td colspan="5" class="text-center">No Investment Income!</td>
+                            </tr>
+                            {%endfor%}
+                        </tbody>
+                    </table>
+                </div>
+                <div id='individual-investment-income-cont' class="mobile-cards">
+                    {%for income in individual_investment_income%}
+                    <div class="finance-card">
+                        <div class="saving-details">
+                            <div class="saving-details-row">
+                                <div class="saving-cube">
+                                    <h6 class="fw-semibold">Owner</h6>
+                                    <div class="amount-section">
+                                        <p class="amount">
+                                            {{income.owner.name}}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="saving-cube">
+                                    <h6 class="fw-semibold">Name</h6>
+                                    <div class="amount-section">
+                                        <p class="amount">
+                                            {{income.name}}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="saving-cube">
+                                    <h6 class="fw-semibold">Investment</h6>
+                                    <div class="amount-section">
+                                        <p class="amount">
+                                            {{income.investment.name}}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="saving-cube">
+                                    <h6 class="fw-semibold">Date</h6>
+                                    <div class="amount-section">
+                                        <p class="amount">
+                                            {{income.date | date:"d/m/Y"}}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="saving-cube">
+                                    <h6 class="fw-semibold">amount</h6>
+                                    <div class="amount-section">
+                                        <p class="amount">
+                                            {{income.amount | intcomma}}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {%empty%}
+                    <div class="finance-card text-center mx-auto">
+                        <div class="saving-details">
+                            <h7 class="align-self-center">No Investment Income!</h7>
+                        </div>
+                    </div>
+                    {%endfor%}
+                </div>
+            </div>
+        </div>
 
         <!-- Group Investment Income Tab -->
         <div class="tab-pane" id="tab-group-investment-income" role="tabpanel">
@@ -576,7 +699,93 @@
             </div>
         </div>
 
-
+        <!-- My Investment Income Tab -->
+        <div class="tab-pane" id="tab-my-investment-income" role="tabpanel">
+            <div class="finance-card member">
+                <div class="finance-card-header">
+                    <div class="header-icon">
+                        <i class="fa-regular fa-flag"></i>
+                    </div>
+                    <div class="header-text">
+                        <p>My Investment Income</p>
+                    </div>
+                </div>
+                <div class="table-responsive finance-table-wrapper desktop-view">
+                    <table class="table finance-table">
+                        <thead>
+                            <tr>
+                                <th>Owner</th>
+                                <th>Investment</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {%for income in my_investment_income%}
+                            <tr>
+                                <td>{{income.owner.name}}</td>
+                                <td>{{income.investment.name}}</td>
+                                <td>{{income.date | date:"d/m/Y"}}</td>
+                                <td>ksh {{income.amount | intcomma}}</td>
+                            </tr>
+                            {%empty%}
+                            <tr>
+                                <td colspan="4" class="text-center">No Investment Income!</td>
+                            </tr>
+                            {%endfor%}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mobile-cards">
+                    {%for income in my_investment_income%}
+                    <div class="finance-card">
+                        <div class="saving-details">
+                            <div class="saving-details-row">
+                                <div class="saving-cube">
+                                    <h6 class="fw-semibold">Owner</h6>
+                                    <div class="amount-section">
+                                        <p class="amount">
+                                            {{income.owner.name}}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="saving-cube">
+                                    <h6 class="fw-semibold">Investment</h6>
+                                    <div class="amount-section">
+                                        <p class="amount">
+                                            {{income.investment.name}}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="saving-cube">
+                                    <h6 class="fw-semibold">Date</h6>
+                                    <div class="amount-section">
+                                        <p class="amount">
+                                            {{income.date | date:"d/m/Y"}}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="saving-cube">
+                                    <h6 class="fw-semibold">amount</h6>
+                                    <div class="amount-section">
+                                        <p class="amount">
+                                            {{income.amount | intcomma}}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {%empty%}
+                    <div class="finance-card text-center mx-auto">
+                        <div class="saving-details">
+                            <h7 class="align-self-center">No Investment Income!</h7>
+                        </div>
+                    </div>
+                    {%endfor%}
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -1308,7 +1517,116 @@
 </script>
 
 <script>
+    // Individual Investment Income filtering
+    var individualInvestmentIncomes = [
+        {% for income in individual_investment_income %}
+            {
+                'owner': '{{ income.owner.name }}',
+                'owner_id': '{{ income.owner.id }}',
+                'name': '{{ income.name }}',
+                'investment': '{{ income.investment.name }}',
+                'date': new Date('{{ income.date|date:"c" }}'),
+                'amount': '{{ income.amount }}',
+            },
+        {% endfor %}
+    ];
+    
+    document.getElementById('individual_investment_income_start').addEventListener('change', filterIndividualInvestmentIncomes);
+    document.getElementById('individual_investment_income_end').addEventListener('change', filterIndividualInvestmentIncomes);
+    document.getElementById('individual_investment_income_member').addEventListener('change', filterIndividualInvestmentIncomes);
+    
+    function filterIndividualInvestmentIncomes() {
+        var startInput = document.getElementById('individual_investment_income_start').value;
+        var endInput = document.getElementById('individual_investment_income_end').value;
+        var memberInput = document.getElementById('individual_investment_income_member').value;
+    
+        var filteredIncomes = individualInvestmentIncomes;
+        
+        // Filter by date range if both dates are provided
+        if (startInput && endInput) {
+            var start = new Date(startInput);
+            var end = new Date(endInput);
+    
+            if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+                filteredIncomes = filteredIncomes.filter(function(income) {
+                    return income.date >= start && income.date <= end;
+                });
+            }
+        }
+        
+        // Filter by member if selected
+        if (memberInput) {
+            filteredIncomes = filteredIncomes.filter(function(income) {
+                return income.owner_id == memberInput;
+            });
+        }
+        
+        // Only update display if we have filters applied
+        if ((startInput && endInput) || memberInput) {
+            // Update mobile cards
+            var incomesContainer = document.getElementById('individual-investment-income-cont');
+            incomesContainer.innerHTML = '';
+            
+            // Update table body
+            var tableBody = document.getElementById('individual-investment-income-table-body');
+            tableBody.innerHTML = '';
 
+            filteredIncomes.forEach(function(income) {
+                // Create mobile card
+                var incomeElement = document.createElement('div');
+                incomeElement.className = 'finance-card';
+                
+                // Create table row
+                var tableRow = document.createElement('tr');
+                tableRow.innerHTML = `
+                    <td>${income.owner}</td>
+                    <td>${income.name}</td>
+                    <td>${income.investment}</td>
+                    <td>${income.date.getDate()}/${income.date.getMonth()+1}/${income.date.getFullYear()}</td>
+                    <td>ksh ${income.amount}</td>
+                `;
+                tableBody.appendChild(tableRow);
+                
+                incomeElement.innerHTML = `
+                    <div class="saving-details">
+                        <div class="saving-details-row">
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">Owner</h6>
+                                <div class="amount-section">
+                                    <p class="amount">${income.owner}</p>
+                                </div>
+                            </div>
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">Name</h6>
+                                <div class="amount-section">
+                                    <p class="amount">${income.name}</p>
+                                </div>
+                            </div>
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">Investment</h6>
+                                <div class="amount-section">
+                                    <p class="amount">${income.investment}</p>
+                                </div>
+                            </div>
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">Date</h6>
+                                <div class="amount-section">
+                                    <p class="amount">${income.date.getDate()}/${income.date.getMonth()+1}/${income.date.getFullYear()}</p>
+                                </div>
+                            </div>
+                            <div class="saving-cube">
+                                <h6 class="fw-semibold">Amount</h6>
+                                <div class="amount-section">
+                                    <p class="amount">ksh ${income.amount}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                incomesContainer.appendChild(incomeElement);
+            });
+        }
+    }
 </script>
 
 <script>
