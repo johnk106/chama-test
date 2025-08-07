@@ -388,33 +388,34 @@
 
   <!-- Desktop View -->
   <div class="desktop-fines d-none d-lg-block">
-    <div class="row justify-content-center mt-2 text-capitalize mt-2">
-      <div class="col-sm-12 m-2 body-div admin">
-        <h6 class="w-auto mx-auto">Create Fine</h6>
-        <div class="div-header">
-          <h6 class="w-auto">Define Fine</h6>
+    <div class="container-fluid justify-content-center">
+      <div class="container row justify-content-center mt-2">
+        <div class="body-div admin">
+          <h6 class="w-auto mx-auto">Create Fine</h6>
+          <div class="div-header">
+            <h6 class="w-auto">Define Fine</h6>
+          </div>
+          <div class="alert-hub"></div>
+          <form action="" id="create-fine-type" style="width: 100%;">
+            <div class="input-sect">
+              <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="name" name="name" class="form-control" id="name" required />
+              </div>
+              <div class="mb-3">
+                <label for="amount" class="form-label">amount</label>
+                <input type="number" name="amount" class="form-control" id="amount" required />
+              </div>
+            </div>
+            <div class="mb-3 desc-area">
+              <label for="description" class="form-label">Description</label>
+              <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+            </div>
+            <button class="btn btn-primary border-0" style="width: 100%">Create</button>
+          </form>
         </div>
-        <div class="alert-hub"></div>
-        <form action="" id="create-fine-type" style="width: 100%;">
-          <div class="input-sect">
-            <div class="mb-3">
-              <label for="name" class="form-label">Name</label>
-              <input type="name" name="name" class="form-control" id="name" required />
-            </div>
-            <div class="mb-3">
-              <label for="amount" class="form-label">amount</label>
-              <input type="number" name="amount" class="form-control" id="amount" required />
-            </div>
-          </div>
-          <div class="mb-3 desc-area">
-            <label for="description" class="form-label">Description</label>
-            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
-          </div>
-          <button class="btn btn-primary border-0" style="width: 100%">Create</button>
-        </form>
-      </div>
 
-      <div class="col-sm-12 m-2 body-div admin">
+        <div class="body-div admin">
         <h6 class="w-auto mx-auto">Impose Fine</h6>
         <div class="div-header">
           <h6 class="w-auto mx-auto">Impose Fine</h6>
@@ -467,11 +468,12 @@
 
         <div class="div-header">
         </div>
+        </div>
       </div>
     </div>
-
-    <div class="row justify-content-around text-capitalize">
-      <div class="m-2 body-div admin">
+    <div class="container-fluid justify-content-center">
+      <div class="container row justify-content-center">
+        <div class="body-div admin">
         <h6 class="w-auto mx-auto">Pay fine</h6>
         <div class="div-header">
           <h6 class="w-auto">Loan Fines</h6>
@@ -609,9 +611,9 @@
           <h7>No active contribution fines</h7>
         </div>
         {%endfor%}
-      </div>
-      <div class="m-2 body-div body-div member">
-        <h6 class="w-auto mx-auto">Active group fines</h6>
+        </div>
+        <div class="body-div member">
+          <h6 class="w-auto mx-auto">Active group fines</h6>
         <div class="div-header">
           <h6 class="w-auto mx-auto">Active Fines</h6>
         </div>
@@ -743,10 +745,9 @@
         </div>
         {%endfor%}
 
-
-      </div>
-      <div class="m-2 body-div body-div member">
-        <h6 class="w-auto mx-auto">My Active fines</h6>
+        </div>
+        <div class="body-div member">
+          <h6 class="w-auto mx-auto">My Active fines</h6>
         <div class="div-header">
           <h6 class="w-auto mx-auto">My Active Loan Fines</h6>
         </div>
@@ -838,6 +839,7 @@
         </div>
         <br>
         {%endfor%}
+        </div>
       </div>
     </div>
   </div>
