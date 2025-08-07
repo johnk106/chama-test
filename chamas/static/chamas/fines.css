@@ -380,10 +380,11 @@
 /* Ensure desktop content doesn't slide under sidebar */
 @media (min-width: 769px) {
     .desktop-fines {
-        margin-left: 0;
-        width: calc(100% - 260px);
-        max-width: calc(100% - 260px);
+        margin-left: 0; /* Remove redundant margin since main-content already has margin-left: 260px */
+        width: 100%;
+        max-width: 100%;
         padding: 20px;
+        box-sizing: border-box;
     }
     
     .desktop-fines .row {
@@ -1027,4 +1028,84 @@ body .main-content .page-content:has(.modern-fines),
 .modern-fines .home-section {
     margin: 0 !important;
     padding: 0 !important;
+}
+
+/* Specific overrides for desktop fines layout */
+@media (min-width: 769px) {
+    /* Ensure page-content doesn't add extra padding */
+    .fines-page .page-content {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    /* Ensure main-content uses full width */
+    .fines-page .main-content {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    
+    /* Ensure desktop-fines uses full available space */
+    .desktop-fines {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 20px !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* Override any Bootstrap container constraints */
+    .desktop-fines .container,
+    .desktop-fines .container-fluid {
+        max-width: 100% !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    /* Ensure rows use full width */
+    .desktop-fines .row {
+        width: 100% !important;
+        margin: 0 !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+    }
+    
+    /* Ensure columns use proper spacing */
+    .desktop-fines .col-sm-12 {
+        width: 100% !important;
+        padding: 0 10px !important;
+        margin-bottom: 20px !important;
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+    
+    /* Ensure body-div uses full width */
+    .desktop-fines .body-div {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 0 20px 0 !important;
+        padding: 24px !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* Override any Bootstrap margin classes */
+    .desktop-fines .m-2 {
+        margin: 0 !important;
+    }
+    
+    .desktop-fines .mt-2 {
+        margin-top: 0 !important;
+    }
+    
+    .desktop-fines .justify-content-center {
+        justify-content: flex-start !important;
+    }
+    
+    .desktop-fines .justify-content-around {
+        justify-content: flex-start !important;
+    }
+    
+    .desktop-fines .text-capitalize {
+        text-transform: none !important;
+    }
 }
