@@ -969,7 +969,7 @@
 /* Critical: Override the main-content and page-content padding that constrains tabs */
 .modern-fines {
     margin: 0 !important;
-    padding: 16px !important;
+    padding: 0 !important;
 }
 
 /* Remove padding from page-content specifically for fines page */
@@ -999,23 +999,12 @@ body .main-content .page-content:has(.modern-fines),
   
   /* Add proper spacing between desktop components */
   .desktop-fines .container-fluid {
-    padding: 24px;
+    padding: 20px;
   }
   
   .desktop-fines .container.row {
-    margin: 20px 0;
-    padding: 0 16px;
-    gap: 20px;
-  }
-  
-  .desktop-fines .body-div {
-    margin: 20px;
-    padding: 24px;
-  }
-  
-  /* Ensure all components have proper spacing from edges */
-  .desktop-fines .modern-fines {
-    padding: 0 24px;
+    margin-bottom: 24px;
+    gap: 16px;
   }
   
   /* Add spacing between sections */
@@ -1026,8 +1015,8 @@ body .main-content .page-content:has(.modern-fines),
   /* Improve body-div styling on desktop */
   .desktop-fines .body-div {
     border-radius: 16px;
-    padding: 28px;
-    margin: 20px;
+    padding: 24px;
+    margin: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     border: 1px solid rgba(0, 0, 0, 0.06);
     background: #fff;
@@ -1046,44 +1035,22 @@ body .main-content .page-content:has(.modern-fines),
   
   /* Style section headers */
   .desktop-fines .div-header {
-    margin: 20px;
-    padding: 0 0 16px 0;
+    margin: 16px 0 20px 0;
+    padding-bottom: 12px;
     border-bottom: 2px solid #f1f5f9;
   }
   
   /* Improve member cards spacing */
   .desktop-fines .member-header {
-    margin: 20px;
-    padding: 12px;
-    border-radius: 8px;
+    margin: 16px 0;
   }
   
   .desktop-fines .loan-single {
-    margin: 20px;
-    padding: 20px;
+    margin: 12px 0 20px 0;
+    padding: 16px;
     background: #f8fafc;
     border-radius: 12px;
     border: 1px solid #e2e8f0;
-  }
-  
-  /* Add spacing to form elements */
-  .desktop-fines .input-sect {
-    margin: 16px 0;
-    padding: 0 8px;
-  }
-  
-  /* Ensure buttons have proper spacing */
-  .desktop-fines .btn,
-  .desktop-fines button {
-    margin: 16px 8px;
-  }
-  
-  /* Add spacing to alert hubs */
-  .desktop-fines .alert-hub,
-  .desktop-fines .impose-alerts-hub,
-  .desktop-fines .pay-fine-alerts-hub {
-    margin: 16px 0;
-    padding: 0 8px;
   }
 }
 
@@ -1091,70 +1058,9 @@ body .main-content .page-content:has(.modern-fines),
 .mobile-fines {
     width: 100% !important;
     margin: 0 !important;
-    padding: 20px !important;
+    padding: 0 !important;
     position: relative;
     overflow-x: hidden;
-}
-
-/* Mobile component spacing */
-@media (max-width: 768px) {
-  .mobile-tabs {
-    margin: 0 0 24px 0;
-    padding: 0 16px;
-  }
-  
-  .mobile-tab-content {
-    padding: 20px;
-    margin: 16px;
-    border-radius: 12px;
-    background: #fff;
-  }
-  
-  .mobile-create-form,
-  .mobile-fines-list {
-    margin: 20px;
-    padding: 16px;
-  }
-  
-  .fine-member-card,
-  .fine-payment-card,
-  .fine-view-card {
-    margin: 16px;
-    padding: 16px;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .create-fine-card {
-    margin: 20px;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Mobile form elements spacing */
-  .mobile-fines .form-group {
-    margin: 16px 8px;
-  }
-  
-  .mobile-fines .beautiful-btn {
-    margin: 20px 8px 16px 8px;
-  }
-  
-  /* Mobile alert hubs */
-  .mobile-alert-hub,
-  .mobile-impose-alerts-hub,
-  .mobile-update-alerts-hub,
-  .mobile-contribution-update-alerts-hub {
-    margin: 16px;
-    padding: 0 8px;
-  }
-  
-  /* Tab buttons spacing */
-  .mobile-tabs .tab-btn {
-    margin: 4px;
-    padding: 12px 16px;
-  }
 }
 
 /* Force full width for all parent containers */
