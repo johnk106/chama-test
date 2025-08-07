@@ -991,6 +991,13 @@ body .main-content .page-content:has(.modern-fines),
 
 /* DO NOT reset margin on .main-content as it needs margin-left: 260px for sidebar */
 
+/* Ensure main-content preserves sidebar margin on desktop */
+@media (min-width: 769px) {
+  .fines-page .main-content {
+    margin-left: 260px !important;
+  }
+}
+
 /* Ensure mobile fines container spans full width */
 .mobile-fines {
     width: 100% !important;
