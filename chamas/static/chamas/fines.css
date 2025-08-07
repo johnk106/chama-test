@@ -982,13 +982,14 @@ body .main-content .page-content:has(.modern-fines),
 }
 
 /* Fallback for browsers that don't support :has() */
-.fines-page .main-content,
 .fines-page .page-content {
     padding: 0 !important;
     margin: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
 }
+
+/* DO NOT reset margin on .main-content as it needs margin-left: 260px for sidebar */
 
 /* Ensure mobile fines container spans full width */
 .mobile-fines {
