@@ -8,6 +8,7 @@
     padding: 0;
     position: relative;
     overflow-x: hidden;
+    max-width: 100%;
 }
 
 /* Fix potential CSS conflicts */
@@ -365,10 +366,15 @@
     display: flex;
     flex-direction: column;
     min-height: fit-content;
+    width: 100%;
+    max-width: 100%;
 }
 
 .mobile-contributions .tab-content.active {
     display: flex;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 /* Ensure accordion doesn't interfere with pagination */
@@ -426,9 +432,13 @@
     box-sizing: border-box;
 }
 
-.tab-content.active {
+/* Only within contributions mobile scope */
+.mobile-contributions .tab-content.active {
     display: block !important;
+    width: 100%;
+    max-width: 100%;
 }
+
 
 /* Mobile Accordion Styles */
 .mobile-contributions-accordion {
@@ -449,6 +459,9 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     overflow: hidden;
     border-bottom: 1px solid #e5e7eb;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .accordion-header {
@@ -458,6 +471,8 @@
     justify-content: space-between;
     align-items: center;
     transition: background-color 0.2s;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .accordion-header:hover {
@@ -466,6 +481,7 @@
 
 .contribution-summary {
     flex: 1;
+    min-width: 0;
 }
 
 .contribution-info {
@@ -473,6 +489,8 @@
     justify-content: space-between;
     gap: 16px;
     margin-bottom: 12px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .contribution-type, .contribution-due {
@@ -663,7 +681,23 @@
     max-width: 100%;
     box-sizing: border-box;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
 }
+
+/* Ensure form inside is also full width */
+#mobile-create-contribution-form {
+    width: 100%;
+    max-width: 100%;
+}
+#mobile-create-contribution-form .form-group,
+#mobile-create-contribution-form .form-input,
+#mobile-create-contribution-form .create-contribution-btn,
+#mobile-create-contribution-form textarea {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
 
 /* Handle empty create tab when admin is hidden */
 #create-contributions {
@@ -688,12 +722,14 @@
 
 .form-input {
     width: 100%;
+    max-width: 100%;
     padding: 12px;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     font-size: 14px;
     background: #f9fafb;
     transition: border-color 0.2s;
+    box-sizing: border-box;
 }
 
 .form-input:focus {
@@ -708,6 +744,7 @@
 
 .create-contribution-btn {
     width: 100%;
+    max-width: 100%;
     background: linear-gradient(135deg, #06b6d4, #0891b2);
     color: white;
     border: none;
@@ -718,6 +755,7 @@
     cursor: pointer;
     transition: all 0.2s;
     margin-top: 8px;
+    box-sizing: border-box;
 }
 
 .create-contribution-btn:hover {
@@ -751,6 +789,9 @@
     margin-top: 20px;
     border-top: 1px solid #e5e7eb;
     padding-top: 16px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .mobile-records-title {
@@ -764,6 +805,9 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .mobile-record-card {
@@ -972,6 +1016,8 @@
         padding: 8px 12px;
         max-width: 100%;
         margin: 0;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .desktop-header-section {
@@ -1035,6 +1081,8 @@
         grid-template-columns: 1fr 1fr;
         gap: 24px;
         margin-bottom: 24px;
+        width: 100%;
+        box-sizing: border-box;
     }
     
     /* When create section is hidden (member view), contribution list takes full width */
@@ -1084,6 +1132,8 @@
         padding: 20px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         height: fit-content;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .card-title {
@@ -1103,12 +1153,14 @@
     /* Wide Form Inputs */
     .form-input-wide {
         width: 100%;
+        max-width: 100%;
         padding: 10px 12px;
         border: 1px solid #e5e7eb;
         border-radius: 6px;
         font-size: 14px;
         background: #f9fafb;
         transition: border-color 0.2s;
+        box-sizing: border-box;
     }
 
     .form-input-wide:focus {
@@ -1119,6 +1171,7 @@
 
     .btn-primary-wide {
         width: 100%;
+        max-width: 100%;
         background: linear-gradient(135deg, #06b6d4, #0891b2);
         color: white;
         border: none;
@@ -1128,6 +1181,7 @@
         cursor: pointer;
         transition: all 0.2s;
         margin-top: 12px;
+        box-sizing: border-box;
     }
 
     .btn-primary-wide:hover {
@@ -1263,6 +1317,8 @@
         grid-template-columns: 1fr 1fr;
         gap: 24px;
         align-items: start;
+        width: 100%;
+        box-sizing: border-box;
     }
     
     /* When member update card is hidden, records card takes full width */

@@ -1357,9 +1357,15 @@ $(document).ready(function () {
                 tbody.empty();
 
                 const hasAnyRecords = response.records && response.records.results && response.records.results.length > 0;
+                const recordsCard = $(".contribution-records-card");
+                const detailsGridContainer = $(".details-grid");
                 if (!hasAnyRecords) {
-                    // No records: keep grid single column to avoid left whitespace
-                    $(".details-grid").addClass('full-width');
+                    // No records: hide records card and use single column to avoid whitespace
+                    recordsCard.hide();
+                    detailsGridContainer.addClass('full-width');
+                } else {
+                    recordsCard.show();
+                    detailsGridContainer.removeClass('full-width');
                 }
 
                 response.records.results.forEach(record => {
