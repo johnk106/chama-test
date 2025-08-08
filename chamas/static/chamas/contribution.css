@@ -1480,6 +1480,26 @@
         display: block;
     }
 
+    /* Ensure the contribution form card uses a single-column, full-width layout inside */
+    .member-update-card.contribution-form-card {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    .member-update-card.contribution-form-card > .card-subtitle,
+    .member-update-card.contribution-form-card > .table-responsive,
+    .member-update-card.contribution-form-card > form,
+    .member-update-card.contribution-form-card > * {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    /* Guard against accidental flex/grid splitting inside the card */
+    .member-update-card.contribution-form-card {
+        grid-template-columns: none !important;
+    }
+
 }
 
 /* Responsive adjustments */
