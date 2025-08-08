@@ -158,17 +158,17 @@ WSGI_APPLICATION = 'Chamabora.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 FCM_SERVER_KEY = "AAAApuuyOe4:APA91bFVU7guIWu7NXlMjndp7s3MjY2u3z9SQRLhrHDljcBfdYk87Bj4aPdxIOEl_1Y14MuaTd4FtQ74LBXvRGT625o071FGoTgGYRcCpB67-m8sfuL4DDr6Cka1BNtuLrDaA4Dex6Ko"
 
-# DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#             'NAME':env('DB_NAME') ,
-#             'USER': env('DB_USER'),
-#             'PASSWORD': env('DB_PASSWORD'),
-#             'HOST': env('DB_HOST'),
-#         }
-#     }
-# db_from_env = dj_database_url.config(conn_max_age=600)
-# DATABASES['default'].update(db_from_env)
+DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME':env('DB_NAME') ,
+            'USER': env('DB_USER'),
+            'PASSWORD': env('DB_PASSWORD'),
+            'HOST': env('DB_HOST'),
+        }
+    }
+db_from_env = dj_database_url.config(conn_max_age=600)
+DATABASES['default'].update(db_from_env)
 
 # Before development
 # DATABASES = {
@@ -180,12 +180,12 @@ FCM_SERVER_KEY = "AAAApuuyOe4:APA91bFVU7guIWu7NXlMjndp7s3MjY2u3z9SQRLhrHDljcBfdY
 # }
 
 # After development
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
