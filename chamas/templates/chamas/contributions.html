@@ -197,7 +197,6 @@
                     <div class="details-grid">
                         <!-- Member Update Table -->
                         <div class="member-update-card admin contribution-form-card">
-                            <h4 class="card-subtitle">Update Member Contributions</h4>
                             <div class="table-responsive">
                                 <table class="table" id="member-list">
                                     <thead>
@@ -331,7 +330,7 @@
                     </div>
                     
                     <div class="mb-3">
-                        <label for="edit-contribution-start-date" class="form-label">Start Date</label>
+                        <label for="edit-contribution-start-date" class="form-label">Start</label>
                         <input type="date" class="form-control" id="edit-contribution-start-date" name="start_date" required>
                     </div>
                     
@@ -1349,11 +1348,22 @@ $(document).ready(function () {
                     detailsGrid.addClass('full-width');
                 } else {
                     contributionFormCard.removeClass('force-hidden');
+                    // Keep grid two-column by default; no forced full-width here
                     detailsGrid.removeClass('full-width');
                 }
 
                 const tbody = $("#contribution-records tbody");
                 tbody.empty();
+
+                const hasAnyRecords = response.records && response.records.results && response.records.results.length > 0;
+                const recordsCard = $(".contribution-records-card");
+                const detailsGridContainer = $(".details-grid");
+                if (!hasAnyRecords) {
+                    // No records: use single column to avoid whitespace
+                    detailsGridContainer.addClass('full-width');
+                } else {
+                    detailsGridContainer.removeClass('full-width');
+                }
 
                 response.records.results.forEach(record => {
                     const date = new Date(record.date_created).toLocaleDateString();
