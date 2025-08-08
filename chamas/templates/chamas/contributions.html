@@ -1349,6 +1349,7 @@ $(document).ready(function () {
                     detailsGrid.addClass('full-width');
                 } else {
                     contributionFormCard.removeClass('force-hidden');
+                    // Keep grid two-column by default; no forced full-width here
                     detailsGrid.removeClass('full-width');
                 }
 
@@ -1359,11 +1360,9 @@ $(document).ready(function () {
                 const recordsCard = $(".contribution-records-card");
                 const detailsGridContainer = $(".details-grid");
                 if (!hasAnyRecords) {
-                    // No records: hide records card and use single column to avoid whitespace
-                    recordsCard.hide();
+                    // No records: use single column to avoid whitespace
                     detailsGridContainer.addClass('full-width');
                 } else {
-                    recordsCard.show();
                     detailsGridContainer.removeClass('full-width');
                 }
 

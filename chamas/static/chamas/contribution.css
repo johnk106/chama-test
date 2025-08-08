@@ -1479,9 +1479,7 @@
     #desktop-create-form {
         display: block;
     }
-    .details-grid.full-width .contribution-records-card {
-        display: none !important;
-    }
+
 }
 
 /* Responsive adjustments */
