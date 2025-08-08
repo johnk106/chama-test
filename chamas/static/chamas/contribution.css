@@ -356,6 +356,8 @@
     margin: 0;
     padding: 0;
     width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 /* Mobile tab content should contain its children properly */
@@ -382,7 +384,8 @@
     border-bottom: 1px solid #e5e7eb;
     padding: 0;
     margin: 0;
-    width: 100vw;
+    width: 100%;
+    box-sizing: border-box;
     margin-left: 0;
     position: relative;
 }
@@ -419,6 +422,8 @@
     padding: 0;
     margin: 0;
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .tab-content.active {
@@ -433,6 +438,8 @@
     margin: 0;
     padding: 0;
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .mobile-accordion-item {
@@ -650,8 +657,11 @@
 .mobile-create-form {
     background: white;
     border-radius: 0;
-    padding: 20px;
+    padding: 16px;
     margin: 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
@@ -883,6 +893,7 @@
         background: white;
         border-top: 1px solid #e5e7eb;
         width: 100%;
+        max-width: 100%;
         box-sizing: border-box;
         display: flex;
         justify-content: center;
@@ -1251,6 +1262,7 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 24px;
+        align-items: start;
     }
     
     /* When member update card is hidden, records card takes full width */

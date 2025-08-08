@@ -1349,11 +1349,18 @@ $(document).ready(function () {
                     detailsGrid.addClass('full-width');
                 } else {
                     contributionFormCard.removeClass('force-hidden');
-                    detailsGrid.removeClass('full-width');
+                    detailsGrid.addClass('full-width');
+                    setTimeout(() => detailsGrid.removeClass('full-width'), 0);
                 }
 
                 const tbody = $("#contribution-records tbody");
                 tbody.empty();
+
+                const hasAnyRecords = response.records && response.records.results && response.records.results.length > 0;
+                if (!hasAnyRecords) {
+                    // No records: keep grid single column to avoid left whitespace
+                    $(".details-grid").addClass('full-width');
+                }
 
                 response.records.results.forEach(record => {
                     const date = new Date(record.date_created).toLocaleDateString();
