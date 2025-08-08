@@ -1342,15 +1342,12 @@
     .details-grid.full-width > * {
         grid-column: 1 / -1 !important;
     }
-    .details-grid.full-width .contribution-records-card {
-        display: none !important;
-    }
     .details-grid.full-width .member-update-card,
     .details-grid.full-width .contribution-form-card {
+        grid-column: 1 / -1 !important;
         width: 100% !important;
         max-width: 100% !important;
         margin: 0 !important;
-        box-sizing: border-box;
     }
     
     /* Pagination Styles */
@@ -1481,6 +1478,9 @@
     /* Show desktop create form by default */
     #desktop-create-form {
         display: block;
+    }
+    .details-grid.full-width .contribution-records-card {
+        display: none !important;
     }
 }
 

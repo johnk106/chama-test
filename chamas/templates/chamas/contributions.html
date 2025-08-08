@@ -1349,8 +1349,7 @@ $(document).ready(function () {
                     detailsGrid.addClass('full-width');
                 } else {
                     contributionFormCard.removeClass('force-hidden');
-                    detailsGrid.addClass('full-width');
-                    setTimeout(() => detailsGrid.removeClass('full-width'), 0);
+                    detailsGrid.removeClass('full-width');
                 }
 
                 const tbody = $("#contribution-records tbody");
