@@ -1332,6 +1332,26 @@
     html.user-is-admin .contribution-form-card.force-hidden {
         display: none !important;
     }
+
+    /* Desktop Details Grid full-width state: remove gaps, hide records, stretch form */
+    .details-grid.full-width {
+        grid-template-columns: 1fr !important;
+        gap: 0 !important;
+        justify-items: stretch;
+    }
+    .details-grid.full-width > * {
+        grid-column: 1 / -1 !important;
+    }
+    .details-grid.full-width .contribution-records-card {
+        display: none !important;
+    }
+    .details-grid.full-width .member-update-card,
+    .details-grid.full-width .contribution-form-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        box-sizing: border-box;
+    }
     
     /* Pagination Styles */
     .desktop-pagination, .mobile-pagination {
