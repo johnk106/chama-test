@@ -1333,23 +1333,6 @@
         display: none !important;
     }
 
-    /* Desktop Details Grid full-width state: remove gaps, hide records, stretch form */
-    .details-grid.full-width {
-        grid-template-columns: 1fr !important;
-        gap: 0 !important;
-        justify-items: stretch;
-    }
-    .details-grid.full-width > * {
-        grid-column: 1 / -1 !important;
-    }
-    .details-grid.full-width .member-update-card,
-    .details-grid.full-width .contribution-form-card {
-        grid-column: 1 / -1 !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-    }
-    
     /* Pagination Styles */
     .desktop-pagination, .mobile-pagination {
         display: flex;
@@ -1478,26 +1461,6 @@
     /* Show desktop create form by default */
     #desktop-create-form {
         display: block;
-    }
-
-    /* Ensure the contribution form card uses a single-column, full-width layout inside */
-    .member-update-card.contribution-form-card {
-        display: block;
-        width: 100%;
-        max-width: 100%;
-        box-sizing: border-box;
-    }
-    .member-update-card.contribution-form-card > .card-subtitle,
-    .member-update-card.contribution-form-card > .table-responsive,
-    .member-update-card.contribution-form-card > form,
-    .member-update-card.contribution-form-card > * {
-        width: 100%;
-        max-width: 100%;
-        box-sizing: border-box;
-    }
-    /* Guard against accidental flex/grid splitting inside the card */
-    .member-update-card.contribution-form-card {
-        grid-template-columns: none !important;
     }
 
 }
