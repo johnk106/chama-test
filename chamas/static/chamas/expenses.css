@@ -281,6 +281,14 @@ h5 {
     box-shadow: none;
 }
 
+/* Tab content */
+.modern-expenses .tab-content {
+    display: none;
+}
+.modern-expenses .tab-content.active {
+    display: block;
+}
+
 /* Mobile form styling */
 .mobile-create-form .form-row-split {
     display: flex;

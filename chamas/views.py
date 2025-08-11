@@ -852,7 +852,8 @@ def expenses(request,chama_id):
     # Check if current user is admin
     try:
         user_membership = ChamaMember.objects.get(user=request.user, group=chama)
-        is_admin = user_membership.role and user_membership.role.name == 'admin'
+        role_name = (user_membership.role.name or '').lower() if user_membership.role else ''
+        is_admin = role_name in ['admin', 'administrator', 'chairman', 'secretary']
     except ChamaMember.DoesNotExist:
         is_admin = False
   
@@ -1579,19 +1580,26 @@ def notifications(request,chama_id):
         chama_notifications = NotificationItem.objects.filter(chama=chama,forGroup=True,member=None).all()
 
         member = None
-        for member in chama.member.all():
-            if request.user == member.user:
-                member= member
+        for m in chama.member.all():
+            if request.user == m.user:
+                member = m
                 break
       
+        # Determine admin status
+        try:
+            role_name = (member.role.name or '').lower() if member and member.role else ''
+            is_admin = role_name in ['admin', 'administrator', 'chairman', 'secretary']
+        except Exception:
+            is_admin = False
 
         my_notifications = NotificationItem.objects.filter(member=member,chama=chama,forGroup=False).all()
 
         context = {
-            'types':notification_types,
-            'chama_notifs':chama_notifications,
-            'my_notifs':my_notifications,
-            'members':ChamaMember.objects.filter(active=True,group=chama)
+            'types': notification_types,
+            'chama_notifs': chama_notifications,
+            'my_notifs': my_notifications,
+            'members': ChamaMember.objects.filter(active=True,group=chama),
+            'is_admin': is_admin
         }
     return render(request,'chamas/notifications.html',context)
 

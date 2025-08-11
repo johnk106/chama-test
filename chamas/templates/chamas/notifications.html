@@ -17,13 +17,19 @@
     <div class="mobile-notifications d-block d-lg-none">
         <!-- Tabs -->
         <div class="mobile-tabs">
+            {% if is_admin %}
             <button class="tab-btn admin active" data-tab="create-type">Create Type</button>
             <button class="tab-btn admin" data-tab="send-notification">Send Notification</button>
             <button class="tab-btn" data-tab="group-notifications">Group Notifications</button>
             <button class="tab-btn" data-tab="my-notifications">My Notifications</button>
+            {% else %}
+            <button class="tab-btn active" data-tab="group-notifications">Group Notifications</button>
+            <button class="tab-btn" data-tab="my-notifications">My Notifications</button>
+            {% endif %}
         </div>
         
         <!-- Create Type Tab Content -->
+        {% if is_admin %}
         <div class="tab-content active" id="create-type">
             <div class="mobile-create-form admin">
                 <div class="create-notification-card" style="margin-top: 18px;">
@@ -47,8 +53,10 @@
                 </div>
             </div>
         </div>
+        {% endif %}
         
         <!-- Send Notification Tab Content -->
+        {% if is_admin %}
         <div class="tab-content" id="send-notification">
             <div class="mobile-send-form admin">
                 <div class="send-notification-card" style="margin-top: 18px;">
@@ -85,9 +93,10 @@
                 </div>
             </div>
         </div>
+        {% endif %}
         
         <!-- Group Notifications Tab Content -->
-        <div class="tab-content" id="group-notifications">
+        <div class="tab-content{% if not is_admin %} active{% endif %}" id="group-notifications">
             <div class="mobile-notification-history-list">
                 {% for notif in chama_notifs %}
                 <div class="notification-history-beautiful-card">
@@ -279,6 +288,9 @@
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
 $(document).ready(function () {
+    // Apply member/admin visibility from base toggle
+    if (window.syncAdminVisibility) { window.syncAdminVisibility(); }
+
     // Mobile tab functionality
     $('.tab-btn').click(function() {
         const tabId = $(this).data('tab');
