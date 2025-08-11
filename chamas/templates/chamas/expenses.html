@@ -167,18 +167,19 @@ $(document).ready(function () {
 
     // Ensure one tab is active for current role on load
     function activateFirstVisibleTab() {
-        const $visibleTabs = $('.mobile-tabs .tab-btn:visible');
+        const $container = $('.mobile-expenses');
+        const $visibleTabs = $container.find('.mobile-tabs .tab-btn:visible');
         if ($visibleTabs.length) {
             const $currentActive = $visibleTabs.filter('.active');
             if ($currentActive.length === 0) {
                 const firstId = $visibleTabs.first().data('tab');
-                $('.tab-btn').removeClass('active');
-                $('.tab-content').removeClass('active');
+                $container.find('.tab-btn').removeClass('active');
+                $container.find('.tab-content').removeClass('active');
                 $visibleTabs.first().addClass('active');
                 $('#' + firstId).addClass('active');
             } else {
                 const tabId = $currentActive.data('tab');
-                $('.tab-content').removeClass('active');
+                $container.find('.tab-content').removeClass('active');
                 $('#' + tabId).addClass('active');
             }
         }
@@ -186,12 +187,31 @@ $(document).ready(function () {
     activateFirstVisibleTab();
     setTimeout(activateFirstVisibleTab, 0);
 
-    // Mobile tab functionality
-    $('.tab-btn').click(function() {
+    // If base defines syncAdminVisibility, wrap it to also reactivate visible tab
+    if (typeof window.syncAdminVisibility === 'function') {
+        const originalSync = window.syncAdminVisibility;
+        window.syncAdminVisibility = function() {
+            try { originalSync(); } catch(e) { /* no-op */ }
+            setTimeout(activateFirstVisibleTab, 0);
+        };
+    }
+
+    // Observe visibility/class changes within the tabs to keep a visible content active
+    const tabsRoot = document.querySelector('.mobile-expenses .mobile-tabs');
+    if (tabsRoot && 'MutationObserver' in window) {
+        const observer = new MutationObserver(function() {
+            setTimeout(activateFirstVisibleTab, 0);
+        });
+        observer.observe(tabsRoot, { attributes: true, subtree: true, attributeFilter: ['style', 'class'] });
+    }
+
+    // Mobile tab functionality (scoped)
+    $('.mobile-expenses .tab-btn').click(function() {
+        const $container = $('.mobile-expenses');
         const tabId = $(this).data('tab');
-        $('.tab-btn').removeClass('active');
+        $container.find('.tab-btn').removeClass('active');
         $(this).addClass('active');
-        $('.tab-content').removeClass('active');
+        $container.find('.tab-content').removeClass('active');
         $('#' + tabId).addClass('active');
     });
     

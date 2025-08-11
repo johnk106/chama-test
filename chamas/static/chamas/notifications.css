@@ -249,7 +249,7 @@
 }
 
 .tab-content.active {
-    display: block;
+    display: block !important;
 }
 
 /* Mobile form styling */
@@ -797,5 +797,5 @@ body, html {
     display: none;
 }
 .modern-notifications .tab-content.active {
-    display: block;
+    display: block !important;
 }
