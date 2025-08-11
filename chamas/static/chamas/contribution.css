@@ -422,8 +422,8 @@
     background: rgba(34, 145, 165, 0.05);
 }
 
-/* Tab Content */
-.tab-content {
+/* Tab Content (scoped to contributions only) */
+.mobile-contributions .tab-content {
     display: none !important;
     padding: 0;
     margin: 0;
