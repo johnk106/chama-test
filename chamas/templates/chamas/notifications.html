@@ -30,7 +30,7 @@
         
         <!-- Create Type Tab Content -->
         {% if is_admin %}
-        <div class="tab-content active" id="create-type">
+        <div class="tab-content{% if is_admin %} active{% endif %}" id="create-type">
             <div class="mobile-create-form admin">
                 <div class="create-notification-card" style="margin-top: 18px;">
                     <div class="create-notification-header">
@@ -293,33 +293,58 @@ $(document).ready(function () {
 
     // Ensure one tab is active for current role on load
     function activateFirstVisibleTab() {
-        const $visibleTabs = $('.mobile-tabs .tab-btn:visible');
-        if ($visibleTabs.length) {
-            const $currentActive = $visibleTabs.filter('.active');
-            if ($currentActive.length === 0) {
-                const firstId = $visibleTabs.first().data('tab');
-                $('.tab-btn').removeClass('active');
-                $('.tab-content').removeClass('active');
-                $visibleTabs.first().addClass('active');
-                $('#' + firstId).addClass('active');
-            } else {
-                const tabId = $currentActive.data('tab');
-                $('.tab-content').removeClass('active');
-                $('#' + tabId).addClass('active');
+        const groupId = localStorage.getItem('groupId');
+        const viewKey = groupId ? ('selectedView_' + groupId) : null;
+        const currentView = viewKey ? (localStorage.getItem(viewKey) || 'member') : 'member';
+        
+        let $candidates = $('.mobile-tabs .tab-btn');
+        if (currentView === 'member') {
+            $candidates = $candidates.not('.admin');
+        }
+        if ($candidates.length) {
+            const $currentActive = $candidates.filter('.active').first();
+            const $target = $currentActive.length ? $currentActive : $candidates.first();
+            const tabId = $target.data('tab');
+            $('.tab-btn').removeClass('active');
+            $('.tab-content').removeClass('active');
+            $target.addClass('active');
+            $('#' + tabId).addClass('active');
+        }
+    }
+    function forceShowCurrentTab() {
+        const $activeBtn = $('.mobile-tabs .tab-btn.active').first();
+        if ($activeBtn.length) {
+            const tabId = $activeBtn.data('tab');
+            const $pane = $('#' + tabId);
+            if ($pane.length) {
+                $('.tab-content').removeClass('active').css('display','none');
+                $pane.addClass('active').css('display','block');
             }
+        } else {
+            const $firstPane = $('.mobile-notifications .tab-content').first();
+            if ($firstPane.length) { $firstPane.addClass('active').css('display','block'); }
         }
     }
     activateFirstVisibleTab();
-    // Re-run after a tick in case role sync toggled visibility
-    setTimeout(activateFirstVisibleTab, 0);
+    // Re-run after base toggle may have changed visibility
+    setTimeout(function(){ activateFirstVisibleTab(); forceShowCurrentTab(); }, 150);
+    setTimeout(function(){ activateFirstVisibleTab(); forceShowCurrentTab(); }, 500);
+    $(window).on('load', function(){ activateFirstVisibleTab(); forceShowCurrentTab(); });
 
     // Mobile tab functionality
-    $('.tab-btn').click(function() {
+    $('.tab-btn').on('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
         const tabId = $(this).data('tab');
         $('.tab-btn').removeClass('active');
         $(this).addClass('active');
         $('.tab-content').removeClass('active');
         $('#' + tabId).addClass('active');
+        // Scroll into view for small screens
+        const el = document.getElementById(tabId);
+        if (el && el.scrollIntoView) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     });
 
     // Function to get the value of a cookie by name

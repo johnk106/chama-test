@@ -242,13 +242,13 @@
 }
 
 /* Tab content */
-.tab-content {
+.modern-notifications .tab-content {
     display: none;
     padding: 20px 16px;
     width: 100%;
 }
 
-.tab-content.active {
+.modern-notifications .tab-content.active {
     display: block;
 }
 
