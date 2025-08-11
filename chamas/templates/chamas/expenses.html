@@ -165,6 +165,27 @@ $(document).ready(function () {
     // Apply member/admin visibility from base toggle
     if (window.syncAdminVisibility) { window.syncAdminVisibility(); }
 
+    // Ensure one tab is active for current role on load
+    function activateFirstVisibleTab() {
+        const $visibleTabs = $('.mobile-tabs .tab-btn:visible');
+        if ($visibleTabs.length) {
+            const $currentActive = $visibleTabs.filter('.active');
+            if ($currentActive.length === 0) {
+                const firstId = $visibleTabs.first().data('tab');
+                $('.tab-btn').removeClass('active');
+                $('.tab-content').removeClass('active');
+                $visibleTabs.first().addClass('active');
+                $('#' + firstId).addClass('active');
+            } else {
+                const tabId = $currentActive.data('tab');
+                $('.tab-content').removeClass('active');
+                $('#' + tabId).addClass('active');
+            }
+        }
+    }
+    activateFirstVisibleTab();
+    setTimeout(activateFirstVisibleTab, 0);
+
     // Mobile tab functionality
     $('.tab-btn').click(function() {
         const tabId = $(this).data('tab');

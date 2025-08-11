@@ -791,3 +791,11 @@ body, html {
     box-sizing: border-box;
   }
 }
+
+/* Tab content visibility (scoped) */
+.modern-notifications .tab-content {
+    display: none;
+}
+.modern-notifications .tab-content.active {
+    display: block;
+}
