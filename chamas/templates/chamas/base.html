@@ -291,23 +291,20 @@
         </div>
       </div>
       <nav class="topnav navbar navbar-light page_header hide_on_mobile">
-        <button type="button" class="navbar-toggler text-muted mt-2 p-0 mr-3 collapseSidebar">
-          <i class="fe fe-menu navbar-toggler-icon"></i>
-        </button>
         <ul class="nav">
           <li class="nav-item">
             <a class="nav-link text-muted my-2" href="#" id="modeSwitcher" data-mode="light">
-              <i class="fe fe-sun fe-16"></i>
+              <i class="fe fe-sun fe-16" style="font-size:16px; line-height:1; vertical-align:middle;"></i>
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link text-muted my-2" href="./#" data-toggle="modal" data-target=".modal-shortcut">
-              <span class="fe fe-grid fe-16"></span>
+              <span class="fe fe-grid fe-16" style="font-size:16px; line-height:1; vertical-align:middle;"></span>
             </a>
           </li>
           <li class="nav-item nav-notif">
             <a class="nav-link text-muted my-2" href="./#" data-toggle="modal" data-target=".modal-notif">
-              <span class="fe fe-bell fe-16"></span>
+              <span class="fe fe-bell fe-16" style="font-size:16px; line-height:1; vertical-align:middle;"></span>
               <span class="dot dot-md bg-success"></span>
             </a>
           </li>
@@ -324,22 +321,36 @@
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
               <a class="dropdown-item" href="{% url 'Setting' %}">Settings</a>
-              <div class="dropdown-item">
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" id="viewToggleDesktop">
-                  <label class="form-check-label" for="viewToggleDesktop">
-                    <span class="switch-label-member">Member</span>
-                    <span class="switch-label-admin" style="display: none;">Admin</span>
-                  </label>
-                </div>
-              </div>
               <a class="dropdown-item" href="{% url 'Logout' %}">Logout</a>
             </div>
           </li>
         </ul>
-      </nav>
-
-      <!-- Page Content -->
+             </nav>
+       <div class="chama-subheader" style="background: transparent;">
+         <div class="container d-flex justify-content-between align-items-center py-2">
+           <div class="chama-name">
+             {% if group %}{{ group.name }}{% elif chama %}{{ chama.name }}{% else %}<span id="chamaNameDisplay"></span>{% endif %}
+           </div>
+           <div class="view-toggle d-flex align-items-center gap-2">
+             <div class="form-check form-switch d-none d-lg-block">
+               <input class="form-check-input" type="checkbox" id="viewToggleDesktop">
+               <label class="form-check-label" for="viewToggleDesktop">
+                 <span class="switch-label-member">Member</span>
+                 <span class="switch-label-admin" style="display: none;">Admin</span>
+               </label>
+             </div>
+             <div class="form-check form-switch d-block d-lg-none">
+               <input class="form-check-input" type="checkbox" id="viewToggle">
+               <label class="form-check-label" for="viewToggle">
+                 <span class="switch-label-member">Member</span>
+                 <span class="switch-label-admin" style="display: none;">Admin</span>
+               </label>
+             </div>
+           </div>
+         </div>
+       </div>
+  
+        <!-- Page Content -->
       <div class="page-content">
         {%block body%}
         {%endblock%}
@@ -553,6 +564,12 @@
         event.preventDefault();
         handleDashboardClick();
       });
+
+      // Always ensure sidebar links have href populated for mobile; update if groupId exists
+      var groupIdForLinks = localStorage.getItem('groupId');
+      if (groupIdForLinks) {
+        updateNavigationLinks(groupIdForLinks);
+      }
 
       $('.contribution-link').on('click', function (event) {
         event.preventDefault();
@@ -1047,15 +1064,15 @@ document.addEventListener('DOMContentLoaded', function() {
 // Function to update navigation links with correct chama ID
 function updateNavigationLinks(chamaId) {
     const linkMappings = {
-        'dashboard-link': `/chamas/chama-dashboard/${chamaId}/`,
-        'finances-link': `/chamas/chama-finances/${chamaId}/`,
-        'contribution-link': `/chamas/contributions/${chamaId}/`,
-        'loans-link': `/chamas/chama-loans/${chamaId}/`,
-        'expenses-link': `/chamas/chama-expenses/${chamaId}/`,
-        'fines-link': `/chamas/chama-fines/${chamaId}/`,
-        'reports-link': `/chamas/chama-reports/${chamaId}/`,
-        'members-link': `/chamas/members/${chamaId}/`,
-        'notifications-link': `/chamas/chama-notifications/${chamaId}/`
+        'dashboard-link': `/chamas-bookeeping/chama-dashboard/${chamaId}/`,
+        'finances-link': `/chamas-bookeeping/chama-finances/${chamaId}/`,
+        'contribution-link': `/chamas-bookeeping/contributions/${chamaId}/`,
+        'loans-link': `/chamas-bookeeping/chama-loans/${chamaId}/`,
+        'expenses-link': `/chamas-bookeeping/chama-expenses/${chamaId}/`,
+        'fines-link': `/chamas-bookeeping/chama-fines/${chamaId}/`,
+        'reports-link': `/chamas-bookeeping/chama-reports/${chamaId}/`,
+        'members-link': `/chamas-bookeeping/members/${chamaId}/`,
+        'notifications-link': `/chamas-bookeeping/chama-notifications/${chamaId}/`
     };
     
     // Update both mobile and desktop sidebar links
@@ -1122,6 +1139,11 @@ function updateNavigationLinks(chamaId) {
         if(menu){ menu.classList.toggle('show'); }
       });
     });
+    var nameEl = document.getElementById('chamaNameDisplay');
+    if (nameEl && (!nameEl.textContent || nameEl.textContent.trim() === '')) {
+      var storedName = localStorage.getItem('groupName');
+      if (storedName) { nameEl.textContent = storedName; }
+    }
   });
 </script>
 </body>
