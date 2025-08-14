@@ -17,6 +17,9 @@
     <link rel="stylesheet" href="{%static 'chamas/brand-colors.css'%}" />
     <link rel="stylesheet" href="{%static 'chamas/style.css'%}" />
     <link rel="stylesheet" href="{%static 'chamas/chamas-base.css'%}" />
+    <link rel="stylesheet" href="{% static 'css/feather.css' %}">
+    <link rel="stylesheet" href="{% static 'css/app-light.css' %}" id="lightTheme">
+    <link rel="stylesheet" href="{% static 'css/style-test.css' %}">
     
 
     {%block head%} {%endblock%}
@@ -112,28 +115,76 @@
       <!-- Main Content Area -->
       <main class="main-content">
 
-        <!-- Desktop Header -->
-        <header class="desktop-header">
-          <div class="header-actions">
-            <h1 class="page-title text-brand-primary">Chamas</h1>
-            <div class="profile">
-              <div class="avatar">
-                {% if request.user.profile.picture %}
-                  <img src="{{ request.user.profile.picture.url }}" alt="Profile" />
-                {% else %}
-                  <i class='bx bxs-user'></i>
-                {% endif %}
+        <div class="page_header pt-3">
+          <div class="container">
+            <nav class="page_nav mob_nav show_on_mobile">
+              <div class="brand">
+                <a href="#">
+                  <img src="{% static 'images/Chama-Bora_clrd.png' %}" alt="">
+                </a>
               </div>
-              <span class="profile-name">{{ request.user.first_name }} {{ request.user.last_name }}</span>
-              <i class='bx bx-chevron-down' data-bs-toggle="dropdown" aria-expanded="false"></i>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="{% url 'Setting' %}">My Profile</a></li>
-                <li><a class="dropdown-item" href="#">View as Member</a></li>
-                <li><a class="dropdown-item" href="#">My Groups</a></li>
+              <ul class="nav-list">
+                <li class="" data-toggle="modal" data-target=".modal-notif">
+                  <img src="{% static 'images/Notifications.png' %}" alt="">
+                </li>
+                &nbsp;&nbsp;
+                <li class="">
+                  <button class="btn navbar-toggler text-muted collapseSidebar" type="button" onclick="openNav()">
+                    <img src="{% static 'images/menu.png' %}" class="avatar-img rounded-circle" alt="">
+                  </button>
+                </li>
               </ul>
-            </div>
+            </nav>
           </div>
-        </header>
+        </div>
+        <nav class="topnav navbar navbar-light page_header hide_on_mobile">
+          <button type="button" class="navbar-toggler text-muted mt-2 p-0 mr-3 collapseSidebar">
+            <i class="fe fe-menu navbar-toggler-icon"></i>
+          </button>
+          <ul class="nav">
+            <li class="nav-item">
+              <a class="nav-link text-muted my-2" href="#" id="modeSwitcher" data-mode="light">
+                <i class="fe fe-sun fe-16"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-muted my-2" href="./#" data-toggle="modal" data-target=".modal-shortcut">
+                <span class="fe fe-grid fe-16"></span>
+              </a>
+            </li>
+            <li class="nav-item nav-notif">
+              <a class="nav-link text-muted my-2" href="./#" data-toggle="modal" data-target=".modal-notif">
+                <span class="fe fe-bell fe-16"></span>
+                <span class="dot dot-md bg-success"></span>
+              </a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle text-muted pr-0" href="#" id="navbarDropdownMenuLink"
+                 role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="avatar avatar-sm mt-2">
+                  {% if request.user.profile.picture %}
+                    <img src="{{ request.user.profile.picture.url }}" alt="img" class="avatar-img rounded-circle">
+                  {% else %}
+                    <img src="{% static 'assets/avatars/face-1.png' %}" alt="img" class="avatar-img rounded-circle">
+                  {% endif %}
+                </span>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                <a class="dropdown-item" href="{% url 'Setting' %}">Settings</a>
+                <div class="dropdown-item">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="viewToggleDesktop">
+                    <label class="form-check-label" for="viewToggleDesktop">
+                      <span class="switch-label-member">Member</span>
+                      <span class="switch-label-admin" style="display: none;">Admin</span>
+                    </label>
+                  </div>
+                </div>
+                <a class="dropdown-item" href="{% url 'Logout' %}">Logout</a>
+              </div>
+            </li>
+          </ul>
+        </nav>
 
         <!-- Page Content -->
         <div class="page-content">
@@ -367,5 +418,23 @@
     </div>
 </footer>
 
-  </body>
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.collapseSidebar').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (typeof openNav === 'function') { openNav(); }
+      });
+    });
+    document.querySelectorAll('.nav-item.dropdown .dropdown-toggle').forEach(function(a){
+      a.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        var menu = this.parentElement.querySelector('.dropdown-menu');
+        if(menu){ menu.classList.toggle('show'); }
+      });
+    });
+  });
+</script>
+</body>
 </html>
