@@ -1,7 +1,7 @@
 <div class="container chama-subheader">
   <div class="row align-items-center">
     <div class="col">
-      <span class="chama-name">{{ chama.name|default:group.name }}</span>
+      <span class="chama-name">{% firstof chama.name group.name "" %}</span>
     </div>
     <div class="col-auto">
       <div class="form-check form-switch">
