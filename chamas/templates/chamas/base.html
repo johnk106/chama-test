@@ -13,6 +13,12 @@
   <link rel="stylesheet" href="{%static 'chamas/brand-colors.css'%}" />
 
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <!-- Header dependencies from goals dashboard -->
+  <link rel="stylesheet" href="{% static 'css/simplebar.css' %}">
+  <link rel="stylesheet" href="{% static 'css/feather.css' %}">
+  <link rel="stylesheet" href="{% static 'css/app-light.css' %}" id="lightTheme">
+  <link rel="stylesheet" href="{% static 'css/app-dark.css' %}" id="darkTheme">
+  <link rel="stylesheet" href="{% static 'chamas/header-override.css' %}">
   <style>
     .profile {
       display: flex;
@@ -104,9 +110,9 @@
   <title>Chamaspace</title>
   {%endblock%}
 </head>
-<body>
-  <!-- Main Layout Container -->
-  <div class="app-layout">
+  <body class="vertical light">
+    <!-- Main Layout Container -->
+    <div class="app-layout">
     
     <!-- Mobile Sidebar (Hidden by default, shown on mobile when menu is clicked) -->
     <div id="mySidenav" class="sidenav">
@@ -263,92 +269,26 @@
       </nav>
     </aside>
 
-    <!-- Main Content Area -->
-    <main class="main-content">
-      <!-- Mobile Header -->
-      <header class="mobile-header">
-        <div class="mobile-nav-toggle">
-          <span onclick="openNav()" class="menu-btn">
-            <i class='bx bx-menu-alt-right'></i>
-          </span>
-        </div>
-        
-        <div class="mobile-actions">
-          <a onclick="handleDiamondClick()"> 
-            <i class='bx bxs-diamond' style='color:#2191a5; cursor: pointer;'></i>
-          </a>
-          <div class="profile">
-            <div class="avatar">
-              {% if request.user.profile.picture %}
-                <img src="{{ request.user.profile.picture.url }}" alt="Profile" />
-              {% else %}
-                <i class='bx bxs-user'></i>
-              {% endif %}
-            </div>
-            <span class="profile-name">{{ user.first_name }} {{ user.last_name }}</span>
-            <i class='bx bx-chevron-down' data-bs-toggle="dropdown" aria-expanded="false"></i>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="{% url 'Setting' %}">My Profile</a></li>
-              <li class="dropdown-item">
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" id="viewToggle">
-                  <label class="form-check-label" for="viewToggle">
-                    <span class="switch-label-member">Member</span>
-                    <span class="switch-label-admin" style="display: none;">Admin</span>
-                  </label>
-                </div>
-              </li>
-              <li><a class="dropdown-item" href="#">My Groups</a></li>
-            </ul>
-          </div>
-        </div>
-      </header>
+         <!-- Global Dashboard Header (PC) -->
+      {% include 'shared/goals_header_nav.html' %}
 
-      <!-- Desktop Header -->
-      <header class="desktop-header">
-        <div class="header-actions">
-          <input type="text" placeholder="Search ...." class="search-input" />
-          <div class="action-icons">
-            <i class='bx bxs-sun' style='color:#2191a5;'></i>
-            <i class='bx bxs-toggle-left' style='color:#2191a5;'></i>
-            <i class='bx bxs-moon' style='color:#141414;'></i>
-            <i class='bx bx-message-rounded-detail' style='color:#2191a5;'></i>
-            <a onclick="handleDiamondClick()"> 
-              <i class='bx bxs-diamond' style='color:#2191a5; cursor: pointer;'></i>
-            </a>
-          </div>
-          <div class="profile">
-            <div class="avatar">
-              {% if request.user.profile.picture %}
-                <img src="{{ request.user.profile.picture.url }}" alt="Profile" />
-              {% else %}
-                <i class='bx bxs-user'></i>
-              {% endif %}
-            </div>
-            <span class="profile-name">{{ request.user.first_name }} {{ request.user.last_name }}</span>
-            <i class='bx bx-chevron-down' data-bs-toggle="dropdown" aria-expanded="false"></i>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="{% url 'Setting' %}">My Profile</a></li>
-              <li class="dropdown-item">
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" id="viewToggleDesktop">
-                  <label class="form-check-label" for="viewToggleDesktop">
-                    <span class="switch-label-member">Member</span>
-                    <span class="switch-label-admin" style="display: none;">Admin</span>
-                  </label>
-                </div>
-              </li>
-              <li><a class="dropdown-item" href="#">My Groups</a></li>
-            </ul>
-          </div>
-        </div>
-      </header>
+      <!-- Global Dashboard Sidenav (PC) -->
+      {% include 'shared/dashboard_sidenav.html' %}
 
-      <!-- Page Content -->
-      <div class="page-content">
-        {%block body%}
-        {%endblock%}
-      </div>
+      <!-- Main Content Area -->
+      <main class="main-content">
+              {% include 'shared/goals_mobile_header.html' %}
+             <!-- Mobile Header: replaced by shared include above -->
+
+             <!-- Desktop Header: replaced by shared include above -->
+
+                           {% include 'shared/chamas_subheader.html' %}
+
+       <!-- Page Content -->
+       <div class="page-content">
+         {%block body%}
+         {%endblock%}
+       </div>
     </main>
   </div>
 
@@ -431,6 +371,12 @@
     crossorigin="anonymous"></script>
   <!-- Add this script tag at the end of your HTML body section -->
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script src="{% static 'js/jquery.min.js' %}"></script>
+  <script src="{% static 'js/popper.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/simplebar.min.js' %}"></script>
+  <script src="{% static 'js/config.js' %}"></script>
+  <script src="{% static 'js/apps.js' %}"></script>
   <script>
     /* Open mobile navigation */
     function openNav() {
