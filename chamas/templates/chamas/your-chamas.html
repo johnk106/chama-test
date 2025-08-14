@@ -79,9 +79,11 @@
                 event.preventDefault();
                 
                 var chamaId = link.getAttribute('data-chama-id');
-
+                var nameEl = link.querySelector('.group-details .heading');
+                if (nameEl) {
+                    localStorage.setItem('groupName', nameEl.textContent.trim());
+                }
                 localStorage.setItem('groupId', chamaId);
-
                 window.location.href = link.getAttribute('href');
             });
         });

@@ -10,10 +10,16 @@
       integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
       crossorigin="anonymous"
     />
-    <link
-    href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
-    rel="stylesheet"
-  />
+        <link
+     href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+     rel="stylesheet"
+   />
+    <!-- Header dependencies from goals dashboard -->
+    <link rel="stylesheet" href="{% static 'css/simplebar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/feather.css' %}">
+    <link rel="stylesheet" href="{% static 'css/app-light.css' %}" id="lightTheme">
+    <link rel="stylesheet" href="{% static 'css/app-dark.css' %}" id="darkTheme">
+    <link rel="stylesheet" href="{% static 'chamas/header-override.css' %}">
     <link rel="stylesheet" href="{%static 'chamas/brand-colors.css'%}" />
     <link rel="stylesheet" href="{%static 'chamas/style.css'%}" />
     <link rel="stylesheet" href="{%static 'chamas/chamas-base.css'%}" />
@@ -22,124 +28,29 @@
     {%block head%} {%endblock%}
     <title>Chamas</title>
   </head>
-  <body>
+  <body class="vertical light">
     <!-- Main Layout Container -->
     <div class="app-layout">
       
-      <!-- Mobile Sidebar (Hidden by default, shown on mobile when menu is clicked) -->
-      <div id="mySidenav" class="sidenav">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-        <div class="logo_details">
-          <img src="{%static 'chamas/logo.png'%}" alt="Logo" />
-        </div>
-        <ul class="nav-list">
-          <li>
-            <a href="{% url 'goals_dashboard' %}">
-              <i class='bx bx-arrow-back'></i>
-              <span class="link_name">Back to Dashboard</span>
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              <i class="fa-solid fa-gauge"></i>
-              <span class="link_name">Dashboard</span>
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              <i class="fa-solid fa-group-arrows-rotate"></i>
-              <span class="link_name">Merry-go-round chama</span>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="bookeeping-window">
-              <i class="fa-solid fa-clipboard"></i>
-              <span class="link_name">Book keeping</span>
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              <i class="fa-solid fa-building-columns"></i>
-              <span class="link_name">Table Banking</span>
-            </a>
-          </li>
-        </ul>
-      </div>
+      <!-- Mobile Sidebar uses same nav items as dashboard (apps.js toggles it) -->
+      <div id="mySidenav" class="sidenav"></div>
       
-      <!-- Desktop Sidebar (Always visible on desktop) -->
-      <aside class="desktop-sidebar">
-        <div class="sidebar-header">
-          <div class="logo_details">
-            <img src="{%static 'chamas/logo.png'%}" alt="Logo" />
-          </div>
-        </div>
-        <nav class="sidebar-nav">
-          <ul class="nav-list">
-            <li>
-              <a href="{% url 'goals_dashboard' %}">
-                <i class='bx bx-arrow-back'></i>
-                <span class="link_name">Back to Dashboard</span>
-              </a>
-            </li>
-            <li>
-              <a href="#">
-                <i class="fa-solid fa-gauge"></i>
-                <span class="link_name">Dashboard</span>
-              </a>
-            </li>
-            <li>
-              <a href="#">
-                <i class="fa-solid fa-group-arrows-rotate"></i>
-                <span class="link_name">Merry-go-round chama</span>
-              </a>
-            </li>
-            <li>
-              <a href="#" class="bookeeping-window">
-                <i class="fa-solid fa-clipboard"></i>
-                <span class="link_name">Book keeping</span>
-              </a>
-            </li>
-            <li>
-              <a href="#">
-                <i class="fa-solid fa-building-columns"></i>
-                <span class="link_name">Table Banking</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </aside>
+             <!-- Global Dashboard Sidenav (PC) -->
+       {% include 'shared/dashboard_sidenav.html' %}
 
       <!-- Main Content Area -->
       <main class="main-content">
 
-        <!-- Desktop Header -->
-        <header class="desktop-header">
-          <div class="header-actions">
-            <h1 class="page-title text-brand-primary">Chamas</h1>
-            <div class="profile">
-              <div class="avatar">
-                {% if request.user.profile.picture %}
-                  <img src="{{ request.user.profile.picture.url }}" alt="Profile" />
-                {% else %}
-                  <i class='bx bxs-user'></i>
-                {% endif %}
-              </div>
-              <span class="profile-name">{{ request.user.first_name }} {{ request.user.last_name }}</span>
-              <i class='bx bx-chevron-down' data-bs-toggle="dropdown" aria-expanded="false"></i>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="{% url 'Setting' %}">My Profile</a></li>
-                <li><a class="dropdown-item" href="#">View as Member</a></li>
-                <li><a class="dropdown-item" href="#">My Groups</a></li>
-              </ul>
-            </div>
-          </div>
-        </header>
+                 <!-- Global Dashboard Header (PC) -->
+         {% include 'shared/goals_header_nav.html' %}
 
-        <!-- Page Content -->
-        <div class="page-content">
-          {%block body%}
-          {%endblock%}
-        </div>
+                           {% include 'shared/chamas_subheader.html' %}
+
+         <!-- Page Content -->
+         <div class="page-content">
+           {%block body%}
+           {%endblock%}
+         </div>
       </main>
     </div>
 
@@ -235,6 +146,12 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/simplebar.min.js' %}"></script>
+    <script src="{% static 'js/config.js' %}"></script>
+    <script src="{% static 'js/apps.js' %}"></script>
     
     <script>
       /* Enhanced Mobile Navigation Functions */

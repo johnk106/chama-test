@@ -1,0 +1,23 @@
+/* Hide legacy Chamas headers and sidebars to avoid duplication */
+.app-layout .mobile-header,
+.app-layout .desktop-header,
+.app-layout .desktop-sidebar,
+#mySidenav {
+  display: none !important;
+}
+
+/* Hide the PC hamburger in the header on large screens */
+@media (min-width: 992px) {
+  .page_header .navbar-toggler {
+    display: none !important;
+  }
+}
+
+/* Transparent subheader row styling */
+.chama-subheader {
+  background: transparent !important;
+  padding: 8px 0;
+}
+.chama-subheader .chama-name {
+  font-weight: 600;
+}

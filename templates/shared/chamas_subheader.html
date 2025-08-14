@@ -1,0 +1,25 @@
+<div class="container chama-subheader">
+  <div class="row align-items-center">
+    <div class="col">
+      <span class="chama-name">{% firstof chama.name group.name "" %}</span>
+    </div>
+    <div class="col-auto">
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="viewToggle">
+        <label class="form-check-label" for="viewToggle">
+          <span class="switch-label-member">Member</span>
+          <span class="switch-label-admin" style="display: none;">Admin</span>
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  (function(){
+    var el = document.querySelector('.chama-subheader .chama-name');
+    if (el && (!el.textContent || !el.textContent.trim())) {
+      var n = localStorage.getItem('groupName');
+      if (n) el.textContent = n;
+    }
+  })();
+</script>
