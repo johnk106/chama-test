@@ -17,6 +17,9 @@
     <link rel="stylesheet" href="{%static 'chamas/brand-colors.css'%}" />
     <link rel="stylesheet" href="{%static 'chamas/style.css'%}" />
     <link rel="stylesheet" href="{%static 'chamas/chamas-base.css'%}" />
+    <!-- Added to match goals header icons/styles -->
+    <link rel="stylesheet" href="{% static 'css/feather.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style-test.css' %}">
     
 
     {%block head%} {%endblock%}
@@ -112,27 +115,65 @@
       <!-- Main Content Area -->
       <main class="main-content">
 
-        <!-- Desktop Header -->
-        <header class="desktop-header">
-          <div class="header-actions">
-            <h1 class="page-title text-brand-primary">Chamas</h1>
-            <div class="profile">
-              <div class="avatar">
-                {% if request.user.profile.picture %}
-                  <img src="{{ request.user.profile.picture.url }}" alt="Profile" />
-                {% else %}
-                  <i class='bx bxs-user'></i>
-                {% endif %}
-              </div>
-              <span class="profile-name">{{ request.user.first_name }} {{ request.user.last_name }}</span>
-              <i class='bx bx-chevron-down' data-bs-toggle="dropdown" aria-expanded="false"></i>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="{% url 'Setting' %}">My Profile</a></li>
-                <li><a class="dropdown-item" href="#">View as Member</a></li>
-                <li><a class="dropdown-item" href="#">My Groups</a></li>
-              </ul>
-            </div>
+        <!-- Mobile Header: match goals mobile header -->
+        <header class="page_nav mob_nav show_on_mobile">
+          <div class="brand">
+            <a href="#">
+              <img src="{% static 'images/Chama-Bora_clrd.png' %}" alt="">
+            </a>
           </div>
+          <ul class="nav-list">
+            <li class="">
+              <img src="{% static 'images/Notifications.png' %}" alt="">
+            </li>
+            <li class="">
+              <button class="btn navbar-toggler text-muted collapseSidebar" type="button" onclick="openNav()">
+                <img src="{% static 'images/menu.png' %}" alt="">
+              </button>
+            </li>
+          </ul>
+        </header>
+
+        <!-- Desktop Header: match goals desktop header -->
+        <header class="topnav navbar navbar-light page_header hide_on_mobile">
+          <button type="button" class="navbar-toggler text-muted mt-2 p-0 mr-3 collapseSidebar">
+            <i class="fe fe-menu navbar-toggler-icon"></i>
+          </button>
+
+          <ul class="nav">
+            <li class="nav-item">
+              <a class="nav-link text-muted my-2" href="#" id="modeSwitcher" data-mode="light">
+                <i class="fe fe-sun fe-16"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-muted my-2" href="./#" data-toggle="modal" data-target=".modal-shortcut">
+                <span class="fe fe-grid fe-16"></span>
+              </a>
+            </li>
+            <li class="nav-item nav-notif">
+              <a class="nav-link text-muted my-2" href="./#" data-toggle="modal" data-target=".modal-notif">
+                <span class="fe fe-bell fe-16"></span>
+                <span class="dot dot-md bg-success"></span>
+              </a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle text-muted pr-0" href="#" id="navbarDropdownMenuLink"
+                 role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="avatar avatar-sm mt-2">
+                           {% if request.user.profile.picture %}
+                             <img src="{{ request.user.profile.picture.url }}" alt="img" class="avatar-img rounded-circle">
+                           {% else %}
+                             <img src="{% static 'assets/avatars/face-1.png' %}" alt="img" class="avatar-img rounded-circle">
+                           {% endif %}
+                        </span>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                <a class="dropdown-item" href="{% url 'Setting' %}">Settings</a>
+                <a class="dropdown-item" href="{% url 'Logout' %}">Logout</a>
+              </div>
+            </li>
+          </ul>
         </header>
 
         <!-- Page Content -->
@@ -333,7 +374,7 @@
         });
       });
     </script>
-
+ 
 <!-- Mobile Footer -->
 <style>
 @media screen and (min-width: 992px) {
@@ -366,6 +407,6 @@
         </div>
     </div>
 </footer>
-
+  
   </body>
 </html>

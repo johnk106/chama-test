@@ -17,6 +17,9 @@
     <link rel="stylesheet" href="{%static 'chamas/brand-colors.css'%}" />
     <link rel="stylesheet" href="{%static 'chamas/chama-home.css'%}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Added to match goals header icons/styles -->
+    <link rel="stylesheet" href="{% static 'css/feather.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style-test.css' %}">
     
     <title>Chamas - Choose Your Type</title>
 </head>
@@ -24,63 +27,66 @@
 
 <!-- Full Width Layout -->
 <div class="chama-home-layout">
-    <!-- Desktop Header with Back Button -->
-    <header class="chama-home-header">
-        <div class="header-container">
-            <div class="header-left">
-                <a href="{% url 'goals_dashboard' %}" class="back-to-dashboard-btn">
-                    <i class='bx bx-arrow-left'></i>
-                    <span>Back to Dashboard</span>
+    <!-- Desktop Header (goals style) -->
+    <header class="topnav navbar navbar-light page_header hide_on_mobile">
+        <button type="button" class="navbar-toggler text-muted mt-2 p-0 mr-3 collapseSidebar">
+            <i class="fe fe-menu navbar-toggler-icon"></i>
+        </button>
+
+        <ul class="nav">
+            <li class="nav-item">
+                <a class="nav-link text-muted my-2" href="#" id="modeSwitcher" data-mode="light">
+                    <i class="fe fe-sun fe-16"></i>
                 </a>
-            </div>
-            <div class="header-center">
-                <h1 class="page-title">Chamas</h1>
-            </div>
-            <div class="header-right">
-                <div class="theme-toggles">
-                    <i class='bx bxs-sun' style='color:#2191a5;'></i>
-                    <i class='bx bxs-toggle-left' style='color:#2191a5;'></i>
-                    <i class='bx bxs-moon' style='color:#141414;'></i>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-muted my-2" href="./#" data-toggle="modal" data-target=".modal-shortcut">
+                    <span class="fe fe-grid fe-16"></span>
+                </a>
+            </li>
+            <li class="nav-item nav-notif">
+                <a class="nav-link text-muted my-2" href="./#" data-toggle="modal" data-target=".modal-notif">
+                    <span class="fe fe-bell fe-16"></span>
+                    <span class="dot dot-md bg-success"></span>
+                </a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-muted pr-0" href="#" id="navbarDropdownMenuLink"
+                   role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="avatar avatar-sm mt-2">
+                               {% if request.user.profile.picture %}
+                                   <img src="{{ request.user.profile.picture.url }}" alt="img" class="avatar-img rounded-circle">
+                               {% else %}
+                                   <img src="{% static 'assets/avatars/face-1.png' %}" alt="img"
+                                        class="avatar-img rounded-circle">
+                               {% endif %}
+                            </span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="{% url 'Setting' %}">Settings</a>
+                    <a class="dropdown-item" href="{% url 'Logout' %}">Logout</a>
                 </div>
-                <div class="profile dropdown">
-                    <div class="profile-info" data-bs-toggle="dropdown" aria-expanded="false">
-                        <div class="avatar">
-                            {% if request.user.profile.picture %}
-                                <img src="{{ request.user.profile.picture.url }}" alt="Profile" />
-                            {% else %}
-                                <i class='bx bxs-user'></i>
-                            {% endif %}
-                        </div>
-                        <span class="profile-name">{{ user.first_name }} {{ user.last_name }}</span>
-                        <i class='bx bx-chevron-down'></i>
-                    </div>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{% url 'Setting' %}">My Profile</a></li>
-                        <li><a class="dropdown-item" href="#">View as Member</a></li>
-                        <li><a class="dropdown-item" href="#">My Groups</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+            </li>
+        </ul>
     </header>
 
-    <!-- Mobile Header -->
-    <header class="mobile-header-chama">
-        <div class="mobile-header-container">
-            <a href="{% url 'goals_dashboard' %}" class="mobile-back-btn">
-                <i class='bx bx-arrow-left'></i>
+    <!-- Mobile Header (goals style) -->
+    <header class="page_nav mob_nav show_on_mobile">
+        <div class="brand">
+            <a href="#">
+                <img src="{% static 'images/Chama-Bora_clrd.png' %}" alt="">
             </a>
-            <h1 class="mobile-page-title">Chamas</h1>
-            <div class="mobile-profile">
-                <div class="avatar">
-                    {% if request.user.profile.picture %}
-                        <img src="{{ request.user.profile.picture.url }}" alt="Profile" />
-                    {% else %}
-                        <i class='bx bxs-user'></i>
-                    {% endif %}
-                </div>
-            </div>
         </div>
+        <ul class="nav-list">
+            <li class="">
+                <img src="{% static 'images/Notifications.png' %}" alt="">
+            </li>
+            <li class="">
+                <button class="btn navbar-toggler text-muted collapseSidebar" type="button">
+                    <img src="{% static 'images/menu.png' %}" alt="">
+                </button>
+            </li>
+        </ul>
     </header>
 
     <!-- Main Content -->
