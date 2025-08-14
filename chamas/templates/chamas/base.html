@@ -11,6 +11,10 @@
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <link rel="stylesheet" href="{%static 'chamas/style.css'%}" />
   <link rel="stylesheet" href="{%static 'chamas/brand-colors.css'%}" />
+  <link rel="stylesheet" href="{% static 'css/feather.css' %}">
+  <link rel="stylesheet" href="{% static 'css/app-light.css' %}" id="lightTheme">
+  <link rel="stylesheet" href="{% static 'css/style-test.css' %}">
+  <link rel="stylesheet" href="{%static 'chamas/chamas-base.css'%}">
 
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
   <style>
@@ -265,86 +269,89 @@
 
     <!-- Main Content Area -->
     <main class="main-content">
-      <!-- Mobile Header -->
-      <header class="mobile-header">
-        <div class="mobile-nav-toggle">
-          <span onclick="openNav()" class="menu-btn">
-            <i class='bx bx-menu-alt-right'></i>
-          </span>
-        </div>
-        
-        <div class="mobile-actions">
-          <a onclick="handleDiamondClick()"> 
-            <i class='bx bxs-diamond' style='color:#2191a5; cursor: pointer;'></i>
-          </a>
-          <div class="profile">
-            <div class="avatar">
-              {% if request.user.profile.picture %}
-                <img src="{{ request.user.profile.picture.url }}" alt="Profile" />
-              {% else %}
-                <i class='bx bxs-user'></i>
-              {% endif %}
+      <div class="page_header pt-3">
+        <div class="container">
+          <nav class="page_nav mob_nav show_on_mobile">
+            <div class="brand">
+              <a href="#">
+                <img src="{% static 'images/Chama-Bora_clrd.png' %}" alt="">
+              </a>
             </div>
-            <span class="profile-name">{{ user.first_name }} {{ user.last_name }}</span>
-            <i class='bx bx-chevron-down' data-bs-toggle="dropdown" aria-expanded="false"></i>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="{% url 'Setting' %}">My Profile</a></li>
-              <li class="dropdown-item">
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" id="viewToggle">
-                  <label class="form-check-label" for="viewToggle">
-                    <span class="switch-label-member">Member</span>
-                    <span class="switch-label-admin" style="display: none;">Admin</span>
-                  </label>
-                </div>
+            <ul class="nav-list">
+              <li class="" data-toggle="modal" data-target=".modal-notif">
+                <img src="{% static 'images/Notifications.png' %}" alt="">
               </li>
-              <li><a class="dropdown-item" href="#">My Groups</a></li>
+              &nbsp;&nbsp;
+              <li class="">
+                <button class="btn navbar-toggler text-muted collapseSidebar" type="button" onclick="openNav()">
+                  <img src="{% static 'images/menu.png' %}" class="avatar-img rounded-circle" alt="">
+                </button>
+              </li>
             </ul>
-          </div>
+          </nav>
         </div>
-      </header>
-
-      <!-- Desktop Header -->
-      <header class="desktop-header">
-        <div class="header-actions">
-          <input type="text" placeholder="Search ...." class="search-input" />
-          <div class="action-icons">
-            <i class='bx bxs-sun' style='color:#2191a5;'></i>
-            <i class='bx bxs-toggle-left' style='color:#2191a5;'></i>
-            <i class='bx bxs-moon' style='color:#141414;'></i>
-            <i class='bx bx-message-rounded-detail' style='color:#2191a5;'></i>
-            <a onclick="handleDiamondClick()"> 
-              <i class='bx bxs-diamond' style='color:#2191a5; cursor: pointer;'></i>
+      </div>
+      <nav class="topnav navbar navbar-light page_header hide_on_mobile">
+        <ul class="nav">
+          <li class="nav-item">
+            <a class="nav-link text-muted my-2" href="#" id="modeSwitcher" data-mode="light">
+              <i class="fe fe-sun fe-16" style="font-size:16px; line-height:1; vertical-align:middle;"></i>
             </a>
-          </div>
-          <div class="profile">
-            <div class="avatar">
-              {% if request.user.profile.picture %}
-                <img src="{{ request.user.profile.picture.url }}" alt="Profile" />
-              {% else %}
-                <i class='bx bxs-user'></i>
-              {% endif %}
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-muted my-2" href="./#" data-toggle="modal" data-target=".modal-shortcut">
+              <span class="fe fe-grid fe-16" style="font-size:16px; line-height:1; vertical-align:middle;"></span>
+            </a>
+          </li>
+          <li class="nav-item nav-notif">
+            <a class="nav-link text-muted my-2" href="./#" data-toggle="modal" data-target=".modal-notif">
+              <span class="fe fe-bell fe-16" style="font-size:16px; line-height:1; vertical-align:middle;"></span>
+              <span class="dot dot-md bg-success"></span>
+            </a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-muted pr-0" href="#" id="navbarDropdownMenuLink"
+               role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span class="avatar avatar-sm mt-2">
+                {% if request.user.profile.picture %}
+                  <img src="{{ request.user.profile.picture.url }}" alt="img" class="avatar-img rounded-circle">
+                {% else %}
+                  <img src="{% static 'assets/avatars/face-1.png' %}" alt="img" class="avatar-img rounded-circle">
+                {% endif %}
+              </span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="{% url 'Setting' %}">Settings</a>
+              <a class="dropdown-item" href="{% url 'Logout' %}">Logout</a>
             </div>
-            <span class="profile-name">{{ request.user.first_name }} {{ request.user.last_name }}</span>
-            <i class='bx bx-chevron-down' data-bs-toggle="dropdown" aria-expanded="false"></i>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="{% url 'Setting' %}">My Profile</a></li>
-              <li class="dropdown-item">
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" id="viewToggleDesktop">
-                  <label class="form-check-label" for="viewToggleDesktop">
-                    <span class="switch-label-member">Member</span>
-                    <span class="switch-label-admin" style="display: none;">Admin</span>
-                  </label>
-                </div>
-              </li>
-              <li><a class="dropdown-item" href="#">My Groups</a></li>
-            </ul>
-          </div>
-        </div>
-      </header>
-
-      <!-- Page Content -->
+          </li>
+        </ul>
+             </nav>
+       <div class="chama-subheader" style="background: transparent;">
+         <div class="container d-flex justify-content-between align-items-center py-2">
+           <div class="chama-name">
+             {% if group %}{{ group.name }}{% elif chama %}{{ chama.name }}{% else %}<span id="chamaNameDisplay"></span>{% endif %}
+           </div>
+           <div class="view-toggle d-flex align-items-center gap-2">
+             <div class="form-check form-switch d-none d-lg-block">
+               <input class="form-check-input" type="checkbox" id="viewToggleDesktop">
+               <label class="form-check-label" for="viewToggleDesktop">
+                 <span class="switch-label-member">Member</span>
+                 <span class="switch-label-admin" style="display: none;">Admin</span>
+               </label>
+             </div>
+             <div class="form-check form-switch d-block d-lg-none">
+               <input class="form-check-input" type="checkbox" id="viewToggle">
+               <label class="form-check-label" for="viewToggle">
+                 <span class="switch-label-member">Member</span>
+                 <span class="switch-label-admin" style="display: none;">Admin</span>
+               </label>
+             </div>
+           </div>
+         </div>
+       </div>
+  
+        <!-- Page Content -->
       <div class="page-content">
         {%block body%}
         {%endblock%}
@@ -558,6 +565,12 @@
         event.preventDefault();
         handleDashboardClick();
       });
+
+      // Always ensure sidebar links have href populated for mobile; update if groupId exists
+      var groupIdForLinks = localStorage.getItem('groupId');
+      if (groupIdForLinks) {
+        updateNavigationLinks(groupIdForLinks);
+      }
 
       $('.contribution-link').on('click', function (event) {
         event.preventDefault();
@@ -1052,15 +1065,15 @@ document.addEventListener('DOMContentLoaded', function() {
 // Function to update navigation links with correct chama ID
 function updateNavigationLinks(chamaId) {
     const linkMappings = {
-        'dashboard-link': `/chamas/chama-dashboard/${chamaId}/`,
-        'finances-link': `/chamas/chama-finances/${chamaId}/`,
-        'contribution-link': `/chamas/contributions/${chamaId}/`,
-        'loans-link': `/chamas/chama-loans/${chamaId}/`,
-        'expenses-link': `/chamas/chama-expenses/${chamaId}/`,
-        'fines-link': `/chamas/chama-fines/${chamaId}/`,
-        'reports-link': `/chamas/chama-reports/${chamaId}/`,
-        'members-link': `/chamas/members/${chamaId}/`,
-        'notifications-link': `/chamas/chama-notifications/${chamaId}/`
+        'dashboard-link': `/chamas-bookeeping/chama-dashboard/${chamaId}/`,
+        'finances-link': `/chamas-bookeeping/chama-finances/${chamaId}/`,
+        'contribution-link': `/chamas-bookeeping/contributions/${chamaId}/`,
+        'loans-link': `/chamas-bookeeping/chama-loans/${chamaId}/`,
+        'expenses-link': `/chamas-bookeeping/chama-expenses/${chamaId}/`,
+        'fines-link': `/chamas-bookeeping/chama-fines/${chamaId}/`,
+        'reports-link': `/chamas-bookeeping/chama-reports/${chamaId}/`,
+        'members-link': `/chamas-bookeeping/members/${chamaId}/`,
+        'notifications-link': `/chamas-bookeeping/chama-notifications/${chamaId}/`
     };
     
     // Update both mobile and desktop sidebar links
@@ -1111,6 +1124,29 @@ function updateNavigationLinks(chamaId) {
 </footer>
   
 
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.collapseSidebar').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (typeof openNav === 'function') { openNav(); }
+      });
+    });
+    document.querySelectorAll('.nav-item.dropdown .dropdown-toggle').forEach(function(a){
+      a.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        var menu = this.parentElement.querySelector('.dropdown-menu');
+        if(menu){ menu.classList.toggle('show'); }
+      });
+    });
+    var nameEl = document.getElementById('chamaNameDisplay');
+    if (nameEl && (!nameEl.textContent || nameEl.textContent.trim() === '')) {
+      var storedName = localStorage.getItem('groupName');
+      if (storedName) { nameEl.textContent = storedName; }
+    }
+  });
+</script>
 </body>
 
 </html>

@@ -81,6 +81,10 @@
                 var chamaId = link.getAttribute('data-chama-id');
 
                 localStorage.setItem('groupId', chamaId);
+                var groupNameEl = link.querySelector('.group-details-main h5');
+                if (groupNameEl) {
+                    localStorage.setItem('groupName', groupNameEl.textContent.trim());
+                }
 
                 window.location.href = link.getAttribute('href');
             });

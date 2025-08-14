@@ -17,6 +17,9 @@
     <link rel="stylesheet" href="{%static 'chamas/brand-colors.css'%}" />
     <link rel="stylesheet" href="{%static 'chamas/style.css'%}" />
     <link rel="stylesheet" href="{%static 'chamas/chamas-base.css'%}" />
+    <link rel="stylesheet" href="{% static 'css/feather.css' %}">
+    <link rel="stylesheet" href="{% static 'css/app-light.css' %}" id="lightTheme">
+    <link rel="stylesheet" href="{% static 'css/style-test.css' %}">
     
 
     {%block head%} {%endblock%}
@@ -112,30 +115,89 @@
       <!-- Main Content Area -->
       <main class="main-content">
 
-        <!-- Desktop Header -->
-        <header class="desktop-header">
-          <div class="header-actions">
-            <h1 class="page-title text-brand-primary">Chamas</h1>
-            <div class="profile">
-              <div class="avatar">
-                {% if request.user.profile.picture %}
-                  <img src="{{ request.user.profile.picture.url }}" alt="Profile" />
-                {% else %}
-                  <i class='bx bxs-user'></i>
-                {% endif %}
+        <div class="page_header pt-3">
+          <div class="container">
+            <nav class="page_nav mob_nav show_on_mobile">
+              <div class="brand">
+                <a href="#">
+                  <img src="{% static 'images/Chama-Bora_clrd.png' %}" alt="">
+                </a>
               </div>
-              <span class="profile-name">{{ request.user.first_name }} {{ request.user.last_name }}</span>
-              <i class='bx bx-chevron-down' data-bs-toggle="dropdown" aria-expanded="false"></i>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="{% url 'Setting' %}">My Profile</a></li>
-                <li><a class="dropdown-item" href="#">View as Member</a></li>
-                <li><a class="dropdown-item" href="#">My Groups</a></li>
+              <ul class="nav-list">
+                <li class="" data-toggle="modal" data-target=".modal-notif">
+                  <img src="{% static 'images/Notifications.png' %}" alt="">
+                </li>
+                &nbsp;&nbsp;
+                <li class="">
+                  <button class="btn navbar-toggler text-muted collapseSidebar" type="button" onclick="openNav()">
+                    <img src="{% static 'images/menu.png' %}" class="avatar-img rounded-circle" alt="">
+                  </button>
+                </li>
               </ul>
-            </div>
+            </nav>
           </div>
-        </header>
-
-        <!-- Page Content -->
+        </div>
+                 <nav class="topnav navbar navbar-light page_header hide_on_mobile">
+           <ul class="nav">
+            <li class="nav-item">
+              <a class="nav-link text-muted my-2" href="#" id="modeSwitcher" data-mode="light">
+                <i class="fe fe-sun fe-16" style="font-size:16px; line-height:1; vertical-align:middle;"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-muted my-2" href="./#" data-toggle="modal" data-target=".modal-shortcut">
+                <span class="fe fe-grid fe-16" style="font-size:16px; line-height:1; vertical-align:middle;"></span>
+              </a>
+            </li>
+            <li class="nav-item nav-notif">
+              <a class="nav-link text-muted my-2" href="./#" data-toggle="modal" data-target=".modal-notif">
+                <span class="fe fe-bell fe-16" style="font-size:16px; line-height:1; vertical-align:middle;"></span>
+                <span class="dot dot-md bg-success"></span>
+              </a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle text-muted pr-0" href="#" id="navbarDropdownMenuLink"
+                 role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="avatar avatar-sm mt-2">
+                  {% if request.user.profile.picture %}
+                    <img src="{{ request.user.profile.picture.url }}" alt="img" class="avatar-img rounded-circle">
+                  {% else %}
+                    <img src="{% static 'assets/avatars/face-1.png' %}" alt="img" class="avatar-img rounded-circle">
+                  {% endif %}
+                </span>
+              </a>
+                              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                  <a class="dropdown-item" href="{% url 'Setting' %}">Settings</a>
+                  <a class="dropdown-item" href="{% url 'Logout' %}">Logout</a>
+                </div>
+            </li>
+          </ul>
+                 </nav>
+         <div class="chama-subheader" style="background: transparent;">
+           <div class="container d-flex justify-content-between align-items-center py-2">
+             <div class="chama-name">
+               {% if group %}{{ group.name }}{% elif chama %}{{ chama.name }}{% else %}<span id="chamaNameDisplay"></span>{% endif %}
+             </div>
+             <div class="view-toggle d-flex align-items-center gap-2">
+               <div class="form-check form-switch d-none d-lg-block">
+                 <input class="form-check-input" type="checkbox" id="viewToggleDesktop">
+                 <label class="form-check-label" for="viewToggleDesktop">
+                   <span class="switch-label-member">Member</span>
+                   <span class="switch-label-admin" style="display: none;">Admin</span>
+                 </label>
+               </div>
+               <div class="form-check form-switch d-block d-lg-none">
+                 <input class="form-check-input" type="checkbox" id="viewToggle">
+                 <label class="form-check-label" for="viewToggle">
+                   <span class="switch-label-member">Member</span>
+                   <span class="switch-label-admin" style="display: none;">Admin</span>
+                 </label>
+               </div>
+             </div>
+           </div>
+         </div>
+ 
+         <!-- Page Content -->
         <div class="page-content">
           {%block body%}
           {%endblock%}
@@ -316,6 +378,12 @@
               document.body.appendChild(overlay);
           }
           
+          // Ensure sidenav links are populated regardless of page
+          var groupIdForLinks = localStorage.getItem('groupId');
+          if (groupIdForLinks && typeof updateNavigationLinks === 'function') {
+              updateNavigationLinks(groupIdForLinks);
+          }
+          
           // Close sidebar on window resize if moving to desktop
           window.addEventListener('resize', function() {
               if (window.innerWidth > 768) {
@@ -367,5 +435,154 @@
     </div>
 </footer>
 
-  </body>
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.collapseSidebar').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (typeof openNav === 'function') { openNav(); }
+      });
+    });
+    document.querySelectorAll('.nav-item.dropdown .dropdown-toggle').forEach(function(a){
+      a.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        var menu = this.parentElement.querySelector('.dropdown-menu');
+        if(menu){ menu.classList.toggle('show'); }
+      });
+    });
+    // Populate chama name from localStorage if not provided by context
+    var nameEl = document.getElementById('chamaNameDisplay');
+    if (nameEl && (!nameEl.textContent || nameEl.textContent.trim() === '')) {
+      var storedName = localStorage.getItem('groupName');
+      if (storedName) { nameEl.textContent = storedName; }
+    }
+  });
+  </script>
+  <script>
+  $(document).ready(function() {
+    var groupId = localStorage.getItem('groupId');
+    var storageKey = groupId ? ("selectedView_" + groupId) : "selectedView";
+    var savedView = localStorage.getItem(storageKey) || "member";
+
+    // Default state: disable toggles until role verified
+    $("#viewToggle, #viewToggleDesktop").prop('disabled', true);
+
+    // Initialize labels and switches
+    if (savedView === "member") {
+      $("#viewToggle, #viewToggleDesktop").prop('checked', false);
+      $(".switch-label-member").show();
+      $(".switch-label-admin").hide();
+      updateView("member");
+    } else {
+      $("#viewToggle, #viewToggleDesktop").prop('checked', true);
+      $(".switch-label-member").hide();
+      $(".switch-label-admin").show();
+      updateView("admin");
+    }
+
+    // Verify role if we have a group
+    if (groupId) {
+      $.ajax({
+        url: '/chamas-bookeeping/get_user_role/',
+        data: { group_id: groupId },
+        dataType: 'json',
+        success: function(data) {
+          if (data.role !== "admin" || data.error) {
+            savedView = "member";
+            $("#viewToggle, #viewToggleDesktop").prop('checked', false).prop('disabled', true);
+            $(".switch-label-member").show();
+            $(".switch-label-admin").hide();
+            updateView("member");
+            localStorage.setItem(storageKey, "member");
+          } else {
+            $("#viewToggle, #viewToggleDesktop").prop('disabled', false);
+            if (savedView === "admin") {
+              $("#viewToggle, #viewToggleDesktop").prop('checked', true);
+              $(".switch-label-member").hide();
+              $(".switch-label-admin").show();
+              updateView("admin");
+            } else {
+              $("#viewToggle, #viewToggleDesktop").prop('checked', false);
+              $(".switch-label-member").show();
+              $(".switch-label-admin").hide();
+              updateView("member");
+            }
+          }
+        },
+        error: function() {
+          $("#viewToggle, #viewToggleDesktop").prop('checked', false).prop('disabled', true);
+          $(".switch-label-member").show();
+          $(".switch-label-admin").hide();
+          updateView("member");
+          localStorage.setItem(storageKey, "member");
+        }
+      });
+    }
+
+    // Toggle change handler
+    $("#viewToggle, #viewToggleDesktop").on("change", function() {
+      var isAdminView = $(this).is(':checked');
+      if (isAdminView) {
+        if (!groupId) {
+          alert("You don't have admin permissions");
+          $("#viewToggle, #viewToggleDesktop").prop('checked', false);
+          $(".switch-label-member").show();
+          $(".switch-label-admin").hide();
+          updateView("member");
+          localStorage.setItem(storageKey, "member");
+          return;
+        }
+        $.ajax({
+          url: '/chamas-bookeeping/get_user_role/',
+          data: { group_id: groupId },
+          dataType: 'json',
+          success: function(data) {
+            if (data.role === "admin") {
+              $("#viewToggle, #viewToggleDesktop").prop('checked', true);
+              $(".switch-label-member").hide();
+              $(".switch-label-admin").show();
+              updateView("admin");
+              localStorage.setItem(storageKey, "admin");
+            } else {
+              alert("You don't have admin permissions");
+              $("#viewToggle, #viewToggleDesktop").prop('checked', false);
+              $(".switch-label-member").show();
+              $(".switch-label-admin").hide();
+              updateView("member");
+              localStorage.setItem(storageKey, "member");
+            }
+          },
+          error: function() {
+            alert("Unable to verify permissions");
+            $("#viewToggle, #viewToggleDesktop").prop('checked', false);
+            $(".switch-label-member").show();
+            $(".switch-label-admin").hide();
+            updateView("member");
+            localStorage.setItem(storageKey, "member");
+          }
+        });
+      } else {
+        updateView("member");
+        $("#viewToggle, #viewToggleDesktop").prop('checked', false);
+        $(".switch-label-member").show();
+        $(".switch-label-admin").hide();
+        localStorage.setItem(storageKey, "member");
+      }
+    });
+
+    function updateView(view) {
+      if (view === "member") {
+        $("body, html").removeClass("user-is-admin");
+        $(".admin, #remove-user, #add-member-button").hide();
+        $(".member").show();
+      } else {
+        $("body, html").addClass("user-is-admin");
+        $(".member").hide();
+        $(".admin, #remove-user, #add-member-button").show();
+      }
+    }
+  });
+  </script>
+</body>
 </html>
