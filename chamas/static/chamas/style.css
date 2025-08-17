@@ -238,15 +238,46 @@ body {
 .sidenav .logo_details {
   padding: 20px 15px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  text-align: center;
-  flex-shrink: 0; /* Prevent logo section from shrinking */
-  min-height: 80px; /* Ensure consistent height */
 }
 
-.sidenav .logo_details img {
-  max-width: 120px;
-  height: auto;
-  filter: brightness(0) invert(1);
+/* ============= CHAMAS HEADER ICON FIXES (scoped) ============= */
+/* Keep icon/link appearance identical to original Goals header without changing global CSS */
+.main-content .topnav.navbar.navbar-light.page_header.hide_on_mobile .nav-link {
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0.25rem 0.5rem; /* match tighter spacing */
+  line-height: 1;
+}
+
+/* Make icons darker and slightly larger for visibility */
+.main-content .topnav.navbar.navbar-light.page_header.hide_on_mobile .nav-link i,
+.main-content .topnav.navbar.navbar-light.page_header.hide_on_mobile .nav-link span {
+  color: #6c757d !important; /* text-muted */
+  font-size: 16px !important; /* ensure consistent size */
+}
+
+/* Ensure the nav list aligns in a single row and centers vertically */
+.main-content .topnav.navbar.navbar-light.page_header.hide_on_mobile .nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Notification dot positioning like original */
+.main-content .topnav.navbar.navbar-light.page_header.hide_on_mobile .nav-notif { position: relative; }
+.main-content .topnav.navbar.navbar-light.page_header.hide_on_mobile .nav-notif .dot { position: absolute; }
+
+/* Avatar sizing and alignment */
+.main-content .topnav.navbar.navbar-light.page_header.hide_on_mobile .avatar { display: inline-flex; align-items: center; }
+.main-content .topnav.navbar.navbar-light.page_header.hide_on_mobile .avatar.avatar-sm img,
+.main-content .topnav.navbar.navbar-light.page_header.hide_on_mobile .avatar-img.rounded-circle {
+  width: 32px !important; height: 32px !important; object-fit: cover; background: transparent !important; box-shadow: none !important;
+}
+
+/* Tighten header vertical space to avoid thick header */
+.main-content .topnav.navbar.navbar-light.page_header.hide_on_mobile {
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
 }
 
 .sidenav .nav-list {
