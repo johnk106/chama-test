@@ -238,15 +238,34 @@ body {
 .sidenav .logo_details {
   padding: 20px 15px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  text-align: center;
-  flex-shrink: 0; /* Prevent logo section from shrinking */
-  min-height: 80px; /* Ensure consistent height */
 }
 
-.sidenav .logo_details img {
-  max-width: 120px;
-  height: auto;
-  filter: brightness(0) invert(1);
+/* ============= CHAMAS HEADER ICON FIXES (scoped) ============= */
+/* Keep icon/link appearance identical to original Goals header without changing global CSS */
+.main-content .topnav.navbar.navbar-light.page_header.hide_on_mobile .nav-link {
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0.25rem 0.5rem; /* match tighter spacing */
+  line-height: 1;
+}
+
+.main-content .topnav.navbar.navbar-light.page_header.hide_on_mobile .nav-link i,
+.main-content .topnav.navbar.navbar-light.page_header.hide_on_mobile .nav-link span {
+  color: #6c757d !important; /* text-muted */
+}
+
+.main-content .topnav.navbar.navbar-light.page_header.hide_on_mobile .nav-link:hover {
+  text-decoration: none !important;
+}
+
+/* Notification dot positioning like original */
+.main-content .topnav.navbar.navbar-light.page_header.hide_on_mobile .nav-notif { position: relative; }
+.main-content .topnav.navbar.navbar-light.page_header.hide_on_mobile .nav-notif .dot { position: absolute; }
+
+/* Avatar image should be circular without background bleed */
+.main-content .topnav.navbar.navbar-light.page_header.hide_on_mobile .avatar-img.rounded-circle {
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 .sidenav .nav-list {
