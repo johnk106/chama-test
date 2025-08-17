@@ -104,15 +104,12 @@
   <title>Chamaspace</title>
   {%endblock%}
   
-  <!-- Added for Goals header parity -->
-  <link rel="stylesheet" href="{% static 'css/simplebar.css' %}">
+  <!-- Added minimal assets for Goals header icons -->
   <link rel="stylesheet" href="{% static 'css/feather.css' %}">
   <link rel="stylesheet" href="{% static 'css/style-test.css' %}">
-  <!-- Optional: theme styles used by Goals header/sidebar -->
   <link rel="stylesheet" href="{% static 'css/app-light.css' %}" id="lightTheme">
-  <link rel="stylesheet" href="{% static 'css/app-dark.css' %}" id="darkTheme" disabled>
 </head>
-<body class="vertical light">
+<body>
   <!-- Main Layout Container -->
   <div class="app-layout">
     
@@ -273,7 +270,7 @@
 
     <!-- Main Content Area -->
     <main class="main-content">
-      <!-- Mobile Header -->
+      <!-- Mobile Header (unchanged existing Chamas header, not used for Goals) -->
       <header class="mobile-header d-none">
         <div class="mobile-nav-toggle">
           <span onclick="openNav()" class="menu-btn">
@@ -311,14 +308,9 @@
           </div>
         </div>
       </header>
-      <!-- FAB to open Chamas sidebar (mobile) -->
-      <button type="button" class="btn btn-dark d-lg-none" id="openChamasSidenavFab" aria-label="Open Chamas menu" style="position: fixed; right: 16px; top: 70px; z-index: 1050; border-radius: 20px; box-shadow: 0 8px 16px rgba(0,0,0,.3); padding: 8px 10px;">
-        <i class='bx bx-user-voice' style='font-size: 22px;'></i>
-      </button>
-
-      <!-- Desktop Header -->
+      <!-- Desktop Header copied from Goals -->
       <nav class="topnav navbar navbar-light page_header hide_on_mobile">
-        <button type="button" class="navbar-toggler text-muted mt-2 p-0 mr-3 collapseSidebar">
+        <button type="button" class="navbar-toggler text-muted mt-2 p-0 mr-3" onclick="openNav()">
           <i class="fe fe-menu navbar-toggler-icon"></i>
         </button>
         <ul class="nav">
@@ -356,57 +348,9 @@
           </li>
         </ul>
       </nav>
-      {% comment %} Reuse Goals sidebar for slide-over behaviour {% endcomment %}
-      <aside class="sidebar-left border-right bg-white shadow" id="leftSidebar" data-simplebar>
-        <a href="#" class="btn collapseSidebar toggle-btn d-lg-none text-muted ml-2 mt-3" data-toggle="toggle">
-          <i class="fe fe-x"><span class="sr-only"></span></i>
-        </a>
-        <div class="offcanvas-header">
-          <h5>
-            <a href="#">
-              <img src="{% static 'images/offcanvas_logo.png' %}" alt="">
-            </a>
-          </h5>
-        </div>
-        <div class="offcanvas-body position-relative">
-          <ul class="offcanvas_list">
-            <li class="list-item">
-              <a href="{% url 'my_goals' %}">
-                <img src="{% static 'images/icon_house.png' %}" alt=""> Dashboard
-              </a>
-            </li>
-            <li class="list-item">
-              <a href="{% url 'all_notifications' %}">
-                <img src="{% static 'images/icon_bell_.png' %}" alt=""> Notifications
-              </a>
-            </li>
-            <li class="list-item">
-              <a href="{% url 'Setting' %}">
-                <img src="{% static 'images/icon_gear.png' %}" alt=""> Settings
-              </a>
-            </li>
-          </ul>
-          <a href="{% url 'Logout' %}" class="btn log_out_btn">Log Out</a>
-        </div>
-      </aside>
+      <!-- Keep Chamas desktop sidenav as-is (no changes made here) -->
 
-      <!-- Secondary header row for Chama name and view toggle -->
-      <div class="container hide_on_mobile" style="padding-top: 8px; padding-bottom: 8px;">
-        <div class="d-flex justify-content-between align-items-center">
-          <div class="d-flex align-items-center">
-            <h5 class="mb-0" style="font-weight:600; color:#2291A5;">{{ chama.name|default:'Chama' }}</h5>
-          </div>
-          <div class="d-flex align-items-center">
-            <div class="form-check form-switch mb-0">
-              <input class="form-check-input" type="checkbox" id="viewToggleDesktop">
-              <label class="form-check-label" for="viewToggleDesktop" style="min-width: 80px;">
-                <span class="switch-label-member">Member</span>
-                <span class="switch-label-admin" style="display: none;">Admin</span>
-              </label>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- Secondary header row removed per rollback; will reintroduce later if needed -->
 
       <!-- Page Content -->
       <div class="page-content">
@@ -416,8 +360,8 @@
     </main>
   </div>
 
-  <!-- Goals-style mobile header row under page header for consistency -->
-  <div class="page_header pt-3 show_on_mobile">
+  <!-- Mobile header copied from Goals -->
+  <div class="page_header pt-3">
     <div class="container">
       <nav class="page_nav mob_nav show_on_mobile">
         <div class="brand">
@@ -430,25 +374,12 @@
             <img src="{% static 'images/Notifications.png' %}" alt="">
           </li>
           <li>
-            <button class="btn navbar-toggler text-muted collapseSidebar" type="button">
+            <button class="btn navbar-toggler text-muted" type="button" onclick="openNav()">
               <img src="{% static 'images/menu.png' %}" alt="">
             </button>
           </li>
         </ul>
       </nav>
-      <!-- Mobile secondary row: chama name + toggle -->
-      <div class="d-flex justify-content-between align-items-center mt-2">
-        <div>
-          <h6 class="mb-0" style="font-weight:600; color:#2291A5;">{{ chama.name|default:'Chama' }}</h6>
-        </div>
-        <div class="form-check form-switch mb-0">
-          <input class="form-check-input" type="checkbox" id="viewToggle">
-          <label class="form-check-label" for="viewToggle" style="min-width: 80px;">
-            <span class="switch-label-member">Member</span>
-            <span class="switch-label-admin" style="display: none;">Admin</span>
-          </label>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -531,9 +462,7 @@
     crossorigin="anonymous"></script>
   <!-- Add this script tag at the end of your HTML body section -->
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-  <!-- Goals scripts for topnav/sidebar behavior -->
-  <script src="{% static 'js/simplebar.min.js' %}"></script>
-  <script src="{% static 'js/apps.js' %}"></script>
+
   <script>
     /* Open mobile navigation */
     function openNav() {

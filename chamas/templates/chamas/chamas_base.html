@@ -146,10 +146,7 @@
     <!-- Mobile Overlay -->
     <div class="mobile-overlay" onclick="closeNav()"></div>
 
-    <!-- FAB to open Chamas sidebar (mobile) -->
-    <button type="button" class="btn btn-dark d-lg-none" id="openChamasSidenavFab" aria-label="Open Chamas menu" style="position: fixed; right: 16px; top: 70px; z-index: 1050; border-radius: 20px; box-shadow: 0 8px 16px rgba(0,0,0,.3); padding: 8px 10px;">
-      <i class='bx bx-user-voice' style='font-size: 22px;'></i>
-    </button>
+
 
     <!--Modals-->
     <!--Add members to group modal-->
@@ -330,13 +327,6 @@
       });
 
       $(document).ready(function () {
-        // Wire FAB to open sidenav on mobile
-        var fab = document.getElementById('openChamasSidenavFab');
-        if (fab) {
-          fab.addEventListener('click', function(){
-            try { openNav(); } catch(e) { console.error(e); }
-          });
-        }
         // Book keeping window functionality
         $(".bookeeping-window").click(function(e) {
           e.preventDefault();
