@@ -249,23 +249,35 @@ body {
   line-height: 1;
 }
 
+/* Make icons darker and slightly larger for visibility */
 .main-content .topnav.navbar.navbar-light.page_header.hide_on_mobile .nav-link i,
 .main-content .topnav.navbar.navbar-light.page_header.hide_on_mobile .nav-link span {
   color: #6c757d !important; /* text-muted */
+  font-size: 16px !important; /* ensure consistent size */
 }
 
-.main-content .topnav.navbar.navbar-light.page_header.hide_on_mobile .nav-link:hover {
-  text-decoration: none !important;
+/* Ensure the nav list aligns in a single row and centers vertically */
+.main-content .topnav.navbar.navbar-light.page_header.hide_on_mobile .nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 /* Notification dot positioning like original */
 .main-content .topnav.navbar.navbar-light.page_header.hide_on_mobile .nav-notif { position: relative; }
 .main-content .topnav.navbar.navbar-light.page_header.hide_on_mobile .nav-notif .dot { position: absolute; }
 
-/* Avatar image should be circular without background bleed */
+/* Avatar sizing and alignment */
+.main-content .topnav.navbar.navbar-light.page_header.hide_on_mobile .avatar { display: inline-flex; align-items: center; }
+.main-content .topnav.navbar.navbar-light.page_header.hide_on_mobile .avatar.avatar-sm img,
 .main-content .topnav.navbar.navbar-light.page_header.hide_on_mobile .avatar-img.rounded-circle {
-  background: transparent !important;
-  box-shadow: none !important;
+  width: 32px !important; height: 32px !important; object-fit: cover; background: transparent !important; box-shadow: none !important;
+}
+
+/* Tighten header vertical space to avoid thick header */
+.main-content .topnav.navbar.navbar-light.page_header.hide_on_mobile {
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
 }
 
 .sidenav .nav-list {
