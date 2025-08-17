@@ -490,7 +490,7 @@
   <script>
     // Initialize dropdowns
     $(document).ready(function() {
-      // Initialize Bootstrap dropdowns
+      // Initialize Bootstrap 4 dropdowns
       $('.dropdown-toggle').dropdown();
       
       // Handle mode switcher
@@ -511,6 +511,21 @@
       $('.collapseSidebar').on('click', function() {
         // This will be handled by the existing openNav function
         openNav();
+      });
+
+      // Ensure dropdowns work properly with Bootstrap 4
+      $('.dropdown-toggle').on('click', function(e) {
+        e.preventDefault();
+        const $dropdown = $(this).next('.dropdown-menu');
+        $('.dropdown-menu').not($dropdown).removeClass('show');
+        $dropdown.toggleClass('show');
+      });
+
+      // Close dropdowns when clicking outside
+      $(document).on('click', function(e) {
+        if (!$(e.target).closest('.dropdown').length) {
+          $('.dropdown-menu').removeClass('show');
+        }
       });
     });
     /* Open mobile navigation */
