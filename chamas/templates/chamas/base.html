@@ -106,8 +106,8 @@
   
   <!-- Added minimal assets for Goals header icons -->
   <link rel="stylesheet" href="{% static 'css/feather.css' %}">
-  <link rel="stylesheet" href="{% static 'css/style-test.css' %}">
   <link rel="stylesheet" href="{% static 'css/app-light.css' %}" id="lightTheme">
+  <link rel="stylesheet" href="{% static 'css/style-test.css' %}">
 </head>
 <body>
   <!-- Main Layout Container -->
@@ -271,8 +271,8 @@
     <!-- Main Content Area -->
     <main class="main-content">
       <!-- Desktop Header copied from Goals (visible on desktop) -->
-      <nav class="topnav navbar navbar-light page_header hide_on_mobile" role="banner" aria-label="Main header">
-        <button type="button" id="desktopMenuToggle" class="navbar-toggler text-muted mt-2 p-0 mr-3" data-sidenav-toggle="mySidenav" aria-controls="mySidenav" aria-expanded="false" aria-label="Toggle navigation" onclick="openNav()">
+      <nav class="topnav navbar navbar-light page_header hide_on_mobile d-none d-lg-flex" role="banner" aria-label="Main header">
+        <button type="button" id="desktopMenuToggle" class="navbar-toggler text-muted mt-2 p-0 mr-3" data-sidenav-toggle="mySidenav" aria-controls="mySidenav" aria-expanded="false" aria-label="Toggle navigation" onclick="openNav(); this.setAttribute('aria-expanded', 'true');">
           <i class="fe fe-menu navbar-toggler-icon"></i>
         </button>
         <ul class="nav">
@@ -307,7 +307,7 @@
       </nav>
 
       <!-- Mobile header copied from Goals (visible on mobile) -->
-      <div class="page_header pt-3">
+      <div class="page_header pt-3 d-lg-none">
         <div class="container">
           <nav class="page_nav mob_nav show_on_mobile" role="banner" aria-label="Mobile header">
             <div class="brand">
@@ -320,7 +320,7 @@
                 <img src="{% static 'images/Notifications.png' %}" alt="">
               </li>
               <li>
-                <button id="mobileMenuToggle" class="btn navbar-toggler text-muted" type="button" data-sidenav-toggle="mySidenav" aria-controls="mySidenav" aria-expanded="false" aria-label="Toggle navigation" onclick="openNav()">
+                <button id="mobileMenuToggle" class="btn navbar-toggler text-muted" type="button" data-sidenav-toggle="mySidenav" aria-controls="mySidenav" aria-expanded="false" aria-label="Toggle navigation" onclick="openNav(); this.setAttribute('aria-expanded', 'true');">
                   <img src="{% static 'images/menu.png' %}" alt="">
                 </button>
               </li>
@@ -340,7 +340,7 @@
   </div>
 
   <!-- Mobile Overlay -->
-  <div class="mobile-overlay" onclick="closeNav()"></div>
+  <div class="mobile-overlay d-lg-none" onclick="closeNav()"></div>
 
   <!-- modals  -->
 
