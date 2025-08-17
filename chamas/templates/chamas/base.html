@@ -270,58 +270,15 @@
 
     <!-- Main Content Area -->
     <main class="main-content">
-      <!-- Mobile Header (unchanged existing Chamas header, not used for Goals) -->
-      <header class="mobile-header d-none">
-        <div class="mobile-nav-toggle">
-          <span onclick="openNav()" class="menu-btn">
-            <i class='bx bx-menu-alt-right'></i>
-          </span>
-        </div>
-        
-        <div class="mobile-actions">
-          <a onclick="handleDiamondClick()"> 
-            <i class='bx bxs-diamond' style='color:#2191a5; cursor: pointer;'></i>
-          </a>
-          <div class="profile">
-            <div class="avatar">
-              {% if request.user.profile.picture %}
-                <img src="{{ request.user.profile.picture.url }}" alt="Profile" />
-              {% else %}
-                <i class='bx bxs-user'></i>
-              {% endif %}
-            </div>
-            <span class="profile-name">{{ user.first_name }} {{ user.last_name }}</span>
-            <i class='bx bx-chevron-down' data-bs-toggle="dropdown" aria-expanded="false"></i>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="{% url 'Setting' %}">My Profile</a></li>
-              <li class="dropdown-item">
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" id="viewToggle">
-                  <label class="form-check-label" for="viewToggle">
-                    <span class="switch-label-member">Member</span>
-                    <span class="switch-label-admin" style="display: none;">Admin</span>
-                  </label>
-                </div>
-              </li>
-              <li><a class="dropdown-item" href="#">My Groups</a></li>
-            </ul>
-          </div>
-        </div>
-      </header>
-      <!-- Desktop Header copied from Goals -->
-      <nav class="topnav navbar navbar-light page_header hide_on_mobile">
-        <button type="button" class="navbar-toggler text-muted mt-2 p-0 mr-3" onclick="openNav()">
+      <!-- Desktop Header copied from Goals (visible on desktop) -->
+      <nav class="topnav navbar navbar-light page_header hide_on_mobile" role="banner" aria-label="Main header">
+        <button type="button" id="desktopMenuToggle" class="navbar-toggler text-muted mt-2 p-0 mr-3" data-sidenav-toggle="mySidenav" aria-controls="mySidenav" aria-expanded="false" aria-label="Toggle navigation" onclick="openNav()">
           <i class="fe fe-menu navbar-toggler-icon"></i>
         </button>
         <ul class="nav">
           <li class="nav-item">
             <a class="nav-link text-muted my-2" href="#" id="modeSwitcher" data-mode="light">
               <i class="fe fe-sun fe-16"></i>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-muted my-2" href="#" onclick="handleDiamondClick()">
-              <span class="fe fe-grid fe-16"></span>
             </a>
           </li>
           <li class="nav-item nav-notif">
@@ -348,9 +305,31 @@
           </li>
         </ul>
       </nav>
-      <!-- Keep Chamas desktop sidenav as-is (no changes made here) -->
 
-      <!-- Secondary header row removed per rollback; will reintroduce later if needed -->
+      <!-- Mobile header copied from Goals (visible on mobile) -->
+      <div class="page_header pt-3">
+        <div class="container">
+          <nav class="page_nav mob_nav show_on_mobile" role="banner" aria-label="Mobile header">
+            <div class="brand">
+              <a href="#">
+                <img src="{% static 'images/Chama-Bora_clrd.png' %}" alt="">
+              </a>
+            </div>
+            <ul class="nav-list">
+              <li>
+                <img src="{% static 'images/Notifications.png' %}" alt="">
+              </li>
+              <li>
+                <button id="mobileMenuToggle" class="btn navbar-toggler text-muted" type="button" data-sidenav-toggle="mySidenav" aria-controls="mySidenav" aria-expanded="false" aria-label="Toggle navigation" onclick="openNav()">
+                  <img src="{% static 'images/menu.png' %}" alt="">
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Keep Chamas desktop sidenav as-is (no changes made here) -->
 
       <!-- Page Content -->
       <div class="page-content">
@@ -358,29 +337,6 @@
         {%endblock%}
       </div>
     </main>
-  </div>
-
-  <!-- Mobile header copied from Goals -->
-  <div class="page_header pt-3">
-    <div class="container">
-      <nav class="page_nav mob_nav show_on_mobile">
-        <div class="brand">
-          <a href="#">
-            <img src="{% static 'images/Chama-Bora_clrd.png' %}" alt="">
-          </a>
-        </div>
-        <ul class="nav-list">
-          <li>
-            <img src="{% static 'images/Notifications.png' %}" alt="">
-          </li>
-          <li>
-            <button class="btn navbar-toggler text-muted" type="button" onclick="openNav()">
-              <img src="{% static 'images/menu.png' %}" alt="">
-            </button>
-          </li>
-        </ul>
-      </nav>
-    </div>
   </div>
 
   <!-- Mobile Overlay -->
