@@ -391,6 +391,7 @@ def members(request,chama_id):
             members_data.append(member_data)
 
         context = {
+            'chama': chama,
             'group': chama,
             'members': members_data,
             'members_count': len(members_data),
@@ -402,6 +403,7 @@ def members(request,chama_id):
         
     except Chama.DoesNotExist:
         return render(request, 'chamas/members.html', {
+            'chama': None,
             'error': 'Chama not found',
             'members': [],
             'roles': Role.objects.all(),
@@ -663,6 +665,8 @@ def chama_loans(request, chama_id):
      
 
     context = {
+        'chama': chama,
+        'chama_id': chama_id,
         'loans': chama_loans,
         'loan_types': loan_types,
         'applications': applications,
@@ -779,6 +783,8 @@ def chama_fines(request,chama_id):
 
     
     context = {
+        'chama': chama,
+        'chama_id': chama_id,
         'loan_types':loan_types,
         'members':members,
         'fine_types':fine_types,
@@ -861,6 +867,8 @@ def expenses(request,chama_id):
 	my_expenses = Expense.objects.filter(chama=chama, created_by=user_membership).all() if 'user_membership' in locals() else Expense.objects.none()
 
 	return render(request,'chamas/expenses.html',{
+		'chama': chama,
+		'chama_id': chama_id,
 		'expenses':expenses,
 		'is_admin': is_admin,
 		'my_expenses': my_expenses
@@ -934,7 +942,9 @@ def finances(request,chama_id):
 
 
     context = {
-         'saving_types':saving_types,
+        'chama': chama,
+        'chama_id': chama_id,
+        'saving_types':saving_types,
         'members':members,
         'individual_savings':individual_savings,
         'my_savings':my_savings,
@@ -1384,6 +1394,8 @@ def reports(request,chama_id):
     
 
     context = {
+        'chama': chama,
+        'chama_id': chama_id,
         'loans':loans,
         'unpaid_loans':active_loans,
         'group_investment_incomes':group_investment_incomes,
@@ -1598,6 +1610,8 @@ def notifications(request,chama_id):
         my_notifications = NotificationItem.objects.filter(member=member,chama=chama,forGroup=False).all()
 
         context = {
+            'chama': chama,
+            'chama_id': chama_id,
             'types': notification_types,
             'chama_notifs': chama_notifications,
             'my_notifs': my_notifications,

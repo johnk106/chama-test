@@ -119,6 +119,7 @@
         <img src="{%static 'chamas/logo.png'%}" alt="Logo" />
       </div>
       <ul class="nav-list">
+        {% if chama and chama.id %}
         <li>
           <a href="{% url 'chamas:chama-dashboard' chama.id %}" class="dashboard-link">
             <i class='bx bx-bolt-circle'></i>
@@ -179,6 +180,14 @@
             <span class="link_name">Bot Control</span>
           </a>
         </li>
+        {% else %}
+        <li>
+          <a href="{% url 'chamas:chamas' %}" class="dashboard-link">
+            <i class='bx bx-bolt-circle'></i>
+            <span class="link_name">Select Chama</span>
+          </a>
+        </li>
+        {% endif %}
         <li>
           <a href="{%url 'chamas:chamas'%}">
             <i class="bx bx-arrow-back"></i>
@@ -197,6 +206,7 @@
       </div>
       <nav class="sidebar-nav">
         <ul class="nav-list">
+          {% if chama and chama.id %}
           <li>
             <a href="{% url 'chamas:chama-dashboard' chama.id %}" class="dashboard-link">
               <i class='bx bx-bolt-circle'></i>
@@ -257,6 +267,14 @@
               <span class="link_name">Bot Control</span>
             </a>
           </li>
+          {% else %}
+          <li>
+            <a href="{% url 'chamas:chamas' %}" class="dashboard-link">
+              <i class='bx bx-bolt-circle'></i>
+              <span class="link_name">Select Chama</span>
+            </a>
+          </li>
+          {% endif %}
           <li>
             <a href="{%url 'chamas:chamas'%}">
               <i class="bx bx-arrow-back"></i>
