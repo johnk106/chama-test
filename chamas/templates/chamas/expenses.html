@@ -94,7 +94,7 @@
 												<td class="text-brand-primary">KSH {{ expense.amount|intcomma }}</td>
 												<td>{{ expense.description }}</td>
 												<td>{{ expense.created_on|date:"M d, Y" }}</td>
-												<td>{{ expense.created_by.name if expense.created_by }}</td>
+												<td>{% if expense.created_by %}{{ expense.created_by.name }}{% else %}-{% endif %}</td>
 											</tr>
 											{% endfor %}
 										</tbody>
