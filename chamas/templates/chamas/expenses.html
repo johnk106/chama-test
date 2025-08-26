@@ -20,9 +20,10 @@
 
 	<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
 
-	<div class="desktop-fab admin" id="desktopFab">
-		<button class="fab-create" id="createExpenseFabDesktop" title="Create Expense">
+	<div class="floating-actions desktop-floating admin" id="desktopActions">
+		<button class="btn-floating" id="createExpenseBtnDesktop" title="New Expense">
 			<i class='bx bx-plus'></i>
+			<span>New Expense</span>
 		</button>
 	</div>
 
@@ -348,27 +349,10 @@ document.addEventListener('DOMContentLoaded', function() {
 	const createExpenseBtnDesktop = document.getElementById('createExpenseFabDesktop');
 	const createExpenseBtnMobile = document.getElementById('createExpenseBtnMobile');
 	if (createExpenseBtnDesktop) createExpenseBtnDesktop.addEventListener('click', openCreateExpenseModal);
-	if (createExpenseBtnMobile) createExpenseBtnMobile.addEventListener('click', function() { collapseFAB(); openCreateExpenseModal(); });
+	if (createExpenseBtnMobile) createExpenseBtnMobile.addEventListener('click', function() { openCreateExpenseModal(); });
 
 	const fabCreate = document.getElementById('fabCreate');
-	const fabBackdrop = document.getElementById('fabBackdrop');
-	const miniFabs = document.querySelectorAll('.mini-fab');
-	let isExpanded = false;
-	function expandFAB() {
-		isExpanded = true;
-		if (fabCreate) fabCreate.classList.add('active');
-		if (fabBackdrop) { fabBackdrop.style.display = 'block'; fabBackdrop.classList.add('active'); }
-		miniFabs.forEach(fab => fab.classList.add('show'));
-	}
-	function collapseFAB() {
-		isExpanded = false;
-		if (fabCreate) fabCreate.classList.remove('active');
-		if (fabBackdrop) { fabBackdrop.classList.remove('active'); setTimeout(()=>{ fabBackdrop.style.display='none'; }, 300); }
-		miniFabs.forEach(fab => fab.classList.remove('show'));
-	}
-	function toggleFAB(){ isExpanded ? collapseFAB() : expandFAB(); }
-	if (fabCreate) fabCreate.addEventListener('click', function(e){ e.stopPropagation(); toggleFAB(); });
-	if (fabBackdrop) fabBackdrop.addEventListener('click', collapseFAB);
+	if (fabCreate) fabCreate.addEventListener('click', function(e){ e.stopPropagation(); openCreateExpenseModal(); });
 
 	document.getElementById('createExpenseForm').addEventListener('submit', function(e){
 		e.preventDefault();
