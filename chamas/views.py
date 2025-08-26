@@ -654,11 +654,11 @@ def chama_loans(request, chama_id):
     
     # Add context variables for mobile My Loans section
     my_active_loans = LoanItem.objects.filter(chama=chama,member=member,status='active').all()
-    my_completed_loans = LoanItem.objects.filter(chama=chama,member=member,status='completed').all()
+    my_completed_loans = LoanItem.objects.filter(chama=chama,member=member,status__in=['completed', 'cleared']).all()
     my_defaulted_loans = LoanItem.objects.filter(chama=chama,member=member,status='defaulted').all()
     
     # Add context variables for desktop Active Loans section  
-    completed_loans = LoanItem.objects.filter(member__group = chama,status='completed').all()
+    completed_loans = LoanItem.objects.filter(member__group = chama,status__in=['completed', 'cleared']).all()
     defaulted_loans = LoanItem.objects.filter(member__group = chama,status='defaulted').all()
      
 
