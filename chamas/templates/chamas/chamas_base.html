@@ -44,9 +44,9 @@
             </a>
           </li>
           <li>
-            <a href="#">
+            <a href="{% url 'chamas:my-chamas' %}">
               <i class="fa-solid fa-gauge"></i>
-              <span class="link_name">Dashboard</span>
+              <span class="link_name">My Chamas</span>
             </a>
           </li>
           <li>
@@ -86,9 +86,9 @@
               </a>
             </li>
             <li>
-              <a href="#">
+              <a href="{% url 'chamas:my-chamas' %}">
                 <i class="fa-solid fa-gauge"></i>
-                <span class="link_name">Dashboard</span>
+                <span class="link_name">My Chamas</span>
               </a>
             </li>
             <li>
@@ -142,9 +142,7 @@
 
                  <!-- Desktop Header -->
          <nav class="topnav navbar navbar-light page_header hide_on_mobile">
-           <button type="button" class="navbar-toggler text-muted mt-2 p-0 mr-3" onclick="openNav()">
-             <i class="fe fe-menu navbar-toggler-icon"></i>
-           </button>
+           <div style="margin-left: auto;"></div> <!-- Spacer to push nav items to the right -->
 
           <ul class="nav">
             <li class="nav-item">
@@ -166,7 +164,7 @@
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle text-muted pr-0" href="#" id="navbarDropdownMenuLink"
                  role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="avatar avatar-sm mt-2">
+                <span class="avatar avatar-sm">
                   {% if request.user.profile.picture %}
                     <img src="{{ request.user.profile.picture.url }}" alt="img" class="avatar-img rounded-circle">
                   {% else %}

@@ -120,61 +120,61 @@
       </div>
       <ul class="nav-list">
         <li>
-          <a href="#" class="dashboard-link">
+          <a href="{% url 'chamas:chama-dashboard' chama.id %}" class="dashboard-link">
             <i class='bx bx-bolt-circle'></i>
             <span class="link_name">Dashboard</span>
           </a>
         </li>
         <li>
-          <a href="#" class="finances-link">
+          <a href="{% url 'chamas:finances' chama.id %}" class="finances-link">
             <i class="bx bx-wallet"></i>
             <span class="link_name">Finances Page</span>
           </a>
         </li>
         <li>
-          <a class="contribution-link" href="#">
+          <a class="contribution-link" href="{% url 'chamas:contributions' chama.id %}">
             <i class='bx bx-sort bx-rotate-90'></i>
             <span class="link_name">Contributions</span>
           </a>
         </li>
         <li>
-          <a href="#" class="loans-link">
+          <a href="{% url 'chamas:chama-loans' chama.id %}" class="loans-link">
             <i class='bx bxs-donate-heart'></i>
             <span class="link_name">Loans</span>
           </a>
         </li>
         <li>
-          <a href="#" class="expenses-link">
+          <a href="{% url 'chamas:chama-expenses' chama.id %}" class="expenses-link">
             <i class="bx bx-folder"></i>
             <span class="link_name">Expenses</span>
           </a>
         </li>
         <li>
-          <a href="#" class="fines-link">
+          <a href="{% url 'chamas:chama-fines' chama.id %}" class="fines-link">
             <i class="bx bx-file"></i>
             <span class="link_name">Fines</span>
           </a>
         </li>
         <li>
-          <a href="#" class="reports-link">
+          <a href="{% url 'chamas:reports' chama.id %}" class="reports-link">
             <i class='bx bxs-report'></i>
             <span class="link_name">Reports</span>
           </a>
         </li>
         <li>
-          <a href="#" class="members-link">
+          <a href="{% url 'chamas:members' chama.id %}" class="members-link">
             <i class="bx bx-user"></i>
             <span class="link_name">Members</span>
           </a>
         </li>
         <li>
-          <a href="#" class="notifications-link">
+          <a href="{% url 'chamas:notifications' chama.id %}" class="notifications-link">
             <i class="bx bx-bell"></i>
             <span class="link_name">Notifications</span>
           </a>
         </li>
         <li class="admin">
-          <a href="#" class="bot-link">
+          <a href="{% url 'bot:bot-records' chama.id %}" class="bot-link">
             <i class="bx bx-cog"></i>
             <span class="link_name">Bot Control</span>
           </a>
@@ -198,61 +198,61 @@
       <nav class="sidebar-nav">
         <ul class="nav-list">
           <li>
-            <a href="#" class="dashboard-link">
+            <a href="{% url 'chamas:chama-dashboard' chama.id %}" class="dashboard-link">
               <i class='bx bx-bolt-circle'></i>
               <span class="link_name">Dashboard</span>
             </a>
           </li>
           <li>
-            <a href="#" class="finances-link">
+            <a href="{% url 'chamas:finances' chama.id %}" class="finances-link">
               <i class="bx bx-wallet"></i>
               <span class="link_name">Finances Page</span>
             </a>
           </li>
           <li>
-            <a class="contribution-link" href="#">
+            <a class="contribution-link" href="{% url 'chamas:contributions' chama.id %}">
               <i class='bx bx-sort bx-rotate-90'></i>
               <span class="link_name">Contributions</span>
             </a>
           </li>
           <li>
-            <a href="#" class="loans-link">
+            <a href="{% url 'chamas:chama-loans' chama.id %}" class="loans-link">
               <i class='bx bxs-donate-heart'></i>
               <span class="link_name">Loans</span>
             </a>
           </li>
           <li>
-            <a href="#" class="expenses-link">
+            <a href="{% url 'chamas:chama-expenses' chama.id %}" class="expenses-link">
               <i class="bx bx-folder"></i>
               <span class="link_name">Expenses</span>
             </a>
           </li>
           <li>
-            <a href="#" class="fines-link">
+            <a href="{% url 'chamas:chama-fines' chama.id %}" class="fines-link">
               <i class="bx bx-file"></i>
               <span class="link_name">Fines</span>
             </a>
           </li>
           <li>
-            <a href="#" class="reports-link">
+            <a href="{% url 'chamas:reports' chama.id %}" class="reports-link">
               <i class='bx bxs-report'></i>
               <span class="link_name">Reports</span>
             </a>
           </li>
           <li>
-            <a href="#" class="members-link">
+            <a href="{% url 'chamas:members' chama.id %}" class="members-link">
               <i class="bx bx-user"></i>
               <span class="link_name">Members</span>
             </a>
           </li>
           <li>
-            <a href="#" class="notifications-link">
+            <a href="{% url 'chamas:notifications' chama.id %}" class="notifications-link">
               <i class="bx bx-bell"></i>
               <span class="link_name">Notifications</span>
             </a>
           </li>
           <li class="admin">
-            <a href="#" class="bot-link">
+            <a href="{% url 'bot:bot-records' chama.id %}" class="bot-link">
               <i class="bx bx-cog"></i>
               <span class="link_name">Bot Control</span>
             </a>
@@ -295,9 +295,7 @@
 
               <!-- Desktop Header -->
         <nav class="topnav navbar navbar-light page_header hide_on_mobile">
-          <button type="button" class="navbar-toggler text-muted mt-2 p-0 mr-3" onclick="openNav()">
-            <i class="fe fe-menu navbar-toggler-icon"></i>
-          </button>
+          <div style="margin-left: auto;"></div> <!-- Spacer to push nav items to the right -->
 
         <ul class="nav">
           <li class="nav-item">
@@ -319,7 +317,7 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-muted pr-0" href="#" id="navbarDropdownMenuLink"
                role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <span class="avatar avatar-sm mt-2">
+              <span class="avatar avatar-sm">
                 {% if request.user.profile.picture %}
                   <img src="{{ request.user.profile.picture.url }}" alt="img" class="avatar-img rounded-circle">
                 {% else %}
