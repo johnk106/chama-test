@@ -20,19 +20,42 @@
     <!-- CSRF Token for JavaScript -->
     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
 
-    <!-- Floating Action Buttons -->
-    <div class="floating-actions">
-        <button class="btn-floating admin" id="createLoanTypeBtn" title="Create Loan Type">
+    <!-- Desktop Floating Action Buttons -->
+    <div class="floating-actions desktop-floating">
+        <button class="btn-floating admin" id="createLoanTypeBtnDesktop" title="Create Loan Type">
             <i class='bx bx-plus'></i>
             <span>Create Loan Type</span>
         </button>
-        <button class="btn-floating admin" id="issueLoanBtn" title="Issue Loan">
+        <button class="btn-floating admin" id="issueLoanBtnDesktop" title="Issue Loan">
             <i class='bx bx-money'></i>
             <span>Issue Loan</span>
         </button>
-        <button class="btn-floating member" id="applyLoanBtn" title="Apply for Loan">
+        <button class="btn-floating member" id="applyLoanBtnDesktop" title="Apply for Loan">
             <i class='bx bx-wallet'></i>
             <span>Apply for Loan</span>
+        </button>
+    </div>
+
+    <!-- Mobile FAB Container -->
+    <div class="fab-backdrop admin member" id="fabBackdrop"></div>
+    <div class="fab-container admin member">
+        <button class="fab-create admin member" id="fabCreate">
+            <i class='bx bx-plus'></i>
+        </button>
+        
+        <button class="mini-fab mini-fab-create-type admin" id="createLoanTypeBtnMobile">
+            <i class='bx bx-plus'></i>
+            <span class="fab-label">Create Loan Type</span>
+        </button>
+        
+        <button class="mini-fab mini-fab-issue-loan admin" id="issueLoanBtnMobile">
+            <i class='bx bx-money'></i>
+            <span class="fab-label">Issue Loan</span>
+        </button>
+        
+        <button class="mini-fab mini-fab-apply-loan member" id="applyLoanBtnMobile">
+            <i class='bx bx-wallet'></i>
+            <span class="fab-label">Apply for Loan</span>
         </button>
     </div>
 
@@ -600,10 +623,10 @@
                                 <input type="number" id="loanTypeMaxAmount" name="max" class="form-control" placeholder="50000" min="1000" required>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="loanTypeMaxDue" class="form-label">Maximum Duration *</label>
-                                <input type="number" id="loanTypeMaxDue" name="max-due" class="form-control" placeholder="12" min="1" max="60" required>
+                                                 <div class="col-md-6">
+                             <div class="form-group">
+                                 <label for="loanTypeMaxDue" class="form-label">Maximum Duration *</label>
+                                 <input type="number" id="loanTypeMaxDue" name="max_due" class="form-control" placeholder="12" min="1" max="60" required>
                                 <small class="form-text text-muted">Duration in months/weeks based on schedule</small>
                             </div>
                         </div>
@@ -807,17 +830,24 @@
     </div>
 </div>
 
-<style>
-/* Floating Action Buttons */
-.floating-actions {
-    position: fixed;
-    top: 120px;
-    right: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    z-index: 1000;
-}
+ <style>
+ /* Desktop Floating Action Buttons */
+ .floating-actions.desktop-floating {
+     position: fixed;
+     top: 120px;
+     right: 20px;
+     display: flex;
+     flex-direction: row;
+     gap: 12px;
+     z-index: 1000;
+ }
+ 
+ /* Hide desktop floating buttons on mobile */
+ @media (max-width: 768px) {
+     .floating-actions.desktop-floating {
+         display: none !important;
+     }
+ }
 
 .btn-floating {
     display: flex;
@@ -1028,37 +1058,17 @@
     color: var(--color-gray-900);
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .floating-actions {
-        position: relative;
-        top: auto;
-        right: auto;
-        flex-direction: row;
-        justify-content: center;
-        margin: 16px 0;
-        flex-wrap: wrap;
-    }
-    
-    .btn-floating {
-        min-width: auto;
-        padding: 8px 12px;
-        font-size: 12px;
-    }
-    
-    .btn-floating span {
-        display: none;
-    }
-    
-    .action-buttons {
-        justify-content: center;
-    }
-    
-    .btn-action {
-        padding: 4px 8px;
-        font-size: 11px;
-    }
-}
+ /* Responsive Design */
+ @media (max-width: 768px) {     
+     .action-buttons {
+         justify-content: center;
+     }
+     
+     .btn-action {
+         padding: 4px 8px;
+         font-size: 11px;
+     }
+ }
 
 /* Hide elements based on role */
 .admin {
@@ -1093,10 +1103,161 @@
     border-left: 4px solid var(--color-error);
 }
 
-.toast.warning {
-    border-left: 4px solid var(--color-warning);
-}
-</style>
+ .toast.warning {
+     border-left: 4px solid var(--color-warning);
+ }
+
+ /* Mobile FAB Styles */
+ .fab-backdrop {
+     display: none;
+     position: fixed;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     background: rgba(0, 0, 0, 0.5);
+     z-index: 1040;
+ }
+
+ .fab-backdrop.active {
+     display: block;
+ }
+
+ .fab-container {
+     display: none;
+     position: fixed;
+     bottom: 24px;
+     right: 24px;
+     z-index: 1050;
+ }
+
+ .fab-create {
+     width: 56px;
+     height: 56px;
+     border-radius: 50%;
+     border: none;
+     background: var(--color-primary);
+     color: white;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     font-size: 20px;
+     cursor: pointer;
+     transition: all 0.3s ease;
+     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+ }
+
+ .fab-create:hover {
+     background: var(--color-primary-light);
+     transform: scale(1.1);
+     box-shadow: 0 6px 20px rgba(33, 145, 165, 0.6);
+ }
+
+ .fab-create.active {
+     transform: rotate(45deg);
+     background: var(--color-primary-light);
+ }
+
+ /* Mini FABs */
+ .mini-fab {
+     width: 48px;
+     height: 48px;
+     border-radius: 50%;
+     border: none;
+     background: var(--color-primary);
+     color: white;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     font-size: 16px;
+     cursor: pointer;
+     position: absolute;
+     bottom: 0;
+     right: 4px;
+     opacity: 0;
+     visibility: hidden;
+     transform: scale(0);
+     transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+ }
+
+ .mini-fab.show {
+     opacity: 1;
+     visibility: visible;
+     transform: scale(1);
+ }
+
+ .mini-fab-create-type.show {
+     transform: scale(1) translateY(-80px);
+     transition-delay: 0.1s;
+ }
+
+ .mini-fab-issue-loan.show {
+     transform: scale(1) translateY(-140px);
+     transition-delay: 0.15s;
+ }
+
+ .mini-fab-apply-loan.show {
+     transform: scale(1) translateY(-200px);
+     transition-delay: 0.2s;
+ }
+
+ .mini-fab:hover {
+     background: var(--color-primary-light);
+     transform: scale(1.1) translateY(var(--translate-y));
+ }
+
+ .mini-fab-create-type:hover {
+     --translate-y: -80px;
+ }
+
+ .mini-fab-issue-loan:hover {
+     --translate-y: -140px;
+ }
+
+ .mini-fab-apply-loan:hover {
+     --translate-y: -200px;
+ }
+
+ /* FAB Labels */
+ .fab-label {
+     position: absolute;
+     right: 60px;
+     top: 50%;
+     transform: translateY(-50%) translateX(8px);
+     background: rgba(0, 0, 0, 0.8);
+     color: white;
+     padding: 8px 12px;
+     border-radius: 4px;
+     font-size: 12px;
+     white-space: nowrap;
+     opacity: 0;
+     visibility: hidden;
+     transition: all 0.3s ease;
+     pointer-events: none;
+ }
+
+ .mini-fab:hover .fab-label {
+     opacity: 1;
+     visibility: visible;
+     transform: translateY(-50%) translateX(-8px);
+ }
+
+ /* Show FAB only on mobile */
+ @media (max-width: 768px) {
+     .fab-container {
+         display: block !important;
+     }
+ }
+
+ /* Hide FAB on desktop */
+ @media (min-width: 769px) {
+     .fab-container,
+     .fab-backdrop {
+         display: none !important;
+     }
+ }
+ </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -1117,18 +1278,99 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Floating action button handlers
-    document.getElementById('createLoanTypeBtn').addEventListener('click', function() {
-        openCreateLoanTypeModal();
-    });
-    
-    document.getElementById('applyLoanBtn').addEventListener('click', function() {
-        openApplyLoanModal();
-    });
-    
-    document.getElementById('issueLoanBtn').addEventListener('click', function() {
-        openIssueLoanModal();
-    });
+         // Desktop floating action button handlers
+     const createLoanTypeBtnDesktop = document.getElementById('createLoanTypeBtnDesktop');
+     const applyLoanBtnDesktop = document.getElementById('applyLoanBtnDesktop');
+     const issueLoanBtnDesktop = document.getElementById('issueLoanBtnDesktop');
+     
+     if (createLoanTypeBtnDesktop) {
+         createLoanTypeBtnDesktop.addEventListener('click', function() {
+             openCreateLoanTypeModal();
+         });
+     }
+     
+     if (applyLoanBtnDesktop) {
+         applyLoanBtnDesktop.addEventListener('click', function() {
+             openApplyLoanModal();
+         });
+     }
+     
+     if (issueLoanBtnDesktop) {
+         issueLoanBtnDesktop.addEventListener('click', function() {
+             openIssueLoanModal();
+         });
+     }
+
+     // Mobile FAB functionality
+     const fabCreate = document.getElementById('fabCreate');
+     const fabBackdrop = document.getElementById('fabBackdrop');
+     const miniFabs = document.querySelectorAll('.mini-fab');
+     const createLoanTypeBtnMobile = document.getElementById('createLoanTypeBtnMobile');
+     const applyLoanBtnMobile = document.getElementById('applyLoanBtnMobile');
+     const issueLoanBtnMobile = document.getElementById('issueLoanBtnMobile');
+     let isExpanded = false;
+
+     function expandFAB() {
+         isExpanded = true;
+         fabCreate.classList.add('active');
+         fabBackdrop.classList.add('active');
+         miniFabs.forEach(function(fab) {
+             fab.classList.add('show');
+         });
+     }
+
+     function collapseFAB() {
+         isExpanded = false;
+         fabCreate.classList.remove('active');
+         fabBackdrop.classList.remove('active');
+         miniFabs.forEach(function(fab) {
+             fab.classList.remove('show');
+         });
+     }
+
+     function toggleFAB() {
+         if (isExpanded) {
+             collapseFAB();
+         } else {
+             expandFAB();
+         }
+     }
+
+     // FAB event handlers
+     if (fabCreate) {
+         fabCreate.addEventListener('click', function(e) {
+             e.stopPropagation();
+             toggleFAB();
+         });
+     }
+
+     if (fabBackdrop) {
+         fabBackdrop.addEventListener('click', function() {
+             collapseFAB();
+         });
+     }
+
+     // Mobile mini-fab handlers
+     if (createLoanTypeBtnMobile) {
+         createLoanTypeBtnMobile.addEventListener('click', function() {
+             collapseFAB();
+             openCreateLoanTypeModal();
+         });
+     }
+
+     if (applyLoanBtnMobile) {
+         applyLoanBtnMobile.addEventListener('click', function() {
+             collapseFAB();
+             openApplyLoanModal();
+         });
+     }
+
+     if (issueLoanBtnMobile) {
+         issueLoanBtnMobile.addEventListener('click', function() {
+             collapseFAB();
+             openIssueLoanModal();
+         });
+     }
     
     // Form submission handlers
     document.getElementById('createLoanTypeForm').addEventListener('submit', function(e) {
