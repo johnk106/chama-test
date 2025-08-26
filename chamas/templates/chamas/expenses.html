@@ -20,10 +20,9 @@
 
 	<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
 
-	<div class="floating-actions desktop-floating">
-		<button class="btn-floating admin" id="createExpenseBtnDesktop" title="Create Expense">
+	<div class="desktop-fab admin" id="desktopFab">
+		<button class="fab-create" id="createExpenseFabDesktop" title="Create Expense">
 			<i class='bx bx-plus'></i>
-			<span>Create Expense</span>
 		</button>
 	</div>
 
@@ -202,6 +201,25 @@
 
 <style>
 /***** Use Loans FAB and floating styles already included via loans.css *****/
+/* Ensure desktop FAB shows on desktop and positions top-right; mobile uses existing .fab-container */
+.desktop-fab {
+	position: fixed;
+	top: 120px;
+	right: 24px;
+	z-index: 1050;
+	display: none;
+}
+@media (min-width: 769px) {
+	.desktop-fab { display: block !important; }
+}
+@media (max-width: 768px) {
+	.desktop-fab { display: none !important; }
+}
+
+/* Make sure mobile FAB is visible on mobile */
+@media (max-width: 768px) {
+	.fab-container { display: block !important; }
+}
 </style>
 
 <script>
@@ -218,7 +236,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		});
 	});
 
-	const createExpenseBtnDesktop = document.getElementById('createExpenseBtnDesktop');
+	const createExpenseBtnDesktop = document.getElementById('createExpenseFabDesktop');
 	const createExpenseBtnMobile = document.getElementById('createExpenseBtnMobile');
 	if (createExpenseBtnDesktop) createExpenseBtnDesktop.addEventListener('click', openCreateExpenseModal);
 	if (createExpenseBtnMobile) createExpenseBtnMobile.addEventListener('click', function() { collapseFAB(); openCreateExpenseModal(); });
