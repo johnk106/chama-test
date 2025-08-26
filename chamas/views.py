@@ -845,23 +845,26 @@ def update_fine(request):
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def expenses(request,chama_id):
-    chama = Chama.objects.get(pk=chama_id)
+	chama = Chama.objects.get(pk=chama_id)
 
-    expenses = Expense.objects.filter(chama=chama).all()
-    
-    # Check if current user is admin
-    try:
-        user_membership = ChamaMember.objects.get(user=request.user, group=chama)
-        role_name = (user_membership.role.name or '').lower() if user_membership.role else ''
-        is_admin = role_name in ['admin', 'administrator', 'chairman', 'secretary']
-    except ChamaMember.DoesNotExist:
-        is_admin = False
-  
+	expenses = Expense.objects.filter(chama=chama).all()
+	
+	# Check if current user is admin
+	try:
+		user_membership = ChamaMember.objects.get(user=request.user, group=chama)
+		role_name = (user_membership.role.name or '').lower() if user_membership.role else ''
+		is_admin = role_name in ['admin', 'administrator', 'chairman', 'secretary']
+	except ChamaMember.DoesNotExist:
+		is_admin = False
+	
+	# My expenses for member view
+	my_expenses = Expense.objects.filter(chama=chama, created_by=user_membership).all() if 'user_membership' in locals() else Expense.objects.none()
 
-    return render(request,'chamas/expenses.html',{
-        'expenses':expenses,
-        'is_admin': is_admin
-    })
+	return render(request,'chamas/expenses.html',{
+		'expenses':expenses,
+		'is_admin': is_admin,
+		'my_expenses': my_expenses
+	})
 
 
 @login_required(login_url='/user/Login')

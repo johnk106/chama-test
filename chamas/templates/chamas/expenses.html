@@ -4,450 +4,298 @@
 
 {%block head%}
 <title>Expenses</title>
-<link rel="stylesheet" href="{%static 'chamas/expenses.css'%}">
-<link rel="stylesheet" href="{%static 'chamas/contribution.css'%}">
-<link rel="stylesheet" href="{%static 'chamas/dashboard.css'%}">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{%static 'chamas/brand-colors.css'%}">
+<link rel="stylesheet" href="{%static 'chamas/reports.css'%}">
+<link rel="stylesheet" href="{%static 'chamas/loans.css'%}">
 {%endblock%}
 
 {%block body%}
-<div class="modern-expenses">
-    <!-- Mobile View -->
-    <div class="mobile-expenses d-block d-lg-none">
-        <!-- Tabs -->
-        <div class="mobile-tabs">
-            {% if is_admin %}
-            <button class="tab-btn admin active" data-tab="create-expenses">Create Expenses</button>
-            <button class="tab-btn" data-tab="expense-history">Expense History</button>
-            {% else %}
-            <button class="tab-btn active" data-tab="expense-history">Expense History</button>
-            {% endif %}
-        </div>
-        <!-- Create Expenses Tab Content -->
-        {% if is_admin %}
-        <div class="tab-content active" id="create-expenses">
-            <div class="mobile-create-form admin">
-                <div class="create-expense-card" style="margin-top: 18px;">
-                    <div class="create-expense-header">
-                        <i class='bx bx-transfer-alt'></i>
-                        <span>Create Expense</span>
-                    </div>
-                    <div class="mobile-alert-box"></div>
-                    <form id="mobile-create-expense-form" class="expense-card-form" onsubmit="submitExpenseFormMobile(); return false;">
-                        {%csrf_token%}
-                        <div class="form-row form-row-split">
-                            <div class="form-group">
-                                <label for="mobile-expense-name">Name</label>
-                                <input type="text" id="mobile-expense-name" name="name" class="form-input" placeholder="Enter name" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="mobile-expense-amount">Amount</label>
-                                <input type="number" id="mobile-expense-amount" name="amount" class="form-input" placeholder="Enter amount" step="0.01" min="0.01" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="mobile-expense-description">Description</label>
-                            <textarea id="mobile-expense-description" name="description" class="form-input" rows="2" placeholder="Enter description" required></textarea>
-                        </div>
-                        <button type="submit" class="create-expense-btn beautiful-btn" id="mobile-create-expense-button">
-                            Create Expense
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-        {% endif %}
-        <!-- Expense History Tab Content -->
-        <div class="tab-content{% if not is_admin %} active{% endif %}" id="expense-history">
-            <div class="mobile-expense-history-list">
-                {% for expense in expenses %}
-                <div class="expense-history-beautiful-card">
-                    <div class="expense-history-beautiful-row">
-                        <div class="expense-history-beautiful-label">Expense ID</div>
-                        <div class="expense-history-beautiful-value">E{{expense.id|stringformat:'03d'}}</div>
-                        <div class="expense-history-beautiful-label">Date</div>
-                        <div class="expense-history-beautiful-value">{{expense.date|date:'d/m/Y'}}</div>
-                    </div>
-                    <div class="expense-history-beautiful-row">
-                        <div class="expense-history-beautiful-label">Expense Name</div>
-                        <div class="expense-history-beautiful-value">{{expense.name}}</div>
-                        <div class="expense-history-beautiful-label">Amount</div>
-                        <div class="expense-history-beautiful-value">Ksh{{expense.amount|floatformat:1}}</div>
-                    </div>
-                </div>
-                {% empty %}
-                <div class="no-expenses">
-                    <i class='bx bx-inbox'></i>
-                    <p>No expenses found</p>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
+<div class="reports-container full-width">
+	<div class="reports-header">
+		<div class="reports-header-content">
+			<h1 class="reports-title text-brand-primary">Expenses Management</h1>
+			<p class="reports-subtitle">Create and review group expenses</p>
+		</div>
+	</div>
 
-    <!-- Desktop View -->
-    <div class="desktop-expenses d-none d-lg-block">
-        <div class="row justify-content-center mt-3 text-capitalize">
-            {% if is_admin %}
-            <div class="body-div admin">
-                <h5 class="mx-auto">Create Expense</h5>
-                <div class="div-header">            
-                    <h6><i class='bx bx-sort bx-rotate-90'></i>Define Expense</h6>
-                </div>
-                <div class="alert-box"></div>
-                <form action="" id="create-expense" onsubmit="submitExpenseForm(); return false;" style="width: 100%;">
-                    {%csrf_token%}
-                    <div class="input-sect">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Name</label>
-                            <input type="name" name="name" class="form-control" id="name">
-                        </div>
-                        <div class="mb-3">
-                            <label for="amount" class="form-label">Amount</label>
-                            <input type="number" name="amount" class="form-control" id="amount">
-                        </div>
-                    </div>
-                    <div class="mb-3 desc-area">
-                        <label for="description" class="form-label">Description</label>
-                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
-                    </div>
-                    <button class="btn btn-primary border-0" type="submit" style="width: 100%;">Create Expense</button>
-                </form>     
-            </div>
-            {% endif %}
-            <div class="body-div">
-                <h5 class="mx-auto">All Expenses</h5>
-                <div class="div-header">
-                    <h6>All Expenses Expense</h6>
-                </div>
-                {%for expense in expenses%}
-                <div class="expense-single">
-                    <div class="expense-cube">
-                        <p class="expense-title">Expense Name</p>
-                        <button class="expense-value">{{expense.name}}</button>
-                    </div>
-                    <div class="expense-cube">
-                        <p class="expense-title">Expense Amount</p>
-                        <button class="expense-value">ksh {{expense.amount | intcomma}}</button>
-                    </div>
-                    <div class="expense-cube">
-                        <p class="expense-title">description</p>
-                        <button class="expense-value">{{expense.description}}</button>
-                    </div>
-                </div>
-                {%endfor%}
-            </div>
-        </div>
-    </div>
+	<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+	<div class="floating-actions desktop-floating">
+		<button class="btn-floating admin" id="createExpenseBtnDesktop" title="Create Expense">
+			<i class='bx bx-plus'></i>
+			<span>Create Expense</span>
+		</button>
+	</div>
+
+	<div class="fab-backdrop" id="fabBackdrop"></div>
+	<div class="fab-container">
+		<button class="fab-create" id="fabCreate">
+			<i class='bx bx-plus'></i>
+		</button>
+		<button class="mini-fab admin" id="createExpenseBtnMobile">
+			<i class='bx bx-receipt'></i>
+			<span class="fab-label">Create Expense</span>
+		</button>
+	</div>
+
+	<div class="reports-tabs-wrapper">
+		<ul class="reports-tabs" role="tablist">
+			<li class="nav-item">
+				<a class="nav-link active admin member" id="all-expenses-tab" data-bs-toggle="tab" href="#tab-all-expenses" role="tab">
+					<i class="bx bx-list-ul"></i>
+					All Expenses
+				</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link member" id="my-expenses-tab" data-bs-toggle="tab" href="#tab-my-expenses" role="tab">
+					<i class="bx bx-user"></i>
+					My Expenses
+				</a>
+			</li>
+		</ul>
+	</div>
+
+	<div class="reports-content">
+		<div class="tab-content">
+			<div class="tab-pane active" id="tab-all-expenses" role="tabpanel">
+				<div class="reports-grid">
+					<div class="report-card brand-card admin member">
+						<div class="report-card-header brand-card-header">
+							<div class="report-header-info">
+								<h3 class="report-title text-brand-primary">All Expenses</h3>
+								<p class="report-description">All recorded expenses for the chama</p>
+							</div>
+							<div class="report-actions">
+								<button class="btn-download-individual bg-brand-primary" id="download-all-expenses-report">
+									<i class="bx bx-download"></i>
+								</button>
+							</div>
+						</div>
+						<div class="report-data brand-card-body">
+							<div id="all-expenses-items" class="data-container">
+								{% if expenses %}
+								<div class="brand-table-responsive">
+									<table class="brand-table">
+										<thead>
+											<tr>
+												<th>ID</th>
+												<th>Name</th>
+												<th>Amount</th>
+												<th>Description</th>
+												<th>Created On</th>
+												<th>Created By</th>
+											</tr>
+										</thead>
+										<tbody>
+											{% for expense in expenses %}
+											<tr>
+												<td>E{{ expense.id|stringformat:'03d' }}</td>
+												<td class="font-weight-bold">{{ expense.name }}</td>
+												<td class="text-brand-primary">KSH {{ expense.amount|intcomma }}</td>
+												<td>{{ expense.description }}</td>
+												<td>{{ expense.created_on|date:"M d, Y" }}</td>
+												<td>{{ expense.created_by.name if expense.created_by }}</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+								</div>
+								{% else %}
+								<div class="empty-state">
+									<i class="bx bx-inbox empty-state-icon"></i>
+									<p class="empty-state-message">No Expenses</p>
+									<p class="empty-state-description">There are no expenses recorded yet</p>
+								</div>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="tab-pane" id="tab-my-expenses" role="tabpanel">
+					<div class="reports-grid">
+						<div class="report-card brand-card member">
+							<div class="report-card-header brand-card-header">
+								<div class="report-header-info">
+									<h3 class="report-title text-brand-primary">My Expenses</h3>
+									<p class="report-description">Expenses created by you</p>
+								</div>
+							</div>
+							<div class="report-data brand-card-body">
+								<div id="my-expenses-items" class="data-container">
+									{% if my_expenses %}
+									<div class="brand-table-responsive">
+										<table class="brand-table">
+											<thead>
+												<tr>
+													<th>ID</th>
+													<th>Name</th>
+													<th>Amount</th>
+													<th>Description</th>
+													<th>Created On</th>
+												</tr>
+											</thead>
+											<tbody>
+												{% for expense in my_expenses %}
+												<tr>
+													<td>E{{ expense.id|stringformat:'03d' }}</td>
+													<td class="font-weight-bold">{{ expense.name }}</td>
+													<td class="text-brand-primary">KSH {{ expense.amount|intcomma }}</td>
+													<td>{{ expense.description }}</td>
+													<td>{{ expense.created_on|date:"M d, Y" }}</td>
+												</tr>
+												{% endfor %}
+											</tbody>
+										</table>
+									</div>
+									{% else %}
+									<div class="empty-state">
+										<i class="bx bx-inbox empty-state-icon"></i>
+										<p class="empty-state-message">No Expenses</p>
+										<p class="empty-state-description">You have not created any expenses yet</p>
+									</div>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+					</div>
+			</div>
+		</div>
+	</div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<!-- Create Expense Modal -->
+<div class="modal fade brand-modal" id="createExpenseModal" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header brand-modal-header">
+				<h5 class="modal-title">Create Expense</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form id="createExpenseForm" class="brand-form">
+					<div class="form-group">
+						<label for="expenseName" class="form-label">Name</label>
+						<input type="text" id="expenseName" name="name" class="form-control" required>
+					</div>
+					<div class="form-group">
+						<label for="expenseAmount" class="form-label">Amount</label>
+						<input type="number" id="expenseAmount" name="amount" class="form-control" step="0.01" min="0.01" required>
+					</div>
+					<div class="form-group">
+						<label for="expenseDescription" class="form-label">Description</label>
+						<textarea id="expenseDescription" name="description" class="form-control" rows="3" required></textarea>
+					</div>
+					<div id="createExpenseFeedback" class="alert" style="display: none;"></div>
+				</form>
+			</div>
+			<div class="modal-footer brand-modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="submit" form="createExpenseForm" class="btn btn-success">
+					<i class='bx bx-check'></i>
+					Create Expense
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+/***** Use Loans FAB and floating styles already included via loans.css *****/
+</style>
+
 <script>
-// Function to get the value of a cookie by name - made global
-function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== "") {
-        var cookies = document.cookie.split(";");
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === name + "=") {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
+document.addEventListener('DOMContentLoaded', function() {
+	const tabs = document.querySelectorAll('[data-bs-toggle="tab"]');
+	tabs.forEach(tab => {
+		tab.addEventListener('click', function(e) {
+			e.preventDefault();
+			const target = this.getAttribute('href');
+			document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+			document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+			this.classList.add('active');
+			document.querySelector(target).classList.add('active');
+		});
+	});
 
-$(document).ready(function () {
-    // Apply member/admin visibility from base toggle
-    if (window.syncAdminVisibility) { window.syncAdminVisibility(); }
+	const createExpenseBtnDesktop = document.getElementById('createExpenseBtnDesktop');
+	const createExpenseBtnMobile = document.getElementById('createExpenseBtnMobile');
+	if (createExpenseBtnDesktop) createExpenseBtnDesktop.addEventListener('click', openCreateExpenseModal);
+	if (createExpenseBtnMobile) createExpenseBtnMobile.addEventListener('click', function() { collapseFAB(); openCreateExpenseModal(); });
 
-    // Ensure one tab is active for current role on load
-    function activateFirstVisibleTab() {
-        const $container = $('.mobile-expenses');
-        const $visibleTabs = $container.find('.mobile-tabs .tab-btn:visible');
-        if ($visibleTabs.length) {
-            const $currentActive = $visibleTabs.filter('.active');
-            if ($currentActive.length === 0) {
-                const firstId = $visibleTabs.first().data('tab');
-                $container.find('.tab-btn').removeClass('active');
-                $container.find('.tab-content').removeClass('active');
-                $visibleTabs.first().addClass('active');
-                $('#' + firstId).addClass('active');
-            } else {
-                const tabId = $currentActive.data('tab');
-                $container.find('.tab-content').removeClass('active');
-                $('#' + tabId).addClass('active');
-            }
-        }
-    }
-    activateFirstVisibleTab();
-    setTimeout(activateFirstVisibleTab, 0);
+	const fabCreate = document.getElementById('fabCreate');
+	const fabBackdrop = document.getElementById('fabBackdrop');
+	const miniFabs = document.querySelectorAll('.mini-fab');
+	let isExpanded = false;
+	function expandFAB() {
+		isExpanded = true;
+		if (fabCreate) fabCreate.classList.add('active');
+		if (fabBackdrop) { fabBackdrop.style.display = 'block'; fabBackdrop.classList.add('active'); }
+		miniFabs.forEach(fab => fab.classList.add('show'));
+	}
+	function collapseFAB() {
+		isExpanded = false;
+		if (fabCreate) fabCreate.classList.remove('active');
+		if (fabBackdrop) { fabBackdrop.classList.remove('active'); setTimeout(()=>{ fabBackdrop.style.display='none'; }, 300); }
+		miniFabs.forEach(fab => fab.classList.remove('show'));
+	}
+	function toggleFAB(){ isExpanded ? collapseFAB() : expandFAB(); }
+	if (fabCreate) fabCreate.addEventListener('click', function(e){ e.stopPropagation(); toggleFAB(); });
+	if (fabBackdrop) fabBackdrop.addEventListener('click', collapseFAB);
 
-    // If base defines syncAdminVisibility, wrap it to also reactivate visible tab
-    if (typeof window.syncAdminVisibility === 'function') {
-        const originalSync = window.syncAdminVisibility;
-        window.syncAdminVisibility = function() {
-            try { originalSync(); } catch(e) { /* no-op */ }
-            setTimeout(activateFirstVisibleTab, 0);
-        };
-    }
-
-    // Observe visibility/class changes within the tabs to keep a visible content active
-    const tabsRoot = document.querySelector('.mobile-expenses .mobile-tabs');
-    if (tabsRoot && 'MutationObserver' in window) {
-        const observer = new MutationObserver(function() {
-            setTimeout(activateFirstVisibleTab, 0);
-        });
-        observer.observe(tabsRoot, { attributes: true, subtree: true, attributeFilter: ['style', 'class'] });
-    }
-
-    // Mobile tab functionality (scoped)
-    $('.mobile-expenses .tab-btn').click(function() {
-        const $container = $('.mobile-expenses');
-        const tabId = $(this).data('tab');
-        $container.find('.tab-btn').removeClass('active');
-        $(this).addClass('active');
-        $container.find('.tab-content').removeClass('active');
-        $('#' + tabId).addClass('active');
-    });
-    
-    // Debug click event listener for mobile button (removed duplicate submit handler)
-    $('#mobile-create-expense-button').on('click', function(e) {
-        console.log('Mobile button clicked');
-    });
+	document.getElementById('createExpenseForm').addEventListener('submit', function(e){
+		e.preventDefault();
+		submitCreateExpense();
+	});
 });
 
-// Desktop form submission (existing)
-function submitExpenseForm() {
-    var name = $('#name').val();
-    var amount = $('#amount').val();
-    var description = $('#description').val();
-    var chama_id = localStorage.getItem('groupId');
-    var csrfToken = $('[name=csrfmiddlewaretoken]').val();
-    var formData = { name: name, amount: amount, description: description };
-    $.ajaxSetup({ headers: { 'X-CSRFToken': csrfToken } });
-    $.ajax({
-        type: 'POST',
-        url: '/chamas-bookeeping/create-expense/' + chama_id + '/',
-        data: JSON.stringify(formData),
-        contentType: 'application/json',
-        success: function(response) {
-            $('.alert-box').html('<div class="alert alert-success">' + response.message + '</div>');
-            $.ajax({
-                type: 'GET',
-                url: '/chamas-bookeeping/get-expense/' + response.expense.id + '/',
-                success: function(newExpense) {
-                    $('.body-div:eq(1)').append(`
-                        <div class="expense-single">
-                            <div class="expense-cube">
-                                <p class="expense-title">Expense Name</p>
-                                <button class="expense-value">${newExpense.name}</button>
-                            </div>
-                            <div class="expense-cube">
-                                <p class="expense-title">Expense Amount</p>
-                                <button class="expense-value">ksh ${newExpense.amount}</button>
-                            </div>
-                            <div class="expense-cube">
-                                <p class="expense-title">Description</p>
-                                <button class="expense-value">${newExpense.description}</button>
-                            </div>
-                        </div>
-                    `);
-                },
-                error: function(error) {
-                    console.log('Error fetching new expense:', error);
-                }
-            });
-        },
-        error: function(error) {
-            $('.alert-box').html('<div class="alert alert-danger">' + error.responseJSON.message + '</div>');
-        }
-    });
+function getCsrfToken() {
+	const input = document.querySelector('[name=csrfmiddlewaretoken]');
+	if (input && input.value) return input.value;
+	const name = 'csrftoken';
+	const cookies = document.cookie ? document.cookie.split(';') : [];
+	for (let i=0; i<cookies.length; i++) { const c = cookies[i].trim(); if (c.substring(0, name.length + 1) === (name + '=')) return decodeURIComponent(c.substring(name.length + 1)); }
+	return '';
 }
 
-// Mobile create expense with enhanced debugging and double-submission prevention
-window.submitExpenseFormMobile = function() {
-    console.log('Mobile form submission started');
-    
-    // Prevent double submission
-    if (window.mobileFormSubmitting) {
-        console.log('Form submission already in progress, ignoring duplicate request');
-        return false;
-    }
-    
-    window.mobileFormSubmitting = true;
-    
-    // Check if we're on mobile view and the correct tab is active
-    console.log('Mobile view visible:', $('.mobile-expenses').is(':visible'));
-    console.log('Create expenses tab active:', $('#create-expenses').hasClass('active'));
-    
-    // Clear previous alerts
-    $('.mobile-alert-box').html('');
-    
-    // Check if elements exist
-    console.log('Name element found:', $('#mobile-expense-name').length > 0);
-    console.log('Amount element found:', $('#mobile-expense-amount').length > 0);
-    console.log('Description element found:', $('#mobile-expense-description').length > 0);
-    
-    var name = $('#mobile-expense-name').val();
-    var amount = $('#mobile-expense-amount').val();
-    var description = $('#mobile-expense-description').val();
-    var chama_id = localStorage.getItem('groupId');
-    
-    // Try to get chama_id from URL if not in localStorage
-    if (!chama_id) {
-        var urlPath = window.location.pathname;
-        var chamaMatch = urlPath.match(/\/chama-expenses\/(\d+)\//);
-        if (chamaMatch) {
-            chama_id = chamaMatch[1];
-            console.log('Found chama_id from URL:', chama_id);
-        }
-    }
-    
-    console.log('Form data:', { name, amount, description, chama_id });
-    console.log('Raw form values - name:', name, 'amount:', amount, 'description:', description);
-    console.log('localStorage contents:', localStorage);
-    console.log('Current URL:', window.location.href);
-    
-    // Check if we have the necessary elements for CSRF token
-    console.log('CSRF token elements found:', $('[name=csrfmiddlewaretoken]').length);
-    
-    // Get CSRF token - try multiple methods
-    var csrfToken = $('[name=csrfmiddlewaretoken]').val();
-    if (!csrfToken) {
-        csrfToken = getCookie('csrftoken');
-    }
-    
-    console.log('CSRF token found:', !!csrfToken);
-    console.log('CSRF token value:', csrfToken ? 'exists' : 'missing');
-    
-    // Validate required fields
-    if (!name || !amount || !description) {
-        $('.mobile-alert-box').html('<div class="alert alert-danger">Please fill in all fields</div>');
-        window.mobileFormSubmitting = false;
-        return;
-    }
-    
-    if (!chama_id) {
-        $('.mobile-alert-box').html('<div class="alert alert-danger">Invalid chama ID. Please refresh the page.</div>');
-        window.mobileFormSubmitting = false;
-        return;
-    }
-    
-    if (!csrfToken) {
-        $('.mobile-alert-box').html('<div class="alert alert-danger">Security token not found. Please refresh the page.</div>');
-        window.mobileFormSubmitting = false;
-        return;
-    }
-    
-    // Disable submit button to prevent double submission
-    $('#mobile-create-expense-button').prop('disabled', true).text('Creating...');
-    
-    var formData = { name: name, amount: amount, description: description };
-    var url = '/chamas-bookeeping/create-expense/' + chama_id + '/';
-    
-    console.log('Submitting to URL:', url);
-    console.log('Form data:', formData);
-    
-    $.ajaxSetup({ 
-        headers: { 'X-CSRFToken': csrfToken },
-        beforeSend: function(xhr, settings) {
-            console.log('AJAX request starting:', settings);
-        }
-    });
-    
-    $.ajax({
-        url: url,
-        type: 'POST',
-        data: JSON.stringify(formData),
-        contentType: 'application/json',
-        success: function(response) {
-            console.log('Success response:', response);
-            $('.mobile-alert-box').html('<div class="alert alert-success">' + (response.message || 'Expense created successfully!') + '</div>');
-            $('#mobile-create-expense-form')[0].reset();
-            
-            // Re-enable button and reset submission flag
-            $('#mobile-create-expense-button').prop('disabled', false).text('Create Expense');
-            window.mobileFormSubmitting = false;
-            
-            // Reload page after short delay
-            setTimeout(() => { 
-                location.reload(); 
-            }, 1500);
-        },
-        error: function(xhr, status, error) {
-            console.error('AJAX Error:', { xhr, status, error });
-            console.error('Response text:', xhr.responseText);
-            
-            var errorMessage = 'An error occurred. Please try again.';
-            
-            if (xhr.responseJSON && xhr.responseJSON.message) {
-                errorMessage = xhr.responseJSON.message;
-            } else if (xhr.status === 403) {
-                errorMessage = 'Permission denied. Please refresh the page and try again.';
-            } else if (xhr.status === 404) {
-                errorMessage = 'Service not found. Please contact support.';
-            } else if (xhr.status === 500) {
-                errorMessage = 'Server error. Please try again later.';
-            }
-            
-            $('.mobile-alert-box').html('<div class="alert alert-danger">' + errorMessage + '</div>');
-            
-            // Re-enable button and reset submission flag
-            $('#mobile-create-expense-button').prop('disabled', false).text('Create Expense');
-            window.mobileFormSubmitting = false;
-                 }
-     });
-};
+function openCreateExpenseModal() {
+	const modal = new bootstrap.Modal(document.getElementById('createExpenseModal'));
+	modal.show();
+}
 
-// Test function for debugging - can be called from browser console
-window.testMobileExpenseSubmission = function(testChamaId) {
-    console.log('=== Testing Mobile Expense Submission ===');
-    
-    // Reset submission flag if needed
-    window.mobileFormSubmitting = false;
-    
-    // Set test chama_id if provided
-    if (testChamaId) {
-        localStorage.setItem('groupId', testChamaId);
-        console.log('Set test chama_id:', testChamaId);
-    }
-    
-    // Fill in test data
-    $('#mobile-expense-name').val('Test Expense');
-    $('#mobile-expense-amount').val('100');
-    $('#mobile-expense-description').val('Test Description');
-    
-    console.log('Test data filled in');
-    
-    // Try submission
-    submitExpenseFormMobile();
-};
+function showFeedback(elementId, message, type) {
+	const el = document.getElementById(elementId);
+	if (!el) return;
+	el.className = 'alert';
+	el.style.display = 'block';
+	if (type === 'success') el.classList.add('alert-success');
+	else if (type === 'error') el.classList.add('alert-danger');
+	else el.classList.add('alert-info');
+	el.textContent = message;
+}
 
-// Debug function to check current state
-window.debugMobileForm = function() {
-    console.log('=== Mobile Form Debug Info ===');
-    console.log('Form exists:', $('#mobile-create-expense-form').length > 0);
-    console.log('Button exists:', $('#mobile-create-expense-button').length > 0);
-    console.log('Name field exists:', $('#mobile-expense-name').length > 0);
-    console.log('Amount field exists:', $('#mobile-expense-amount').length > 0);
-    console.log('Description field exists:', $('#mobile-expense-description').length > 0);
-    console.log('CSRF token exists:', $('[name=csrfmiddlewaretoken]').length > 0);
-    console.log('localStorage groupId:', localStorage.getItem('groupId'));
-    console.log('Current URL:', window.location.href);
-    console.log('Alert box exists:', $('.mobile-alert-box').length > 0);
-    console.log('Form submitting flag:', window.mobileFormSubmitting);
-};
-
-// Function to reset the mobile form state
-window.resetMobileFormState = function() {
-    window.mobileFormSubmitting = false;
-    $('#mobile-create-expense-button').prop('disabled', false).text('Create Expense');
-    console.log('Mobile form state reset');
-};
+function submitCreateExpense() {
+	const name = document.getElementById('expenseName').value.trim();
+	const amount = document.getElementById('expenseAmount').value;
+	const description = document.getElementById('expenseDescription').value.trim();
+	if (!name || !amount || !description) { showFeedback('createExpenseFeedback', 'Please fill in all fields', 'error'); return; }
+	const chamaId = localStorage.getItem('groupId');
+	if (!chamaId) { showFeedback('createExpenseFeedback', 'Missing chama. Refresh and try again.', 'error'); return; }
+	showFeedback('createExpenseFeedback', 'Creating expense...', 'info');
+	fetch(`/chamas-bookeeping/create-expense/${chamaId}/`, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCsrfToken() },
+		body: JSON.stringify({ name, amount, description })
+	}).then(r => r.json()).then(result => {
+		if (result.status === 'success' || result.message) {
+			showFeedback('createExpenseFeedback', result.message || 'Expense created successfully', 'success');
+			setTimeout(()=>{ location.reload(); }, 1200);
+		} else {
+			showFeedback('createExpenseFeedback', result.message || 'Failed to create expense', 'error');
+		}
+	}).catch(() => {
+		showFeedback('createExpenseFeedback', 'Server error. Please try again.', 'error');
+	});
+}
 </script>
 {%endblock%}
