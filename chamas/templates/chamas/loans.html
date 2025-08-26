@@ -37,9 +37,9 @@
     </div>
 
     <!-- Mobile FAB Container -->
-    <div class="fab-backdrop admin member" id="fabBackdrop"></div>
-    <div class="fab-container admin member">
-        <button class="fab-create admin member" id="fabCreate">
+    <div class="fab-backdrop" id="fabBackdrop"></div>
+    <div class="fab-container">
+        <button class="fab-create" id="fabCreate">
             <i class='bx bx-plus'></i>
         </button>
         
@@ -137,14 +137,18 @@
                                                 <td>{{ loan.start_date|date:"M d, Y" }}</td>
                                                 <td>{{ loan.next_due|date:"M d, Y" }}</td>
                                                 <td><span class="status-badge {{ loan.status }}">{{ loan.status|title }}</span></td>
-                                                <td class="admin">
-                                                    <button class="btn-action btn-primary-sm" onclick="viewLoanDetails({{ loan.id }})">
-                                                        <i class="bx bx-eye"></i>
-                                                    </button>
-                                                    <button class="btn-action btn-secondary-sm" onclick="editLoan({{ loan.id }})">
-                                                        <i class="bx bx-edit"></i>
-                                                    </button>
-                                                </td>
+                                                                                                 <td class="admin">
+                                                     <button class="btn-action btn-primary-sm" onclick="viewLoanDetails({{ loan.id }})">
+                                                         <i class="bx bx-eye"></i>
+                                                     </button>
+                                                     <button class="btn-action btn-success-sm" onclick="openPayLoanModal({{ loan.id }}, '{{ loan.member.name }}', {{ loan.balance }})">
+                                                         <i class="bx bx-credit-card"></i>
+                                                         Pay
+                                                     </button>
+                                                     <button class="btn-action btn-secondary-sm" onclick="editLoan({{ loan.id }})">
+                                                         <i class="bx bx-edit"></i>
+                                                     </button>
+                                                 </td>
                                             </tr>
                                             {% endfor %}
                                         </tbody>
@@ -786,7 +790,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="issueLoanType" class="form-label">Loan Type *</label>
-                                <select id="issueLoanType" name="loan_type" class="form-control" required>
+                                                                 <select id="issueLoanType" name="type" class="form-control" required>
                                     <option value="">Select loan type</option>
                                     {% for loan_type in loan_types %}
                                     <option value="{{ loan_type.id }}" data-max="{{ loan_type.max_loan_amount }}" data-rate="{{ loan_type.intrest_rate }}" data-max-due="{{ loan_type.max_due }}">
@@ -797,21 +801,29 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="issueLoanAmount" class="form-label">Amount (KSH) *</label>
-                                <input type="number" id="issueLoanAmount" name="amount" class="form-control" placeholder="25000" min="1000" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="issueLoanDuration" class="form-label">Duration *</label>
-                                <input type="number" id="issueLoanDuration" name="due" class="form-control" placeholder="6" min="1" required>
-                                <small class="form-text text-muted">Duration in months/weeks</small>
-                            </div>
-                        </div>
-                    </div>
+                                         <div class="row">
+                         <div class="col-md-6">
+                             <div class="form-group">
+                                 <label for="issueLoanAmount" class="form-label">Amount (KSH) *</label>
+                                 <input type="number" id="issueLoanAmount" name="amount" class="form-control" placeholder="25000" min="1000" required>
+                             </div>
+                         </div>
+                         <div class="col-md-6">
+                             <div class="form-group">
+                                 <label for="issueLoanDuration" class="form-label">Duration *</label>
+                                 <input type="number" id="issueLoanDuration" name="due" class="form-control" placeholder="6" min="1" required>
+                                 <small class="form-text text-muted">Duration in months/weeks</small>
+                             </div>
+                         </div>
+                     </div>
+                     <div class="row">
+                         <div class="col-md-6">
+                             <div class="form-group">
+                                 <label for="issueLoanStartDate" class="form-label">Start Date *</label>
+                                 <input type="date" id="issueLoanStartDate" name="start_date" class="form-control" required>
+                             </div>
+                         </div>
+                     </div>
                     <div class="form-group">
                         <label for="issueLoanNotes" class="form-label">Notes</label>
                         <textarea id="issueLoanNotes" name="notes" class="form-control" rows="3" placeholder="Additional notes for this loan"></textarea>
@@ -827,20 +839,77 @@
                 </button>
             </div>
         </div>
-    </div>
-</div>
+     </div>
+ </div>
+
+ <!-- Pay Loan Modal -->
+ <div class="modal fade" id="payLoanModal" tabindex="-1" aria-labelledby="payLoanModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-lg">
+         <div class="modal-content brand-modal">
+             <div class="modal-header brand-modal-header">
+                 <h5 class="modal-title text-brand-primary" id="payLoanModalLabel">
+                     <i class='bx bx-credit-card'></i>
+                     Process Loan Payment
+                 </h5>
+                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+             </div>
+             <div class="modal-body">
+                 <div class="loan-payment-info mb-3">
+                     <div class="row">
+                         <div class="col-md-6">
+                             <strong>Member:</strong> <span id="payLoanMemberName"></span>
+                         </div>
+                         <div class="col-md-6">
+                             <strong>Current Balance:</strong> <span id="payLoanCurrentBalance" class="text-warning"></span>
+                         </div>
+                     </div>
+                 </div>
+                 <form id="payLoanForm" class="brand-form">
+                     <input type="hidden" id="payLoanId" name="loan_id">
+                     <div class="row">
+                         <div class="col-md-6">
+                             <div class="form-group">
+                                 <label for="paymentAmount" class="form-label">Payment Amount (KSH) *</label>
+                                 <input type="number" id="paymentAmount" name="loan_amount" class="form-control" placeholder="5000" min="1" step="0.01" required>
+                                 <small class="form-text text-muted">Enter the amount being paid</small>
+                             </div>
+                         </div>
+                         <div class="col-md-6">
+                             <div class="form-group">
+                                 <label for="paymentDate" class="form-label">Payment Date *</label>
+                                 <input type="date" id="paymentDate" name="payment_date" class="form-control" required>
+                             </div>
+                         </div>
+                     </div>
+                     <div class="form-group">
+                         <label for="paymentNotes" class="form-label">Payment Notes</label>
+                         <textarea id="paymentNotes" name="notes" class="form-control" rows="3" placeholder="Additional notes about this payment"></textarea>
+                     </div>
+                     <div id="payLoanFeedback" class="alert" style="display: none;"></div>
+                 </form>
+             </div>
+             <div class="modal-footer brand-modal-footer">
+                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                 <button type="submit" form="payLoanForm" class="btn btn-success">
+                     <i class='bx bx-check'></i>
+                     Process Payment
+                 </button>
+             </div>
+         </div>
+     </div>
+ </div>
 
  <style>
- /* Desktop Floating Action Buttons */
- .floating-actions.desktop-floating {
-     position: fixed;
-     top: 120px;
-     right: 20px;
-     display: flex;
-     flex-direction: row;
-     gap: 12px;
-     z-index: 1000;
- }
+   /* Desktop Floating Action Buttons */
+  .floating-actions.desktop-floating {
+      position: fixed;
+      top: 120px;
+      right: 20px;
+      display: flex;
+      flex-direction: row;
+      gap: 12px;
+      z-index: 900;
+  }
  
  /* Hide desktop floating buttons on mobile */
  @media (max-width: 768px) {
@@ -1117,16 +1186,21 @@
      height: 100%;
      background: rgba(0, 0, 0, 0.5);
      z-index: 1040;
+     opacity: 0;
+     visibility: hidden;
+     transition: all 0.3s ease;
  }
 
  .fab-backdrop.active {
      display: block;
+     opacity: 1;
+     visibility: visible;
  }
 
  .fab-container {
      display: none;
      position: fixed;
-     bottom: 24px;
+     bottom: 100px;
      right: 24px;
      z-index: 1050;
  }
@@ -1248,6 +1322,14 @@
      .fab-container {
          display: block !important;
      }
+     
+     .fab-backdrop {
+         display: none !important;
+     }
+     
+     .fab-backdrop.active {
+         display: block !important;
+     }
  }
 
  /* Hide FAB on desktop */
@@ -1312,8 +1394,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
      function expandFAB() {
          isExpanded = true;
-         fabCreate.classList.add('active');
-         fabBackdrop.classList.add('active');
+         if (fabCreate) fabCreate.classList.add('active');
+         if (fabBackdrop) {
+             fabBackdrop.style.display = 'block';
+             fabBackdrop.classList.add('active');
+         }
          miniFabs.forEach(function(fab) {
              fab.classList.add('show');
          });
@@ -1321,8 +1406,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
      function collapseFAB() {
          isExpanded = false;
-         fabCreate.classList.remove('active');
-         fabBackdrop.classList.remove('active');
+         if (fabCreate) fabCreate.classList.remove('active');
+         if (fabBackdrop) {
+             fabBackdrop.classList.remove('active');
+             setTimeout(() => {
+                 fabBackdrop.style.display = 'none';
+             }, 300);
+         }
          miniFabs.forEach(function(fab) {
              fab.classList.remove('show');
          });
@@ -1383,10 +1473,15 @@ document.addEventListener('DOMContentLoaded', function() {
         submitLoanApplication();
     });
     
-    document.getElementById('issueLoanForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        submitIssueLoan();
-    });
+         document.getElementById('issueLoanForm').addEventListener('submit', function(e) {
+         e.preventDefault();
+         submitIssueLoan();
+     });
+     
+     document.getElementById('payLoanForm').addEventListener('submit', function(e) {
+         e.preventDefault();
+         submitPayLoan();
+     });
     
     // Loan application calculation
     document.getElementById('loanApplicationType').addEventListener('change', updateLoanCalculation);
@@ -1394,11 +1489,24 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('loanApplicationDuration').addEventListener('input', updateLoanCalculation);
 });
 
-// Modal functions
-function openCreateLoanTypeModal() {
-    const modal = new bootstrap.Modal(document.getElementById('createLoanTypeModal'));
-    modal.show();
-}
+ // Modal functions
+ function openCreateLoanTypeModal() {
+     const modal = new bootstrap.Modal(document.getElementById('createLoanTypeModal'));
+     modal.show();
+ }
+
+ function openPayLoanModal(loanId, memberName, balance) {
+     document.getElementById('payLoanId').value = loanId;
+     document.getElementById('payLoanMemberName').textContent = memberName;
+     document.getElementById('payLoanCurrentBalance').textContent = `KSH ${balance.toLocaleString()}`;
+     
+     // Set today's date as default
+     const today = new Date().toISOString().split('T')[0];
+     document.getElementById('paymentDate').value = today;
+     
+     const modal = new bootstrap.Modal(document.getElementById('payLoanModal'));
+     modal.show();
+ }
 
 function openApplyLoanModal() {
     const modal = new bootstrap.Modal(document.getElementById('applyLoanModal'));
@@ -1475,37 +1583,69 @@ function submitLoanApplication() {
     });
 }
 
-function submitIssueLoan() {
-    const form = document.getElementById('issueLoanForm');
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData);
-    
-    // Show loading state
-    showFeedback('issueLoanFeedback', 'Issuing loan...', 'info');
-    
-         fetch(`/chamas-bookeeping/issue-loan/${localStorage.getItem('groupId')}/`, {
+ function submitIssueLoan() {
+     const form = document.getElementById('issueLoanForm');
+     const formData = new FormData(form);
+     const data = Object.fromEntries(formData);
+     
+     // Show loading state
+     showFeedback('issueLoanFeedback', 'Issuing loan...', 'info');
+     
+     fetch(`/chamas-bookeeping/issue-loan/${localStorage.getItem('groupId')}/`, {
          method: 'POST',
          headers: {
              'Content-Type': 'application/json',
              'X-CSRFToken': getCsrfToken()
          },
          body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(result => {
-        if (result.status === 'success') {
-            showFeedback('issueLoanFeedback', result.message, 'success');
-            setTimeout(() => {
-                location.reload();
-            }, 1500);
-        } else {
-            showFeedback('issueLoanFeedback', result.message, 'error');
-        }
-    })
-    .catch(error => {
-        showFeedback('issueLoanFeedback', 'Error issuing loan. Please try again.', 'error');
-    });
-}
+     })
+     .then(response => response.json())
+     .then(result => {
+         if (result.status === 'success') {
+             showFeedback('issueLoanFeedback', result.message, 'success');
+             setTimeout(() => {
+                 location.reload();
+             }, 1500);
+         } else {
+             showFeedback('issueLoanFeedback', result.message, 'error');
+         }
+     })
+     .catch(error => {
+         showFeedback('issueLoanFeedback', 'Error issuing loan. Please try again.', 'error');
+     });
+ }
+
+ function submitPayLoan() {
+     const form = document.getElementById('payLoanForm');
+     const formData = new FormData(form);
+     const data = Object.fromEntries(formData);
+     
+     // Show loading state
+     showFeedback('payLoanFeedback', 'Processing payment...', 'info');
+     
+     fetch(`/chamas-bookeeping/update-loan/${data.loan_id}/`, {
+         method: 'POST',
+         headers: {
+             'Content-Type': 'application/json',
+             'X-CSRFToken': getCsrfToken()
+         },
+         body: JSON.stringify(data)
+     })
+     .then(response => response.json())
+     .then(result => {
+         if (result.status === 'success') {
+             showFeedback('payLoanFeedback', result.message, 'success');
+             setTimeout(() => {
+                 location.reload();
+             }, 1500);
+         } else {
+             showFeedback('payLoanFeedback', result.message, 'error');
+         }
+     })
+     .catch(error => {
+         showFeedback('payLoanFeedback', 'Error processing payment. Please try again.', 'error');
+     });
+ }
 
 // Loan application approval/decline functions
 function approveLoanApplication(loanId) {
