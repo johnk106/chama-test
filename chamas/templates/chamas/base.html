@@ -119,7 +119,7 @@
         <img src="{%static 'chamas/logo.png'%}" alt="Logo" />
       </div>
       <ul class="nav-list">
-        {% with current_chama_id=chama.id|default:group.id|default:chama_id %}
+        {% with current_chama_id=chama.id|default:chama_id %}
           {% if current_chama_id %}
           <li>
             <a href="{% url 'chamas:chama-dashboard' current_chama_id %}" class="dashboard-link">
@@ -208,7 +208,7 @@
       </div>
       <nav class="sidebar-nav">
         <ul class="nav-list">
-          {% with current_chama_id=chama.id|default:group.id|default:chama_id %}
+          {% with current_chama_id=chama.id|default:chama_id %}
             {% if current_chama_id %}
             <li>
               <a href="{% url 'chamas:chama-dashboard' current_chama_id %}" class="dashboard-link">
