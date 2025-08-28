@@ -430,6 +430,19 @@ body {
     transform: scale(1);
 }
 
+/* Defensive CSS: Ensure proper modal display even if display:block is used */
+.admin-modal[style*="display: block"] {
+    display: flex !important;
+    opacity: 1;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.admin-modal[style*="display: block"] .admin-modal-content {
+    transform: scale(1);
+}
+
 .admin-modal-header {
     padding: 2rem 2rem 1rem;
     border-bottom: 1px solid var(--admin-gray-200);

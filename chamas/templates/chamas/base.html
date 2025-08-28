@@ -313,6 +313,32 @@
         </div>
       </div>
 
+      <!-- Mobile Chama Info & Toggle Row (Mobile Only) -->
+      <div class="mobile-chama-header show_on_mobile">
+        <div class="container">
+          <div class="mobile-chama-row">
+            <div class="mobile-chama-info">
+              {% if group and group.name %}
+                <h3 class="mobile-chama-name">{{ group.name }}</h3>
+              {% elif chama and chama.name %}
+                <h3 class="mobile-chama-name">{{ chama.name }}</h3>
+              {% else %}
+                <h3 class="mobile-chama-name">Chama Dashboard</h3>
+              {% endif %}
+            </div>
+            <div class="mobile-toggle-container">
+              <div class="form-check form-switch mobile-view-switch">
+                <input class="form-check-input" type="checkbox" id="viewToggle">
+                <label class="form-check-label" for="viewToggle">
+                  <span class="switch-label-member">Member</span>
+                  <span class="switch-label-admin" style="display: none;">Admin</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
               <!-- Desktop Header -->
         <nav class="topnav navbar navbar-light page_header hide_on_mobile">
           <div style="margin-left: auto;"></div> <!-- Spacer to push nav items to the right -->

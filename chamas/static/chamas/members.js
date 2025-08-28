@@ -1335,8 +1335,10 @@ window.openEditMemberModal = function(memberId) {
             roleSelect.value = memberRoleId;
         }
 
-        // Show modal
-        document.getElementById('adminEditMemberModal').style.display = 'block';
+        // Show modal with proper active class for flexbox styling
+        const modal = document.getElementById('adminEditMemberModal');
+        modal.classList.add('active');
+        modal.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
         
         // Focus on first field
@@ -1357,7 +1359,9 @@ window.openEditMemberModal = function(memberId) {
  */
 window.closeEditMemberModal = function() {
     try {
-        document.getElementById('adminEditMemberModal').style.display = 'none';
+        const modal = document.getElementById('adminEditMemberModal');
+        modal.classList.remove('active');
+        modal.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = 'auto';
         
         // Reset form

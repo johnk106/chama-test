@@ -1354,22 +1354,16 @@ html, body,
     }
 
     /* ================================
-       PROPER MOBILE MODAL STYLES
+       MOBILE MODAL ADJUSTMENTS ONLY
        ================================ */
-    .modal {
-        padding: 15px !important;
-    }
-
-    .modal-dialog {
-        width: auto !important;
+    
+    .finance-modal .modal-dialog {
         max-width: 95vw !important;
         margin: 15px auto !important;
-        border-radius: 12px !important;
     }
 
-    .modal-content {
+    .finance-modal .modal-content {
         border-radius: 12px !important;
-        border: none !important;
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15) !important;
     }
 
