@@ -119,6 +119,7 @@
         <img src="{%static 'chamas/logo.png'%}" alt="Logo" />
       </div>
       <ul class="nav-list">
+
         {% if chama and chama.id %}
         <li>
           <a href="{% url 'chamas:chama-dashboard' chama.id %}" class="dashboard-link">
@@ -206,6 +207,7 @@
       </div>
       <nav class="sidebar-nav">
         <ul class="nav-list">
+
           {% if chama and chama.id %}
           <li>
             <a href="{% url 'chamas:chama-dashboard' chama.id %}" class="dashboard-link">
@@ -994,7 +996,8 @@ function openNav() {
     if (sidenav) {
         sidenav.style.width = "280px";
         sidenav.style.display = "block";
-        console.log("Sidebar width set to 280px"); // Debug log
+        sidenav.classList.add("open");
+        console.log("Sidebar width set to 280px and open class added"); // Debug log
     }
     
     if (overlay) {
@@ -1020,11 +1023,12 @@ function closeNav() {
     console.log("Closing navigation sidebar"); // Debug log
     
     if (sidenav) {
+        sidenav.classList.remove("open");
         sidenav.style.width = "0";
         setTimeout(() => {
             sidenav.style.display = "none";
         }, 300);
-        console.log("Sidebar width set to 0"); // Debug log
+        console.log("Sidebar width set to 0 and open class removed"); // Debug log
     }
     
     if (overlay) {
