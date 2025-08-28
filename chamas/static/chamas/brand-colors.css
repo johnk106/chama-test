@@ -187,6 +187,22 @@ body {
     background-color: #e4e9f7 !important;
 }
 
+/* Desktop header icon buttons: ensure no white background */
+.page_header.hide_on_mobile .nav .nav-link,
+.page_header.hide_on_mobile .nav .nav-link:hover,
+.page_header.hide_on_mobile .nav .nav-link:focus,
+.page_header.hide_on_mobile .nav .nav-link:active {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.page_header.hide_on_mobile .nav .nav-link .fe,
+.page_header.hide_on_mobile .nav .nav-link .fe-16,
+.page_header.hide_on_mobile .nav .nav-link .fe-24 {
+    background: transparent !important;
+}
+
 /* ================================
    DESKTOP HEADER
    ================================ */
