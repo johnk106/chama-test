@@ -328,18 +328,18 @@
     transition: border-color 0.2s;
 }
 
-.form-input:focus {
+.modern-notifications .form-input:focus {
     outline: none;
     border-color: #2291A5;
     box-shadow: 0 0 0 3px rgba(34, 145, 165, 0.1);
 }
 
-.form-input::placeholder {
+.modern-notifications .form-input::placeholder {
     color: #9ca3af;
     font-weight: 400;
 }
 
-.beautiful-btn {
+.modern-notifications .beautiful-btn {
     width: 100%;
     padding: 14px 20px;
     background: #2291A5;
@@ -352,11 +352,11 @@
     transition: background 0.2s;
 }
 
-.beautiful-btn:hover {
+.modern-notifications .beautiful-btn:hover {
     background: #1e7a8c;
 }
 
-.beautiful-btn:active {
+.modern-notifications .beautiful-btn:active {
     transform: translateY(1px);
 }
 
