@@ -741,3 +741,24 @@ input {
         display: block !important;
     }
 }
+
+/* ================================
+   GLOBAL MODAL FIXES FOR CHAMAS
+   ================================ */
+
+/* Ensure Bootstrap modals don't have excessive backgrounds */
+.modal.fade.show {
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+/* Ensure modal backdrop works correctly */
+.modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Fix for any modal containers that might have padding issues */
+.modal.show {
+    background: transparent !important;
+    padding: 0 !important;
+}

@@ -1356,8 +1356,10 @@ html, body,
     /* ================================
        PROPER MOBILE MODAL STYLES
        ================================ */
+    /* Remove padding from modal container to prevent white background issue */
     .modal {
-        padding: 15px !important;
+        padding: 0 !important;
+        background: transparent !important;
     }
 
     .modal-dialog {
