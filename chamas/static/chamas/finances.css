@@ -1363,16 +1363,23 @@ html, body,
     }
 
     .modal-dialog {
-        width: auto !important;
+        width: 100% !important;
         max-width: 95vw !important;
-        margin: 15px auto !important;
-        border-radius: 12px !important;
+        margin: 1rem !important;
+        height: auto !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
 
     .modal-content {
         border-radius: 12px !important;
         border: none !important;
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15) !important;
+        width: 100% !important;
+        max-width: 500px !important;
+        max-height: 90vh !important;
+        overflow: hidden !important;
     }
 
     .modal-header {
