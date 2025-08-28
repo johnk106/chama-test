@@ -119,75 +119,77 @@
         <img src="{%static 'chamas/logo.png'%}" alt="Logo" />
       </div>
       <ul class="nav-list">
-        {% if chama and chama.id %}
-        <li>
-          <a href="{% url 'chamas:chama-dashboard' chama.id %}" class="dashboard-link">
-            <i class='bx bx-bolt-circle'></i>
-            <span class="link_name">Dashboard</span>
-          </a>
-        </li>
-        <li>
-          <a href="{% url 'chamas:finances' chama.id %}" class="finances-link">
-            <i class="bx bx-wallet"></i>
-            <span class="link_name">Finances Page</span>
-          </a>
-        </li>
-        <li>
-          <a class="contribution-link" href="{% url 'chamas:contributions' chama.id %}">
-            <i class='bx bx-sort bx-rotate-90'></i>
-            <span class="link_name">Contributions</span>
-          </a>
-        </li>
-        <li>
-          <a href="{% url 'chamas:chama-loans' chama.id %}" class="loans-link">
-            <i class='bx bxs-donate-heart'></i>
-            <span class="link_name">Loans</span>
-          </a>
-        </li>
-        <li>
-          <a href="{% url 'chamas:chama-expenses' chama.id %}" class="expenses-link">
-            <i class="bx bx-folder"></i>
-            <span class="link_name">Expenses</span>
-          </a>
-        </li>
-        <li>
-          <a href="{% url 'chamas:chama-fines' chama.id %}" class="fines-link">
-            <i class="bx bx-file"></i>
-            <span class="link_name">Fines</span>
-          </a>
-        </li>
-        <li>
-          <a href="{% url 'chamas:reports' chama.id %}" class="reports-link">
-            <i class='bx bxs-report'></i>
-            <span class="link_name">Reports</span>
-          </a>
-        </li>
-        <li>
-          <a href="{% url 'chamas:members' chama.id %}" class="members-link">
-            <i class="bx bx-user"></i>
-            <span class="link_name">Members</span>
-          </a>
-        </li>
-        <li>
-          <a href="{% url 'chamas:notifications' chama.id %}" class="notifications-link">
-            <i class="bx bx-bell"></i>
-            <span class="link_name">Notifications</span>
-          </a>
-        </li>
-        <li class="admin">
-          <a href="{% url 'bot:bot-records' chama.id %}" class="bot-link">
-            <i class="bx bx-cog"></i>
-            <span class="link_name">Bot Control</span>
-          </a>
-        </li>
-        {% else %}
-        <li>
-          <a href="{% url 'chamas:chamas' %}" class="dashboard-link">
-            <i class='bx bx-bolt-circle'></i>
-            <span class="link_name">Select Chama</span>
-          </a>
-        </li>
-        {% endif %}
+        {% with current_chama_id=chama.id|default:group.id|default:chama_id %}
+          {% if current_chama_id %}
+          <li>
+            <a href="{% url 'chamas:chama-dashboard' current_chama_id %}" class="dashboard-link">
+              <i class='bx bx-bolt-circle'></i>
+              <span class="link_name">Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'chamas:finances' current_chama_id %}" class="finances-link">
+              <i class="bx bx-wallet"></i>
+              <span class="link_name">Finances Page</span>
+            </a>
+          </li>
+          <li>
+            <a class="contribution-link" href="{% url 'chamas:contributions' current_chama_id %}">
+              <i class='bx bx-sort bx-rotate-90'></i>
+              <span class="link_name">Contributions</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'chamas:chama-loans' current_chama_id %}" class="loans-link">
+              <i class='bx bxs-donate-heart'></i>
+              <span class="link_name">Loans</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'chamas:chama-expenses' current_chama_id %}" class="expenses-link">
+              <i class="bx bx-folder"></i>
+              <span class="link_name">Expenses</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'chamas:chama-fines' current_chama_id %}" class="fines-link">
+              <i class="bx bx-file"></i>
+              <span class="link_name">Fines</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'chamas:reports' current_chama_id %}" class="reports-link">
+              <i class='bx bxs-report'></i>
+              <span class="link_name">Reports</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'chamas:members' current_chama_id %}" class="members-link">
+              <i class="bx bx-user"></i>
+              <span class="link_name">Members</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'chamas:notifications' current_chama_id %}" class="notifications-link">
+              <i class="bx bx-bell"></i>
+              <span class="link_name">Notifications</span>
+            </a>
+          </li>
+          <li class="admin">
+            <a href="{% url 'bot:bot-records' current_chama_id %}" class="bot-link">
+              <i class="bx bx-cog"></i>
+              <span class="link_name">Bot Control</span>
+            </a>
+          </li>
+          {% else %}
+          <li>
+            <a href="{% url 'chamas:chamas' %}" class="dashboard-link">
+              <i class='bx bx-bolt-circle'></i>
+              <span class="link_name">Select Chama</span>
+            </a>
+          </li>
+          {% endif %}
+        {% endwith %}
         <li>
           <a href="{%url 'chamas:chamas'%}">
             <i class="bx bx-arrow-back"></i>
@@ -206,75 +208,77 @@
       </div>
       <nav class="sidebar-nav">
         <ul class="nav-list">
-          {% if chama and chama.id %}
-          <li>
-            <a href="{% url 'chamas:chama-dashboard' chama.id %}" class="dashboard-link">
-              <i class='bx bx-bolt-circle'></i>
-              <span class="link_name">Dashboard</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url 'chamas:finances' chama.id %}" class="finances-link">
-              <i class="bx bx-wallet"></i>
-              <span class="link_name">Finances Page</span>
-            </a>
-          </li>
-          <li>
-            <a class="contribution-link" href="{% url 'chamas:contributions' chama.id %}">
-              <i class='bx bx-sort bx-rotate-90'></i>
-              <span class="link_name">Contributions</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url 'chamas:chama-loans' chama.id %}" class="loans-link">
-              <i class='bx bxs-donate-heart'></i>
-              <span class="link_name">Loans</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url 'chamas:chama-expenses' chama.id %}" class="expenses-link">
-              <i class="bx bx-folder"></i>
-              <span class="link_name">Expenses</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url 'chamas:chama-fines' chama.id %}" class="fines-link">
-              <i class="bx bx-file"></i>
-              <span class="link_name">Fines</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url 'chamas:reports' chama.id %}" class="reports-link">
-              <i class='bx bxs-report'></i>
-              <span class="link_name">Reports</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url 'chamas:members' chama.id %}" class="members-link">
-              <i class="bx bx-user"></i>
-              <span class="link_name">Members</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url 'chamas:notifications' chama.id %}" class="notifications-link">
-              <i class="bx bx-bell"></i>
-              <span class="link_name">Notifications</span>
-            </a>
-          </li>
-          <li class="admin">
-            <a href="{% url 'bot:bot-records' chama.id %}" class="bot-link">
-              <i class="bx bx-cog"></i>
-              <span class="link_name">Bot Control</span>
-            </a>
-          </li>
-          {% else %}
-          <li>
-            <a href="{% url 'chamas:chamas' %}" class="dashboard-link">
-              <i class='bx bx-bolt-circle'></i>
-              <span class="link_name">Select Chama</span>
-            </a>
-          </li>
-          {% endif %}
+          {% with current_chama_id=chama.id|default:group.id|default:chama_id %}
+            {% if current_chama_id %}
+            <li>
+              <a href="{% url 'chamas:chama-dashboard' current_chama_id %}" class="dashboard-link">
+                <i class='bx bx-bolt-circle'></i>
+                <span class="link_name">Dashboard</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'chamas:finances' current_chama_id %}" class="finances-link">
+                <i class="bx bx-wallet"></i>
+                <span class="link_name">Finances Page</span>
+              </a>
+            </li>
+            <li>
+              <a class="contribution-link" href="{% url 'chamas:contributions' current_chama_id %}">
+                <i class='bx bx-sort bx-rotate-90'></i>
+                <span class="link_name">Contributions</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'chamas:chama-loans' current_chama_id %}" class="loans-link">
+                <i class='bx bxs-donate-heart'></i>
+                <span class="link_name">Loans</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'chamas:chama-expenses' current_chama_id %}" class="expenses-link">
+                <i class="bx bx-folder"></i>
+                <span class="link_name">Expenses</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'chamas:chama-fines' current_chama_id %}" class="fines-link">
+                <i class="bx bx-file"></i>
+                <span class="link_name">Fines</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'chamas:reports' current_chama_id %}" class="reports-link">
+                <i class='bx bxs-report'></i>
+                <span class="link_name">Reports</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'chamas:members' current_chama_id %}" class="members-link">
+                <i class="bx bx-user"></i>
+                <span class="link_name">Members</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'chamas:notifications' current_chama_id %}" class="notifications-link">
+                <i class="bx bx-bell"></i>
+                <span class="link_name">Notifications</span>
+              </a>
+            </li>
+            <li class="admin">
+              <a href="{% url 'bot:bot-records' current_chama_id %}" class="bot-link">
+                <i class="bx bx-cog"></i>
+                <span class="link_name">Bot Control</span>
+              </a>
+            </li>
+            {% else %}
+            <li>
+              <a href="{% url 'chamas:chamas' %}" class="dashboard-link">
+                <i class='bx bx-bolt-circle'></i>
+                <span class="link_name">Select Chama</span>
+              </a>
+            </li>
+            {% endif %}
+          {% endwith %}
           <li>
             <a href="{%url 'chamas:chamas'%}">
               <i class="bx bx-arrow-back"></i>
