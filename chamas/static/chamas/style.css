@@ -925,6 +925,19 @@ input {
     .show_on_mobile {
         display: none !important;
     }
+    
+    /* Preserve desktop header completely unchanged */
+    .page_header.hide_on_mobile {
+        display: block !important;
+    }
+    
+    .page_header.hide_on_mobile .navbar {
+        display: flex !important;
+    }
+    
+    .page_header.hide_on_mobile .nav {
+        display: flex !important;
+    }
 }
 
 /* Show mobile elements only on mobile */
@@ -935,6 +948,52 @@ input {
     
     .show_on_mobile {
         display: block !important;
+    }
+    
+    /* Preserve mobile header navigation layout */
+    .page_nav.mob_nav.show_on_mobile {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 9px 0px !important;
+    }
+    
+    .page_nav.mob_nav.show_on_mobile .nav-list {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 16px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        list-style: none !important;
+    }
+    
+    .page_nav.mob_nav.show_on_mobile .nav-list li {
+        display: list-item !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    .page_nav.mob_nav.show_on_mobile .brand {
+        flex-shrink: 0 !important;
+    }
+    
+    .page_nav.mob_nav.show_on_mobile .brand img {
+        max-height: 40px !important;
+        width: auto !important;
+    }
+    
+    /* Ensure mobile header buttons are properly styled */
+    .page_nav.mob_nav.show_on_mobile .nav-list li .btn {
+        background: transparent !important;
+        border: none !important;
+        padding: 8px !important;
+    }
+    
+    .page_nav.mob_nav.show_on_mobile .nav-list li img {
+        width: 24px !important;
+        height: 24px !important;
+        object-fit: contain !important;
     }
 }
 
