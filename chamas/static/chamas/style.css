@@ -743,110 +743,51 @@ input {
 }
 
 /* ================================
-   GLOBAL MODAL FIXES FOR CHAMAS
+   TARGETED MODAL FIXES FOR CHAMAS
    ================================ */
 
-/* Fix for header CSS conflicts - Override style-test.css modal styles */
-.modal {
-    top: 0 !important; /* Override style-test.css top: 100px */
-    background: transparent !important;
-    padding: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
+/* Fix only the specific style-test.css overrides that break Bootstrap modals */
 
-.modal.fade.show,
+/* Override style-test.css line 911-913: .modal { top: 100px; } */
+.modal.fade,
 .modal.show {
-    background: transparent !important;
-    padding: 0 !important;
+    top: 0 !important;
+    background: rgba(0, 0, 0, 0.5) !important;
 }
 
-/* Override style-test.css modal-dialog constraints */
-.modal-dialog {
-    max-width: none !important; /* Override style-test.css max-width: 312px */
-    padding: 0 !important; /* Override style-test.css padding: 24px 36px */
-    margin: 1rem !important; /* Restore Bootstrap default */
-    width: 100% !important;
-    height: 100% !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
+/* Override style-test.css line 888-894 for Chamas pages only */
+.modal .modal-dialog {
+    max-width: 500px !important; /* Override 312px constraint */
+    padding: 1rem !important; /* Override 24px 36px padding */
+    margin: 1.75rem auto !important; /* Restore Bootstrap default */
+    background-color: transparent !important; /* Remove white background */
 }
 
-/* Make modal-content take full available space as requested */
-.modal-content {
+/* Override style-test.css line 895-897 for Chamas pages only */
+.modal .modal-body {
+    padding: 1rem !important; /* Restore Bootstrap padding */
+}
+
+/* Override style-test.css line 898-901 for Chamas pages only */
+.modal .modal-content {
     border: 1px solid rgba(0, 0, 0, 0.2) !important; /* Restore Bootstrap border */
-    outline: 0 !important;
-    border-radius: 0.375rem !important;
-    width: auto !important;
-    max-width: 90vw !important;
-    max-height: 90vh !important;
-    overflow: hidden !important;
-    display: flex !important;
-    flex-direction: column !important;
+    border-radius: 0.375rem !important; /* Restore Bootstrap border-radius */
 }
 
-/* Restore Bootstrap modal-body padding */
-.modal-body {
-    padding: 1rem !important; /* Override style-test.css padding: 0px */
-}
-
-/* Ensure modal backdrop works correctly */
-.modal-backdrop {
-    background-color: rgba(0, 0, 0, 0.5) !important;
-}
-
-/* ================================
-   SPECIFIC MODAL TYPE FIXES
-   ================================ */
-
-/* Finance Modal specific fixes */
-.modal-content.finance-modal {
-    max-width: 600px !important;
-    width: 100% !important;
-}
-
-/* Brand Modal specific fixes */
-.modal-content.brand-modal {
-    max-width: 800px !important;
-    width: 100% !important;
-}
-
-/* Ensure modal-dialog-centered works properly */
-.modal-dialog-centered {
-    display: flex !important;
-    align-items: center !important;
-    min-height: calc(100% - 2rem) !important;
-}
-
-/* Large modals */
-.modal-dialog.modal-lg {
-    max-width: 800px !important;
-}
-
-/* Make sure modal forms are responsive */
-.modal-body form {
-    width: 100% !important;
-}
-
-/* Fix modal on mobile devices */
+/* Responsive modal sizing */
 @media (max-width: 768px) {
-    .modal-dialog {
-        margin: 0.5rem !important;
-        width: calc(100% - 1rem) !important;
-        height: auto !important;
+    .modal .modal-dialog {
+        max-width: 95vw !important;
+        margin: 0.5rem auto !important;
+    }
+}
+
+@media (min-width: 769px) {
+    .modal .modal-dialog {
+        max-width: 600px !important;
     }
     
-    .modal-content {
-        max-width: none !important;
-        width: 100% !important;
-        max-height: 95vh !important;
-    }
-    
-    .modal-content.finance-modal,
-    .modal-content.brand-modal {
-        max-width: none !important;
-        width: 100% !important;
+    .modal .modal-dialog.modal-lg {
+        max-width: 800px !important;
     }
 }
