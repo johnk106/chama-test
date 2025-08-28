@@ -474,14 +474,14 @@
     }
     
     /* Ensure tab content takes full width */
-    .tab-content {
+    .modern-notifications .tab-content {
         padding: 20px 16px !important;
         box-sizing: border-box;
     }
     
     /* Ensure mobile forms take full width */
-    .mobile-send-form,
-    .mobile-create-form {
+    .modern-notifications .mobile-send-form,
+    .modern-notifications .mobile-create-form {
         width: 100vw !important;
         max-width: 100vw !important;
         margin: 0 !important;
@@ -608,8 +608,8 @@
     }
     
     /* Force form cards to full width */
-    .create-notification-card,
-    .send-notification-card {
+    .modern-notifications .create-notification-card,
+    .modern-notifications .send-notification-card {
         width: 100% !important;
         max-width: 100% !important;
         margin: 0 !important;
@@ -619,7 +619,7 @@
     }
     
     /* Force tab content to full width */
-    .tab-content {
+    .modern-notifications .tab-content {
         width: 100% !important;
         max-width: 100% !important;
         margin: 0 !important;
@@ -628,7 +628,7 @@
     }
     
     /* Force notification history to full width */
-    .mobile-notification-history-list {
+    .modern-notifications .mobile-notification-history-list {
         width: 100% !important;
         max-width: 100% !important;
         margin: 0 !important;
@@ -637,7 +637,7 @@
     }
     
     /* Force notification cards to full width */
-    .notification-history-beautiful-card {
+    .modern-notifications .notification-history-beautiful-card {
         width: 100% !important;
         max-width: 100% !important;
         margin: 0 0 14px 0 !important;
@@ -646,7 +646,7 @@
     }
     
     /* Force footer to full width with evenly distributed buttons */
-    .mbl_footer {
+    .modern-notifications .mbl_footer {
         width: 100% !important;
         max-width: 100% !important;
         margin: 0 !important;
@@ -657,7 +657,7 @@
         box-sizing: border-box !important;
     }
     
-    .footer_row {
+    .modern-notifications .footer_row {
         width: 100vw !important;
         max-width: 100vw !important;
         margin: 0 !important;
@@ -668,7 +668,7 @@
         box-sizing: border-box !important;
     }
     
-    .footer_button {
+    .modern-notifications .footer_button {
         flex: 1 !important;
         display: flex !important;
         flex-direction: column !important;
@@ -687,8 +687,8 @@
     }
     
     /* Ensure form inputs take full width */
-    .form-input,
-    .beautiful-btn {
+    .modern-notifications .form-input,
+    .modern-notifications .beautiful-btn {
         width: 100% !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
