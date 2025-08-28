@@ -203,6 +203,21 @@ body {
     background: transparent !important;
 }
 
+/* Remove card-like styling from header action items on desktop header only */
+.page_header.hide_on_mobile .nav .nav-item {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 8px !important;
+}
+
+.page_header.hide_on_mobile .nav .nav-item .nav-link {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
 /* ================================
    DESKTOP HEADER
    ================================ */
