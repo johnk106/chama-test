@@ -3,7 +3,7 @@
 {% load humanize %}
 
 {% block head %}
-<title>Members - {{ group.name }}</title>
+<title>Members - {{ group.name|default:chama.name|default:"Members" }}</title>
 <link rel="stylesheet" href="{% static 'chamas/brand-colors.css' %}">
 <link rel="stylesheet" href="{% static 'chamas/members.css' %}">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -600,7 +600,7 @@
 <!-- Debug Information -->
 {% if debug %}
 <div style="background: #f0f0f0; padding: 10px; margin: 10px; border-radius: 5px; font-family: monospace;">
-    <strong>DEBUG:</strong> Chama: {{ group.name }}, Members: {{ members_count }}, Roles: {{ roles.count }}
+    <strong>DEBUG:</strong> Chama: {{ group.name|default:chama.name|default:"N/A" }}, Members: {{ members_count }}, Roles: {{ roles.count }}
 </div>
 {% endif %}
 
@@ -652,7 +652,7 @@
              data-member-id-number="{{ member.member_id|default:'' }}"
              data-member-role="{{ member.role.name|default:'member' }}"
              data-member-role-id="{{ member.role.id|default:'' }}"
-             data-is-creator="{% if member.user and member.user == group.created_by %}true{% else %}false{% endif %}"
+             data-is-creator="{% if member.user and chama and member.user == chama.created_by %}true{% else %}false{% endif %}"
              onclick="openMemberModal({{ member.id }})">
             <div class="admin-member-header">
                 <div class="admin-member-avatar">
@@ -677,8 +677,8 @@
 
                     <button class="admin admin-remove-member" 
                             onclick="event.stopPropagation(); confirmRemoveMember({{ member.id }}, '{{ member.name|escapejs }}')" 
-                            title="{% if member.user and member.user == group.created_by %}Cannot remove chama creator{% else %}Remove {{ member.name }} from chama{% endif %}"
-                            {% if member.user and member.user == group.created_by %}disabled style="opacity: 0.3; cursor: not-allowed;"{% endif %}>
+                            title="{% if member.user and chama and member.user == chama.created_by %}Cannot remove chama creator{% else %}Remove {{ member.name }} from chama{% endif %}"
+                            {% if member.user and chama and member.user == chama.created_by %}disabled style="opacity: 0.3; cursor: not-allowed;"{% endif %}>
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>

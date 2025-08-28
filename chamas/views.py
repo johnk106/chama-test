@@ -97,7 +97,8 @@ def dashboard(request,chama_id):
 
     return render(request,
                   'chamas/dashboard.html',
-                  {'chama': chama, 
+                  {'chama': chama,
+                   'group': chama,
                     'total_contributions': total_contributions, 
                     'total_savings': total_savings, 
                     'total_fines': total_fines, 
