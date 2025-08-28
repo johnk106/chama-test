@@ -38,35 +38,73 @@
         </div>
         <ul class="nav-list">
           <li>
-            <a href="{% url 'goals_dashboard' %}">
+            <a href="{% url 'Dashboard' %}">
               <i class='bx bx-arrow-back'></i>
               <span class="link_name">Back to Dashboard</span>
             </a>
           </li>
           <li>
             <a href="{% url 'chamas:my-chamas' %}">
-              <i class="fa-solid fa-gauge"></i>
+              <i class='bx bx-bolt-circle'></i>
               <span class="link_name">My Chamas</span>
             </a>
           </li>
+          {% if chama and chama.id %}
           <li>
-            <a href="#">
-              <i class="fa-solid fa-group-arrows-rotate"></i>
-              <span class="link_name">Merry-go-round chama</span>
+            <a href="{% url 'chamas:chama-dashboard' chama.id %}" class="dashboard-link">
+              <i class='bx bx-bolt-circle'></i>
+              <span class="link_name">Dashboard</span>
             </a>
           </li>
           <li>
-            <a href="#" class="bookeeping-window">
-              <i class="fa-solid fa-clipboard"></i>
-              <span class="link_name">Book keeping</span>
+            <a href="{% url 'chamas:finances' chama.id %}" class="finances-link">
+              <i class="bx bx-wallet"></i>
+              <span class="link_name">Finances Page</span>
             </a>
           </li>
           <li>
-            <a href="#">
-              <i class="fa-solid fa-building-columns"></i>
-              <span class="link_name">Table Banking</span>
+            <a class="contribution-link" href="{% url 'chamas:contributions' chama.id %}">
+              <i class='bx bx-sort bx-rotate-90'></i>
+              <span class="link_name">Contributions</span>
             </a>
           </li>
+          <li>
+            <a href="{% url 'chamas:chama-loans' chama.id %}" class="loans-link">
+              <i class='bx bxs-donate-heart'></i>
+              <span class="link_name">Loans</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'chamas:chama-expenses' chama.id %}" class="expenses-link">
+              <i class="bx bx-folder"></i>
+              <span class="link_name">Expenses</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'chamas:chama-fines' chama.id %}" class="fines-link">
+              <i class="bx bx-file"></i>
+              <span class="link_name">Fines</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'chamas:reports' chama.id %}" class="reports-link">
+              <i class='bx bxs-report'></i>
+              <span class="link_name">Reports</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'chamas:members' chama.id %}" class="members-link">
+              <i class="bx bx-user"></i>
+              <span class="link_name">Members</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'chamas:notifications' chama.id %}" class="notifications-link">
+              <i class="bx bx-bell"></i>
+              <span class="link_name">Notifications</span>
+            </a>
+          </li>
+          {% endif %}
         </ul>
       </div>
       
@@ -80,35 +118,73 @@
         <nav class="sidebar-nav">
           <ul class="nav-list">
             <li>
-              <a href="{% url 'goals_dashboard' %}">
+              <a href="{% url 'Dashboard' %}">
                 <i class='bx bx-arrow-back'></i>
                 <span class="link_name">Back to Dashboard</span>
               </a>
             </li>
             <li>
               <a href="{% url 'chamas:my-chamas' %}">
-                <i class="fa-solid fa-gauge"></i>
+                <i class='bx bx-bolt-circle'></i>
                 <span class="link_name">My Chamas</span>
               </a>
             </li>
+            {% if chama and chama.id %}
             <li>
-              <a href="#">
-                <i class="fa-solid fa-group-arrows-rotate"></i>
-                <span class="link_name">Merry-go-round chama</span>
+              <a href="{% url 'chamas:chama-dashboard' chama.id %}" class="dashboard-link">
+                <i class='bx bx-bolt-circle'></i>
+                <span class="link_name">Dashboard</span>
               </a>
             </li>
             <li>
-              <a href="#" class="bookeeping-window">
-                <i class="fa-solid fa-clipboard"></i>
-                <span class="link_name">Book keeping</span>
+              <a href="{% url 'chamas:finances' chama.id %}" class="finances-link">
+                <i class="bx bx-wallet"></i>
+                <span class="link_name">Finances Page</span>
               </a>
             </li>
             <li>
-              <a href="#">
-                <i class="fa-solid fa-building-columns"></i>
-                <span class="link_name">Table Banking</span>
+              <a class="contribution-link" href="{% url 'chamas:contributions' chama.id %}">
+                <i class='bx bx-sort bx-rotate-90'></i>
+                <span class="link_name">Contributions</span>
               </a>
             </li>
+            <li>
+              <a href="{% url 'chamas:chama-loans' chama.id %}" class="loans-link">
+                <i class='bx bxs-donate-heart'></i>
+                <span class="link_name">Loans</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'chamas:chama-expenses' chama.id %}" class="expenses-link">
+                <i class="bx bx-folder"></i>
+                <span class="link_name">Expenses</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'chamas:chama-fines' chama.id %}" class="fines-link">
+                <i class="bx bx-file"></i>
+                <span class="link_name">Fines</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'chamas:reports' chama.id %}" class="reports-link">
+                <i class='bx bxs-report'></i>
+                <span class="link_name">Reports</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'chamas:members' chama.id %}" class="members-link">
+                <i class="bx bx-user"></i>
+                <span class="link_name">Members</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'chamas:notifications' chama.id %}" class="notifications-link">
+                <i class="bx bx-bell"></i>
+                <span class="link_name">Notifications</span>
+              </a>
+            </li>
+            {% endif %}
           </ul>
         </nav>
       </aside>
