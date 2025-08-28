@@ -163,10 +163,11 @@ def bot_records(request,chama_id):
     members = BotMember.objects.filter(chama=chama,approved=False).order_by('-id').all()
 
     return render(request,'bot/records.html',{
-        'contributions':contributions,
-        'loans':loans,
-        'fines':fines,
-        'members':members
+        'chama': chama,
+        'contributions': contributions,
+        'loans': loans,
+        'fines': fines,
+        'members': members
     })
 
 @login_required(login_url='/user/login')

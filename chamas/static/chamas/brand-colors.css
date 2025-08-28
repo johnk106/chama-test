@@ -187,6 +187,37 @@ body {
     background-color: #e4e9f7 !important;
 }
 
+/* Desktop header icon buttons: ensure no white background */
+.page_header.hide_on_mobile .nav .nav-link,
+.page_header.hide_on_mobile .nav .nav-link:hover,
+.page_header.hide_on_mobile .nav .nav-link:focus,
+.page_header.hide_on_mobile .nav .nav-link:active {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.page_header.hide_on_mobile .nav .nav-link .fe,
+.page_header.hide_on_mobile .nav .nav-link .fe-16,
+.page_header.hide_on_mobile .nav .nav-link .fe-24 {
+    background: transparent !important;
+}
+
+/* Remove card-like styling from header action items on desktop header only */
+.page_header.hide_on_mobile .nav .nav-item {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 8px !important;
+}
+
+.page_header.hide_on_mobile .nav .nav-item .nav-link {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
 /* ================================
    DESKTOP HEADER
    ================================ */

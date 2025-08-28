@@ -79,7 +79,10 @@ form input::placeholder,form textarea::placeholder {
     padding: 9px 0px;
 }
 
-.nav-list {
+/* Only apply horizontal nav layout in page headers (mobile/desktop) */
+.page_header .nav-list,
+.mob_nav .nav-list,
+nav.topnav .nav-list {
     display: flex;
     flex-direction: row;
     align-items: center;
