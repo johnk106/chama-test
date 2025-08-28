@@ -49,59 +49,59 @@
         <i class="fe fe-x"><span class="sr-only"></span></i>
     </a>
 
-    <!-- <nav class="vertnav navbar navbar-light">
+    <nav class="vertnav navbar navbar-light">
 
         <div class="w-100 mb-4 d-flex">
-            <a class="navbar-brand mx-auto mt-2 flex-fill text-center" href="dashboard.html">
+            <a class="navbar-brand mx-auto mt-2 flex-fill text-center" href="{% url 'Dashboard' %}">
                 <h1>ChamaBORA</h1>
             </a>
         </div>
 
         <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
-                <a class="nav-link" href="dashboard.html">
+                <a class="nav-link" href="{% url 'Dashboard' %}">
                     <i class="fe fe-home fe-16"></i>
                     <span class="ml-3 item-text">Dashboard</span>
                 </a>
             </li>
             <li class="nav-item w-100">
-                <a class="nav-link" href="my-chamas.html">
-                    <i class="fe fe-home fe-16"></i>
+                <a class="nav-link" href="{% url 'mychamas' %}">
+                    <i class="fe fe-users fe-16"></i>
                     <span class="ml-3 item-text">My Chamas</span>
                 </a>
+            </li>
             <li class="nav-item w-100">
-                <a class="nav-link" href="join-chama.html">
-                    <i class="fe fe-home fe-16"></i>
+                <a class="nav-link" href="{% url 'joinchamas' %}">
+                    <i class="fe fe-user-plus fe-16"></i>
                     <span class="ml-3 item-text">Join a Chamas</span>
                 </a>
             </li>
             <li class="nav-item w-100">
-                <a class="nav-link" href="manage.html">
-                    <i class="fe fe-home fe-16"></i>
+                <a class="nav-link" href="{% url 'manage_chamas' %}">
+                    <i class="fe fe-settings fe-16"></i>
                     <span class="ml-3 item-text">Manage</span>
                 </a>
             </li>
             <li class="nav-item w-100">
-                <a class="nav-link" href="withdraw.html">
-                    <i class="fe fe-home fe-16"></i>
-                    <span class="ml-3 item-text">Withdraw</span>
-                </a>
-            </li>
-            <li class="nav-item w-100">
-                <a class="nav-link" href="notifications.html">
-                    <i class="fe fe-home fe-16"></i>
+                <a class="nav-link" href="{% url 'all_notifications' %}">
+                    <i class="fe fe-bell fe-16"></i>
                     <span class="ml-3 item-text">Notifications</span>
                 </a>
             </li>
             <li class="nav-item w-100">
-                <a class="nav-link" href="settings.html">
-                    <i class="fe fe-home fe-16"></i>
+                <a class="nav-link" href="{% url 'Setting' %}">
+                    <i class="fe fe-user fe-16"></i>
                     <span class="ml-3 item-text">Settings</span>
                 </a>
             </li>
+            <li class="nav-item w-100">
+                <a class="nav-link" href="{% url 'Logout' %}">
+                    <i class="fe fe-log-out fe-16"></i>
+                    <span class="ml-3 item-text">Logout</span>
+                </a>
             </li>
         </ul>
-    </nav> -->
+    </nav>
 
 
     <div class="offcanvas-header">
@@ -115,37 +115,29 @@
     <div class="offcanvas-body position-relative">
         <ul class="offcanvas_list">
             <li class="list-item">
-                <a href="{% url 'my_goals' %}">
+                <a href="{% url 'Dashboard' %}">
                     <img src="{% static 'images/icon_house.png' %}" alt="">
                     Dashboard
                 </a>
             </li>
-{#            <li class="list-item">#}
-{#                <a href="{% url 'mychamas' %}">#}
-{#                    <img src="{% static 'images/icon_people.png' %}" alt="">#}
-{#                    Chamaz#}
-{#                </a>#}
-{#            </li>#}
-{#            <li class="list-item">#}
-{#                <a href="{% url 'my_goals' %}" >#}
-{#                    <img src="{% static 'images/file-earmark.png' %}" alt="">#}
-{#                    Wekeza Goals#}
-{##}
-{#                </a>#}
-{#            </li>#}
-{#            <li class="list-item">#}
-{#                <a href="{% url 'joinchamas' %}">#}
-{#                    <img src="{% static 'images/icon_box.png' %}" alt="">#}
-{#                    Join Chamas#}
-{#                </a>#}
-{#            </li>#}
-{#            <li class="list-item">#}
-{#                <a href="{% url 'manage_chamas' %}">#}
-{#                    <img src="{% static 'images/icon_wallet.png' %}" alt="">#}
-{#                    Manage Chamas#}
-{#                </a>#}
-{#            </li>#}
-
+            <li class="list-item">
+                <a href="{% url 'mychamas' %}">
+                    <img src="{% static 'images/icon_people.png' %}" alt="">
+                    My Chamas
+                </a>
+            </li>
+            <li class="list-item">
+                <a href="{% url 'joinchamas' %}">
+                    <img src="{% static 'images/icon_box.png' %}" alt="">
+                    Join Chamas
+                </a>
+            </li>
+            <li class="list-item">
+                <a href="{% url 'manage_chamas' %}">
+                    <img src="{% static 'images/icon_wallet.png' %}" alt="">
+                    Manage Chamas
+                </a>
+            </li>
             <li class="list-item">
                 <a href="{% url 'all_notifications' %}">
                     <img src="{% static 'images/icon_bell_.png' %}" alt="">
