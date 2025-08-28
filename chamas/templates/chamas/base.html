@@ -1063,25 +1063,8 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log("Mobile overlay created");
     }
     
-    // Get chama ID from URL for navigation links
-    const pathSegments = window.location.pathname.split('/');
-    let chamaId = null;
-    
-    // Look for chama ID in URL pattern like /chama-dashboard/123/ or /contributions/123/
-    for (let i = 0; i < pathSegments.length - 1; i++) {
-        const nextSegment = pathSegments[i + 1];
-        if (nextSegment && !isNaN(nextSegment) && parseInt(nextSegment) > 0) {
-            chamaId = parseInt(nextSegment);
-            break;
-        }
-    }
-    
-    console.log("Detected chama ID:", chamaId);
-    
-    // Update navigation links with correct URLs if chama ID is found
-    if (chamaId) {
-        updateNavigationLinks(chamaId);
-    }
+    // Navigation links are already correctly set by Django template
+    // No need for JavaScript URL parsing as Django context provides correct URLs
     
     // Close sidebar on window resize if moving to desktop
     window.addEventListener('resize', function() {
@@ -1121,32 +1104,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Function to update navigation links with correct chama ID
-function updateNavigationLinks(chamaId) {
-    const linkMappings = {
-        'dashboard-link': `/chamas/chama-dashboard/${chamaId}/`,
-        'finances-link': `/chamas/chama-finances/${chamaId}/`,
-        'contribution-link': `/chamas/contributions/${chamaId}/`,
-        'loans-link': `/chamas/chama-loans/${chamaId}/`,
-        'expenses-link': `/chamas/chama-expenses/${chamaId}/`,
-        'fines-link': `/chamas/chama-fines/${chamaId}/`,
-        'reports-link': `/chamas/chama-reports/${chamaId}/`,
-        'members-link': `/chamas/members/${chamaId}/`,
-        'notifications-link': `/chamas/chama-notifications/${chamaId}/`
-    };
-    
-    // Update both mobile and desktop sidebar links
-    Object.keys(linkMappings).forEach(className => {
-        const mobileLinks = document.querySelectorAll(`#mySidenav .${className}`);
-        const desktopLinks = document.querySelectorAll(`.desktop-sidebar .${className}`);
-        
-        [...mobileLinks, ...desktopLinks].forEach(link => {
-            link.href = linkMappings[className];
-        });
-    });
-    
-    console.log("Navigation links updated for chama ID:", chamaId);
-}
+// Navigation links are handled by Django template rendering
+// The {% if chama and chama.id %} condition ensures correct URLs are generated
 </script>
 
 <!-- Mobile Footer -->
