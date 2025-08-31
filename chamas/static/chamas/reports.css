@@ -759,7 +759,8 @@ body {
     .brand-table thead th,
     .brand-table tbody td {
         padding: 10px 8px;
-        font-size: 0.8125rem;
+        font-size: 0.7125rem;
+        white-space: nowrap;
     }
 }
 

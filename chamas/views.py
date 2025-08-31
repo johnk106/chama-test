@@ -199,13 +199,23 @@ def upload_document(request, chama_id):
         return JsonResponse({'error': 'No document provided'}, status=400)
 
 @login_required(login_url='/user/Login')
-def download_document(request, document_id,chama_id):
+def download_document(request, document_id, chama_id):
     chama = Chama.objects.get(pk=chama_id)
-    document = Document.objects.get(id=document_id,chama=chama)
+    document = Document.objects.get(id=document_id, chama=chama)
     file_path = document.file.path
+    
     if os.path.exists(file_path):
         response = FileResponse(open(file_path, 'rb'))
-        response['Content-Disposition'] = f'attachment; filename="{document.name}"'
+        
+        # Ensure downloaded file has correct extension
+        base_name = document.name
+        extension = os.path.splitext(document.file.name)[1]  # e.g. ".pdf"
+        
+        # If the custom name doesn't already end with extension, append it
+        if not base_name.lower().endswith(extension.lower()):
+            base_name = f"{base_name}{extension}"
+        
+        response['Content-Disposition'] = f'attachment; filename="{base_name}"'
         return response
     else:
         return JsonResponse({'error': 'File not found'}, status=404)

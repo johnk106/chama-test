@@ -476,5 +476,11 @@ function showAlert(message, type) {
     alertCluster.scrollIntoView({ behavior: 'smooth' });
 }
 </script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+  const el = document.querySelector(".mobile-chama-row");
+  if (el) el.remove();
+});
 
+</script>
 {%endblock%}

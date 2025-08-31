@@ -42,21 +42,23 @@
         <button class="fab-create" id="fabCreate">
             <i class='bx bx-plus'></i>
         </button>
+
+          <button class="mini-fab mini-fab-apply-loan member" id="applyLoanBtnMobile">
+            <i class='bx bx-wallet'></i>
+            <span class="fab-label">Apply for Loan</span>
+        </button>
         
         <button class="mini-fab mini-fab-create-type admin" id="createLoanTypeBtnMobile">
             <i class='bx bx-plus'></i>
             <span class="fab-label">Create Loan Type</span>
         </button>
-        
+    
         <button class="mini-fab mini-fab-issue-loan admin" id="issueLoanBtnMobile">
             <i class='bx bx-money'></i>
             <span class="fab-label">Issue Loan</span>
         </button>
         
-        <button class="mini-fab mini-fab-apply-loan member" id="applyLoanBtnMobile">
-            <i class='bx bx-wallet'></i>
-            <span class="fab-label">Apply for Loan</span>
-        </button>
+      
     </div>
 
     <!-- Loans Tabs Navigation -->
@@ -138,16 +140,11 @@
                                                 <td>{{ loan.next_due|date:"M d, Y" }}</td>
                                                 <td><span class="status-badge {{ loan.status }}">{{ loan.status|title }}</span></td>
                                                                                                  <td class="admin">
-                                                     <button class="btn-action btn-primary-sm" onclick="viewLoanDetails({{ loan.id }})">
-                                                         <i class="bx bx-eye"></i>
-                                                     </button>
                                                      <button class="btn-action btn-success-sm" onclick="openPayLoanModal({{ loan.id }}, '{{ loan.member.name }}', {{ loan.balance }})">
                                                          <i class="bx bx-credit-card"></i>
                                                          Pay
                                                      </button>
-                                                     <button class="btn-action btn-secondary-sm" onclick="editLoan({{ loan.id }})">
-                                                         <i class="bx bx-edit"></i>
-                                                     </button>
+                                                    
                                                  </td>
                                             </tr>
                                             {% endfor %}
@@ -613,7 +610,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="loanTypeSchedule" class="form-label">Repayment Schedule *</label>
-                                <select id="loanTypeSchedule" name="schedule" class="form-control" required>
+                                <select id="loanTypeSchedule" name="schedule"  required>
                                     <option value="weekly">Weekly</option>
                                     <option value="monthly" selected>Monthly</option>
                                 </select>
@@ -657,7 +654,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group col-md-6">
                         <label for="loanTypeDescription" class="form-label">Description</label>
                         <textarea id="loanTypeDescription" name="description" class="form-control" rows="3" placeholder="Describe the loan type purpose and conditions"></textarea>
                     </div>
@@ -692,7 +689,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="loanApplicationType" class="form-label">Loan Type *</label>
-                                <select id="loanApplicationType" name="loan_type" class="form-control" required>
+                                <select id="loanApplicationType" name="loan_type"  required>
                                     <option value="">Select loan type</option>
                                     {% for loan_type in loan_types %}
                                     <option value="{{ loan_type.id }}" data-max="{{ loan_type.max_loan_amount }}" data-rate="{{ loan_type.intrest_rate }}" data-max-due="{{ loan_type.max_due }}">
@@ -719,7 +716,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group col-md-6">
                         <label for="loanApplicationPurpose" class="form-label">Purpose of Loan</label>
                         <textarea id="loanApplicationPurpose" name="purpose" class="form-control" rows="3" placeholder="Briefly describe why you need this loan"></textarea>
                     </div>
@@ -779,7 +776,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="issueLoanMember" class="form-label">Member *</label>
-                                <select id="issueLoanMember" name="member" class="form-control" required>
+                                <select id="issueLoanMember" name="member"  required>
                                     <option value="">Select member</option>
                                     {% for member in members %}
                                     <option value="{{ member.id }}">{{ member.name }}</option>
@@ -790,7 +787,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="issueLoanType" class="form-label">Loan Type *</label>
-                                                                 <select id="issueLoanType" name="type" class="form-control" required>
+                                                                 <select id="issueLoanType" name="type" required>
                                     <option value="">Select loan type</option>
                                     {% for loan_type in loan_types %}
                                     <option value="{{ loan_type.id }}" data-max="{{ loan_type.max_loan_amount }}" data-rate="{{ loan_type.intrest_rate }}" data-max-due="{{ loan_type.max_due }}">
@@ -824,7 +821,7 @@
                              </div>
                          </div>
                      </div>
-                    <div class="form-group">
+                    <div class="form-group col-md-6">
                         <label for="issueLoanNotes" class="form-label">Notes</label>
                         <textarea id="issueLoanNotes" name="notes" class="form-control" rows="3" placeholder="Additional notes for this loan"></textarea>
                     </div>
@@ -881,7 +878,7 @@
                              </div>
                          </div>
                      </div>
-                     <div class="form-group">
+                     <div class="form-group col-md-6">
                          <label for="paymentNotes" class="form-label">Payment Notes</label>
                          <textarea id="paymentNotes" name="notes" class="form-control" rows="3" placeholder="Additional notes about this payment"></textarea>
                      </div>
@@ -1306,11 +1303,12 @@
      border-radius: 4px;
      font-size: 12px;
      white-space: nowrap;
-     opacity: 0;
-     visibility: hidden;
      transition: all 0.3s ease;
      pointer-events: none;
+     opacity: 1 !important;
+    visibility: visible !important;
  }
+ 
 
  .mini-fab:hover .fab-label {
      opacity: 1;
