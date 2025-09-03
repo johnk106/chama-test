@@ -279,21 +279,21 @@ function updateMembersList() {
     
     if (temporaryMembers.length === 0) {
         emptyMessage.style.display = 'block';
-        // Clear any existing member cards
-        const existingCards = memberList.querySelectorAll('.member-tile, .member-count-header');
-        existingCards.forEach(card => card.remove());
+        // Clear any existing table or header
+        const existingItems = memberList.querySelectorAll('.member-count-header, .members-table');
+        existingItems.forEach(item => item.remove());
         return;
     }
     
     emptyMessage.style.display = 'none';
     
-    // Clear existing member tiles and headers
-    const existingItems = memberList.querySelectorAll('.member-tile, .member-count-header');
+    // Clear existing items
+    const existingItems = memberList.querySelectorAll('.member-count-header, .members-table');
     existingItems.forEach(item => item.remove());
     
     // Add member count header
     const memberCountHeader = document.createElement('div');
-    memberCountHeader.className = 'member-count-header mb-3';
+    memberCountHeader.className = 'member-count-header';
     memberCountHeader.innerHTML = `
         <div class="d-flex justify-content-between align-items-center">
             <small class="text-muted fw-medium">${temporaryMembers.length} member(s) selected</small>
@@ -301,39 +301,50 @@ function updateMembersList() {
                 <i class="bx bx-trash-alt"></i> Clear All
             </button>
         </div>
-        <hr class="my-2">
     `;
     memberList.appendChild(memberCountHeader);
     
-    // Add member tiles
+    // Create table
+    const table = document.createElement('table');
+    table.className = 'members-table';
+    table.innerHTML = `
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Mobile</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    `;
+    
+    const tbody = table.querySelector('tbody');
+    
+    // Add member rows
     temporaryMembers.forEach((member, index) => {
-        const memberTile = document.createElement('div');
-        memberTile.className = 'member-tile mb-2';
-        memberTile.innerHTML = `
-            <div class="list-tile">
-                <div class="tile-content">
-                    <div class="tile-leading">
-                        <div class="member-avatar">
-                            <i class="bx bx-user-circle"></i>
-                        </div>
-                    </div>
-                    <div class="tile-body">
-                        <h6 class="tile-title">${member.name}</h6>
-                        <p class="tile-subtitle">${member.role_name}</p>
-                    </div>
-                    <div class="tile-actions">
-                        <button class="btn-action btn-edit" onclick="editMember('${member.id}')" title="Edit member">
-                            <i class="bx bx-edit-alt"></i>
-                        </button>
-                        <button class="btn-action btn-delete" onclick="removeMember('${member.id}')" title="Remove member">
-                            <i class="bx bx-trash-alt"></i>
-                        </button>
-                    </div>
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><strong>${member.name}</strong></td>
+            <td>${member.mobile}</td>
+            <td>${member.email}</td>
+            <td><span class="badge bg-primary">${member.role_name}</span></td>
+            <td>
+                <div class="table-actions">
+                    <button class="btn-action btn-edit" onclick="editMember('${member.id}')" title="Edit member">
+                        <i class="bx bx-edit-alt"></i>
+                    </button>
+                    <button class="btn-action btn-delete" onclick="removeMember('${member.id}')" title="Remove member">
+                        <i class="bx bx-trash-alt"></i>
+                    </button>
                 </div>
-            </div>
+            </td>
         `;
-        memberList.appendChild(memberTile);
+        tbody.appendChild(row);
     });
+    
+    memberList.appendChild(table);
 }
 
 function removeMember(memberId) {
