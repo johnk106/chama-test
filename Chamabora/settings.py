@@ -12,10 +12,10 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 from django.contrib.messages import constants as messages
-# import cloudinary_storage
-# from environ import environ
-# import dj_database_url
-# from firebase_admin import initialize_app
+import cloudinary_storage
+from environ import environ
+import dj_database_url
+from firebase_admin import initialize_app
 
 # Temporary configuration for development
 SECRET_KEY = 'django-secret-key-for-development-12345'
