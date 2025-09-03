@@ -1468,23 +1468,24 @@ $(document).ready(function () {
              const memberId = memberIdInput.data('member-id');
              var amount = memberIdInput.val();
 
-             console.log("amount:",amount);
+             console.log("amount:", amount);
 
-              // Convert empty values to 0
-            if (amount <= 0) {
-                amount = 0;
-            }
+             // Convert empty values or invalid values to 0
+             if (!amount || amount === '' || isNaN(amount) || parseFloat(amount) < 0) {
+                 amount = 0;
+             } else {
+                 amount = parseFloat(amount);
+             }
 
-             
-        
-                 contributionData.push({
-                     member_id: memberId,
-                     amount: amount
-                 });
+             // Include all members in the contribution data (even with 0 amounts)
+             contributionData.push({
+                 member_id: memberId,
+                 amount: amount
+             });
          });
 
          if (contributionData.length === 0) {
-             alert("Please enter at least one contribution amount.");
+             alert("No members found to process contributions.");
              return;
          }
 
@@ -1563,23 +1564,24 @@ $(document).ready(function () {
             const memberId = $(this).find("#member-id").text();
             var amount = $(this).find("input[name='amount']").val();
 
-            print("amount:",amount);
+            console.log("amount:", amount);
 
-                
-             // Convert empty values to 0
-            if (amount <= 0) {
-            amount = 0;
-        }
+            // Convert empty values or invalid values to 0
+            if (!amount || amount === '' || isNaN(amount) || parseFloat(amount) < 0) {
+                amount = 0;
+            } else {
+                amount = parseFloat(amount);
+            }
             
-                contributionData.push({
-                    member_id: memberId,
-                    amount: amount
-                });
-            
+            // Include all members in the contribution data (even with 0 amounts)
+            contributionData.push({
+                member_id: memberId,
+                amount: amount
+            });
         });
 
         if (contributionData.length === 0) {
-            alert("Please enter at least one contribution amount.");
+            alert("No members found to process contributions.");
             return;
         }
 
@@ -1604,6 +1606,10 @@ $(document).ready(function () {
                     `);
                     // Clear input fields
                     $("#member-list tbody input").val("");
+                    // Show success message briefly
+                    setTimeout(() => {
+                        $(".contribution-details-alert-hub").empty();
+                    }, 5000);
                     // Refresh contribution details
                     fetchAndRenderContributionDetails($("#contribution-details-name").text());
                 } else {

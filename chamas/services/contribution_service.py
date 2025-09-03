@@ -109,8 +109,9 @@ class ContributionService:
                         member_id = contrib_data.get('member_id')
                         amount = Decimal(str(contrib_data.get('amount', 0)))
                         
-                        if amount <= 0:
-                            errors.append(f'Invalid amount for member ID {member_id}')
+                        # Allow 0 amounts for unfilled members - they can be updated later
+                        if amount < 0:
+                            errors.append(f'Invalid amount for member ID {member_id}: amount cannot be negative')
                             continue
                             
                         try:
@@ -134,15 +135,16 @@ class ContributionService:
                             chama=chama
                         )
                         
-                        # Create cashflow record
-                        CashflowReport.objects.create(
-                            object_date=new_contribution_record.date_created,
-                            member=new_contribution_record.member,
-                            type='contribution',
-                            amount=new_contribution_record.amount_paid,
-                            chama=chama,
-                            forGroup=False
-                        )
+                        # Create cashflow record only if there's an actual contribution
+                        if amount > 0:
+                            CashflowReport.objects.create(
+                                object_date=new_contribution_record.date_created,
+                                member=new_contribution_record.member,
+                                type='contribution',
+                                amount=new_contribution_record.amount_paid,
+                                chama=chama,
+                                forGroup=False
+                            )
                         
                         # If overpayment, create an additional record for the excess
                         if balance < 0:  # Overpayment
@@ -201,18 +203,11 @@ class ContributionService:
                 amount_paid = Decimal(str(data.get('amount', 0)))
                 member = ChamaMember.objects.get(pk=data.get('member'))
 
-                # Validate amount
+                # Validate amount - allow 0 amounts for unfilled members
                 if amount_paid < 0:
                     data = {
                         'status': 'failed',
                         'message': f'Amount for member {member.name} cannot be negative.'
-                    }
-                    return JsonResponse(data, status=400)
-
-                if amount_paid == 0:
-                    data = {
-                        'status': 'failed',
-                        'message': f'Amount for member {member.name} must be greater than zero.'
                     }
                     return JsonResponse(data, status=400)
 
@@ -230,15 +225,16 @@ class ContributionService:
                     chama=chama
                 )
 
-                # Create cashflow record
-                new_cashflow_object = CashflowReport.objects.create(
-                    object_date=new_contribution_record.date_created,
-                    member=new_contribution_record.member,
-                    type='contribution',
-                    amount=new_contribution_record.amount_paid,
-                    chama=chama,
-                    forGroup=False
-                )
+                # Create cashflow record only if there's an actual contribution
+                if amount_paid > 0:
+                    new_cashflow_object = CashflowReport.objects.create(
+                        object_date=new_contribution_record.date_created,
+                        member=new_contribution_record.member,
+                        type='contribution',
+                        amount=new_contribution_record.amount_paid,
+                        chama=chama,
+                        forGroup=False
+                    )
 
                 # If overpayment, create an additional record for the excess
                 if balance < 0:  # Overpayment
