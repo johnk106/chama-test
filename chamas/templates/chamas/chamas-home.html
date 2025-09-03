@@ -75,6 +75,36 @@
   margin-bottom: 1rem;
 }
 
+.sidenav {
+  position: fixed;
+  top: 0; left: 0;
+  height: 100%;
+  width: 0;
+  background: #2291A5;
+  overflow-x: hidden;
+  transition: width 0.3s ease;
+  z-index: 2001;
+  padding-top: 60px;
+}
+
+.sidenav.open {
+  width: 280px; /* slide in */
+}
+
+.mobile-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 2000;
+}
+
+.mobile-overlay.show {
+  display: block;
+  opacity: 1;
+}
 
 </style>
     <title>Chamas - Choose Your Type</title>
@@ -187,7 +217,7 @@
               </li>
               &nbsp;&nbsp;
               <li class="">
-                <button class="btn navbar-toggler text-muted" type="button" onclick="openNav()">
+                <button class="btn navbar-toggler text-muted menu-btn" type="button" onclick="openNav()">
                   <img src="{% static 'images/menu.png' %}" class="avatar-img rounded-circle" alt="">
                 </button>
               </li>
@@ -405,92 +435,32 @@ $(document).ready(function() {
 });
 </script>
 <script>
-      /* Enhanced Mobile Navigation Functions */
-      function openNav() {
-          const sidenav = document.getElementById("mySidenav");
-          const overlay = document.querySelector(".mobile-overlay");
-          const body = document.body;
-          
-          console.log("Opening navigation sidebar"); // Debug log
-          
-          if (sidenav) {
-              sidenav.style.width = "280px";
-              sidenav.style.display = "block";
-              console.log("Sidebar width set to 280px"); // Debug log
-          }
-          
-          if (overlay) {
-              overlay.style.display = "block";
-              overlay.style.opacity = "1";
-              console.log("Overlay displayed"); // Debug log
-          }
-          
-          // Add class to body to prevent scrolling
-          body.classList.add("sidebar-open");
-          
-          // Add touch/click event to close on outside click
-          setTimeout(() => {
-              document.addEventListener('click', outsideClickHandler);
-          }, 100);
-      }
+    function openNav() {
+  const sidenav = document.getElementById("mySidenav");
+  const overlay = document.querySelector(".mobile-overlay");
+  sidenav.classList.add("open");
+  overlay.classList.add("show");
+}
 
-      function closeNav() {
-          const sidenav = document.getElementById("mySidenav");
-          const overlay = document.querySelector(".mobile-overlay");
-          const body = document.body;
-          
-          console.log("Closing navigation sidebar"); // Debug log
-          
-          if (sidenav) {
-              sidenav.style.width = "0";
-              setTimeout(() => {
-                  sidenav.style.display = "none";
-              }, 300);
-              console.log("Sidebar width set to 0"); // Debug log
-          }
-          
-          if (overlay) {
-              overlay.style.opacity = "0";
-              setTimeout(() => {
-                  overlay.style.display = "none";
-              }, 300);
-              console.log("Overlay hidden"); // Debug log
-          }
-          
-          // Remove class from body
-          body.classList.remove("sidebar-open");
-          
-          // Remove event listener
-          document.removeEventListener('click', outsideClickHandler);
-      }
+function closeNav() {
+  const sidenav = document.getElementById("mySidenav");
+  const overlay = document.querySelector(".mobile-overlay");
+  sidenav.classList.remove("open");
+  overlay.classList.remove("show");
+}
 
-      function outsideClickHandler(event) {
-          const sidenav = document.getElementById("mySidenav");
-          const menuBtn = document.querySelector('.menu-btn');
-          
-          // Check if click is outside sidebar and not on menu button
-          if (!sidenav.contains(event.target) && !menuBtn.contains(event.target)) {
-              closeNav();
-          }
-      }
+document.addEventListener("DOMContentLoaded", () => {
+  let overlay = document.querySelector(".mobile-overlay");
+  if (!overlay) {
+    overlay = document.createElement("div");
+    overlay.className = "mobile-overlay";
+    document.body.appendChild(overlay);
+  }
 
-      // Initialize mobile navigation on page load
-      document.addEventListener('DOMContentLoaded', function() {
-          // Ensure mobile overlay exists
-          let overlay = document.querySelector('.mobile-overlay');
-          if (!overlay) {
-              overlay = document.createElement('div');
-              overlay.className = 'mobile-overlay';
-              document.body.appendChild(overlay);
-          }
-          
-          // Close sidebar on window resize if moving to desktop
-          window.addEventListener('resize', function() {
-              if (window.innerWidth > 768) {
-                  closeNav();
-              }
-          });
-      });
+  overlay.addEventListener("click", closeNav);
+});
+
+      
 
       $(document).ready(function () {
         // Book keeping window functionality
