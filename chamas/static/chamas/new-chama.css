@@ -154,13 +154,10 @@
 }
 
 .member-list {
-
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 12px;
     padding: 24px 12px;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    align-self: stretch;
     border-radius: 8px;
     border: 0.25px solid var(--light, rgba(0, 0, 0, 0.20));
     background: var(--light-surface-tertiary, #F1F5F9);
@@ -385,7 +382,8 @@
 
 /* List tile styles */
 .member-tile {
-    margin-bottom: 8px;
+    margin-bottom: 0;
+    width: 100%;
 }
 
 .list-tile {
@@ -491,6 +489,8 @@
 /* Member count header */
 .member-count-header {
     padding: 8px 0;
+    grid-column: 1 / -1;
+    width: 100%;
 }
 
 .member-count-header hr {
@@ -828,6 +828,12 @@
   /* Mobile members section */
   .members-section {
     padding: 10px; /* Reduced from 16px */
+  }
+  
+  /* Mobile grid adjustments */
+  .member-list {
+    grid-template-columns: 1fr;
+    gap: 8px;
   }
   
   .members-title {
