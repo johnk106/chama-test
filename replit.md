@@ -1,104 +1,81 @@
-# Overview
+# ChamaBora - Chama Management System
 
-Chamabora is a comprehensive Django-based financial platform designed to facilitate community-based savings groups (chamas) in Kenya. The platform integrates traditional chama (rotating credit association) management with modern digital financial services, including M-Pesa integration, goal-based savings, peer-to-peer transactions, and automated SMS/push notifications. It serves as a complete fintech solution for organizing, managing, and tracking group savings activities while providing individual financial management tools.
+## Project Overview
+ChamaBora is a comprehensive Django-based web application for managing Chama (savings groups) activities. It provides features for group financial management, savings tracking, loans, contributions, and member management.
 
-# User Preferences
+## Architecture
+- **Framework**: Django 3.2.18
+- **Database**: SQLite (development), supports PostgreSQL for production
+- **Frontend**: Bootstrap, HTML/CSS/JavaScript
+- **Authentication**: Custom user authentication with OTP support
+- **Integrations**: M-Pesa, Twilio, Firebase Cloud Messaging, Cloudinary
+- **Languages**: Python 3.11
 
-Preferred communication style: Simple, everyday language.
+## Key Features
+- User registration and authentication
+- Chama (group) creation and management
+- Member management and roles
+- Contribution tracking and management
+- Loan management system
+- Financial reporting and analytics
+- Notification system (SMS, Push notifications)
+- Mobile money integration (M-Pesa)
+- Document management
+- Goal setting and tracking
+- Subscription management
 
-# System Architecture
+## Project Structure
+- `authentication/` - User authentication and profile management
+- `chamas/` - Core chama management functionality
+- `Dashboard/` - Main dashboard and analytics
+- `Goals/` - Personal and group goal management
+- `notifications/` - Notification system
+- `mpesa_integration/` - M-Pesa payment integration
+- `pyment_withdraw/` - Payment withdrawal functionality
+- `subscriptions/` - Subscription and payment plans
+- `wallet/` - Wallet and financial management
+- `home/` - Landing pages and static content
+- `bot/` - Bot integration for automated interactions
 
-## Backend Framework
-- **Django 3.1+**: Core web framework providing MVC architecture, ORM, and admin interface
-- **Python**: Primary programming language for business logic and integrations
-- **SQLite/PostgreSQL**: Database layer using Django ORM with multiple models for financial data
-- **ASGI/WSGI**: Application servers for handling HTTP requests and WebSocket connections
+## Recent Changes
+- **2025-09-03**: Successfully imported from GitHub and configured for Replit environment
+- Set up Python 3.11 environment with all required dependencies
+- Configured Django settings for Replit hosting
+- Successfully ran database migrations
+- Configured workflow for development server on port 5000
+- Static files properly collected and served
 
-## Authentication & User Management
-- **Django Auth System**: Built-in user authentication with custom Profile model extensions
-- **Phone-based Authentication**: OTP verification system using SMS for user registration
-- **Role-based Access Control**: Custom role system for chama membership hierarchy (admin, treasurer, member)
-- **Session Management**: Django sessions with custom middleware for subscription validation
+## User Preferences
+- Development server runs on 0.0.0.0:5000 for Replit compatibility
+- Uses SQLite for development database
+- Static files managed through WhiteNoise middleware
+- CSRF trusted origins configured for Replit domains
 
-## Financial Services Integration
-- **M-Pesa Integration**: Real-time mobile money transactions using Safaricom's API
-- **Twilio SMS**: Automated notifications and OTP delivery
-- **Payment Processing**: STK Push implementation for seamless mobile payments
-- **Transaction Tracking**: Comprehensive audit trail for all financial activities
+## Development Setup
+The project is configured to run in the Replit environment with:
+- Python 3.11 runtime
+- Django development server on port 5000
+- All dependencies installed via pip
+- Database migrations applied
+- Static files collected
 
-## Core Business Logic
-- **Chama Management**: Complete lifecycle management of rotating savings groups
-- **Contribution Tracking**: Automated contribution cycles (daily, weekly, bi-weekly, monthly)
-- **Award Distribution**: Algorithmic payout scheduling based on contribution turns
-- **Fine System**: Automated penalty calculation for late payments
-- **Loan Management**: Internal lending with interest calculation and payment tracking
+## Environment Variables
+The project uses placeholder values for development:
+- SECRET_KEY: Temporary development key
+- TWILIO_*: Placeholder Twilio credentials
+- CLOUDINARY_*: Placeholder Cloudinary credentials
+- CONSUMER_KEY/SECRET: Placeholder M-Pesa credentials
 
-## Savings & Goals System
-- **Personal Goals**: Individual savings targets with automated reminders
-- **Group Goals**: Collaborative savings with member contribution tracking
-- **Express Savings**: Quick deposit system with interest calculations
-- **Interest Calculations**: Compound interest using date-based calculations
+## Next Steps
+- Replace placeholder API keys with actual credentials when deploying
+- Configure production database settings
+- Set up proper security settings for production deployment
+- Configure HTTPS and security headers for production
 
-## Notification System
-- **Firebase Cloud Messaging**: Push notifications for mobile app users
-- **SMS Notifications**: Twilio-based messaging for contribution reminders and alerts
-- **Email Notifications**: Django email system for administrative communications
-- **Real-time Updates**: WebSocket connections for live dashboard updates
-
-## Bot Integration
-- **WhatsApp/SMS Bot**: Automated message processing for contribution confirmations
-- **Natural Language Processing**: Message parsing for financial transaction data
-- **Fraud Detection**: Pattern recognition for suspicious transaction activities
-- **Automated Approvals**: Rule-based transaction validation system
-
-## Subscription Management
-- **Tiered Subscriptions**: Multiple pricing plans with feature restrictions
-- **Trial Periods**: Free trial implementation with automatic conversion
-- **Payment Integration**: M-Pesa subscription billing with webhook callbacks
-- **Access Control**: Middleware-based feature gating based on subscription status
-
-## Data Architecture
-- **Multi-app Structure**: Modular Django apps (authentication, dashboard, goals, chamas, etc.)
-- **Related Models**: Complex foreign key relationships for financial data integrity
-- **Audit Logging**: Timestamp tracking for all financial transactions
-- **Data Validation**: Model-level constraints ensuring data consistency
-
-## Security Features
-- **CSRF Protection**: Django's built-in CSRF middleware
-- **Input Sanitization**: Form validation and data cleaning
-- **Access Control**: Function decorators for permission checking
-- **Secure Payment Processing**: Encrypted API communications with financial providers
-
-# External Dependencies
-
-## Financial Service Providers
-- **Safaricom M-Pesa API**: Mobile money integration for payments and withdrawals
-- **M-Pesa STK Push**: Real-time payment initiation service
-- **M-Pesa C2B**: Customer-to-business payment callbacks
-
-## Communication Services
-- **Twilio**: SMS delivery for notifications and OTP verification
-- **Firebase**: Push notification delivery and user engagement tracking
-- **Infobip**: SMS gateway for bot message processing
-
-## Infrastructure Services
-- **Cloudinary**: Image and media file storage for user profiles and documents
-- **Django Static Files**: Local static asset management
-- **Session Storage**: Django's database-backed session management
-
-## Frontend Technologies
-- **Firebase SDK**: Client-side push notification handling
-- **JavaScript**: Frontend interactivity and API communications
-- **HTML/CSS**: Template rendering with Django's template system
-
-## Development Tools
-- **Django Admin**: Administrative interface for data management
-- **Django Migrations**: Database schema version control
-- **Python Package Management**: Requirements-based dependency management
-- **Environment Configuration**: Settings management for different deployment stages
-
-## Monitoring & Analytics
-- **Transaction Logging**: Custom logging for financial operations
-- **User Activity Tracking**: Session-based user behavior monitoring
-- **Error Handling**: Django's exception handling with custom error pages
-- **Performance Monitoring**: Database query optimization and caching strategies
+## Dependencies
+All Python dependencies are managed through requirements.txt and include:
+- Django 3.2.18
+- Various Django extensions (django-twilio, fcm-django, etc.)
+- Third-party integrations (cloudinary, twilio, stripe, etc.)
+- PDF generation libraries (reportlab, xhtml2pdf)
+- Authentication libraries (firebase-admin, pyfcm)
