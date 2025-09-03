@@ -214,7 +214,7 @@
                                             <td>Ksh <span class="contribution-details-amount">0</span></td>
                                             <td style="display: none" id="member-id">{{member.id}}</td>
                                             <td>
-                                                <input type="number" id="amount" name="amount" class="amount-input-wide" placeholder="0" />
+                                                <input type="number" id="amount" name="amount" class="amount-input-wide" placeholder="0" value="0" />
                                             </td>
                                         </tr>
                                         {%endif%}
@@ -1466,14 +1466,21 @@ $(document).ready(function () {
          $(this).closest('.accordion-content').find('.member-row').each(function () {
              const memberIdInput = $(this).find('.amount-input-mobile');
              const memberId = memberIdInput.data('member-id');
-             const amount = memberIdInput.val();
+             var amount = memberIdInput.val();
+
+             console.log("amount:",amount);
+
+              // Convert empty values to 0
+            if (amount <= 0) {
+                amount = 0;
+            }
+
              
-             if (amount && amount > 0) {
+        
                  contributionData.push({
                      member_id: memberId,
                      amount: amount
                  });
-             }
          });
 
          if (contributionData.length === 0) {
@@ -1554,14 +1561,21 @@ $(document).ready(function () {
         const contributionData = [];
         $("#member-list tbody tr").each(function () {
             const memberId = $(this).find("#member-id").text();
-            const amount = $(this).find("input[name='amount']").val();
+            var amount = $(this).find("input[name='amount']").val();
+
+            print("amount:",amount);
+
+                
+             // Convert empty values to 0
+            if (amount <= 0) {
+            amount = 0;
+        }
             
-            if (amount && amount > 0) {
                 contributionData.push({
                     member_id: memberId,
                     amount: amount
                 });
-            }
+            
         });
 
         if (contributionData.length === 0) {

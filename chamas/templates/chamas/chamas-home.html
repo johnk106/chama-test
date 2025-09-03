@@ -16,6 +16,9 @@
   />
     <link rel="stylesheet" href="{%static 'chamas/brand-colors.css'%}" />
     <link rel="stylesheet" href="{%static 'chamas/chama-home.css'%}">
+    
+    <link rel="stylesheet" href="{%static 'chamas/chamas-base.css'%}" />
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
       <!-- Header styling CSS -->
   <link rel="stylesheet" href="{% static 'css/feather.css' %}">
@@ -23,10 +26,98 @@
   <link rel="stylesheet" href="{% static 'css/style-test.css' %}">
 
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
-    
+    <style rel="stylesheet">
+  
+    /* full‐screen overlay */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.4);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* when visible */
+.modal.show {
+  display: flex;
+}
+
+/* white box */
+.modal-content {
+  background: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 90%;
+  width: 400px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* the close “×” */
+.close-btn {
+  position: absolute;
+  top: 0.5rem; right: 0.5rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* optional icon styling */
+.modal-icon img {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 1rem;
+}
+
+
+</style>
     <title>Chamas - Choose Your Type</title>
 </head>
 <body class="chama-home-page">
+   <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <div class="logo_details">
+          <img src="{%static 'chamas/logo.png'%}" alt="Logo" />
+        </div>
+        <ul class="nav-list">
+          <li>
+            <a href="{% url 'goals_dashboard' %}">
+              <i class='bx bx-arrow-back'></i>
+              <span class="link_name">Back to Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'chamas:my-chamas' %}">
+              <i class="fa-solid fa-gauge"></i>
+              <span class="link_name">My Chamas</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <i class="fa-solid fa-group-arrows-rotate"></i>
+              <span class="link_name">Merry-go-round chama</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="bookeeping-window">
+              <i class="fa-solid fa-clipboard"></i>
+              <span class="link_name">Book keeping</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <i class="fa-solid fa-building-columns"></i>
+              <span class="link_name">Table Banking</span>
+            </a>
+          </li>
+        </ul>
+      </div>
 
 <!-- Full Width Layout -->
 <div class="chama-home-layout">
@@ -219,11 +310,11 @@
                 <img class="homer_white" src="{% static 'images/home_white.png' %}" alt="" style="width: 24px; height: 24px; margin-bottom: 4px; filter: brightness(0) invert(1);">
                 <p style="margin: 0; color: #fff; font-size: 12px; text-align: center;">Home</p>
             </a>
-            <a href="{% url 'chamas:chamas' %}" class="footer_button btn active" style="color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 8px 12px; background: rgba(255, 255, 255, 0.2); border-radius: 8px;">
+            <a href="{% url 'chamas:chamas' %}" class="footer_button btn" style="color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 8px 12px; border-radius: 8px;">
                 <img src="{% static 'images/filter_active.png' %}" alt="" style="width: 24px; height: 24px; margin-bottom: 4px; filter: brightness(0) invert(1);">
                 <p style="margin: 0; color: #fff; font-size: 12px; text-align: center; font-weight: 600;">Features</p>
             </a>
-            <a href="{% url 'wallet_index' %}" class="footer_button btn" style="color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 8px 12px;">
+            <a href="#" class="footer_button btn coming_soon" style="color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 8px 12px;">
                 <img src="{% static 'images/wallet_alt_fill.png' %}" alt="" style="width: 24px; height: 24px; margin-bottom: 4px; filter: brightness(0) invert(1);">
                 <p style="margin: 0; color: #fff; font-size: 12px; text-align: center;">Account</p>
             </a>
@@ -238,6 +329,60 @@
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<div id="comingSoonModal" class="modal">
+  <div class="modal-content">
+    <button class="close-btn" aria-label="Close">&times;</button>
+
+    <!-- inline SVG clock icon -->
+    <div class="modal-icon">
+      <svg xmlns="http://www.w3.org/2000/svg"
+           width="64" height="64"
+           viewBox="0 0 24 24"
+           fill="none"
+           stroke="#333"
+           stroke-width="2"
+           stroke-linecap="round"
+           stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline points="12 6 12 12 16 14"/>
+      </svg>
+    </div>
+
+    <h2>Coming Soon!</h2>
+    <p>We’re busy cooking up something great for this feature. Stay tuned!</p>
+  </div>
+</div>
+
+ <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('comingSoonModal');
+    const closeBtn = modal.querySelector('.close-btn');
+
+    // Show modal helper
+    function showComingSoon() {
+      modal.classList.add('show');
+    }
+
+    // Hide modal helper
+    function hideComingSoon() {
+      modal.classList.remove('show');
+    }
+
+    // Attach click handler to each feature tile
+    document.querySelectorAll('.coming_soon').forEach(tile => {
+      tile.addEventListener('click', showComingSoon);
+    });
+
+    // Close button
+    closeBtn.addEventListener('click', hideComingSoon);
+
+    // Also close if user clicks outside the content box
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) hideComingSoon();
+    });
+  });
+</script>
 <script>
 $(document).ready(function() {
     // Book keeping card click handler
@@ -259,6 +404,105 @@ $(document).ready(function() {
     );
 });
 </script>
+<script>
+      /* Enhanced Mobile Navigation Functions */
+      function openNav() {
+          const sidenav = document.getElementById("mySidenav");
+          const overlay = document.querySelector(".mobile-overlay");
+          const body = document.body;
+          
+          console.log("Opening navigation sidebar"); // Debug log
+          
+          if (sidenav) {
+              sidenav.style.width = "280px";
+              sidenav.style.display = "block";
+              console.log("Sidebar width set to 280px"); // Debug log
+          }
+          
+          if (overlay) {
+              overlay.style.display = "block";
+              overlay.style.opacity = "1";
+              console.log("Overlay displayed"); // Debug log
+          }
+          
+          // Add class to body to prevent scrolling
+          body.classList.add("sidebar-open");
+          
+          // Add touch/click event to close on outside click
+          setTimeout(() => {
+              document.addEventListener('click', outsideClickHandler);
+          }, 100);
+      }
+
+      function closeNav() {
+          const sidenav = document.getElementById("mySidenav");
+          const overlay = document.querySelector(".mobile-overlay");
+          const body = document.body;
+          
+          console.log("Closing navigation sidebar"); // Debug log
+          
+          if (sidenav) {
+              sidenav.style.width = "0";
+              setTimeout(() => {
+                  sidenav.style.display = "none";
+              }, 300);
+              console.log("Sidebar width set to 0"); // Debug log
+          }
+          
+          if (overlay) {
+              overlay.style.opacity = "0";
+              setTimeout(() => {
+                  overlay.style.display = "none";
+              }, 300);
+              console.log("Overlay hidden"); // Debug log
+          }
+          
+          // Remove class from body
+          body.classList.remove("sidebar-open");
+          
+          // Remove event listener
+          document.removeEventListener('click', outsideClickHandler);
+      }
+
+      function outsideClickHandler(event) {
+          const sidenav = document.getElementById("mySidenav");
+          const menuBtn = document.querySelector('.menu-btn');
+          
+          // Check if click is outside sidebar and not on menu button
+          if (!sidenav.contains(event.target) && !menuBtn.contains(event.target)) {
+              closeNav();
+          }
+      }
+
+      // Initialize mobile navigation on page load
+      document.addEventListener('DOMContentLoaded', function() {
+          // Ensure mobile overlay exists
+          let overlay = document.querySelector('.mobile-overlay');
+          if (!overlay) {
+              overlay = document.createElement('div');
+              overlay.className = 'mobile-overlay';
+              document.body.appendChild(overlay);
+          }
+          
+          // Close sidebar on window resize if moving to desktop
+          window.addEventListener('resize', function() {
+              if (window.innerWidth > 768) {
+                  closeNav();
+              }
+          });
+      });
+
+      $(document).ready(function () {
+        // Book keeping window functionality
+        $(".bookeeping-window").click(function(e) {
+          e.preventDefault();
+          // Add your book keeping functionality here
+          console.log("Book keeping clicked");
+        });
+      });
+    </script>
+
+
 
 </body>
 </html>

@@ -105,7 +105,57 @@
       cursor: pointer;
     }
   </style>
+<style rel="stylesheet">
+  
+    /* full‐screen overlay */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.4);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
 
+/* when visible */
+.modal.show {
+  display: flex;
+}
+
+/* white box */
+.modal-content {
+  background: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 90%;
+  width: 400px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* the close “×” */
+.close-btn {
+  position: absolute;
+  top: 0.5rem; right: 0.5rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* optional icon styling */
+.modal-icon img {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 1rem;
+}
+
+
+</style>
 
   {%block head%}
   <title>Chamaspace</title>
@@ -432,7 +482,7 @@
   </div>
 
   <!-- Shortcuts Modal -->
-  <div class="modal fade modal-shortcut modal-slide" tabindex="-1" role="dialog" aria-labelledby="defaultModalLabel"
+  <!-- <div class="modal fade modal-shortcut modal-slide" tabindex="-1" role="dialog" aria-labelledby="defaultModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -458,7 +508,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <!-- modals  -->
 
@@ -1177,13 +1227,13 @@
             style="width: 24px; height: 24px; margin-bottom: 4px; filter: brightness(0) invert(1);">
           <p style="margin: 0; color: #fff; font-size: 12px; text-align: center;">Home</p>
         </a>
-        <a href="{% url 'chamas:chamas' %}" class="footer_button btn active"
-          style="color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 8px 12px; background: rgba(255, 255, 255, 0.2); border-radius: 8px;">
+        <a href="{% url 'chamas:chamas' %}" class="footer_button btn"
+          style="color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 8px 12px; border-radius: 8px;">
           <img src="{% static 'images/filter_active.png' %}" alt=""
             style="width: 24px; height: 24px; margin-bottom: 4px; filter: brightness(0) invert(1);">
           <p style="margin: 0; color: #fff; font-size: 12px; text-align: center; font-weight: 600;">Features</p>
         </a>
-        <a href="{% url 'wallet_index' %}" class="footer_button btn"
+        <a href="#" class="footer_button btn coming_soon"
           style="color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 8px 12px;">
           <img src="{% static 'images/wallet_alt_fill.png' %}" alt=""
             style="width: 24px; height: 24px; margin-bottom: 4px; filter: brightness(0) invert(1);">
@@ -1199,6 +1249,59 @@
     </div>
   </footer>
 
+<div id="comingSoonModal" class="modal">
+  <div class="modal-content">
+    <button class="close-btn" aria-label="Close">&times;</button>
+
+    <!-- inline SVG clock icon -->
+    <div class="modal-icon">
+      <svg xmlns="http://www.w3.org/2000/svg"
+           width="64" height="64"
+           viewBox="0 0 24 24"
+           fill="none"
+           stroke="#333"
+           stroke-width="2"
+           stroke-linecap="round"
+           stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline points="12 6 12 12 16 14"/>
+      </svg>
+    </div>
+
+    <h2>Coming Soon!</h2>
+    <p>We’re busy cooking up something great for this feature. Stay tuned!</p>
+  </div>
+</div>
+
+ <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('comingSoonModal');
+    const closeBtn = modal.querySelector('.close-btn');
+
+    // Show modal helper
+    function showComingSoon() {
+      modal.classList.add('show');
+    }
+
+    // Hide modal helper
+    function hideComingSoon() {
+      modal.classList.remove('show');
+    }
+
+    // Attach click handler to each feature tile
+    document.querySelectorAll('.coming_soon').forEach(tile => {
+      tile.addEventListener('click', showComingSoon);
+    });
+
+    // Close button
+    closeBtn.addEventListener('click', hideComingSoon);
+
+    // Also close if user clicks outside the content box
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) hideComingSoon();
+    });
+  });
+</script>
 
 </body>
 

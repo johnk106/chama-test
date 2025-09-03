@@ -528,11 +528,11 @@
 
                             <p>Home</p>
                         </a>
-                        <a href="#" class="footer_button btn active">
+                        <a href="#" class="footer_button btn">
                             <img src="{% static 'images/filter_active.png' %}" alt="">
                             <p>Features</p>
                         </a>
-                        <a href="{% url 'wallet_index' %}" class="footer_button btn">
+                        <a href="{% url 'wallet_index' %}" class="footer_button btn coming_soon">
                             <img src="{% static 'images/wallet_alt_fill.png' %}" alt="">
                             <p>Account</p>
                         </a>
@@ -546,7 +546,59 @@
             </div>
         </main>
     </div>
+<div id="comingSoonModal" class="modal">
+  <div class="modal-content">
+    <button class="close-btn" aria-label="Close">&times;</button>
 
+    <!-- inline SVG clock icon -->
+    <div class="modal-icon">
+      <svg xmlns="http://www.w3.org/2000/svg"
+           width="64" height="64"
+           viewBox="0 0 24 24"
+           fill="none"
+           stroke="#333"
+           stroke-width="2"
+           stroke-linecap="round"
+           stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline points="12 6 12 12 16 14"/>
+      </svg>
+    </div>
+
+    <h2>Coming Soon!</h2>
+    <p>We’re busy cooking up something great for this feature. Stay tuned!</p>
+  </div>
+</div>
+
+ <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('comingSoonModal');
+    const closeBtn = modal.querySelector('.close-btn');
+
+    // Show modal helper
+    function showComingSoon() {
+      modal.classList.add('show');
+    }
+
+    // Hide modal helper
+    function hideComingSoon() {
+      modal.classList.remove('show');
+    }
+
+    // Attach click handler to each feature tile
+    document.querySelectorAll('.coming_soon').forEach(tile => {
+      tile.addEventListener('click', showComingSoon);
+    });
+
+    // Close button
+    closeBtn.addEventListener('click', hideComingSoon);
+
+    // Also close if user clicks outside the content box
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) hideComingSoon();
+    });
+  });
+</script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
