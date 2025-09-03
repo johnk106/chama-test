@@ -537,7 +537,7 @@
                 <img class="homer_white" src="{% static 'images/home_white.png' %}" alt="" style="width: 24px; height: 24px; margin-bottom: 4px; filter: brightness(0) invert(1);">
                 <p style="margin: 0; color: #fff; font-size: 12px; text-align: center;">Home</p>
             </a>
-            <a href="{% url 'chamas:chamas' %}" class="footer_button btn" style="color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 8px 12px;  border-radius: 8px;">
+            <a href="#" class="footer_button btn" id="featuresBtn" style="color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 8px 12px;  border-radius: 8px;">
                 <img src="{% static 'images/filter_active.png' %}" alt="" style="width: 24px; height: 24px; margin-bottom: 4px; filter: brightness(0) invert(1);">
                 <p style="margin: 0; color: #fff; font-size: 12px; text-align: center; font-weight: 600;">Features</p>
             </a>
@@ -605,5 +605,303 @@
     });
   });
 </script>
+
+<!-- Bottom Drawer -->
+<div id="bottomDrawer" class="bottom-drawer">
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <div class="drawer-content">
+    <div class="drawer-header">
+      <h3>Features</h3>
+      <button class="drawer-close" id="drawerClose">&times;</button>
+    </div>
+    <div class="drawer-body">
+      <div class="feature-grid">
+        <!-- Chamas Feature -->
+        <div class="feature-item" data-feature="chamas">
+          <div class="feature-icon">
+            <img src="{% static 'images/icon_people.png' %}" alt="Chamas" style="width: 40px; height: 40px;">
+          </div>
+          <div class="feature-content">
+            <h4>Chamas</h4>
+            <p>Join and manage group savings</p>
+          </div>
+        </div>
+        
+        <!-- Wekeza Goals Feature -->
+        <div class="feature-item coming-soon-item" data-feature="wekeza">
+          <div class="feature-icon">
+            <img src="{% static 'images/service-icon-01.png' %}" alt="Wekeza Goals" style="width: 40px; height: 40px;">
+          </div>
+          <div class="feature-content">
+            <h4>Wekeza Goals</h4>
+            <p>Personal savings & investment goals</p>
+          </div>
+          <div class="coming-soon-badge">Coming Soon</div>
+        </div>
+        
+        <!-- Kopesha Feature -->
+        <div class="feature-item coming-soon-item" data-feature="kopesha">
+          <div class="feature-icon">
+            <img src="{% static 'images/kopesha.png' %}" alt="Kopesha" style="width: 40px; height: 40px;">
+          </div>
+          <div class="feature-content">
+            <h4>Kopesha</h4>
+            <p>Quick loans & financial assistance</p>
+          </div>
+          <div class="coming-soon-badge">Coming Soon</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Bottom Drawer Styles */
+.bottom-drawer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0.3s, opacity 0.3s;
+}
+
+.bottom-drawer.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+.drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.drawer-content {
+  position: relative;
+  background: white;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.2);
+  transform: translateY(100%);
+  transition: transform 0.3s ease-out;
+  z-index: 2;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.bottom-drawer.show .drawer-content {
+  transform: translateY(0);
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.drawer-header h3 {
+  margin: 0;
+  color: #2291A5;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.drawer-close {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: #666;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.drawer-close:hover {
+  background-color: #f0f0f0;
+}
+
+.drawer-body {
+  padding: 20px 25px 30px;
+}
+
+.feature-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  background: white;
+}
+
+.feature-item:hover {
+  border-color: #2291A5;
+  box-shadow: 0 4px 12px rgba(34, 145, 165, 0.1);
+  transform: translateY(-2px);
+}
+
+.feature-item:active {
+  transform: translateY(0);
+}
+
+.feature-icon {
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+.feature-content {
+  flex: 1;
+}
+
+.feature-content h4 {
+  margin: 0 0 5px 0;
+  color: #333;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.feature-content p {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.coming-soon-item {
+  opacity: 0.7;
+}
+
+.coming-soon-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #ff6b6b;
+  color: white;
+  font-size: 0.7rem;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+  .drawer-content {
+    max-width: 500px;
+    margin: 0 auto;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .bottom-drawer.show .drawer-content {
+    transform: translateY(-20px);
+  }
+}
+
+/* Hide drawer on larger screens where footer is hidden */
+@media screen and (min-width: 992px) {
+  .bottom-drawer { display: none !important; }
+}
+</style>
+
+<script>
+// Bottom Drawer Functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const featuresBtn = document.getElementById('featuresBtn');
+  const bottomDrawer = document.getElementById('bottomDrawer');
+  const drawerOverlay = document.getElementById('drawerOverlay');
+  const drawerClose = document.getElementById('drawerClose');
+  const comingSoonItems = document.querySelectorAll('.coming-soon-item');
+  const chamasItem = document.querySelector('[data-feature="chamas"]');
+  const comingSoonModal = document.getElementById('comingSoonModal');
+
+  // Open drawer when features button is clicked
+  if (featuresBtn) {
+    featuresBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      openDrawer();
+    });
+  }
+
+  // Close drawer functions
+  function closeDrawer() {
+    bottomDrawer.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  function openDrawer() {
+    bottomDrawer.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+
+  // Close drawer on overlay click
+  if (drawerOverlay) {
+    drawerOverlay.addEventListener('click', closeDrawer);
+  }
+
+  // Close drawer on close button click
+  if (drawerClose) {
+    drawerClose.addEventListener('click', closeDrawer);
+  }
+
+  // Handle chamas item click
+  if (chamasItem) {
+    chamasItem.addEventListener('click', function() {
+      closeDrawer();
+      // Navigate to chamas page
+      window.location.href = "{% url 'chamas:chamas' %}";
+    });
+  }
+
+  // Handle coming soon items
+  comingSoonItems.forEach(item => {
+    item.addEventListener('click', function() {
+      closeDrawer();
+      // Show coming soon modal after a short delay
+      setTimeout(() => {
+        if (comingSoonModal) {
+          comingSoonModal.classList.add('show');
+        }
+      }, 300);
+    });
+  });
+
+  // Close drawer on escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && bottomDrawer.classList.contains('show')) {
+      closeDrawer();
+    }
+  });
+
+  // Prevent body scroll when drawer is open
+  bottomDrawer.addEventListener('touchmove', function(e) {
+    if (bottomDrawer.classList.contains('show')) {
+      e.preventDefault();
+    }
+  }, { passive: false });
+});
+</script>
+
   </body>
 </html>
