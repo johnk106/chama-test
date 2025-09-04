@@ -346,11 +346,11 @@
 
 /* Fix Bootstrap modal visibility and styling */
 .modal {
-    z-index: 10050 !important;
+    z-index: 1055 !important;
 }
 
 .modal-backdrop {
-    z-index: 10040 !important;
+    z-index: 1050 !important;
     background-color: rgba(0, 0, 0, 0.5) !important;
 }
 
@@ -359,14 +359,18 @@
 }
 
 .modal-dialog {
-    z-index: 10060 !important;
+    z-index: 1056 !important;
+    position: relative !important;
 }
 
 .modal-content {
+    z-index: 1057 !important;
+    position: relative !important;
     background: white !important;
     border-radius: 8px !important;
     box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
     opacity: 1 !important;
+    pointer-events: auto !important;
 }
 
 .brand-modal {
@@ -1392,6 +1396,23 @@ $(document).ready(function() {
         if (e.target === this) {
             $(this).modal('hide');
         }
+    });
+    
+    // Fix z-index stacking when modal shows
+    $(document).on('show.bs.modal', '.modal', function() {
+        const modal = $(this);
+        const modalDialog = modal.find('.modal-dialog');
+        const modalContent = modal.find('.modal-content');
+        
+        // Set proper z-index values
+        modal.css('z-index', '1055');
+        modalDialog.css('z-index', '1056');
+        modalContent.css('z-index', '1057');
+        
+        // Ensure backdrop is behind modal
+        setTimeout(() => {
+            $('.modal-backdrop').css('z-index', '1050');
+        }, 0);
     });
 });
 </script>
