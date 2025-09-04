@@ -143,7 +143,7 @@
 /* Mobile FAB styles */
 .fab-container {
     position: fixed;
-    bottom: 24px;
+    bottom: 80px;
     right: 24px;
     z-index: 1050;
     display: none;
@@ -344,144 +344,70 @@
     border: 1px solid #fde68a;
 }
 
-/* Modal Styles */
+/* Fix Bootstrap modal visibility and styling */
 .modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 10000;
-    opacity: 0;
-    transition: all 0.3s ease;
+    z-index: 1060 !important;
 }
 
-.modal.active {
-    display: flex;
-    opacity: 1;
-    justify-content: center;
-    align-items: center;
-    padding: 2rem;
+.modal-backdrop {
+    z-index: 1055 !important;
+}
+
+.modal-dialog {
+    z-index: 1061 !important;
 }
 
 .modal-content {
-    background: white;
-    border-radius: var(--brand-border-radius-lg, 8px);
-    max-width: 800px;
-    width: 100%;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: var(--brand-shadow-lg, 0 4px 20px rgba(0,0,0,0.15));
-    transform: scale(0.9);
-    transition: all 0.3s ease;
+    background: white !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
+    opacity: 1 !important;
 }
 
-.modal.active .modal-content {
-    transform: scale(1);
+.brand-modal {
+    background: white !important;
 }
 
-.modal-header {
-    padding: 2rem 2rem 1rem;
-    border-bottom: 1px solid var(--brand-gray-200, #e9ecef);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.brand-modal-header {
+    background: white !important;
+    border-bottom: 1px solid #dee2e6 !important;
+    padding: 1.5rem;
 }
 
-.modal-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--brand-gray-900);
-    margin: 0;
+.brand-modal-footer {
+    background: white !important;
+    border-top: 1px solid #dee2e6 !important;
+    padding: 1.5rem;
 }
 
-.modal-close {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: var(--brand-gray-400);
-    cursor: pointer;
-    padding: 0.5rem;
-    border-radius: var(--brand-border-radius);
-    transition: all 0.3s ease;
-}
-
-.modal-close:hover {
-    background: var(--brand-gray-100);
-    color: var(--brand-gray-600);
-}
-
-.modal-body {
-    padding: 2rem;
-}
-
-.form-group {
-    margin-bottom: 1rem;
-}
-
-.form-label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-    color: var(--brand-gray-700);
-}
-
-.form-input {
-    width: 100%;
-    padding: 0.75rem;
-    border: 2px solid var(--brand-gray-200);
-    border-radius: var(--brand-border-radius);
-    font-size: 0.875rem;
-    transition: all 0.3s ease;
-}
-
-.form-input:focus {
-    outline: none;
+.brand-form .form-control:focus {
     border-color: var(--brand-primary);
-    box-shadow: 0 0 0 3px rgba(33, 145, 165, 0.1);
+    box-shadow: 0 0 0 0.2rem rgba(33, 145, 165, 0.25);
 }
 
-.form-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: flex-end;
-    margin-top: 2rem;
+.alert {
+    border-radius: var(--brand-border-radius, 4px);
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
 }
 
-.btn-cancel {
-    padding: 0.75rem 1.5rem;
-    border: 1px solid var(--brand-gray-300);
-    background: white;
-    border-radius: var(--brand-border-radius);
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.3s ease;
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
 }
 
-.btn-cancel:hover {
-    background: var(--brand-gray-50);
+.alert-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeaa7;
 }
 
-.btn-submit {
-    padding: 0.75rem 1.5rem;
-    background: var(--brand-primary);
-    color: white;
-    border: none;
-    border-radius: var(--brand-border-radius);
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.btn-submit:hover {
-    background: var(--brand-primary-hover);
-}
-
-.btn-submit:disabled {
-    background: var(--brand-gray-300);
-    cursor: not-allowed;
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
 }
 </style>
 {% endblock %}
@@ -960,9 +886,8 @@ function openMemberModal(memberId) {
         </div>
     `;
     
-    // Show modal using Bootstrap
-    const modal = new bootstrap.Modal(document.getElementById('memberModal'));
-    modal.show();
+    // Show modal using jQuery
+    $('#memberModal').modal('show');
     
     // Load member details
     loadMemberDetails(memberId);
@@ -1074,14 +999,15 @@ function openAddMemberModal() {
     // Close FAB if open
     closeFAB();
     
-    // Show modal using Bootstrap
-    const modal = new bootstrap.Modal(document.getElementById('addMemberModal'));
-    modal.show();
+    // Show modal using jQuery
+    $('#addMemberModal').modal('show');
     
     // Focus on first input after modal is shown
-    document.getElementById('addMemberModal').addEventListener('shown.bs.modal', function() {
-        document.getElementById('memberName').focus();
-    }, { once: true });
+    $('#addMemberModal').on('shown.bs.modal', function() {
+        setTimeout(() => {
+            document.getElementById('memberName').focus();
+        }, 100);
+    });
 }
 
 function submitAddMember(event) {
@@ -1131,9 +1057,8 @@ function submitAddMember(event) {
     .then(response => {
         return response.json().then(data => {
             if (response.ok && data.status === 'success') {
-                // Close the modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('addMemberModal'));
-                modal.hide();
+                // Close the modal using jQuery
+                $('#addMemberModal').modal('hide');
                 
                 showAlert(data.message, 'success');
                 
@@ -1259,14 +1184,15 @@ function populateEditForm(memberId, memberData) {
 }
 
 function showEditModal() {
-    // Show modal using Bootstrap
-    const modal = new bootstrap.Modal(document.getElementById('editMemberModal'));
-    modal.show();
+    // Show modal using jQuery
+    $('#editMemberModal').modal('show');
     
     // Focus on first field after modal is shown
-    document.getElementById('editMemberModal').addEventListener('shown.bs.modal', function() {
-        document.getElementById('editMemberName').focus();
-    }, { once: true });
+    $('#editMemberModal').on('shown.bs.modal', function() {
+        setTimeout(() => {
+            document.getElementById('editMemberName').focus();
+        }, 100);
+    });
 }
 
 function submitEditMember(event) {
@@ -1306,9 +1232,8 @@ function submitEditMember(event) {
     .then(response => {
         return response.json().then(data => {
             if (response.ok && data.status === 'success') {
-                // Close the modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('editMemberModal'));
-                modal.hide();
+                // Close the modal using jQuery
+                $('#editMemberModal').modal('hide');
                 
                 showAlert(data.message, 'success');
                 
@@ -1345,9 +1270,8 @@ function confirmRemoveMember(memberId, memberName) {
     document.getElementById('removeMemberId').value = memberId;
     document.getElementById('removeMemberName').textContent = memberName;
     
-    // Show confirmation modal
-    const modal = new bootstrap.Modal(document.getElementById('removeMemberModal'));
-    modal.show();
+    // Show confirmation modal using jQuery
+    $('#removeMemberModal').modal('show');
 }
 
 function performRemoveMember(memberId, memberName) {
@@ -1370,9 +1294,8 @@ function performRemoveMember(memberId, memberName) {
     .then(response => {
         return response.json().then(data => {
             if (response.ok && data.status === 'success') {
-                // Close the modal
-        const modal = bootstrap.Modal.getInstance(document.getElementById('removeMemberModal'));
-        modal.hide();
+                // Close the modal using jQuery
+        $('#removeMemberModal').modal('hide');
         
         showAlert(`${memberName} has been removed from the chama`, 'success');
                 
