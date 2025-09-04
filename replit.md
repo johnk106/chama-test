@@ -1,81 +1,74 @@
-# ChamaBora - Chama Management System
+# ChamaSpace - Chama Management Platform
 
-## Project Overview
-ChamaBora is a comprehensive Django-based web application for managing Chama (savings groups) activities. It provides features for group financial management, savings tracking, loans, contributions, and member management.
+## Overview
+ChamaSpace (Chamabora) is a Django-based web application for managing chama (group savings) activities. It provides features for group management, contributions tracking, loans, investments, and financial reporting.
 
-## Architecture
-- **Framework**: Django 3.2.18
-- **Database**: SQLite (development), supports PostgreSQL for production
-- **Frontend**: Bootstrap, HTML/CSS/JavaScript
-- **Authentication**: Custom user authentication with OTP support
-- **Integrations**: M-Pesa, Twilio, Firebase Cloud Messaging, Cloudinary
-- **Languages**: Python 3.11
+## Recent Changes (September 4, 2025)
+- Successfully imported from GitHub and configured for Replit environment
+- Installed Python 3.11 and all required dependencies
+- Set up SQLite database and ran all migrations
+- Configured Django settings for Replit domains and CSRF protection
+- Updated workflow to serve on port 5000 with proper host settings
+- Set up deployment configuration using autoscale with Gunicorn
 
-## Key Features
-- User registration and authentication
-- Chama (group) creation and management
-- Member management and roles
-- Contribution tracking and management
-- Loan management system
-- Financial reporting and analytics
-- Notification system (SMS, Push notifications)
+## Project Architecture
+
+### Core Apps
+- **authentication**: User registration, login, and profile management
+- **chamas**: Core chama functionality, members, contributions, loans, fines
+- **Dashboard**: Main dashboard and analytics
+- **Goals**: Savings goals and financial targets
+- **notifications**: Push notifications using FCM
+- **wallet**: Digital wallet and payment processing
+- **subscriptions**: Subscription plans and billing
+- **mpesa_integration**: M-Pesa mobile payment integration
+- **pyment_withdraw**: Withdrawal and payout functionality
+
+### Key Features
+- Group savings management (chamas)
+- Member contributions tracking
+- Loan management with due dates and interest
+- Fine and penalty system
+- Investment and income tracking
 - Mobile money integration (M-Pesa)
-- Document management
-- Goal setting and tracking
-- Subscription management
+- Push notifications
+- PDF report generation
+- Subscription billing
 
-## Project Structure
-- `authentication/` - User authentication and profile management
-- `chamas/` - Core chama management functionality
-- `Dashboard/` - Main dashboard and analytics
-- `Goals/` - Personal and group goal management
-- `notifications/` - Notification system
-- `mpesa_integration/` - M-Pesa payment integration
-- `pyment_withdraw/` - Payment withdrawal functionality
-- `subscriptions/` - Subscription and payment plans
-- `wallet/` - Wallet and financial management
-- `home/` - Landing pages and static content
-- `bot/` - Bot integration for automated interactions
-
-## Recent Changes
-- **2025-09-03**: Successfully imported from GitHub and configured for Replit environment
-- Set up Python 3.11 environment with all required dependencies
-- Configured Django settings for Replit hosting
-- Successfully ran database migrations
-- Configured workflow for development server on port 5000
-- Static files properly collected and served
-
-## User Preferences
-- Development server runs on 0.0.0.0:5000 for Replit compatibility
-- Uses SQLite for development database
-- Static files managed through WhiteNoise middleware
-- CSRF trusted origins configured for Replit domains
+### Tech Stack
+- **Backend**: Django 3.2.18
+- **Database**: SQLite (development), PostgreSQL support available
+- **Frontend**: Bootstrap, jQuery, Swiper.js
+- **Payment**: Stripe, M-Pesa integration
+- **Cloud Storage**: Cloudinary
+- **Notifications**: Firebase FCM
+- **PDF Generation**: ReportLab, xhtml2pdf
+- **Server**: Gunicorn for production
 
 ## Development Setup
-The project is configured to run in the Replit environment with:
-- Python 3.11 runtime
-- Django development server on port 5000
-- All dependencies installed via pip
-- Database migrations applied
-- Static files collected
+- Python 3.11 with dependencies from requirements_clean.txt
+- Django development server runs on port 5000
+- Database: SQLite (db.sqlite3)
+- Static files served via Whitenoise
+- CSRF protection configured for Replit domains
+
+## Deployment
+- Target: Replit Autoscale
+- Build: Install dependencies from requirements_clean.txt
+- Run: Gunicorn WSGI server on port 5000
+- Production-ready with proper static file handling
 
 ## Environment Variables
-The project uses placeholder values for development:
-- SECRET_KEY: Temporary development key
-- TWILIO_*: Placeholder Twilio credentials
-- CLOUDINARY_*: Placeholder Cloudinary credentials
-- CONSUMER_KEY/SECRET: Placeholder M-Pesa credentials
+The application uses placeholder values for development. For production:
+- Twilio credentials for SMS
+- Cloudinary for media storage
+- M-Pesa API credentials
+- Firebase FCM server key
+- Stripe payment keys
 
-## Next Steps
-- Replace placeholder API keys with actual credentials when deploying
-- Configure production database settings
-- Set up proper security settings for production deployment
-- Configure HTTPS and security headers for production
-
-## Dependencies
-All Python dependencies are managed through requirements.txt and include:
-- Django 3.2.18
-- Various Django extensions (django-twilio, fcm-django, etc.)
-- Third-party integrations (cloudinary, twilio, stripe, etc.)
-- PDF generation libraries (reportlab, xhtml2pdf)
-- Authentication libraries (firebase-admin, pyfcm)
+## Status
+✅ Application successfully running in Replit environment
+✅ All core functionality accessible
+✅ Database migrations completed
+✅ Static files loading correctly
+✅ Deployment configuration ready

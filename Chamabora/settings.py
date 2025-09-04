@@ -67,7 +67,7 @@ ALLOWED_HOSTS = ['*']
 
 # CSRF Settings for Replit
 CSRF_TRUSTED_ORIGINS = [
-    'https://383cc30e-26c5-4ac5-8189-d9640f1ed549-00-2061prwmg566i.riker.replit.dev',
+    'https://ea85c583-ca9a-4f4c-9a9f-4f0823040429-00-1nb265s3tpglb.kirk.replit.dev',
     'https://*.replit.dev',
     'https://*.replit.app',
 ]
