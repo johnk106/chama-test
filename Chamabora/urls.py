@@ -24,7 +24,7 @@ urlpatterns = [
     path('', include('home.urls')),
     path('user/', include('authentication.urls')),
     path('wallet/', include('wallet.urls')),
-    path('goals/', include('Goals.urls')),
+    path('homepage/', include('Goals.urls')),
     path('load_money/', include('mpesa_integration.urls')),
     path('withdraw/', include('pyment_withdraw.urls')),
     path('dashboard/', include('Dashboard.urls')),
