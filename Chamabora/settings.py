@@ -75,11 +75,11 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
 ALLOWED_HOSTS = ['*']
 
-# CSRF Settings for Replit
+# CSRF Settings for Replit - Allow all Replit domains
 CSRF_TRUSTED_ORIGINS = [
-    'https://ea85c583-ca9a-4f4c-9a9f-4f0823040429-00-1nb265s3tpglb.kirk.replit.dev',
     'https://*.replit.dev',
     'https://*.replit.app',
+    'https://*.replit.co',
 ]
 
 # Application definition
