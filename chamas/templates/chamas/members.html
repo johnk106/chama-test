@@ -140,13 +140,13 @@
     color: var(--brand-gray-400);
 }
 
-/* Mobile FAB styles like expenses page */
+/* Mobile FAB styles */
 .fab-container {
     position: fixed;
     bottom: 24px;
     right: 24px;
-    z-index: 1000;
-    display: none; /* Show only on mobile */
+    z-index: 1050;
+    display: none;
 }
 
 .fab-backdrop {
@@ -156,15 +156,17 @@
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.3);
-    z-index: 999;
+    z-index: 1040;
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
+    display: none;
 }
 
 .fab-backdrop.active {
     opacity: 1;
     visibility: visible;
+    display: block;
 }
 
 .fab-create {
@@ -283,11 +285,11 @@
 /* Responsive */
 @media (max-width: 768px) {
     .floating-actions {
-        display: none;
+        display: none !important;
     }
     
     .fab-container {
-        display: block;
+        display: block !important;
     }
     
     .search-wrapper {
@@ -308,11 +310,11 @@
 
 @media (min-width: 769px) {
     .floating-actions {
-        display: flex;
+        display: flex !important;
     }
     
-    .fab-container {
-        display: none;
+    .fab-container, .fab-backdrop {
+        display: none !important;
     }
 }
 
@@ -651,124 +653,195 @@
 </div>
 
 <!-- Member Details Modal -->
-<div class="modal" id="memberModal" role="dialog" aria-labelledby="memberModalTitle" aria-hidden="true">
-    <div class="modal-content" role="document">
-        <div class="modal-header">
-            <h2 class="modal-title" id="memberModalTitle">Member Details</h2>
-            <button class="modal-close" onclick="closeMemberModal()" aria-label="Close modal">
-                <i class="bx bx-x"></i>
-            </button>
-        </div>
-        <div class="modal-body" id="memberModalBody">
-            <div class="text-center">
-                <i class="bx bx-loader-alt bx-spin" style="font-size: 2rem; color: var(--brand-primary);"></i>
-                <p>Loading member details...</p>
+<div class="modal fade" id="memberModal" tabindex="-1" aria-labelledby="memberModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content brand-modal">
+            <div class="modal-header brand-modal-header">
+                <h5 class="modal-title text-brand-primary" id="memberModalTitle">
+                    <i class='bx bx-user'></i>
+                    Member Details
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="memberModalBody">
+                <div class="text-center">
+                    <i class="bx bx-loader-alt bx-spin" style="font-size: 2rem; color: var(--brand-primary);"></i>
+                    <p>Loading member details...</p>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Add Member Modal -->
-<div class="modal" id="addMemberModal" role="dialog" aria-labelledby="addMemberModalTitle" aria-hidden="true">
-    <div class="modal-content" role="document">
-        <div class="modal-header">
-            <h2 class="modal-title" id="addMemberModalTitle">Add New Member</h2>
-            <button class="modal-close" onclick="closeAddMemberModal()" aria-label="Close modal">
-                <i class="bx bx-x"></i>
-            </button>
-        </div>
-        <div class="modal-body">
-            <form id="addMemberForm" onsubmit="submitAddMember(event)">
-                <input type="hidden" id="memberChamaId" name="chama_id" value="{{ chama.id }}">
-                
-                <div class="form-group">
-                    <label for="memberName" class="form-label">Full Name</label>
-                    <input type="text" id="memberName" name="name" class="form-input" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="memberEmail" class="form-label">Email</label>
-                    <input type="email" id="memberEmail" name="email" class="form-input" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="memberPhone" class="form-label">Phone Number</label>
-                    <input type="tel" id="memberPhone" name="mobile" class="form-input" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="memberIdNumber" class="form-label">ID Number (Optional)</label>
-                    <input type="text" id="memberIdNumber" name="id_number" class="form-input" placeholder="Enter member's ID number if known">
-                </div>
-                
-                <div class="form-group">
-                    <label for="memberRole" class="form-label">Role</label>
-                    <select id="memberRole" name="role" class="form-input" required>
-                        <option value="">Select a role</option>
-                        {% for role in roles %}
-                        <option value="{{ role.id }}">{{ role.name|title }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                
-                <div class="form-actions">
-                    <button type="button" class="btn-cancel" onclick="closeAddMemberModal()">Cancel</button>
-                    <button type="submit" class="btn-submit admin">Add Member</button>
-                </div>
-            </form>
+<div class="modal fade" id="addMemberModal" tabindex="-1" aria-labelledby="addMemberModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content brand-modal">
+            <div class="modal-header brand-modal-header">
+                <h5 class="modal-title text-brand-primary" id="addMemberModalTitle">
+                    <i class='bx bx-user-plus'></i>
+                    Add New Member
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addMemberForm" class="brand-form">
+                    <input type="hidden" id="memberChamaId" name="chama_id" value="{{ chama.id }}">
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="memberName" class="form-label">Full Name *</label>
+                                <input type="text" id="memberName" name="name" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="memberEmail" class="form-label">Email *</label>
+                                <input type="email" id="memberEmail" name="email" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="memberPhone" class="form-label">Phone Number *</label>
+                                <input type="tel" id="memberPhone" name="mobile" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="memberIdNumber" class="form-label">ID Number</label>
+                                <input type="text" id="memberIdNumber" name="id_number" class="form-control" placeholder="Enter member's ID number">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="memberRole" class="form-label">Role *</label>
+                        <select id="memberRole" name="role" class="form-control" required>
+                            <option value="">Select a role</option>
+                            {% for role in roles %}
+                            <option value="{{ role.id }}">{{ role.name|title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div id="addMemberFeedback" class="alert" style="display: none;"></div>
+                </form>
+            </div>
+            <div class="modal-footer brand-modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" form="addMemberForm" class="btn btn-primary admin">
+                    <i class='bx bx-plus'></i>
+                    Add Member
+                </button>
+            </div>
         </div>
     </div>
 </div>
 
 <!-- Edit Member Modal -->
-<div class="modal" id="editMemberModal" role="dialog" aria-labelledby="editMemberModalTitle" aria-hidden="true">
-    <div class="modal-content" role="document">
-        <div class="modal-header">
-            <h2 class="modal-title" id="editMemberModalTitle">Edit Member</h2>
-            <button class="modal-close" onclick="closeEditMemberModal()" aria-label="Close modal">
-                <i class="bx bx-x"></i>
-            </button>
+<div class="modal fade" id="editMemberModal" tabindex="-1" aria-labelledby="editMemberModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content brand-modal">
+            <div class="modal-header brand-modal-header">
+                <h5 class="modal-title text-brand-primary" id="editMemberModalTitle">
+                    <i class='bx bx-edit'></i>
+                    Edit Member
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editMemberForm" class="brand-form">
+                    <input type="hidden" id="editMemberId" name="member_id">
+                    <input type="hidden" id="editMemberChamaId" name="chama_id" value="{{ chama.id }}">
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editMemberName" class="form-label">Full Name *</label>
+                                <input type="text" id="editMemberName" name="name" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editMemberEmail" class="form-label">Email *</label>
+                                <input type="email" id="editMemberEmail" name="email" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editMemberPhone" class="form-label">Phone Number *</label>
+                                <input type="tel" id="editMemberPhone" name="mobile" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editMemberIdNumber" class="form-label">ID Number</label>
+                                <input type="text" id="editMemberIdNumber" name="id_number" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editMemberRole" class="form-label">Role *</label>
+                        <select id="editMemberRole" name="role" class="form-control" required>
+                            <option value="">Select a role</option>
+                            {% for role in roles %}
+                            <option value="{{ role.id }}">{{ role.name|title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div id="editMemberFeedback" class="alert" style="display: none;"></div>
+                </form>
+            </div>
+            <div class="modal-footer brand-modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" form="editMemberForm" class="btn btn-primary admin">
+                    <i class='bx bx-save'></i>
+                    Update Member
+                </button>
+            </div>
         </div>
-        <div class="modal-body">
-            <form id="editMemberForm" onsubmit="submitEditMember(event)">
-                <input type="hidden" id="editMemberId" name="member_id">
-                <input type="hidden" id="editMemberChamaId" name="chama_id" value="{{ chama.id }}">
-                
-                <div class="form-group">
-                    <label for="editMemberName" class="form-label">Full Name</label>
-                    <input type="text" id="editMemberName" name="name" class="form-input" required>
+    </div>
+</div>
+
+<!-- Remove Member Confirmation Modal -->
+<div class="modal fade" id="removeMemberModal" tabindex="-1" aria-labelledby="removeMemberModalTitle" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content brand-modal">
+            <div class="modal-header brand-modal-header">
+                <h5 class="modal-title text-brand-primary" id="removeMemberModalTitle">
+                    <i class='bx bx-trash'></i>
+                    Remove Member
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-3">
+                    <i class="bx bx-error-circle" style="font-size: 3rem; color: var(--brand-error);"></i>
                 </div>
-                
-                <div class="form-group">
-                    <label for="editMemberEmail" class="form-label">Email</label>
-                    <input type="email" id="editMemberEmail" name="email" class="form-input" required>
+                <p class="text-center mb-3">
+                    Are you sure you want to remove <strong id="removeMemberName"></strong> from the chama?
+                </p>
+                <div class="alert alert-warning" role="alert">
+                    <strong>Warning:</strong> This action cannot be undone. All member data will be permanently removed.
                 </div>
-                
-                <div class="form-group">
-                    <label for="editMemberPhone" class="form-label">Phone Number</label>
-                    <input type="tel" id="editMemberPhone" name="mobile" class="form-input" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="editMemberIdNumber" class="form-label">ID Number (Optional)</label>
-                    <input type="text" id="editMemberIdNumber" name="id_number" class="form-input">
-                </div>
-                
-                <div class="form-group">
-                    <label for="editMemberRole" class="form-label">Role</label>
-                    <select id="editMemberRole" name="role" class="form-input" required>
-                        <option value="">Select a role</option>
-                        {% for role in roles %}
-                        <option value="{{ role.id }}">{{ role.name|title }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                
-                <div class="form-actions">
-                    <button type="button" class="btn-cancel" onclick="closeEditMemberModal()">Cancel</button>
-                    <button type="submit" class="btn-submit admin">Update Member</button>
-                </div>
-            </form>
+                <input type="hidden" id="removeMemberId">
+            </div>
+            <div class="modal-footer brand-modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmRemoveMember">
+                    <i class='bx bx-trash'></i>
+                    Remove Member
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -794,32 +867,15 @@ function initializeMembers() {
 }
 
 function setupEventListeners() {
-    // Modal click outside to close
-    document.getElementById('memberModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeMemberModal();
-        }
-    });
+    // Form submission handlers
+    document.getElementById('addMemberForm').addEventListener('submit', submitAddMember);
+    document.getElementById('editMemberForm').addEventListener('submit', submitEditMember);
     
-    document.getElementById('addMemberModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeAddMemberModal();
-        }
-    });
-    
-    document.getElementById('editMemberModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeEditMemberModal();
-        }
-    });
-    
-    // Keyboard navigation
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeMemberModal();
-            closeAddMemberModal();
-            closeEditMemberModal();
-        }
+    // Remove member confirmation
+    document.getElementById('confirmRemoveMember').addEventListener('click', function() {
+        const memberId = document.getElementById('removeMemberId').value;
+        const memberName = document.getElementById('removeMemberName').textContent;
+        performRemoveMember(memberId, memberName);
     });
 }
 
@@ -856,6 +912,19 @@ function setupFAB() {
     }
 }
 
+// Helper function to close FAB
+function closeFAB() {
+    const fabCreate = document.getElementById('fabCreate');
+    const fabBackdrop = document.getElementById('fabBackdrop');
+    const miniFabs = document.querySelectorAll('.mini-fab');
+    
+    if (fabCreate && fabBackdrop) {
+        fabCreate.classList.remove('active');
+        fabBackdrop.classList.remove('active');
+        miniFabs.forEach(fab => fab.classList.remove('show'));
+    }
+}
+
 function filterMembers() {
     const searchTerm = document.getElementById('memberSearch').value.toLowerCase();
     
@@ -881,7 +950,6 @@ function filterMembers() {
 
 // Member Modal Functions
 function openMemberModal(memberId) {
-    const modal = document.getElementById('memberModal');
     const modalBody = document.getElementById('memberModalBody');
     
     // Show loading state
@@ -892,19 +960,12 @@ function openMemberModal(memberId) {
         </div>
     `;
     
-    modal.classList.add('active');
-    modal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
+    // Show modal using Bootstrap
+    const modal = new bootstrap.Modal(document.getElementById('memberModal'));
+    modal.show();
     
     // Load member details
     loadMemberDetails(memberId);
-}
-
-function closeMemberModal() {
-    const modal = document.getElementById('memberModal');
-    modal.classList.remove('active');
-    modal.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
 }
 
 function loadMemberDetails(memberId) {
@@ -1010,34 +1071,17 @@ function renderMemberDetails(data) {
 
 // Add Member Functions
 function openAddMemberModal() {
-    const modal = document.getElementById('addMemberModal');
-    modal.classList.add('active');
-    modal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-    
     // Close FAB if open
-    const fabCreate = document.getElementById('fabCreate');
-    const fabBackdrop = document.getElementById('fabBackdrop');
-    const miniFabs = document.querySelectorAll('.mini-fab');
+    closeFAB();
     
-    fabCreate.classList.remove('active');
-    fabBackdrop.classList.remove('active');
-    miniFabs.forEach(fab => fab.classList.remove('show'));
+    // Show modal using Bootstrap
+    const modal = new bootstrap.Modal(document.getElementById('addMemberModal'));
+    modal.show();
     
-    // Focus on first input
-    setTimeout(() => {
+    // Focus on first input after modal is shown
+    document.getElementById('addMemberModal').addEventListener('shown.bs.modal', function() {
         document.getElementById('memberName').focus();
-    }, 100);
-}
-
-function closeAddMemberModal() {
-    const modal = document.getElementById('addMemberModal');
-    modal.classList.remove('active');
-    modal.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-    
-    // Reset form
-    document.getElementById('addMemberForm').reset();
+    }, { once: true });
 }
 
 function submitAddMember(event) {
@@ -1050,10 +1094,14 @@ function submitAddMember(event) {
     memberData.chama_id = chamaId;
     
     // Show loading state
-    const submitBtn = event.target.querySelector('[type="submit"]');
-    const originalText = submitBtn.textContent;
-    submitBtn.textContent = 'Adding...';
+    const submitBtn = document.querySelector('#addMemberModal button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Adding...';
     submitBtn.disabled = true;
+    
+    // Clear previous feedback
+    const feedback = document.getElementById('addMemberFeedback');
+    feedback.style.display = 'none';
     
     // Validate required fields
     if (!memberData.name || !memberData.email || !memberData.mobile || !memberData.role || !chamaId) {
@@ -1083,8 +1131,14 @@ function submitAddMember(event) {
     .then(response => {
         return response.json().then(data => {
             if (response.ok && data.status === 'success') {
+                // Close the modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('addMemberModal'));
+                modal.hide();
+                
                 showAlert(data.message, 'success');
-                closeAddMemberModal();
+                
+                // Reset form
+                document.getElementById('addMemberForm').reset();
                 
                 // Refresh the page to show the new member
                 setTimeout(() => {
@@ -1102,8 +1156,13 @@ function submitAddMember(event) {
             errorMessage = 'Network error: Could not connect to server';
         }
         
-        showAlert('Error adding member: ' + errorMessage, 'error');
-        submitBtn.textContent = originalText;
+        // Show error in modal
+        const feedback = document.getElementById('addMemberFeedback');
+        feedback.className = 'alert alert-danger';
+        feedback.textContent = 'Error adding member: ' + errorMessage;
+        feedback.style.display = 'block';
+        
+        submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
     });
 }
@@ -1111,16 +1170,6 @@ function submitAddMember(event) {
 // Edit Member Functions
 function openEditMemberModal(memberId) {
     fetchMemberDataAndPopulateForm(memberId);
-}
-
-function closeEditMemberModal() {
-    const modal = document.getElementById('editMemberModal');
-    modal.classList.remove('active');
-    modal.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-    
-    // Reset form
-    document.getElementById('editMemberForm').reset();
 }
 
 function fetchMemberDataAndPopulateForm(memberId) {
@@ -1210,15 +1259,14 @@ function populateEditForm(memberId, memberData) {
 }
 
 function showEditModal() {
-    const modal = document.getElementById('editMemberModal');
-    modal.classList.add('active');
-    modal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
+    // Show modal using Bootstrap
+    const modal = new bootstrap.Modal(document.getElementById('editMemberModal'));
+    modal.show();
     
-    // Focus on first field
-    setTimeout(() => {
+    // Focus on first field after modal is shown
+    document.getElementById('editMemberModal').addEventListener('shown.bs.modal', function() {
         document.getElementById('editMemberName').focus();
-    }, 100);
+    }, { once: true });
 }
 
 function submitEditMember(event) {
@@ -1228,10 +1276,14 @@ function submitEditMember(event) {
     const memberData = Object.fromEntries(formData.entries());
     
     // Show loading state
-    const submitBtn = event.target.querySelector('[type="submit"]');
-    const originalText = submitBtn.textContent;
-    submitBtn.textContent = 'Updating...';
+    const submitBtn = document.querySelector('#editMemberModal button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Updating...';
     submitBtn.disabled = true;
+    
+    // Clear previous feedback
+    const feedback = document.getElementById('editMemberFeedback');
+    feedback.style.display = 'none';
     
     // Validate required fields
     if (!memberData.member_id || !memberData.name || !memberData.email || !memberData.mobile || !memberData.role) {
@@ -1254,8 +1306,11 @@ function submitEditMember(event) {
     .then(response => {
         return response.json().then(data => {
             if (response.ok && data.status === 'success') {
+                // Close the modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('editMemberModal'));
+                modal.hide();
+                
                 showAlert(data.message, 'success');
-                closeEditMemberModal();
                 
                 // Refresh the page
                 setTimeout(() => {
@@ -1273,20 +1328,29 @@ function submitEditMember(event) {
             errorMessage = 'Network error: Could not connect to server';
         }
         
-        showAlert('Error updating member: ' + errorMessage, 'error');
-        submitBtn.textContent = originalText;
+        // Show error in modal
+        const feedback = document.getElementById('editMemberFeedback');
+        feedback.className = 'alert alert-danger';
+        feedback.textContent = 'Error updating member: ' + errorMessage;
+        feedback.style.display = 'block';
+        
+        submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
     });
 }
 
-// Remove Member Function
+// Remove Member Functions
 function confirmRemoveMember(memberId, memberName) {
-    if (confirm(`Are you sure you want to remove ${memberName} from the chama? This action cannot be undone.`)) {
-        removeMember(memberId, memberName);
-    }
+    // Set member data in modal
+    document.getElementById('removeMemberId').value = memberId;
+    document.getElementById('removeMemberName').textContent = memberName;
+    
+    // Show confirmation modal
+    const modal = new bootstrap.Modal(document.getElementById('removeMemberModal'));
+    modal.show();
 }
 
-function removeMember(memberId, memberName) {
+function performRemoveMember(memberId, memberName) {
     const chamaId = document.querySelector('.reports-container').dataset.chamaId;
     
     const url = '/chamas-bookeeping/remove-member/';
@@ -1306,18 +1370,22 @@ function removeMember(memberId, memberName) {
     .then(response => {
         return response.json().then(data => {
             if (response.ok && data.status === 'success') {
-                showAlert(`${memberName} has been removed from the chama`, 'success');
+                // Close the modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('removeMemberModal'));
+        modal.hide();
+        
+        showAlert(`${memberName} has been removed from the chama`, 'success');
                 
-                // Remove the row from table
-                const memberRow = document.querySelector(`[data-member-id="${memberId}"]`);
-                if (memberRow) {
-                    memberRow.remove();
-                }
-                
-                // Update member count
-                setTimeout(() => {
-                    location.reload();
-                }, 1500);
+        // Remove the row from table
+        const memberRow = document.querySelector(`[data-member-id="${memberId}"]`);
+        if (memberRow) {
+            memberRow.remove();
+        }
+        
+        // Update member count
+        setTimeout(() => {
+            location.reload();
+        }, 1500);
             } else {
                 const errorMessage = data.message || `Server error: ${response.status}`;
                 throw new Error(errorMessage);
