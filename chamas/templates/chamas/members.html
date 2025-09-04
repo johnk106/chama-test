@@ -351,6 +351,11 @@
 
 .modal-backdrop {
     z-index: 10040 !important;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.modal-backdrop.show {
+    opacity: 0.5 !important;
 }
 
 .modal-dialog {
@@ -894,8 +899,12 @@ function openMemberModal(memberId) {
         </div>
     `;
     
-    // Show modal using jQuery
-    $('#memberModal').modal('show');
+    // Show modal using jQuery with backdrop settings
+    $('#memberModal').modal({
+        backdrop: true,
+        keyboard: true,
+        show: true
+    });
     
     // Load member details
     loadMemberDetails(memberId);
@@ -1007,8 +1016,12 @@ function openAddMemberModal() {
     // Close FAB if open
     closeFAB();
     
-    // Show modal using jQuery
-    $('#addMemberModal').modal('show');
+    // Show modal using jQuery with backdrop settings
+    $('#addMemberModal').modal({
+        backdrop: true,
+        keyboard: true,
+        show: true
+    });
     
     // Focus on first input after modal is shown
     $('#addMemberModal').on('shown.bs.modal', function() {
@@ -1192,8 +1205,12 @@ function populateEditForm(memberId, memberData) {
 }
 
 function showEditModal() {
-    // Show modal using jQuery
-    $('#editMemberModal').modal('show');
+    // Show modal using jQuery with backdrop settings
+    $('#editMemberModal').modal({
+        backdrop: true,
+        keyboard: true,
+        show: true
+    });
     
     // Focus on first field after modal is shown
     $('#editMemberModal').on('shown.bs.modal', function() {
@@ -1278,8 +1295,12 @@ function confirmRemoveMember(memberId, memberName) {
     document.getElementById('removeMemberId').value = memberId;
     document.getElementById('removeMemberName').textContent = memberName;
     
-    // Show confirmation modal using jQuery
-    $('#removeMemberModal').modal('show');
+    // Show confirmation modal using jQuery with backdrop settings
+    $('#removeMemberModal').modal({
+        backdrop: true,
+        keyboard: true,
+        show: true
+    });
 }
 
 function performRemoveMember(memberId, memberName) {
@@ -1379,5 +1400,41 @@ function showAlert(message, type) {
         alertElement.remove();
     }, 5000);
 }
+
+// Fix modal backdrop interaction issues
+$(document).ready(function() {
+    // Ensure all modals can be closed by clicking backdrop
+    $('.modal').on('click', function(e) {
+        if (e.target === this) {
+            $(this).modal('hide');
+        }
+    });
+    
+    // Fix modal stacking and backdrop issues
+    $(document).on('show.bs.modal', '.modal', function() {
+        // Find the highest z-index among open modals
+        const zIndex = 10050 + ($('.modal:visible').length * 10);
+        $(this).css('z-index', zIndex);
+        
+        // Adjust backdrop z-index
+        setTimeout(() => {
+            $('.modal-backdrop').last().css('z-index', zIndex - 5);
+        }, 0);
+    });
+    
+    // Clean up backdrop when modal is hidden
+    $(document).on('hidden.bs.modal', '.modal', function() {
+        if ($('.modal:visible').length === 0) {
+            // Remove any lingering backdrops
+            $('.modal-backdrop').remove();
+            $('body').removeClass('modal-open');
+        }
+    });
+    
+    // Prevent body scroll issues
+    $(document).on('shown.bs.modal', '.modal', function() {
+        $('body').addClass('modal-open');
+    });
+});
 </script>
 {% endblock %}

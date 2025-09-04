@@ -10,6 +10,8 @@ ChamaSpace (Chamabora) is a Django-based web application for managing chama (gro
 - Configured Django settings for Replit domains and CSRF protection
 - Updated workflow to serve on port 5000 with proper host settings
 - Set up deployment configuration using autoscale with Gunicorn
+- **Fixed modal overlay bug on chamas members page**: Resolved z-index conflicts that made page unclickable when modals were open
+- **Updated modal styling**: Applied #2ba6bd background color to modal headers with white text
 
 ## Project Architecture
 
