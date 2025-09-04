@@ -27,28 +27,29 @@ env = environ.Env(
 try:
     env.read_env(ENV_DIR / '.env')
 except FileNotFoundError:
-    pass  # Use default values if .env file doesn't exist
+    raise FileNotFoundError("No .env file found. Please create one in the project root directory.")
 
 
-# Django settings with defaults for development
-SECRET_KEY = env('SECRET_KEY', default='django-insecure-development-key-change-in-production')
-DEBUG = env.bool('DEBUG', default=True)
+SECRET_KEY = env('SECRET_KEY')
+DEBUG = env.bool('DEBUG')
 
-# Twilio with defaults for development
-TWILIO_ACCOUNT_SID = env('TWILIO_ACCOUNT_SID', default='placeholder')
-TWILIO_AUTH_TOKEN = env('TWILIO_AUTH_TOKEN', default='placeholder')
-TWILIO_PHONE_NUMBER = env('TWILIO_PHONE_NUMBER', default='placeholder')
+TWILIO_ACCOUNT_SID = env('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = env('TWILIO_AUTH_TOKEN')
+TWILIO_PHONE_NUMBER = env('TWILIO_PHONE_NUMBER')
 
-# Cloudinary with defaults for development
-CLOUDINARY_STORAGE_CLOUD_NAME = env('CLOUDINARY_STORAGE_CLOUD_NAME', default='placeholder')
-CLOUDINARY_STORAGE_API_KEY = env('CLOUDINARY_STORAGE_API_KEY', default='placeholder')
-CLOUDINARY_STORAGE_API_SECRET = env('CLOUDINARY_STORAGE_API_SECRET', default='placeholder')
+# TWILIO_ACCOUNT_SID = 'AC0297ee735142dd5cb64830448aea2940'
+# TWILIO_AUTH_TOKEN = '7001ee8cd5741e637381e7a6deb040c3'
+# TWILIO_PHONE_NUMBER= '+18326267796'
 
-# M-Pesa with defaults for development
-CONSUMER_KEY = env('CONSUMER_KEY', default='placeholder')
-CONSUMER_SECRET = env('CONSUMER_SECRET', default='placeholder')
-BUSINESS_SHORT_CODE = env('BUSINESS_SHORT_CODE', default='placeholder')
-PASSKEY = env('PASSKEY', default='placeholder')
+
+CLOUDINARY_STORAGE_CLOUD_NAME = env('CLOUDINARY_STORAGE_CLOUD_NAME')
+CLOUDINARY_STORAGE_API_KEY = env('CLOUDINARY_STORAGE_API_KEY')
+CLOUDINARY_STORAGE_API_SECRET = env('CLOUDINARY_STORAGE_API_SECRET')
+
+CONSUMER_KEY = env('CONSUMER_KEY')
+CONSUMER_SECRET = env('CONSUMER_SECRET')
+BUSINESS_SHORT_CODE = env('BUSINESS_SHORT_CODE')
+PASSKEY = env('PASSKEY')
 
 # print(CONSUMER_KEY, CONSUMER_SECRET, BUSINESS_SHORT_CODE, PASSKEY)
 
@@ -86,7 +87,7 @@ CSRF_TRUSTED_ORIGINS = [
 
 INSTALLED_APPS = [
 'django_crontab',
-    # 'jazzmin',  # Temporarily disabled due to Django version conflict
+    'jazzmin',
 
     'django.contrib.admin',
     'django.contrib.auth',
