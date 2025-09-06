@@ -1141,10 +1141,35 @@ body.modal-open {
     
     .page_header.hide_on_mobile .navbar {
         display: flex !important;
+        justify-content: flex-end !important;
+        align-items: center !important;
+        width: 100% !important;
     }
     
     .page_header.hide_on_mobile .nav {
         display: flex !important;
+        flex-direction: row !important;
+        justify-content: flex-end !important;
+        align-items: center !important;
+        margin-left: auto !important;
+        gap: 1rem !important;
+    }
+    
+    /* Ensure nav items stay on the right */
+    .page_header.hide_on_mobile .nav .nav-item {
+        display: flex !important;
+        align-items: center !important;
+    }
+    
+    /* Make sure avatar dropdown stays on the right */
+    .page_header.hide_on_mobile .nav .nav-item.dropdown {
+        margin-left: 0 !important;
+    }
+    
+    /* Fix spacer div to push nav items to the right */
+    .page_header.hide_on_mobile .navbar > div[style*="margin-left: auto"] {
+        flex: 1 !important;
+        margin-left: 0 !important;
     }
 }
 

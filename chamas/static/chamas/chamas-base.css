@@ -277,6 +277,37 @@ html, body,
   .desktop-header .bx-chevron-down {
     font-size: 14px !important;
   }
+  
+  /* ================================
+     HEADER ALIGNMENT FIX FOR PC
+     ================================ */
+  
+  /* Ensure desktop header navbar uses proper flexbox alignment */
+  .page_header.hide_on_mobile.topnav {
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+  }
+  
+  /* Force navigation list to align to the right */
+  .page_header.hide_on_mobile .nav {
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    margin-left: auto !important;
+  }
+  
+  /* Ensure navbar spacer works correctly */
+  .page_header.hide_on_mobile .navbar {
+    display: flex !important;
+    width: 100% !important;
+  }
+  
+  /* Make sure avatar and icons stay right-aligned */
+  .page_header.hide_on_mobile .nav .nav-item {
+    display: inline-flex !important;
+    align-items: center !important;
+  }
 }
 
 .dp-sect {
