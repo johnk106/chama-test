@@ -153,17 +153,27 @@ WSGI_APPLICATION = 'Chamabora.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 FCM_SERVER_KEY = "AAAApuuyOe4:APA91bFVU7guIWu7NXlMjndp7s3MjY2u3z9SQRLhrHDljcBfdYk87Bj4aPdxIOEl_1Y14MuaTd4FtQ74LBXvRGT625o071FGoTgGYRcCpB67-m8sfuL4DDr6Cka1BNtuLrDaA4Dex6Ko"
 
-DATABASES = {
+# Use SQLite for development, PostgreSQL for production
+if DEBUG:
+    DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME':env('DB_NAME') ,
-            'USER': env('DB_USER'),
-            'PASSWORD': env('DB_PASSWORD'),
-            'HOST': env('DB_HOST'),
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-db_from_env = dj_database_url.config(conn_max_age=600)
-DATABASES['default'].update(db_from_env)
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': env('DB_NAME', default='chamaspace_dev'),
+            'USER': env('DB_USER', default='postgres'),
+            'PASSWORD': env('DB_PASSWORD', default='dev_password'),
+            'HOST': env('DB_HOST', default='localhost'),
+        }
+    }
+    db_from_env = dj_database_url.config(conn_max_age=600)
+    if db_from_env:
+        DATABASES['default'].update(db_from_env)
 
 # Before development
 # DATABASES = {
