@@ -27,29 +27,24 @@ env = environ.Env(
 try:
     env.read_env(ENV_DIR / '.env')
 except FileNotFoundError:
-    raise FileNotFoundError("No .env file found. Please create one in the project root directory.")
+    print("No .env file found. Using environment variables or defaults.")
 
+# Use environment variables or defaults for development
+SECRET_KEY = env('SECRET_KEY', default='django-insecure-dev-key-for-replit-changeme-in-production-12345678')
+DEBUG = env.bool('DEBUG', default=True)
 
-SECRET_KEY = env('SECRET_KEY')
-DEBUG = env.bool('DEBUG')
+TWILIO_ACCOUNT_SID = env('TWILIO_ACCOUNT_SID', default='dev_twilio_account_sid')
+TWILIO_AUTH_TOKEN = env('TWILIO_AUTH_TOKEN', default='dev_twilio_auth_token')
+TWILIO_PHONE_NUMBER = env('TWILIO_PHONE_NUMBER', default='+1234567890')
 
-TWILIO_ACCOUNT_SID = env('TWILIO_ACCOUNT_SID')
-TWILIO_AUTH_TOKEN = env('TWILIO_AUTH_TOKEN')
-TWILIO_PHONE_NUMBER = env('TWILIO_PHONE_NUMBER')
+CLOUDINARY_STORAGE_CLOUD_NAME = env('CLOUDINARY_STORAGE_CLOUD_NAME', default='dev_cloudinary_name')
+CLOUDINARY_STORAGE_API_KEY = env('CLOUDINARY_STORAGE_API_KEY', default='123456789')
+CLOUDINARY_STORAGE_API_SECRET = env('CLOUDINARY_STORAGE_API_SECRET', default='dev_cloudinary_secret')
 
-# TWILIO_ACCOUNT_SID = 'AC0297ee735142dd5cb64830448aea2940'
-# TWILIO_AUTH_TOKEN = '7001ee8cd5741e637381e7a6deb040c3'
-# TWILIO_PHONE_NUMBER= '+18326267796'
-
-
-CLOUDINARY_STORAGE_CLOUD_NAME = env('CLOUDINARY_STORAGE_CLOUD_NAME')
-CLOUDINARY_STORAGE_API_KEY = env('CLOUDINARY_STORAGE_API_KEY')
-CLOUDINARY_STORAGE_API_SECRET = env('CLOUDINARY_STORAGE_API_SECRET')
-
-CONSUMER_KEY = env('CONSUMER_KEY')
-CONSUMER_SECRET = env('CONSUMER_SECRET')
-BUSINESS_SHORT_CODE = env('BUSINESS_SHORT_CODE')
-PASSKEY = env('PASSKEY')
+CONSUMER_KEY = env('CONSUMER_KEY', default='dev_consumer_key')
+CONSUMER_SECRET = env('CONSUMER_SECRET', default='dev_consumer_secret')
+BUSINESS_SHORT_CODE = env('BUSINESS_SHORT_CODE', default='174379')
+PASSKEY = env('PASSKEY', default='dev_passkey')
 
 # print(CONSUMER_KEY, CONSUMER_SECRET, BUSINESS_SHORT_CODE, PASSKEY)
 
