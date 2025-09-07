@@ -74,9 +74,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-'django_crontab',
-    'jazzmin',
-
+    # Core Django apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -85,22 +83,29 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',  # to use humanize in templates
 
+    # Third-party apps (basic ones first)
+    'mathfilters',
+
+    # Project apps
     'authentication',
     'home',
     'Dashboard',
-    'django_twilio',
-    'cloudinary_storage',
-    'cloudinary',
-    'fcm_django',
     'notifications',
-    'wallet',
+    'wallet', 
     'pyment_withdraw',
     'mpesa_integration',
-    'mathfilters',
     'Goals',
     'chamas',
     'subscriptions',
-    'bot'
+    'bot',
+
+    # Temporarily disabled apps (will re-enable later)
+    # 'django_jazzmin',  # Admin theme - will install separately
+    # 'cloudinary_storage',  # File storage
+    # 'cloudinary',  # File storage
+    # 'django_crontab',  # Cron jobs
+    # 'django_twilio',  # SMS
+    # 'fcm_django',  # Push notifications
 ]
 
 # FIREBASE_APP = initialize_app()
