@@ -1974,4 +1974,23 @@
     });
 </script>
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Initialize Bootstrap tabs - This is the critical missing piece!
+    const tabTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tab"]'));
+    tabTriggerList.map(function (tabTriggerEl) {
+        return new bootstrap.Tab(tabTriggerEl);
+    });
+
+    // Individual report filter toggle (copied from working reports page)
+    window.toggleReportFilter = function(reportId) {
+        const filterElement = document.getElementById(reportId + '-filters');
+        if (filterElement) {
+            const isHidden = window.getComputedStyle(filterElement).display === 'none';
+            filterElement.style.display = isHidden ? 'block' : 'none';
+        }
+    };
+});
+</script>
+
 {%endblock%}
