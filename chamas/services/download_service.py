@@ -402,8 +402,8 @@ class DownloadService:
         for inc in incomes:
             data.append([
                 inc.name,
-                inc.investment.name,
-                inc.date.strftime('%Y-%m-%d'),
+                inc.investment.name if inc.investment else 'N/A',
+                inc.date.strftime('%Y-%m-%d') if inc.date else 'N/A',
                 f'ksh {inc.amount}',
             ])
 
@@ -604,7 +604,7 @@ class DownloadService:
                 income.name,
                 income.investment.name if income.investment else 'N/A',
                 f'ksh {income.amount}',
-                income.user_date.strftime('%Y-%m-%d')
+                income.user_date.strftime('%Y-%m-%d') if income.user_date else income.date.strftime('%Y-%m-%d')
             ])
 
         table = Table(data, repeatRows=1)

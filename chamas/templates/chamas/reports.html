@@ -1174,7 +1174,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             }
                             // If no member selected, download all repayment schedules
                         } else if (selector.includes('member-contributions')) {
-                            // For member contributions, both member and scheme are optional
+                            // For member contributions, use the correct URL pattern
                             const schemeId = document.getElementById('member-contribution-scheme')?.value;
                             let params = [];
                             if (memberId) params.push(`member_id=${memberId}`);
@@ -1182,17 +1182,15 @@ document.addEventListener('DOMContentLoaded', function () {
                             if (params.length > 0) {
                                 url += `?${params.join('&')}`;
                             }
-                            // If no filters selected, download all contributions
                         } else if (selector.includes('group-contributions')) {
-                            // For group contributions, both member and scheme are optional
+                            // For group contributions, contribution scheme is required
                             const schemeId = document.getElementById('group-contribution-scheme')?.value;
-                            let params = [];
-                            if (memberId) params.push(`member_id=${memberId}`);
-                            if (schemeId) params.push(`scheme_id=${schemeId}`);
-                            if (params.length > 0) {
-                                url += `?${params.join('&')}`;
+                            if (!schemeId) {
+                                alert('Please select a contribution scheme to download the group contributions report');
+                                return;
                             }
-                            // If no filters selected, download all contributions
+                            // Update URL to include contribution_id in path
+                            url = `${baseUrl}${chama_id}/${schemeId}/`;
                         } else {
                             // For other reports, member selection is required
                             if (memberId) {
