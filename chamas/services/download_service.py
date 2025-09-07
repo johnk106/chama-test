@@ -937,8 +937,23 @@ class DownloadService:
         # ─────────────────────────────────────────────
         # 1) Fetch & flatten your contribution records
         # ─────────────────────────────────────────────
-        chama = Chama.objects.get(pk=chama_id)
+        try:
+            chama = Chama.objects.get(pk=chama_id)
+        except Chama.DoesNotExist:
+            from django.http import JsonResponse
+            return JsonResponse({
+                'status': 'error',
+                'message': f'Chama with ID {chama_id} not found'
+            }, status=404)
+            
         contribution = Contribution.objects.filter(chama=chama,id=contribution_id).first()
+        if not contribution:
+            from django.http import JsonResponse
+            return JsonResponse({
+                'status': 'error',
+                'message': f'Contribution scheme with ID {contribution_id} not found for this chama'
+            }, status=404)
+            
         contributions = []
         contributions.extend(contribution.records.all())
         contributions = sorted(

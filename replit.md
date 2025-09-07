@@ -81,6 +81,11 @@ The application uses django-environ for configuration:
     - Fixed malformed URL parameter parsing that caused ValueError when downloading reports
     - Added proper error handling for member_id parameter in download_service.py
     - Applied fix to both download_member_investment_income and download_individual_saving_report methods
+  - Fixed 404 error in group contributions download functionality
+    - Enhanced JavaScript validation for contribution scheme selection with robust error checking
+    - Added comprehensive error handling in download_group_contributions_report service method
+    - Added proper exception handling in the view function with detailed error messages
+    - Improved validation to prevent empty or invalid contribution IDs from reaching the backend
 
 ## Current State
 - ✅ Application fully functional in development mode
