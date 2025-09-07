@@ -77,6 +77,10 @@ The application uses django-environ for configuration:
   - Configured development server for Replit proxy compatibility
   - Set up production deployment configuration
   - Verified application loads and serves static files correctly
+  - Fixed bug in reports page: member investment income download error
+    - Fixed malformed URL parameter parsing that caused ValueError when downloading reports
+    - Added proper error handling for member_id parameter in download_service.py
+    - Applied fix to both download_member_investment_income and download_individual_saving_report methods
 
 ## Current State
 - ✅ Application fully functional in development mode

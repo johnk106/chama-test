@@ -436,10 +436,20 @@ class DownloadService:
         # Base queryset
         incomes = Income.objects.filter(chama=chama, forGroup=False)
         
-        # Apply member filter
+        # Apply member filter with proper error handling
         if member_id:
-            member = ChamaMember.objects.get(pk=int(member_id))
-            incomes = incomes.filter(owner=member)
+            try:
+                # Clean the member_id by taking only the numeric part before any '?' characters
+                clean_member_id = str(member_id).split('?')[0].strip()
+                if clean_member_id.isdigit():
+                    member = ChamaMember.objects.get(pk=int(clean_member_id))
+                    incomes = incomes.filter(owner=member)
+                else:
+                    # If member_id is not valid, skip member filtering
+                    member_id = None
+            except (ValueError, ChamaMember.DoesNotExist):
+                # If member_id is invalid or member doesn't exist, skip member filtering
+                member_id = None
             
         # Apply date filters
         if start_date:
@@ -636,10 +646,20 @@ class DownloadService:
         # Base queryset
         savings = Saving.objects.filter(chama=chama, forGroup=False)
         
-        # Apply member filter
+        # Apply member filter with proper error handling
         if member_id:
-            member = ChamaMember.objects.get(pk=int(member_id))
-            savings = savings.filter(owner=member)
+            try:
+                # Clean the member_id by taking only the numeric part before any '?' characters
+                clean_member_id = str(member_id).split('?')[0].strip()
+                if clean_member_id.isdigit():
+                    member = ChamaMember.objects.get(pk=int(clean_member_id))
+                    savings = savings.filter(owner=member)
+                else:
+                    # If member_id is not valid, skip member filtering
+                    member_id = None
+            except (ValueError, ChamaMember.DoesNotExist):
+                # If member_id is invalid or member doesn't exist, skip member filtering
+                member_id = None
             
         # Apply date filters
         if start_date:
