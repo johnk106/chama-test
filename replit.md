@@ -1,77 +1,95 @@
-# ChamaSpace - Chama Management Platform
+# ChamaSpace (Chamabora) - Project Documentation
 
 ## Overview
-ChamaSpace (Chamabora) is a Django-based web application for managing chama (group savings) activities. It provides features for group management, contributions tracking, loans, investments, and financial reporting.
-
-## Recent Changes (September 6, 2025)
-- Successfully imported from GitHub and configured for Replit environment
-- Installed Python 3.11 and all required Django dependencies
-- Configured Django settings to work without .env file using environment defaults
-- Fixed M-Pesa integration API call issues during startup
-- Set up SQLite database for development and ran all migrations  
-- Collected static files and configured proper static file serving
-- Updated workflow to serve Django development server on port 5000
-- Set up deployment configuration using autoscale with Gunicorn
-- **Application now fully functional**: Landing page loads correctly with all styling and assets
+ChamaSpace (branded as Chamabora) is a Django-based web application for managing Chama groups - traditional savings and loan associations popular in East Africa. The platform provides features for group management, contributions, loans, investments, and financial tracking.
 
 ## Project Architecture
 
-### Core Apps
-- **authentication**: User registration, login, and profile management
-- **chamas**: Core chama functionality, members, contributions, loans, fines
-- **Dashboard**: Main dashboard and analytics
-- **Goals**: Savings goals and financial targets
-- **notifications**: Push notifications using FCM
-- **wallet**: Digital wallet and payment processing
-- **subscriptions**: Subscription plans and billing
-- **mpesa_integration**: M-Pesa mobile payment integration
-- **pyment_withdraw**: Withdrawal and payout functionality
+### Backend Framework
+- **Django 3.2.18** - Main web framework
+- **Python 3.11** - Programming language
+- **SQLite** - Database (development), PostgreSQL (production)
+- **Gunicorn** - WSGI server for production
 
-### Key Features
-- Group savings management (chamas)
-- Member contributions tracking
-- Loan management with due dates and interest
-- Fine and penalty system
-- Investment and income tracking
-- Mobile money integration (M-Pesa)
-- Push notifications
-- PDF report generation
-- Subscription billing
+### Key Django Apps
+- `chamas` - Core Chama group management
+- `authentication` - User authentication and profiles
+- `Dashboard` - Main dashboard functionality
+- `mpesa_integration` - M-Pesa payment integration
+- `notifications` - Push notifications (FCM)
+- `pyment_withdraw` - Payment withdrawals
+- `Goals` - Group goals and activities
+- `subscriptions` - Subscription management
+- `bot` - Telegram/WhatsApp bot integration
 
-### Tech Stack
-- **Backend**: Django 3.2.18
-- **Database**: SQLite (development), PostgreSQL support available
-- **Frontend**: Bootstrap, jQuery, Swiper.js
-- **Payment**: Stripe, M-Pesa integration
-- **Cloud Storage**: Cloudinary
-- **Notifications**: Firebase FCM
-- **PDF Generation**: ReportLab, xhtml2pdf
-- **Server**: Gunicorn for production
+### External Integrations
+- **Cloudinary** - Image storage and management
+- **Firebase/FCM** - Push notifications
+- **Twilio** - SMS messaging
+- **M-Pesa** - Mobile payment integration
+- **Stripe** - Payment processing
 
 ## Development Setup
-- Python 3.11 with dependencies from requirements_clean.txt
-- Django development server runs on port 5000
-- Database: SQLite (db.sqlite3)
-- Static files served via Whitenoise
-- CSRF protection configured for Replit domains
 
-## Deployment
-- Target: Replit Autoscale
-- Build: Install dependencies from requirements_clean.txt
-- Run: Gunicorn WSGI server on port 5000
-- Production-ready with proper static file handling
+### Dependencies
+All Python dependencies are managed via requirements.txt. Key packages:
+- Django 3.2.18
+- django-environ (environment variables)
+- psycopg2-binary (PostgreSQL adapter)
+- cloudinary & django-cloudinary-storage
+- firebase-admin & fcm-django
+- twilio & django-twilio
+- stripe (payment processing)
 
-## Environment Variables
-The application uses placeholder values for development. For production:
-- Twilio credentials for SMS
-- Cloudinary for media storage
-- M-Pesa API credentials
-- Firebase FCM server key
-- Stripe payment keys
+### Database
+- **Development**: SQLite database (db.sqlite3)
+- **Production**: PostgreSQL via DATABASE_URL environment variable
+- All migrations are up to date and applied
 
-## Status
-✅ Application successfully running in Replit environment
-✅ All core functionality accessible
-✅ Database migrations completed
-✅ Static files loading correctly
-✅ Deployment configuration ready
+### Static Files
+- Managed by WhiteNoise in production
+- Static files served from `/static/` directory
+- Includes Bootstrap, FontAwesome, custom CSS/JS
+
+### Environment Variables
+The application uses django-environ for configuration:
+- `SECRET_KEY` - Django secret key
+- `DEBUG` - Debug mode (True for development)
+- Database credentials (for production)
+- API keys for external services (Cloudinary, Twilio, etc.)
+
+## Deployment Configuration
+
+### Development Server
+- Runs on `0.0.0.0:5000` (required for Replit environment)
+- Command: `python manage.py runserver 0.0.0.0:5000`
+- ALLOWED_HOSTS set to `['*']` for proxy compatibility
+
+### Production Deployment
+- Uses Gunicorn WSGI server
+- Configured for autoscale deployment
+- Command: `gunicorn --bind=0.0.0.0:5000 --reuse-port Chamabora.wsgi:application`
+
+## Recent Changes
+- September 7, 2025: Initial import and setup in Replit environment
+  - Installed Python 3.11 and all required dependencies
+  - Applied all Django migrations successfully
+  - Configured development server for Replit proxy compatibility
+  - Set up production deployment configuration
+  - Verified application loads and serves static files correctly
+
+## Current State
+- ✅ Application fully functional in development mode
+- ✅ Database migrations applied
+- ✅ Static files loading correctly
+- ✅ Production deployment configured
+- ⚠️ Minor JavaScript console warnings (Bootstrap/jQuery load order)
+
+## User Preferences
+- None documented yet
+
+## Notes
+- The application includes comprehensive Chama management features
+- Multiple payment integrations suggest this is production-ready software
+- Rich admin interface via django-jazzmin
+- Extensive notification system with multiple channels
