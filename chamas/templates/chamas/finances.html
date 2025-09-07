@@ -1274,9 +1274,9 @@
     var savings = [
         {% for saving in my_savings %}
             {
-                'owner': '{{ saving.owner.name }}',
+                'owner': '{{ saving.owner.name|escapejs }}',
                 'date': new Date('{{ saving.date|date:"c" }}'),
-                'type': '{{ saving.saving_type.name }}',
+                'type': '{{ saving.saving_type.name|escapejs }}',
                 'amount': '{{ saving.amount }}',
             },
         {% endfor %}
@@ -1373,10 +1373,10 @@
     var savings = [
         {% for saving in individual_savings %}
             {
-                'owner': '{{ saving.owner.name }}',
+                'owner': '{{ saving.owner.name|escapejs }}',
                 'owner_id': '{{ saving.owner.id }}',
                 'date': new Date('{{ saving.date|date:"c" }}'),
-                'type': '{{ saving.saving_type.name }}',
+                'type': '{{ saving.saving_type.name|escapejs }}',
                 'amount': '{{ saving.amount }}',
             },
         {% endfor %}
@@ -1487,7 +1487,7 @@
     var groupInvestments = [
         {% for investment in group_investments %}
         {
-            'name': '{{ investment.name }}',
+            'name': '{{ investment.name|escapejs }}',
             'date': new Date('{{ investment.date | date:"c" }}'), // Format date in ISO 8601 format
             'amount': '{{ investment.amount }}',
         },
@@ -1575,7 +1575,7 @@
         {% for saving in group_savings %}
         {
             'date': new Date('{{ saving.date | date:"c" }}'), // Format date in ISO 8601 format
-            'type': '{{ saving.saving_type.name }}',
+            'type': '{{ saving.saving_type.name|escapejs }}',
             'amount': '{{ saving.amount }}',
         },
         {% endfor %}
@@ -1662,10 +1662,10 @@
     var individualInvestmentIncomes = [
         {% for income in individual_investment_income %}
             {
-                'owner': '{{ income.owner.name }}',
+                'owner': '{{ income.owner.name|escapejs }}',
                 'owner_id': '{{ income.owner.id }}',
-                'name': '{{ income.name }}',
-                'investment': '{{ income.investment.name }}',
+                'name': '{{ income.name|escapejs }}',
+                'investment': '{{ income.investment.name|escapejs }}',
                 'date': new Date('{{ income.date|date:"c" }}'),
                 'amount': '{{ income.amount }}',
             },
@@ -1775,8 +1775,8 @@
     var groupInvestmentIncomes = [
         {% for income in group_investment_incomes %}
             {
-                'name': '{{ income.name }}',
-                'investment': '{{ income.investment.name }}',
+                'name': '{{ income.name|escapejs }}',
+                'investment': '{{ income.investment.name|escapejs }}',
                 'date': new Date('{{ income.date|date:"c" }}'),
                 'amount': '{{ income.amount }}',
             },
