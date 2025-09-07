@@ -1182,11 +1182,21 @@ document.addEventListener('DOMContentLoaded', function () {
                             // If no filters selected, download all contributions
                         } else if (selector.includes('group-contributions')) {
                             // For group contributions, contribution scheme is required
-                            const schemeId = document.getElementById('group-contribution-scheme')?.value;
-                            if (!schemeId) {
+                            const schemeSelect = document.getElementById('group-contribution-scheme');
+                            const schemeId = schemeSelect?.value;
+                            
+                            // More robust validation
+                            if (!schemeId || schemeId === '' || schemeId === 'null' || schemeId === 'undefined') {
                                 alert('Please select a contribution scheme to download the group contributions report');
                                 return;
                             }
+                            
+                            // Validate that schemeId is a valid number
+                            if (isNaN(schemeId) || !Number.isInteger(Number(schemeId))) {
+                                alert('Invalid contribution scheme selected. Please try again.');
+                                return;
+                            }
+                            
                             // Update URL to include contribution_id in path
                             url = `${baseUrl}${chama_id}/${schemeId}/`;
                         } else {

@@ -861,28 +861,28 @@ def update_fine(request):
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def expenses(request,chama_id):
-	chama = Chama.objects.get(pk=chama_id)
+        chama = Chama.objects.get(pk=chama_id)
 
-	expenses = Expense.objects.filter(chama=chama).all()
-	
-	# Check if current user is admin
-	try:
-		user_membership = ChamaMember.objects.get(user=request.user, group=chama)
-		role_name = (user_membership.role.name or '').lower() if user_membership.role else ''
-		is_admin = role_name in ['admin', 'administrator', 'chairman', 'secretary']
-	except ChamaMember.DoesNotExist:
-		is_admin = False
-	
-	# My expenses for member view
-	my_expenses = Expense.objects.filter(chama=chama, created_by=user_membership).all() if 'user_membership' in locals() else Expense.objects.none()
+        expenses = Expense.objects.filter(chama=chama).all()
+        
+        # Check if current user is admin
+        try:
+                user_membership = ChamaMember.objects.get(user=request.user, group=chama)
+                role_name = (user_membership.role.name or '').lower() if user_membership.role else ''
+                is_admin = role_name in ['admin', 'administrator', 'chairman', 'secretary']
+        except ChamaMember.DoesNotExist:
+                is_admin = False
+        
+        # My expenses for member view
+        my_expenses = Expense.objects.filter(chama=chama, created_by=user_membership).all() if 'user_membership' in locals() else Expense.objects.none()
 
-	return render(request,'chamas/expenses.html',{
-		'chama': chama,
-		'chama_id': chama_id,
-		'expenses':expenses,
-		'is_admin': is_admin,
-		'my_expenses': my_expenses
-	})
+        return render(request,'chamas/expenses.html',{
+                'chama': chama,
+                'chama_id': chama_id,
+                'expenses':expenses,
+                'is_admin': is_admin,
+                'my_expenses': my_expenses
+        })
 
 
 @login_required(login_url='/user/Login')
@@ -1524,7 +1524,18 @@ def download_my_saving_report(request, chama_id):
 @login_required(login_url='/user/Login')
 @is_user_chama_member
 def download_group_contributions_report(request, chama_id,contribution_id):
-    return DownloadService.download_group_contributions_report(chama_id,contribution_id)
+    try:
+        return DownloadService.download_group_contributions_report(chama_id,contribution_id)
+    except Exception as e:
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error downloading group contributions report for chama {chama_id}, contribution {contribution_id}: {str(e)}")
+        
+        from django.http import JsonResponse
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Failed to generate group contributions report: {str(e)}'
+        }, status=500)
     
 
 @login_required(login_url='/user/Login')
