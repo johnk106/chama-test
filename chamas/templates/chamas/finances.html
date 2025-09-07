@@ -133,7 +133,7 @@
     <div class="reports-content">
         <div class="tab-content">
             <!-- My Savings Tab -->
-            <div class="tab-pane active" id="tab-my-savings" role="tabpanel">
+            <div class="tab-pane active show" id="tab-my-savings" role="tabpanel">
                 <div class="reports-grid">
                     <div class="report-card brand-card member">
                         <div class="report-card-header brand-card-header">
@@ -241,37 +241,45 @@
         </div>
 
         <!-- Individual Savings Tab -->
-        <div class="tab-pane" id="tab-individual-savings" role="tabpanel">
-            <div class="finance-card admin">
-                <div class="finance-card-header">
-                    <div class="header-icon">
-                        <i class='bx bx-sort bx-rotate-90' style="font-size: 24px"></i>
-                    </div>
-                    <div class="header-text">
-                        <p>Individual savings</p>
-                    </div>
-                </div>
-                <div class="filter-section">
-                    <div class="filter-inputs">
-                        <div class="mb-3">
-                            <label for="individual_savings_start" class="form-label">Start Date</label>
-                            <input type="date" class="form-control" id="individual_savings_start">
+        <div class="tab-pane fade" id="tab-individual-savings" role="tabpanel">
+            <div class="reports-grid">
+                <div class="report-card brand-card admin">
+                    <div class="report-card-header brand-card-header">
+                        <div class="report-header-info">
+                            <h3 class="report-title text-brand-primary">Individual Savings</h3>
+                            <p class="report-description">Member savings contributions tracking</p>
                         </div>
-                        <div class="mb-3">
-                            <label for="individual_savings_end" class="form-label">End Date</label>
-                            <input type="date" class="form-control" id="individual_savings_end">
-                        </div>
-                        <div class="mb-3 member-filter">
-                            <label for="individual_savings_member" class="form-label">Member</label>
-                            <select class="form-control" id="individual_savings_member">
-                                <option value="">All Members</option>
-                                {%for member in members%}
-                                <option value="{{member.id}}" class="text-capitalize">{{member.name}}</option>
-                                {%endfor%}
-                            </select>
+                        <div class="report-actions">
+                            <button class="btn-download-individual bg-brand-primary" id="download-individual-savings-report">
+                                <i class="bx bx-download"></i>
+                            </button>
+                            <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('individual-savings-report')">
+                                <i class="bx bx-filter"></i>
+                            </button>
                         </div>
                     </div>
-                </div>
+                    <div class="report-filters" id="individual-savings-report-filters">
+                        <div class="filter-row">
+                            <div class="filter-field">
+                                <label for="individual_savings_start" class="field-label">Start Date</label>
+                                <input type="date" class="field-input" id="individual_savings_start">
+                            </div>
+                            <div class="filter-field">
+                                <label for="individual_savings_end" class="field-label">End Date</label>
+                                <input type="date" class="field-input" id="individual_savings_end">
+                            </div>
+                            <div class="filter-field">
+                                <label for="individual_savings_member" class="field-label">Member</label>
+                                <select class="field-input" id="individual_savings_member">
+                                    <option value="">All Members</option>
+                                    {%for member in members%}
+                                    <option value="{{member.id}}" class="text-capitalize">{{member.name}}</option>
+                                    {%endfor%}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="report-data brand-card-body">
                 <div class="brand-table-responsive desktop-view">
                     <table class="brand-table">
                         <thead>
@@ -350,7 +358,7 @@
         </div>
 
         <!-- Group Savings Tab -->
-        <div class="tab-pane" id="tab-group-savings" role="tabpanel">
+        <div class="tab-pane fade" id="tab-group-savings" role="tabpanel">
             <div class="reports-grid">
                 <div class="report-card brand-card admin member">
                     <div class="report-card-header brand-card-header">
@@ -464,7 +472,7 @@
         </div>
 
         <!-- Group Investments Tab -->
-        <div class="tab-pane" id="tab-group-investments" role="tabpanel">
+        <div class="tab-pane fade" id="tab-group-investments" role="tabpanel">
             <div class="reports-grid">
                 <div class="report-card brand-card admin member">
                     <div class="report-card-header brand-card-header">
@@ -568,7 +576,7 @@
         </div>
 
         <!-- Individual Investment Income Tab -->
-        <div class="tab-pane" id="tab-individual-investment-income" role="tabpanel">
+        <div class="tab-pane fade" id="tab-individual-investment-income" role="tabpanel">
             <div class="reports-grid">
                 <div class="report-card brand-card admin">
                     <div class="report-card-header brand-card-header">
@@ -697,7 +705,7 @@
         </div>
 
         <!-- Group Investment Income Tab -->
-        <div class="tab-pane" id="tab-group-investment-income" role="tabpanel">
+        <div class="tab-pane fade" id="tab-group-investment-income" role="tabpanel">
             <div class="reports-grid">
                 <div class="report-card brand-card admin member">
                     <div class="report-card-header brand-card-header">
@@ -809,7 +817,7 @@
         </div>
 
         <!-- My Investment Income Tab -->
-        <div class="tab-pane" id="tab-my-investment-income" role="tabpanel">
+        <div class="tab-pane fade" id="tab-my-investment-income" role="tabpanel">
             <div class="reports-grid">
                 <div class="report-card brand-card member">
                     <div class="report-card-header brand-card-header">
