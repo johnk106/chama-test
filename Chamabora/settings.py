@@ -27,24 +27,29 @@ env = environ.Env(
 try:
     env.read_env(ENV_DIR / '.env')
 except FileNotFoundError:
-    print("No .env file found. Using environment variables or defaults.")
+    raise FileNotFoundError("No .env file found. Please create one in the project root directory.")
 
-# Use environment variables or defaults for development
-SECRET_KEY = env('SECRET_KEY', default='django-insecure-dev-key-for-replit-changeme-in-production-12345678')
-DEBUG = env.bool('DEBUG', default=True)
 
-TWILIO_ACCOUNT_SID = env('TWILIO_ACCOUNT_SID', default='dev_twilio_account_sid')
-TWILIO_AUTH_TOKEN = env('TWILIO_AUTH_TOKEN', default='dev_twilio_auth_token')
-TWILIO_PHONE_NUMBER = env('TWILIO_PHONE_NUMBER', default='+1234567890')
+SECRET_KEY = env('SECRET_KEY')
+DEBUG = env.bool('DEBUG')
 
-CLOUDINARY_STORAGE_CLOUD_NAME = env('CLOUDINARY_STORAGE_CLOUD_NAME', default='dev_cloudinary_name')
-CLOUDINARY_STORAGE_API_KEY = env('CLOUDINARY_STORAGE_API_KEY', default='123456789')
-CLOUDINARY_STORAGE_API_SECRET = env('CLOUDINARY_STORAGE_API_SECRET', default='dev_cloudinary_secret')
+TWILIO_ACCOUNT_SID = env('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = env('TWILIO_AUTH_TOKEN')
+TWILIO_PHONE_NUMBER = env('TWILIO_PHONE_NUMBER')
 
-CONSUMER_KEY = env('CONSUMER_KEY', default='dev_consumer_key')
-CONSUMER_SECRET = env('CONSUMER_SECRET', default='dev_consumer_secret')
-BUSINESS_SHORT_CODE = env('BUSINESS_SHORT_CODE', default='174379')
-PASSKEY = env('PASSKEY', default='dev_passkey')
+# TWILIO_ACCOUNT_SID = 'AC0297ee735142dd5cb64830448aea2940'
+# TWILIO_AUTH_TOKEN = '7001ee8cd5741e637381e7a6deb040c3'
+# TWILIO_PHONE_NUMBER= '+18326267796'
+
+
+CLOUDINARY_STORAGE_CLOUD_NAME = env('CLOUDINARY_STORAGE_CLOUD_NAME')
+CLOUDINARY_STORAGE_API_KEY = env('CLOUDINARY_STORAGE_API_KEY')
+CLOUDINARY_STORAGE_API_SECRET = env('CLOUDINARY_STORAGE_API_SECRET')
+
+CONSUMER_KEY = env('CONSUMER_KEY')
+CONSUMER_SECRET = env('CONSUMER_SECRET')
+BUSINESS_SHORT_CODE = env('BUSINESS_SHORT_CODE')
+PASSKEY = env('PASSKEY')
 
 # print(CONSUMER_KEY, CONSUMER_SECRET, BUSINESS_SHORT_CODE, PASSKEY)
 
@@ -74,7 +79,9 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    # Core Django apps
+'django_crontab',
+    'jazzmin',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -83,29 +90,22 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',  # to use humanize in templates
 
-    # Third-party apps (basic ones first)
-    'mathfilters',
-
-    # Project apps
     'authentication',
     'home',
     'Dashboard',
+    'django_twilio',
+    'cloudinary_storage',
+    'cloudinary',
+    'fcm_django',
     'notifications',
-    'wallet', 
+    'wallet',
     'pyment_withdraw',
     'mpesa_integration',
+    'mathfilters',
     'Goals',
     'chamas',
     'subscriptions',
-    'bot',
-
-    # Temporarily disabled apps (will re-enable later)
-    # 'django_jazzmin',  # Admin theme - will install separately
-    # 'cloudinary_storage',  # File storage
-    # 'cloudinary',  # File storage
-    # 'django_crontab',  # Cron jobs
-    # 'django_twilio',  # SMS
-    # 'fcm_django',  # Push notifications
+    'bot'
 ]
 
 # FIREBASE_APP = initialize_app()
@@ -158,27 +158,17 @@ WSGI_APPLICATION = 'Chamabora.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 FCM_SERVER_KEY = "AAAApuuyOe4:APA91bFVU7guIWu7NXlMjndp7s3MjY2u3z9SQRLhrHDljcBfdYk87Bj4aPdxIOEl_1Y14MuaTd4FtQ74LBXvRGT625o071FGoTgGYRcCpB67-m8sfuL4DDr6Cka1BNtuLrDaA4Dex6Ko"
 
-# Use SQLite for development, PostgreSQL for production
-if DEBUG:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
-else:
-    DATABASES = {
+DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': env('DB_NAME', default='chamaspace_dev'),
-            'USER': env('DB_USER', default='postgres'),
-            'PASSWORD': env('DB_PASSWORD', default='dev_password'),
-            'HOST': env('DB_HOST', default='localhost'),
+            'NAME':env('DB_NAME') ,
+            'USER': env('DB_USER'),
+            'PASSWORD': env('DB_PASSWORD'),
+            'HOST': env('DB_HOST'),
         }
     }
-    db_from_env = dj_database_url.config(conn_max_age=600)
-    if db_from_env:
-        DATABASES['default'].update(db_from_env)
+db_from_env = dj_database_url.config(conn_max_age=600)
+DATABASES['default'].update(db_from_env)
 
 # Before development
 # DATABASES = {
