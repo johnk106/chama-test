@@ -501,10 +501,10 @@ class DownloadService:
         for income in incomes:
             data.append([
                 income.name,
-                income.owner.name,
-                income.investment.name,
+                income.owner.name if income.owner else 'N/A',
+                income.investment.name if income.investment else 'N/A',
                 f'ksh {income.amount}',
-                income.date.strftime('%Y-%m-%d')
+                income.date.strftime('%Y-%m-%d') if income.date else 'N/A'
             ])
 
         table = Table(data, repeatRows=1)

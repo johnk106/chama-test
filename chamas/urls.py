@@ -65,6 +65,7 @@ urlpatterns = [
     path('download-my-saving-report/<int:chama_id>/',views.download_my_saving_report,name='download-my-saving-report'),
     path('download-group-contributions-report/<int:chama_id>/<int:contribution_id>/',views.download_group_contributions_report,name='download-group-contributions-report'),
     path('download-member-contributions-report/<int:chama_id>/<int:member_id>/<int:scheme_id>/',views.download_member_contribution_report,name='download-member-contribution-report'),
+    path('download-member-contributions-report/<int:chama_id>/',views.download_member_contribution_report,name='download-member-contribution-report-query'),
     path('download-collected-fines-report/<int:chama_id>/',views.download_collected_fine_report,name='download-collected-fines-report'),
     path('download-uncollected-fines-report/<int:chama_id>/',views.download_uncollected_fines_report,name='download-uncollected-fines-report'),
     path('download-chama-cashflow-report/<int:chama_id>/',views.download_cashflow_report,name='download-chama-cashflow-report'),

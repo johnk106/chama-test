@@ -1152,10 +1152,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             if (params.length > 0) {
                                 url += `?${params.join('&')}`;
                             }
-                        } else if (selector.includes('contribution')) {
-                        const memberSelect = document.querySelector('#member-contribution-owner');
-                        memberId = memberSelect?.value;
-                    } else if (selector.includes('repayment')) {
+                        } else if (selector.includes('repayment')) {
                         const memberSelect = document.querySelector('#repayment-owner');
                         memberId = memberSelect?.value;
                     } else if (selector.includes('member-contributions')) {
@@ -1174,7 +1171,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             }
                             // If no member selected, download all repayment schedules
                         } else if (selector.includes('member-contributions')) {
-                            // For member contributions, use the correct URL pattern
+                            // For member contributions, use query parameters for flexibility
                             const schemeId = document.getElementById('member-contribution-scheme')?.value;
                             let params = [];
                             if (memberId) params.push(`member_id=${memberId}`);
@@ -1182,6 +1179,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             if (params.length > 0) {
                                 url += `?${params.join('&')}`;
                             }
+                            // If no filters selected, download all contributions
                         } else if (selector.includes('group-contributions')) {
                             // For group contributions, contribution scheme is required
                             const schemeId = document.getElementById('group-contribution-scheme')?.value;
@@ -1194,7 +1192,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         } else {
                             // For other reports, member selection is required
                             if (memberId) {
-                                url += `?member-id=${memberId}`;
+                                url += `?member_id=${memberId}`;
                             } else {
                                 alert('Please select a member first');
                                 return;
