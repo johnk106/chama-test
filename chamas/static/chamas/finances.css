@@ -7,53 +7,51 @@
 }
 
 /* ================================
-   FINANCE ACTION BUTTON ROW
+   DESKTOP FLOATING ACTION BUTTONS
    ================================ */
-.finance-action-row {
+.floating-actions.desktop-floating {
+    position: fixed;
+    top: 50%;
+    right: 32px;
+    transform: translateY(-50%);
     display: flex;
+    flex-direction: column;
     gap: 16px;
-    margin-bottom: 24px;
-    padding: 16px;
-    background: #f8fafc;
-    border-radius: 12px;
-    border: 1px solid #e5e7eb;
-    flex-wrap: wrap;
+    z-index: 100;
 }
 
-.finance-action-row button {
+.btn-floating {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
     padding: 12px 20px;
+    background: var(--brand-primary);
+    color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 50px;
     font-weight: 600;
     font-size: 14px;
+    box-shadow: 0 4px 20px rgba(33, 145, 165, 0.3);
     cursor: pointer;
     transition: all 0.3s ease;
-    flex: 1;
+    white-space: nowrap;
     min-width: 160px;
     justify-content: center;
 }
 
-.finance-create-savings.admin {
-    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
-    color: white;
+.btn-floating:hover {
+    background: var(--brand-primary-hover);
+    transform: translateX(-8px);
+    box-shadow: 0 8px 30px rgba(33, 145, 165, 0.4);
 }
 
-.finance-create-investment.admin {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: white;
+.btn-floating i {
+    font-size: 18px;
+    flex-shrink: 0;
 }
 
-.finance-create-income.admin {
-    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-    color: white;
-}
-
-.finance-action-row button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+.btn-floating span {
+    font-weight: 600;
 }
 
 /* ================================
@@ -702,6 +700,11 @@ html, body,
    DESKTOP STYLES (min-width: 768px)
    ================================ */
 @media (min-width: 768px) {
+    /* Show desktop floating actions */
+    .floating-actions.desktop-floating {
+        display: flex !important;
+    }
+    
     /* Hide FAB completely on desktop */
     .fab-create,
     .mini-fab,
@@ -793,9 +796,9 @@ html, body,
 }
 
 @media (max-width: 767px) {
-    /* Hide Desktop Action Row on Mobile */
-    .finance-action-row {
-        display: none;
+    /* Hide Desktop Floating Actions on Mobile */
+    .floating-actions.desktop-floating {
+        display: none !important;
     }
 
     /* Show FAB on Mobile - Only when visible (not hidden by jQuery) */

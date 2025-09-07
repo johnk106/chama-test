@@ -1,7 +1,12 @@
 {%extends 'chamas/base.html'%} {%load static%} {% load humanize %} {%block head%}
 <title>Finances</title>
 <link rel="stylesheet" href="{%static 'chamas/brand-colors.css'%}" />
+<link rel="stylesheet" href="{%static 'chamas/reports.css'%}" />
+<link rel="stylesheet" href="{%static 'chamas/loans.css'%}" />
 <link rel="stylesheet" href="{%static 'chamas/finances.css'%}" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
     .fab-label {
@@ -24,20 +29,32 @@
 </style>
 
 {%endblock%} {%block body%}
-<div class="mt-2">
-    <!-- Finance Action Button Row -->
-    <div class="finance-action-row">
-        <button type="button" class="finance-create-savings admin" data-bs-toggle="modal" data-bs-target="#createSavingModal">
-            <i class='bx bx-sort bx-rotate-90'></i>
-            Create Savings
+
+<div class="reports-container full-width">
+    <!-- Page Header -->
+    <div class="reports-header">
+        <div class="reports-header-content">
+            <h1 class="reports-title text-brand-primary">Finance Management</h1>
+            <p class="reports-subtitle">Manage savings, investments, and income tracking</p>
+        </div>
+    </div>
+    
+    <!-- CSRF Token for JavaScript -->
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+    <!-- Desktop Floating Action Buttons -->
+    <div class="floating-actions desktop-floating">
+        <button class="btn-floating admin" data-bs-toggle="modal" data-bs-target="#createSavingModal" title="Create Savings">
+            <i class='bx bx-wallet'></i>
+            <span>Create Savings</span>
         </button>
-        <button type="button" class="finance-create-investment admin" data-bs-toggle="modal" data-bs-target="#createInvestmentModal">
-            <i class='bx bx-sort bx-rotate-90'></i>
-            Create Investment
+        <button class="btn-floating admin" data-bs-toggle="modal" data-bs-target="#createInvestmentModal" title="Create Investment">
+            <i class='bx bx-trending-up'></i>
+            <span>Create Investment</span>
         </button>
-        <button type="button" class="finance-create-income admin" data-bs-toggle="modal" data-bs-target="#createIncomeModal">
-            <i class='bx bx-sort bx-rotate-90'></i>
-            Create Income
+        <button class="btn-floating admin" data-bs-toggle="modal" data-bs-target="#createIncomeModal" title="Create Income">
+            <i class='bx bx-money'></i>
+            <span>Create Income</span>
         </button>
     </div>
 
@@ -65,43 +82,72 @@
     </div>
 
     <!-- Finance Tabs Navigation -->
-    <ul class="finance-tabs" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active member" id="my-savings-tab" data-bs-toggle="tab" href="#tab-my-savings" role="tab">My Savings</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link admin" id="individual-savings-tab" data-bs-toggle="tab" href="#tab-individual-savings" role="tab">Individual Savings</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link admin member" id="group-savings-tab" data-bs-toggle="tab" href="#tab-group-savings" role="tab">Group Savings</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link admin member" id="group-investments-tab" data-bs-toggle="tab" href="#tab-group-investments" role="tab">Group Investments</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link admin" id="individual-investment-income-tab" data-bs-toggle="tab" href="#tab-individual-investment-income" role="tab">Individual Investment Income</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link admin member" id="group-investment-income-tab" data-bs-toggle="tab" href="#tab-group-investment-income" role="tab">Group Investment Income</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link member" id="my-investment-income-tab" data-bs-toggle="tab" href="#tab-my-investment-income" role="tab">My Investment Income</a>
-        </li>
-    </ul>
+    <div class="reports-tabs-wrapper">
+        <ul class="reports-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active member" id="my-savings-tab" data-bs-toggle="tab" href="#tab-my-savings" role="tab">
+                    <i class="bx bx-wallet"></i>
+                    My Savings
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link admin" id="individual-savings-tab" data-bs-toggle="tab" href="#tab-individual-savings" role="tab">
+                    <i class="bx bx-user"></i>
+                    Individual Savings
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link admin member" id="group-savings-tab" data-bs-toggle="tab" href="#tab-group-savings" role="tab">
+                    <i class="bx bx-group"></i>
+                    Group Savings
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link admin member" id="group-investments-tab" data-bs-toggle="tab" href="#tab-group-investments" role="tab">
+                    <i class="bx bx-trending-up"></i>
+                    Group Investments
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link admin" id="individual-investment-income-tab" data-bs-toggle="tab" href="#tab-individual-investment-income" role="tab">
+                    <i class="bx bx-chart"></i>
+                    Individual Investment Income
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link admin member" id="group-investment-income-tab" data-bs-toggle="tab" href="#tab-group-investment-income" role="tab">
+                    <i class="bx bx-line-chart"></i>
+                    Group Investment Income
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link member" id="my-investment-income-tab" data-bs-toggle="tab" href="#tab-my-investment-income" role="tab">
+                    <i class="bx bx-money"></i>
+                    My Investment Income
+                </a>
+            </li>
+        </ul>
+    </div>
 
     <!-- Tab Content -->
-    <div class="tab-content finance-tab-content">
-        <!-- My Savings Tab -->
-        <div class="tab-pane active" id="tab-my-savings" role="tabpanel">
-            <div class="finance-card member">
-                <div class="finance-card-header">
-                    <div class="header-icon">
-                        <i class="fa-regular fa-flag"></i>
-                    </div>
-                    <div class="header-text">
-                        <p>My savings</p>
-                    </div>
-                </div>
+    <div class="reports-content">
+        <div class="tab-content">
+            <!-- My Savings Tab -->
+            <div class="tab-pane active" id="tab-my-savings" role="tabpanel">
+                <div class="reports-grid">
+                    <div class="report-card brand-card member">
+                        <div class="report-card-header brand-card-header">
+                            <div class="report-header-info">
+                                <h3 class="report-title text-brand-primary">My Savings</h3>
+                                <p class="report-description">Your personal savings contributions</p>
+                            </div>
+                            <div class="report-actions">
+                                <button class="btn-download-individual bg-brand-primary" id="download-my-savings-report">
+                                    <i class="bx bx-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="report-data brand-card-body">
                 <div class="filter-section">
                     <div class="filter-inputs">
                         <div class="mb-3">
