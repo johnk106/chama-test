@@ -36,5 +36,5 @@ externalPort = 80
 
 [deployment]
 deploymentTarget = "autoscale"
-run = ["gunicorn", "--bind=0.0.0.0:5000", "--reuse-port", "Chamabora.wsgi:application"]
+run = ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "3", "--timeout", "120", "Chamabora.wsgi:application"]
 build = ["pip", "install", "-r", "requirements_clean.txt"]
