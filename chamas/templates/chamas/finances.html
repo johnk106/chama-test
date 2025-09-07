@@ -351,27 +351,35 @@
 
         <!-- Group Savings Tab -->
         <div class="tab-pane" id="tab-group-savings" role="tabpanel">
-            <div class="finance-card admin member">
-                <div class="finance-card-header">
-                    <div class="header-icon">
-                        <i class='bx bx-sort bx-rotate-90' style="font-size: 24px"></i>
-                    </div>
-                    <div class="header-text">
-                        <p>Group savings</p>
-                    </div>
-                </div>
-                <div class="filter-section">
-                    <div class="filter-inputs">
-                        <div class="mb-3">
-                            <label for="group-savings-start" class="form-label">Start Date</label>
-                            <input type="date" class="form-control" id="group-savings-start" />
+            <div class="reports-grid">
+                <div class="report-card brand-card admin member">
+                    <div class="report-card-header brand-card-header">
+                        <div class="report-header-info">
+                            <h3 class="report-title text-brand-primary">Group Savings</h3>
+                            <p class="report-description">All group savings contributions</p>
                         </div>
-                        <div class="mb-3">
-                            <label for="group-savings-end" class="form-label">End Date</label>
-                            <input type="date" class="form-control" id="group-savings-end" />
+                        <div class="report-actions">
+                            <button class="btn-download-individual bg-brand-primary" id="download-group-savings-report">
+                                <i class="bx bx-download"></i>
+                            </button>
+                            <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('group-savings-report')">
+                                <i class="bx bx-filter"></i>
+                            </button>
                         </div>
                     </div>
-                </div>
+                    <div class="report-filters" id="group-savings-report-filters">
+                        <div class="filter-row">
+                            <div class="filter-field">
+                                <label for="group-savings-start" class="field-label">Start Date</label>
+                                <input type="date" class="field-input" id="group-savings-start">
+                            </div>
+                            <div class="filter-field">
+                                <label for="group-savings-end" class="field-label">End Date</label>
+                                <input type="date" class="field-input" id="group-savings-end">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="report-data brand-card-body">
                 <div class="brand-table-responsive desktop-view">
                     <table class="brand-table">
                         <thead>
@@ -444,10 +452,12 @@
                     </div>
                     {%endfor%}
                 </div>
-                <div class="summary-section">
-                    <div class="summary-section-inner">
-                        <h6>Total saving</h6>
-                        <h5>ksh {{group_savings_tot | intcomma }}</h5>
+                    <div class="summary-section">
+                        <div class="summary-section-inner">
+                            <h6>Total saving</h6>
+                            <h5>ksh {{group_savings_tot | intcomma }}</h5>
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -455,27 +465,35 @@
 
         <!-- Group Investments Tab -->
         <div class="tab-pane" id="tab-group-investments" role="tabpanel">
-            <div class="finance-card admin member">
-                <div class="finance-card-header">
-                    <div class="header-icon">
-                        <i class='bx bx-sort bx-rotate-90' style="font-size: 24px"></i>
-                    </div>
-                    <div class="header-text">
-                        <p>Group Investments</p>
-                    </div>
-                </div>
-                <div class="filter-section">
-                    <div class="filter-inputs">
-                        <div class="mb-3">
-                            <label for="group-investments-start" class="form-label">Start Date</label>
-                            <input type="date" class="form-control" id="group-investments-start" />
+            <div class="reports-grid">
+                <div class="report-card brand-card admin member">
+                    <div class="report-card-header brand-card-header">
+                        <div class="report-header-info">
+                            <h3 class="report-title text-brand-primary">Group Investments</h3>
+                            <p class="report-description">All group investment activities</p>
                         </div>
-                        <div class="mb-3">
-                            <label for="group-investments-end" class="form-label">End Date</label>
-                            <input type="date" class="form-control" id="group-investments-end" />
+                        <div class="report-actions">
+                            <button class="btn-download-individual bg-brand-primary" id="download-group-investments-report">
+                                <i class="bx bx-download"></i>
+                            </button>
+                            <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('group-investments-report')">
+                                <i class="bx bx-filter"></i>
+                            </button>
                         </div>
                     </div>
-                </div>
+                    <div class="report-filters" id="group-investments-report-filters">
+                        <div class="filter-row">
+                            <div class="filter-field">
+                                <label for="group-investments-start" class="field-label">Start Date</label>
+                                <input type="date" class="field-input" id="group-investments-start">
+                            </div>
+                            <div class="filter-field">
+                                <label for="group-investments-end" class="field-label">End Date</label>
+                                <input type="date" class="field-input" id="group-investments-end">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="report-data brand-card-body">
                 <div class="brand-table-responsive desktop-view">
                     <table class="brand-table">
                         <thead>
@@ -538,10 +556,12 @@
                     </div>
                     {%endfor%}
                 </div>
-                <div class="summary-section">
-                    <div class="summary-section-inner">
-                        <h6>Total investments</h6>
-                        <h5>ksh {{group_investments_tot |intcomma}}</h5>
+                    <div class="summary-section">
+                        <div class="summary-section-inner">
+                            <h6>Total investments</h6>
+                            <h5>ksh {{group_investments_tot |intcomma}}</h5>
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -549,36 +569,44 @@
 
         <!-- Individual Investment Income Tab -->
         <div class="tab-pane" id="tab-individual-investment-income" role="tabpanel">
-            <div class="finance-card admin">
-                <div class="finance-card-header">
-                    <div class="header-icon">
-                        <i class="fa-regular fa-flag"></i>
-                    </div>
-                    <div class="header-text">
-                        <p>Individual Investment Income</p>
-                    </div>
-                </div>
-                <div class="filter-section">
-                    <div class="filter-inputs">
-                        <div class="mb-3">
-                            <label for="individual_investment_income_start" class="form-label">Start Date</label>
-                            <input type="date" class="form-control" id="individual_investment_income_start">
+            <div class="reports-grid">
+                <div class="report-card brand-card admin">
+                    <div class="report-card-header brand-card-header">
+                        <div class="report-header-info">
+                            <h3 class="report-title text-brand-primary">Individual Investment Income</h3>
+                            <p class="report-description">Member investment income tracking</p>
                         </div>
-                        <div class="mb-3">
-                            <label for="individual_investment_income_end" class="form-label">End Date</label>
-                            <input type="date" class="form-control" id="individual_investment_income_end">
-                        </div>
-                        <div class="mb-3 member-filter">
-                            <label for="individual_investment_income_member" class="form-label">Member</label>
-                            <select class="form-control" id="individual_investment_income_member">
-                                <option value="">All Members</option>
-                                {%for member in members%}
-                                <option value="{{member.id}}" class="text-capitalize">{{member.name}}</option>
-                                {%endfor%}
-                            </select>
+                        <div class="report-actions">
+                            <button class="btn-download-individual bg-brand-primary" id="download-individual-investment-income-report">
+                                <i class="bx bx-download"></i>
+                            </button>
+                            <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('individual-investment-income-report')">
+                                <i class="bx bx-filter"></i>
+                            </button>
                         </div>
                     </div>
-                </div>
+                    <div class="report-filters" id="individual-investment-income-report-filters">
+                        <div class="filter-row">
+                            <div class="filter-field">
+                                <label for="individual_investment_income_start" class="field-label">Start Date</label>
+                                <input type="date" class="field-input" id="individual_investment_income_start">
+                            </div>
+                            <div class="filter-field">
+                                <label for="individual_investment_income_end" class="field-label">End Date</label>
+                                <input type="date" class="field-input" id="individual_investment_income_end">
+                            </div>
+                            <div class="filter-field">
+                                <label for="individual_investment_income_member" class="field-label">Member</label>
+                                <select class="field-input" id="individual_investment_income_member">
+                                    <option value="">All Members</option>
+                                    {%for member in members%}
+                                    <option value="{{member.id}}" class="text-capitalize">{{member.name}}</option>
+                                    {%endfor%}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="report-data brand-card-body">
                 <div class="brand-table-responsive desktop-view">
                     <table class="brand-table">
                         <thead>
@@ -663,32 +691,42 @@
                     </div>
                     {%endfor%}
                 </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Group Investment Income Tab -->
         <div class="tab-pane" id="tab-group-investment-income" role="tabpanel">
-            <div class="finance-card admin member">
-                <div class="finance-card-header">
-                    <div class="header-icon">
-                        <i class='bx bx-sort bx-rotate-90' style="font-size: 24px"></i>
-                    </div>
-                    <div class="header-text">
-                        <p>Group Investment Income</p>
-                    </div>
-                </div>
-                <div class="filter-section">
-                    <div class="filter-inputs">
-                        <div class="mb-3">
-                            <label for="group_investment_income_start" class="form-label">Start Date</label>
-                            <input type="date" class="form-control" id="group_investment_income_start">
+            <div class="reports-grid">
+                <div class="report-card brand-card admin member">
+                    <div class="report-card-header brand-card-header">
+                        <div class="report-header-info">
+                            <h3 class="report-title text-brand-primary">Group Investment Income</h3>
+                            <p class="report-description">Group investment income tracking</p>
                         </div>
-                        <div class="mb-3">
-                            <label for="group_investment_income_end" class="form-label">End Date</label>
-                            <input type="date" class="form-control" id="group_investment_income_end">
+                        <div class="report-actions">
+                            <button class="btn-download-individual bg-brand-primary" id="download-group-investment-income-report">
+                                <i class="bx bx-download"></i>
+                            </button>
+                            <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('group-investment-income-report')">
+                                <i class="bx bx-filter"></i>
+                            </button>
                         </div>
                     </div>
-                </div>
+                    <div class="report-filters" id="group-investment-income-report-filters">
+                        <div class="filter-row">
+                            <div class="filter-field">
+                                <label for="group_investment_income_start" class="field-label">Start Date</label>
+                                <input type="date" class="field-input" id="group_investment_income_start">
+                            </div>
+                            <div class="filter-field">
+                                <label for="group_investment_income_end" class="field-label">End Date</label>
+                                <input type="date" class="field-input" id="group_investment_income_end">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="report-data brand-card-body">
                 <div class="brand-table-responsive desktop-view">
                     <table class="brand-table">
                         <thead>
@@ -759,10 +797,12 @@
                     </div>
                     {%endfor%}
                 </div>
-                <div class="summary-section">
-                    <div class="summary-section-inner">
-                        <h6>Total income</h6>
-                        <h5>ksh {{group_investment_incomes_tot | intcomma}}</h5>
+                    <div class="summary-section">
+                        <div class="summary-section-inner">
+                            <h6>Total income</h6>
+                            <h5>ksh {{group_investment_incomes_tot | intcomma}}</h5>
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -770,15 +810,35 @@
 
         <!-- My Investment Income Tab -->
         <div class="tab-pane" id="tab-my-investment-income" role="tabpanel">
-            <div class="finance-card member">
-                <div class="finance-card-header">
-                    <div class="header-icon">
-                        <i class="fa-regular fa-flag"></i>
+            <div class="reports-grid">
+                <div class="report-card brand-card member">
+                    <div class="report-card-header brand-card-header">
+                        <div class="report-header-info">
+                            <h3 class="report-title text-brand-primary">My Investment Income</h3>
+                            <p class="report-description">Your personal investment income tracking</p>
+                        </div>
+                        <div class="report-actions">
+                            <button class="btn-download-individual bg-brand-primary" id="download-my-investment-income-report">
+                                <i class="bx bx-download"></i>
+                            </button>
+                            <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('my-investment-income-report')">
+                                <i class="bx bx-filter"></i>
+                            </button>
+                        </div>
                     </div>
-                    <div class="header-text">
-                        <p>My Investment Income</p>
+                    <div class="report-filters" id="my-investment-income-report-filters">
+                        <div class="filter-row">
+                            <div class="filter-field">
+                                <label for="my-investment-income-start" class="field-label">Start Date</label>
+                                <input type="date" class="field-input" id="my-investment-income-start">
+                            </div>
+                            <div class="filter-field">
+                                <label for="my-investment-income-end" class="field-label">End Date</label>
+                                <input type="date" class="field-input" id="my-investment-income-end">
+                            </div>
+                        </div>
                     </div>
-                </div>
+                    <div class="report-data brand-card-body">
                 <div class="brand-table-responsive desktop-view">
                     <table class="brand-table">
                         <thead>
@@ -852,6 +912,8 @@
                         </div>
                     </div>
                     {%endfor%}
+                </div>
+                    </div>
                 </div>
             </div>
         </div>
