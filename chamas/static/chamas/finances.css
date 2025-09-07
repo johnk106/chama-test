@@ -10,14 +10,17 @@
    DESKTOP FLOATING ACTION BUTTONS
    ================================ */
 .floating-actions.desktop-floating {
-    position: fixed;
-    top: 50%;
-    right: 32px;
-    transform: translateY(-50%);
+    position: absolute;
+    top: 20px;
+    right: 20px;
     display: flex;
-    flex-direction: column;
-    gap: 16px;
+    flex-direction: row;
+    gap: 12px;
     z-index: 100;
+}
+
+.reports-container {
+    position: relative;
 }
 
 .btn-floating {

@@ -1794,7 +1794,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         // Initialize tab functionality
-        const tabLinks = document.querySelectorAll('.finance-tabs .nav-link');
+        const tabLinks = document.querySelectorAll('.reports-tabs .nav-link');
         const tabPanes = document.querySelectorAll('.tab-pane');
 
         // Add click event listeners to tab links
@@ -1835,7 +1835,7 @@
         const tabs = Array.from(tabLinks);
         
         if (window.innerWidth <= 767) {
-            const tabContent = document.querySelector('.finance-tab-content');
+            const tabContent = document.querySelector('.reports-content');
             
             tabContent.addEventListener('touchstart', function(e) {
                 startX = e.touches[0].clientX;
