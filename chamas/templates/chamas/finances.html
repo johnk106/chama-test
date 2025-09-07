@@ -145,23 +145,26 @@
                                 <button class="btn-download-individual bg-brand-primary" id="download-my-savings-report">
                                     <i class="bx bx-download"></i>
                                 </button>
+                                <button class="btn-filter-individual text-brand-primary" onclick="toggleReportFilter('my-savings-report')">
+                                    <i class="bx bx-filter"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="report-filters" id="my-savings-report-filters">
+                            <div class="filter-row">
+                                <div class="filter-field">
+                                    <label for="my_savings_start" class="field-label">Start Date</label>
+                                    <input type="date" class="field-input" id="my_savings_start">
+                                </div>
+                                <div class="filter-field">
+                                    <label for="my_savings_end" class="field-label">End Date</label>
+                                    <input type="date" class="field-input" id="my_savings_end">
+                                </div>
                             </div>
                         </div>
                         <div class="report-data brand-card-body">
-                <div class="filter-section">
-                    <div class="filter-inputs">
-                        <div class="mb-3">
-                            <label for="my_savings_start" class="form-label">Start Date</label>
-                            <input type="date" class="form-control" id="my_savings_start" placeholder="Start Date">
-                        </div>
-                        <div class="mb-3">
-                            <label for="my_savings_end" class="form-label">End Date</label>
-                            <input type="date" class="form-control" id="my_savings_end">
-                        </div>
-                    </div>
-                </div>
-                <div class="table-responsive finance-table-wrapper desktop-view">
-                    <table class="table finance-table">
+                <div class="brand-table-responsive desktop-view">
+                    <table class="brand-table">
                         <thead>
                             <tr>
                                 <th>Owner</th>
@@ -269,8 +272,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="table-responsive finance-table-wrapper desktop-view">
-                    <table class="table finance-table">
+                <div class="brand-table-responsive desktop-view">
+                    <table class="brand-table">
                         <thead>
                             <tr>
                                 <th>Owner</th>
@@ -369,8 +372,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="table-responsive finance-table-wrapper desktop-view">
-                    <table class="table finance-table">
+                <div class="brand-table-responsive desktop-view">
+                    <table class="brand-table">
                         <thead>
                             <tr>
                                 <th>Owner</th>
@@ -473,8 +476,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="table-responsive finance-table-wrapper desktop-view">
-                    <table class="table finance-table">
+                <div class="brand-table-responsive desktop-view">
+                    <table class="brand-table">
                         <thead>
                             <tr>
                                 <th>Name</th>
@@ -576,8 +579,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="table-responsive finance-table-wrapper desktop-view">
-                    <table class="table finance-table">
+                <div class="brand-table-responsive desktop-view">
+                    <table class="brand-table">
                         <thead>
                             <tr>
                                 <th>Owner</th>
@@ -686,8 +689,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="table-responsive finance-table-wrapper desktop-view">
-                    <table class="table finance-table">
+                <div class="brand-table-responsive desktop-view">
+                    <table class="brand-table">
                         <thead>
                             <tr>
                                 <th>Name</th>
@@ -776,8 +779,8 @@
                         <p>My Investment Income</p>
                     </div>
                 </div>
-                <div class="table-responsive finance-table-wrapper desktop-view">
-                    <table class="table finance-table">
+                <div class="brand-table-responsive desktop-view">
+                    <table class="brand-table">
                         <thead>
                             <tr>
                                 <th>Owner</th>
@@ -1786,6 +1789,20 @@
                 `;
                 incomesContainer.appendChild(incomeElement);
             });
+        }
+    }
+</script>
+
+<!-- Filter Toggle Function -->
+<script>
+    function toggleReportFilter(reportId) {
+        const filterElement = document.getElementById(reportId + '-filters');
+        if (filterElement) {
+            if (filterElement.style.display === 'none' || filterElement.style.display === '') {
+                filterElement.style.display = 'block';
+            } else {
+                filterElement.style.display = 'none';
+            }
         }
     }
 </script>
