@@ -86,6 +86,12 @@ The application uses django-environ for configuration:
     - Added comprehensive error handling in download_group_contributions_report service method
     - Added proper exception handling in the view function with detailed error messages
     - Improved validation to prevent empty or invalid contribution IDs from reaching the backend
+  - Fixed finance page tab functionality issue
+    - Identified and resolved Bootstrap version conflict between v5.1.0 (local) and v5.3.2 (CDN)
+    - Removed conflicting Bootstrap v5.1.0 file from home/static/js/
+    - Updated home/templates/base.html to use consistent Bootstrap v5.3.2 CDN version
+    - Resolved "Bootstrap's JavaScript requires jQuery" error that prevented tab switching
+    - All finance page tabs (Personal Savings, Individual Savings, Group Savings, etc.) now function properly
 
 ## Current State
 - ✅ Application fully functional in development mode
