@@ -31,25 +31,23 @@ except FileNotFoundError:
 
 
 SECRET_KEY = env('SECRET_KEY')
-DEBUG = env.bool('DEBUG')
+DEBUG = env.bool('DEBUG', default=True)
 
-TWILIO_ACCOUNT_SID = env('TWILIO_ACCOUNT_SID')
-TWILIO_AUTH_TOKEN = env('TWILIO_AUTH_TOKEN')
-TWILIO_PHONE_NUMBER = env('TWILIO_PHONE_NUMBER')
+# Twilio settings with defaults for development
+TWILIO_ACCOUNT_SID = env('TWILIO_ACCOUNT_SID', default='dev-twilio-sid')
+TWILIO_AUTH_TOKEN = env('TWILIO_AUTH_TOKEN', default='dev-twilio-token')
+TWILIO_PHONE_NUMBER = env('TWILIO_PHONE_NUMBER', default='+1234567890')
 
-# TWILIO_ACCOUNT_SID = 'AC0297ee735142dd5cb64830448aea2940'
-# TWILIO_AUTH_TOKEN = '7001ee8cd5741e637381e7a6deb040c3'
-# TWILIO_PHONE_NUMBER= '+18326267796'
+# Cloudinary settings with defaults for development
+CLOUDINARY_STORAGE_CLOUD_NAME = env('CLOUDINARY_STORAGE_CLOUD_NAME', default='dev-cloud-name')
+CLOUDINARY_STORAGE_API_KEY = env('CLOUDINARY_STORAGE_API_KEY', default='dev-api-key')
+CLOUDINARY_STORAGE_API_SECRET = env('CLOUDINARY_STORAGE_API_SECRET', default='dev-api-secret')
 
-
-CLOUDINARY_STORAGE_CLOUD_NAME = env('CLOUDINARY_STORAGE_CLOUD_NAME')
-CLOUDINARY_STORAGE_API_KEY = env('CLOUDINARY_STORAGE_API_KEY')
-CLOUDINARY_STORAGE_API_SECRET = env('CLOUDINARY_STORAGE_API_SECRET')
-
-CONSUMER_KEY = env('CONSUMER_KEY')
-CONSUMER_SECRET = env('CONSUMER_SECRET')
-BUSINESS_SHORT_CODE = env('BUSINESS_SHORT_CODE')
-PASSKEY = env('PASSKEY')
+# M-Pesa settings with defaults for development
+CONSUMER_KEY = env('CONSUMER_KEY', default='dev-consumer-key')
+CONSUMER_SECRET = env('CONSUMER_SECRET', default='dev-consumer-secret')
+BUSINESS_SHORT_CODE = env('BUSINESS_SHORT_CODE', default='123456')
+PASSKEY = env('PASSKEY', default='dev-passkey')
 
 # print(CONSUMER_KEY, CONSUMER_SECRET, BUSINESS_SHORT_CODE, PASSKEY)
 
@@ -158,17 +156,18 @@ WSGI_APPLICATION = 'Chamabora.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 FCM_SERVER_KEY = "AAAApuuyOe4:APA91bFVU7guIWu7NXlMjndp7s3MjY2u3z9SQRLhrHDljcBfdYk87Bj4aPdxIOEl_1Y14MuaTd4FtQ74LBXvRGT625o071FGoTgGYRcCpB67-m8sfuL4DDr6Cka1BNtuLrDaA4Dex6Ko"
 
+# Use SQLite for development
 DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME':env('DB_NAME') ,
-            'USER': env('DB_USER'),
-            'PASSWORD': env('DB_PASSWORD'),
-            'HOST': env('DB_HOST'),
-        }
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
-db_from_env = dj_database_url.config(conn_max_age=600)
-DATABASES['default'].update(db_from_env)
+}
+
+# Use PostgreSQL for production if DATABASE_URL is available
+if env('DATABASE_URL', default=None):
+    db_from_env = dj_database_url.config(conn_max_age=600)
+    DATABASES['default'].update(db_from_env)
 
 # Before development
 # DATABASES = {
